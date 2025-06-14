@@ -1,0 +1,280 @@
+import PropTypes from 'prop-types';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import { useSelector } from 'react-redux';
+import { useRef, useState } from 'react';
+import html2pdf from 'html2pdf.js';
+import { getLocalDateTime } from '../../../../utils/DateUtil';
+import FlexBetween from '../../../../Components/FlexBetween';
+import { useAlert } from '../../../../utils/Alert';
+import Loading from '../../../../Components/Loading/Loading';
+import { generatePresignUrl } from '../../../../api/s3.api';
+import { sendMessageApi } from '../../Communication/communication.api';
+
+const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
+  const studio = useSelector((state) => state.auth.studio);
+  const token = useSelector((state) => state.auth.token);
+  const showAlert = useAlert()
+  const currentBranch = useSelector((state) => state.branch.currentBranch);
+  const [loading, setLoading] = useState(false)
+
+  const invoiceRef = useRef();
+
+  const handlePrintPDF = () => {
+    setLoading(true)
+    const element = invoiceRef.current;
+
+    html2pdf()
+      .set({
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 4, useCORS: true, allowTaint: true },
+        jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
+      })
+      .from(element)
+      .toPdf()
+      .get('pdf')
+      .then((pdf) => {
+        const blob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(blob);
+
+        const printWindow = window.open(blobUrl, '_blank');
+        printWindow.onload = function () {
+          printWindow.focus();
+          printWindow.print();
+        };
+      });
+    setLoading(false)
+  };
+
+  const handleSendMail = async () => {
+    try {
+      setLoading(true);
+
+      const element = invoiceRef.current;
+      const pdfBlob = await html2pdf()
+        .set({
+          image: { type: 'jpeg', quality: 1 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
+        })
+        .from(element)
+        .outputPdf('blob');
+
+      const { data: s3Bucket, success } = await generatePresignUrl(`Invoice-${studentData.name}.pdf`, token);
+
+      if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
+        showAlert("Failed to get upload URL", "error");
+        return;
+      }
+
+      const uploadResponse = await fetch(s3Bucket.uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/pdf'
+        },
+        body: pdfBlob
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Upload to S3 failed');
+      }
+
+      const payload = {
+        branchId: currentBranch.branchId,
+        notiticationType: "EMAIL",
+        title: "Invoice",
+        templateName: "MEMBERSHIP_INVOICE",
+        studioId: studio.studioId,
+        invoiceUrl: s3Bucket.fileUrl,
+        activityType: activityData.activity.activityType,
+        memberIds: [studentData.studentId],
+      };
+
+
+      const { success: emailSent, message } = await sendMessageApi({ token, data: payload });
+
+      if (emailSent) {
+        showAlert(message || "Mail sent successfully", "success");
+      } else {
+        showAlert("Failed to send email", "error");
+      }
+
+    } catch (error) {
+      console.error(error);
+      showAlert("Something went wrong, please try again later", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleDownloadPDF = () => {
+    setLoading(true)
+    const element = invoiceRef.current;
+    html2pdf()
+      .set({
+        filename: `Invoice-${studentData.name}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 1, useCORS: true, allowTaint: false },
+        jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
+      })
+      .from(element)
+      .save();
+    setLoading(false)
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
+        {loading && <Loading />}
+        <div
+          ref={invoiceRef}
+          style={{
+            fontSize: '12px',
+            width: '148mm',
+            height: '210mm',
+            padding: '8mm',
+            color: '#000',
+            fontFamily: 'Arial, sans-serif',
+            boxSizing: 'border-box',
+            backgroundColor: '#fff',
+            border: '1px solid #ccc',
+            position: 'relative',
+          }}
+        >
+          <div style={{ display: "flex", height: "100%", flexDirection: "column", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ marginBottom: '2mm' }}>
+                <div style={{ display: 'flex', alignItems: 'center', borderRadius: '5px' }}>
+                  {studio?.logo && (
+                    <img
+                      src={studio.logo}
+                      alt="Studio Logo"
+                      style={{ width: '25mm', height: '25mm', marginBottom: '4mm' }}
+                      crossOrigin="anonymous"
+                    />
+                  )}
+                  <h1 style={{ padding: "2mm" }}>{studio?.studioName}</h1>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <p style={{ margin: 0 }}>{currentBranch?.address}</p>
+                    <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
+                    <p style={{ margin: 0 }}>{studio?.email}</p>
+                  </div>
+                  <h1>
+                    INVOICE
+                  </h1>
+                </div>
+              </div>
+
+              <hr />
+
+              {/* Invoice Details */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2mm' }}>
+                <div>
+                  <p><strong>Invoice #</strong>: INV-{activityData?.paymentEntry?.invoiceId || Math.floor(1000 + Math.random() * 9000)}</p>
+                  <p><strong>Invoice Date</strong>: {getLocalDateTime(activityData?.registrationDate) || '-'}</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p><strong>Bill To</strong>:</p>
+                  <p>{studentData?.name}</p>
+                  <p>{studentData?.phone}</p>
+                  <p>{studentData?.email}</p>
+                </div>
+              </div>
+
+              <hr />
+
+              {/* Table */}
+              <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginTop: '2mm' }}>
+                <thead>
+                  <tr>
+                    <th style={tableHeaderStyle}>Activity</th>
+                    <th style={tableHeaderStyle}>Plan</th>
+                    <th style={tableHeaderStyle}>Start Date</th>
+                    <th style={tableHeaderStyle}>End Date</th>
+                    <th style={tableHeaderStyle}>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={tableCellStyle}>{activityData?.activity?.activityType}</td>
+                    <td style={tableCellStyle}>{activityData?.membershipType}</td>
+                    <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipStartDate)}</td>
+                    <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipEndDate)}</td>
+                    <td style={tableCellStyle}>{activityData?.paymentEntry?.amount?.toFixed(2) || '0.00'}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Subtotal & Total */}
+              <div style={{ textAlign: 'right', marginTop: '10mm', fontSize: '14px' }}>
+                <p><strong>Total: {activityData?.paymentEntry?.amount?.toFixed(2) || '0.00'}</strong></p>
+              </div>
+            </div>
+            <div style={{ flexGrow: 1 }}></div>
+            {/* Footer */}
+            <div style={{ textAlign: 'center', marginTop: '15mm', fontSize: '10px', color: '#555' }}>
+              <p>Thank you for choosing {studio?.studioName}!</p>
+              <p>Powered by Book & Manage</p>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+
+      <DialogActions>
+        <FlexBetween width={"100%"} mx={2} gap={2}>
+          <FlexBetween gap={1}>
+            <Button onClick={handleDownloadPDF} variant="contained">Download</Button>
+            <Button onClick={handleSendMail} variant="contained">E-mail</Button>
+            <Button onClick={handlePrintPDF} variant="contained">Print</Button>
+          </FlexBetween>
+          <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
+        </FlexBetween>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+const tableHeaderStyle = {
+  textAlign: 'left',
+  padding: '8px',
+};
+
+const tableCellStyle = {
+  padding: '8px',
+};
+
+StudentInvoice.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  studentData: PropTypes.shape({
+    studentId: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    phone: PropTypes.string.isRequired,
+  }).isRequired,
+  activityData: PropTypes.shape({
+    activity: PropTypes.object,
+    membershipType: PropTypes.string,
+    registrationDate: PropTypes.string,
+    membershipStartDate: PropTypes.string,
+    membershipEndDate: PropTypes.string,
+    membershipStatus: PropTypes.string,
+    paymentEntry: PropTypes.shape({
+      amount: PropTypes.number,
+      paymentDate: PropTypes.string,
+      status: PropTypes.string,
+      registrationFee: PropTypes.number,
+      totalBeforeTax: PropTypes.number,
+      totalAmount: PropTypes.number,
+      invoiceId: PropTypes.string,
+    }),
+  })
+};
+
+export default StudentInvoice;

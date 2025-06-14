@@ -1,0 +1,396 @@
+import { useEffect, useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  Paper,
+  IconButton,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+} from "@mui/material";
+import { Edit, Save, Cancel } from "@mui/icons-material";
+import { useAlert } from "../../../utils/Alert";
+import {
+  addClientAPI,
+  // deleteClientAPI,
+  updateClientAPI,
+} from "./client.api";
+import Loading from "../../../Components/Loading/Loading";
+import FlexEvenly from "../../../Components/FlexEvenly";
+import {
+  StyledTableCell,
+  StyledTableContainer,
+  StyledTableRow,
+} from "../../../Components/StyledTableComponents";
+import PropTypes from "prop-types";
+import FlexBetween from "../../../Components/FlexBetween";
+
+const TableWithEditAddDelete = ({
+  initialData,
+  token,
+  clientTypes,
+  newRow,
+  setNewRow,
+  branchId,
+  startIndex
+}) => {
+  const showAlert = useAlert();
+  const [data, setData] = useState([]);
+  const [editingRowIndex, setEditingRowIndex] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleEdit = (index) => setEditingRowIndex(index);
+
+  useEffect(() => {
+    setData(initialData)
+  }, [initialData])
+
+  const validateRow = (row) => {
+    if (
+      !row.groupName ||
+      !row.pocName ||
+      !row.pocPhone ||
+      !row.pocEmail ||
+      !row.clientType
+    ) {
+      showAlert("All fields are required!", "error");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSave = async (index) => {
+    setLoading(true);
+
+    try {
+      if (newRow !== null) {
+        if (!validateRow(newRow)) return;
+        const newClient = { ...newRow, branchId };
+        const {
+          data: addedClient,
+          success,
+          message,
+        } = await addClientAPI({
+          clientData: newClient,
+          token,
+        });
+        if (success) {
+          setData((prev) => [...prev, addedClient]);
+          showAlert(message, "success");
+        } else {
+          showAlert(message, "error");
+        }
+        setNewRow(null);
+      } else {
+        const updatedClient = data[index];
+        if (!validateRow(updatedClient)) return;
+        const {
+          data: updatedData,
+          success,
+          message,
+        } = await updateClientAPI({
+          clientId: updatedClient.clientId,
+          clientData: updatedClient,
+          token,
+        });
+        if (success) {
+          setData((prev) =>
+            prev.map((client, i) =>
+              i === index ? { ...client, ...updatedData } : client
+            )
+          );
+          showAlert(message, "success");
+        } else {
+          showAlert(message, "error");
+        }
+        setEditingRowIndex(null);
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert("Operation failed. Please try again!", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setNewRow(null);
+    setEditingRowIndex(null);
+  };
+
+  // const handleDelete = async (index) => {
+  //   setLoading(true);
+
+  //   try {
+  //     const clientId = data[index].clientId;
+  //     const { success, message } = await deleteClientAPI({ clientId, token });
+  //     if (success) {
+  //       setData((prev) => prev.filter((_, i) => i !== index));
+  //       showAlert(message, "success");
+  //     } else {
+  //       showAlert(message, "error");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     showAlert("Failed to delete client!", "error");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleChange = (value, index, field) => {
+    if (index === null) {
+      setNewRow({ ...newRow, [field]: value });
+    } else {
+      setData((prev) =>
+        prev.map((obj, i) =>
+          i === index ? { ...obj, [field]: value } : obj
+        )
+      );
+    }
+  };
+
+  return (
+    <StyledTableContainer component={Paper}>
+      {loading && <Loading />}
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
+          <StyledTableRow>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              S. No.
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              Group Name
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              POC Name
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              POC Phone
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              POC Email
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              Client Type
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              Notes
+            </StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+              Actions
+            </StyledTableCell>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row, index) => (
+            <StyledTableRow
+              key={row.clientId}
+            >
+              {editingRowIndex === index ? (
+                <>
+                  <StyledTableCell>
+                    {startIndex + index + 1}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TextField
+                      variant="standard"
+                      value={row.groupName}
+                      onChange={(e) => handleChange(e.target.value, index, "groupName")}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TextField
+                      variant="standard"
+                      value={row.pocName}
+                      onChange={(e) => handleChange(e.target.value, index, "pocName")}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TextField
+                      variant="standard"
+                      value={row.pocPhone}
+                      onChange={(e) => handleChange(e.target.value, index, "pocPhone")}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TextField
+                      variant="standard"
+                      value={row.pocEmail}
+                      onChange={(e) => handleChange(e.target.value, index, "pocEmail")}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FormControl fullWidth>
+                      <Select
+                        variant="standard"
+                        value={row.clientType}
+                        onChange={(e) =>
+                          handleChange(e.target.value, index, "clientType")
+                        }
+                      >
+                        {clientTypes.map((clientType) => (
+                          <MenuItem key={clientType} value={clientType}>
+                            {clientType}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <TextField
+                      variant="standard"
+                      value={row.notes}
+                      onChange={(e) => handleChange(e.target.value, index, "notes")}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <FlexBetween>
+                      <IconButton
+                        sx={{ color: "green" }}
+                        onClick={() => handleSave(index)}
+                      >
+                        <Save />
+                      </IconButton>
+                      <IconButton sx={{ color: "red" }} onClick={handleCancel}>
+                        <Cancel />
+                      </IconButton>
+                    </FlexBetween>
+                  </StyledTableCell>
+                </>
+              ) : (
+                <>
+                  <StyledTableCell>{startIndex + index + 1}</StyledTableCell>
+                  <StyledTableCell>{row.groupName}</StyledTableCell>
+                  <StyledTableCell>{row.pocName}</StyledTableCell>
+                  <StyledTableCell>{row.pocPhone}</StyledTableCell>
+                  <StyledTableCell>{row.pocEmail}</StyledTableCell>
+                  <StyledTableCell>{row.clientType}</StyledTableCell>
+                  <StyledTableCell>{row.notes}</StyledTableCell>
+                  <StyledTableCell>
+                    <IconButton
+                      sx={{ color: "blue" }}
+                      onClick={() => handleEdit(index)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    {/* <IconButton
+                      sx={{ color: "red" }}
+                      onClick={() => handleDelete(index)}
+                    >
+                      <Delete />
+                    </IconButton> */}
+                  </StyledTableCell>
+                </>
+              )}
+            </StyledTableRow>
+          ))}
+          {data.length === 0 && (
+            <StyledTableRow>
+              <StyledTableCell colSpan={8}>
+                <FlexEvenly>
+                  No client data available. Add by clicking the &quot;+&quot; button!
+                </FlexEvenly>
+              </StyledTableCell>
+            </StyledTableRow>
+          )}
+          {newRow && (
+            <StyledTableRow>
+              <StyledTableCell>
+                NEW
+              </StyledTableCell>
+              <StyledTableCell>
+                <TextField
+                  variant="standard"
+                  value={newRow.groupName}
+                  onChange={(e) => handleChange(e.target.value, null, "groupName")}
+                />
+              </StyledTableCell>
+              <StyledTableCell>
+                <TextField
+                  variant="standard"
+                  value={newRow.pocName}
+                  onChange={(e) => handleChange(e.target.value, null, "pocName")}
+                />
+              </StyledTableCell>
+              <StyledTableCell>
+                <TextField
+                  variant="standard"
+                  value={newRow.pocPhone}
+                  onChange={(e) => handleChange(e.target.value, null, "pocPhone")}
+                />
+              </StyledTableCell>
+              <StyledTableCell>
+                <TextField
+                  variant="standard"
+                  value={newRow.pocEmail}
+                  onChange={(e) => handleChange(e.target.value, null, "pocEmail")}
+                />
+              </StyledTableCell>
+              <StyledTableCell>
+                <FormControl fullWidth>
+                  <Select
+                    variant="standard"
+                    value={newRow.clientType}
+                    onChange={(e) => handleChange(e.target.value, null, "clientType")}
+                  >
+                    {clientTypes.map((clientType) => (
+                      <MenuItem key={clientType} value={clientType}>
+                        {clientType}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </StyledTableCell>
+              <StyledTableCell>
+                <TextField
+                  variant="standard"
+                  value={newRow.notes}
+                  onChange={(e) => handleChange(e.target.value, null, "notes")}
+                />
+              </StyledTableCell>
+              <StyledTableCell>
+                <FlexBetween >
+                  <IconButton
+                    sx={{ color: "green" }}
+                    onClick={() => handleSave(null)}
+                  >
+                    <Save />
+                  </IconButton>
+                  <IconButton sx={{ color: "red" }} onClick={handleCancel}>
+                    <Cancel />
+                  </IconButton>
+                </FlexBetween>
+              </StyledTableCell>
+            </StyledTableRow>
+          )}
+        </TableBody>
+      </Table>
+    </StyledTableContainer>
+  );
+};
+
+TableWithEditAddDelete.propTypes = {
+  initialData: PropTypes.arrayOf(
+    PropTypes.shape({
+      clientId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      groupName: PropTypes.string.isRequired,
+      pocName: PropTypes.string.isRequired,
+      pocPhone: PropTypes.string.isRequired,
+      pocEmail: PropTypes.string.isRequired,
+      clientType: PropTypes.string.isRequired,
+      notes: PropTypes.string.isRequired,
+      branchId: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  token: PropTypes.string.isRequired,
+  clientTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  newRow: PropTypes.object,
+  setNewRow: PropTypes.func.isRequired,
+  startIndex: PropTypes.number.isRequired,
+  branchId: PropTypes.number.isRequired,
+};
+export default TableWithEditAddDelete;

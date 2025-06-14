@@ -1,0 +1,52 @@
+{
+  "name": "studio-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.11",
+    "@mui/material": "^6.4.11",
+    "@mui/x-data-grid": "^8.2.0",
+    "@mui/x-date-pickers": "^7.28.3",
+    "@reduxjs/toolkit": "^2.5.1",
+    "axios": "^1.7.9",
+    "date-fns": "^2.30.0",
+    "html2pdf.js": "^0.10.3",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "prop-types": "^15.8.1",
+    "qrcode.react": "^4.2.0",
+    "react": "^18.3.1",
+    "react-calendar": "^5.1.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-csv": "^2.2.2",
+    "react-dom": "^18.3.1",
+    "react-dropzone": "^14.3.5",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.1.5",
+    "react-to-print": "^3.1.0",
+    "react-window": "^1.8.11",
+    "redux-persist": "^6.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "vite": "^6.0.11"
+  }
+}
