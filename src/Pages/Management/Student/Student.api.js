@@ -35,6 +35,7 @@ export const getStudentNamesOncePerDay = async ({ branchId, token, page, size, b
   //   const parsed = JSON.parse(cachedResult);
   //   return { ...parsed, message: "Fetched from cache" };
   // }
+  
   const result = await getStudentNamesAPI({ branchId, token, page, size, birthday });
 
   // if (result.success) {
