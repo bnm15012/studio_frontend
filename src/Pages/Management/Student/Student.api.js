@@ -23,25 +23,24 @@ export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday
 };
 
 export const getStudentNamesOncePerDay = async ({ branchId, token, page, size, birthday = false }) => {
-  const todayKey = `getStudentNames_${branchId}_${birthday ? 'birthday' : 'all'}_page${page}_size${size}`;
-  const dateKey = `${todayKey}_date`;
+  // const todayKey = `getStudentNames_${branchId}_${birthday ? 'birthday' : 'all'}_page${page}_size${size}`;
+  // const dateKey = `${todayKey}_date`;
 
-  const lastCallDate = localStorage.getItem(dateKey);
-  const cachedResult = localStorage.getItem(todayKey);
+  // const lastCallDate = localStorage.getItem(dateKey);
+  // const cachedResult = localStorage.getItem(todayKey);
 
-  const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+  // const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
 
-  if (lastCallDate === today && cachedResult) {
-    const parsed = JSON.parse(cachedResult);
-    return { ...parsed, message: "Fetched from cache" };
-  }
-
+  // if (lastCallDate === today && cachedResult) {
+  //   const parsed = JSON.parse(cachedResult);
+  //   return { ...parsed, message: "Fetched from cache" };
+  // }
   const result = await getStudentNamesAPI({ branchId, token, page, size, birthday });
 
-  if (result.success) {
-    localStorage.setItem(dateKey, today);
-    localStorage.setItem(todayKey, JSON.stringify(result));
-  }
+  // if (result.success) {
+  //   localStorage.setItem(dateKey, today);
+  //   localStorage.setItem(todayKey, JSON.stringify(result));
+  // }
 
   return result;
 };
