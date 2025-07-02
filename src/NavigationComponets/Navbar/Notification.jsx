@@ -27,7 +27,7 @@ const Notification = () => {
     const getBirthDayStudent = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await getStudentNamesOncePerDay({ branchId: currentBranch.branchId, token, page: 1, size: 50, birthday: true });
+            const { data } = await getStudentNamesOncePerDay({ branchId: currentBranch.branchId, token, page: 1, size: -1, birthday: true });
 
             const birthdayNotifications = data.map(d => ({
                 id: d.studentId,
