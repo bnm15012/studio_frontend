@@ -82,7 +82,7 @@ const Footer = () => {
             Book & Manage
           </Typography>
           <Typography variant="body2" lineHeight={1.8}>
-            StudioApp provides tailored solutions for studio owners to
+            Book & Manage provides tailored solutions for studio owners to
             streamline operations, manage clients, and foster community growth.
           </Typography>
         </Box>
@@ -237,7 +237,7 @@ const Footer = () => {
       {/* Copyright */}
       <Box sx={{ py: 2 }}>
         <Typography variant="body2">
-          &copy; 2024 StudioApp. All rights reserved. | Powered by{" "}
+          &copy; 2025 Book & Manage. All rights reserved. | Powered by{" "}
           <Link href="" color="inherit" underline="hover">
             Book & Manage
           </Link>

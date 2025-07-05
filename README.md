@@ -23,7 +23,3 @@
   ```
   npm run dev
   ```
-
-
-# StudioApp
-# StudioApp
