@@ -202,7 +202,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={tableCellStyle}>{activityData?.activity?.activityType}</td>
+                    <td style={tableCellStyle}>{activityData?.activityName}</td>
                     <td style={tableCellStyle}>{activityData?.membershipType}</td>
                     <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipStartDate)}</td>
                     <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipEndDate)}</td>
@@ -260,6 +260,7 @@ StudentInvoice.propTypes = {
   }).isRequired,
   activityData: PropTypes.shape({
     activity: PropTypes.object,
+    activityName: PropTypes.string.isRequired,
     membershipType: PropTypes.string,
     registrationDate: PropTypes.string,
     membershipStartDate: PropTypes.string,

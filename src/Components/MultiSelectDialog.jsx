@@ -24,17 +24,14 @@ const MultiSelectDialog = ({
   const [selected, setSelected] = useState(data);
   const [loading, setLoading] = useState(false);
   const size = 10;
-  const hasMore = useRef(true);
-  const pageRef = useRef(1); // Ref for page to avoid rerendering
-
+  const pageFetched = useRef([])
+  const [totalRecords, setTotalRecords] = useState()
   // Fetch more options with pagination support
-  const fetchMoreOptions = useCallback(async () => {
-    if (loading || !hasMore.current) return;
+  const fetchMoreOptions = useCallback(async (page = 1) => {
+    if (pageFetched.current.includes(page)) return;
     setLoading(true);
-    const { data, totalCount } = await fetchOptions(pageRef.current, size);
-    if (totalCount < size) {
-      hasMore.current = false;
-    }
+    const { data, totalCount } = await fetchOptions(page, size);
+    setTotalRecords(totalCount)
     setOptions((prev) => {
       const merged = [...prev, ...data];
       const uniqueMap = new Map();
@@ -43,17 +40,15 @@ const MultiSelectDialog = ({
       });
       return Array.from(uniqueMap.values());
     });
+    pageFetched.current.push(page);
 
-    pageRef.current += 1;
     setLoading(false);
-  }, [fetchOptions, loading, size, valueKey]);
+  }, [fetchOptions, options.length, valueKey]);
 
   // Reset and fetch options when dialog opens
   useEffect(() => {
     if (open) {
-      pageRef.current = 1; // Reset page
-      hasMore.current = true; // Reset loading state
-      fetchMoreOptions(); // Fetch options when the dialog opens
+      fetchMoreOptions(1); // Fetch options when the dialog opens
     }
   }, [open]); // Trigger effect only when `open` or `data` changes
 
@@ -62,13 +57,15 @@ const MultiSelectDialog = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) fetchMoreOptions();
+        if (entry.isIntersecting) {
+          fetchMoreOptions(parseInt(options.length / size) + 1);
+        }
       },
       { rootMargin: "100px" }
     );
     if (observerRef.current) observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [fetchMoreOptions, open]);
 
   // Handle OK button click
   const handleOk = () => {
@@ -87,7 +84,7 @@ const MultiSelectDialog = ({
       <DialogContent dividers style={{ maxHeight: "400px", overflow: "auto" }}>
         {options.map((option, index) => (
           <MenuItem
-            key={option[valueKey]}
+            key={option[labelKey]}
             onClick={() => {
               const exists = selected.some(
                 (sel) => sel[valueKey] === option[valueKey]
@@ -116,6 +113,7 @@ const MultiSelectDialog = ({
         ))}
         <div ref={observerRef} style={{ height: 40, textAlign: "center" }}>
           {loading && <Loading />}
+          {options.length == totalRecords && <>No more record to show</>}
         </div>
       </DialogContent>
       <DialogActions>
