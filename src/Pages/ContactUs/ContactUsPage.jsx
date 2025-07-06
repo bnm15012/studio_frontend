@@ -108,7 +108,8 @@ const ContactUsPage = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOnIcon sx={{ mr: 1, animation: `${pulse} 2s infinite` }} />
                 <Typography variant="body1">
-                  89, 2nd Cross Road, Kaverappa Layout, Bangalore, Karnataka 560103
+                  {/* 89, 2nd Cross Road, Kaverappa Layout, */}
+                   Bangalore, Karnataka 560103
                 </Typography>
               </Box>
               <Divider sx={{ mb: 2, borderColor: 'rgba(255, 255, 255, 0.2)' }} />

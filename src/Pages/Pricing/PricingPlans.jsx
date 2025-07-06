@@ -91,7 +91,7 @@ const PricingPlans = () => {
                   ? "15rem"
                   : isNonMobileScreens2
                     ? "70vw"
-                    : "11rem",
+                    : "95vw",
                 transition: "transform 0.3s ease-in-out",
                 "&:hover": {
                   transform: "scale(1.05)",

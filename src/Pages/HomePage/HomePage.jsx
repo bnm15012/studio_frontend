@@ -7,6 +7,7 @@ import Carousel from "./Carousel";
 import ContentSection from "./ContentSection";
 import FlexBetweenColumn from "../../Components/FlexBetweenColumn";
 import PricingPlans from "../Pricing/PricingPlans";
+import TrustedPartners from "./TrustedPartners";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const HomePage = () => {
         <FlexBetweenColumn>
           <Carousel />
           <ContentSection />
+          <TrustedPartners />
           <Box id="pricing">
             <PricingPlans />
           </Box>

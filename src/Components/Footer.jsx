@@ -185,9 +185,9 @@ const Footer = () => {
           <FlexBetween alignItems="center" mb={2}>
             <LocationOnIcon sx={{ mr: 1 }} />
             <Box>
-              <Typography variant="body2">
+              {/* <Typography variant="body2">
                 89, 2nd cross Road, Kaverappa layout
-              </Typography>
+              </Typography> */}
               <Typography variant="body2" textAlign="left">
                 Bangalore, Karnataka 560103
               </Typography>
