@@ -1,34 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { Box, IconButton, Typography, Button, keyframes } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  Button,
+  Fade,
+  Slide,
+  useTheme,
+  alpha
+} from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import FlexEvenly from "../../Components/FlexEvenly";
 import { useDispatch } from "react-redux";
 import { openDialog } from "../../state/dialogSlice";
-
-// Define animations
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const slideInRight = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
 
 const images = [
   {
@@ -54,6 +39,7 @@ const images = [
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleNext = useCallback(
     () => setCurrentIndex((currentIndex + 1) % images.length),
@@ -71,193 +57,246 @@ const Carousel = () => {
   }, [currentIndex, handleNext]);
 
   return (
-    <FlexEvenly>
+    <Box
+      sx={{
+        position: "relative",
+        width: "100vw",
+        height: { xs: "80vh", md: "90vh" },
+        overflow: "hidden",
+        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(theme.palette.secondary.main, 0.8)})`,
+      }}
+    >
+      {/* Background Images */}
       <Box
         sx={{
-          position: "relative",
-          width: "100vw",
-          height: { xs: "80vh", md: "85vh" },
-          overflow: "hidden",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          transition: "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+          transform: `translateX(-${currentIndex * 100}%)`,
         }}
       >
-        {/* Hero Content Overlay */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            zIndex: 10,
-            textAlign: "center",
-            padding: { xs: 3, md: 6 },
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))",
-          }}
-        >
+        {images.map((img, index) => (
+          <Box
+            key={index}
+            component="img"
+            src={img.src}
+            alt={img.alt}
+            sx={{
+              width: "100vw",
+              height: "100%",
+              objectFit: "cover",
+              flexShrink: 0,
+              filter: "brightness(0.7) saturate(1.2)",
+            }}
+          />
+        ))}
+      </Box>
+
+      {/* Gradient Overlay */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background: `linear-gradient(to bottom, ${alpha('#000', 0.2)}, ${alpha('#000', 0.6)})`,
+          zIndex: 1,
+        }}
+      />
+
+      {/* Hero Content */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 2,
+          textAlign: "center",
+          px: { xs: 3, md: 6 },
+        }}
+      >
+        <Fade in timeout={800} key={`title-${currentIndex}`}>
           <Typography
-            variant="h2"
+            variant="h1"
             component="h1"
             sx={{
               color: "white",
-              fontWeight: 700,
-              textShadow: "1px 1px 4px rgba(0,0,0,0.6)",
-              mb: 2,
-              animation: `${fadeIn} 0.8s ease-out`,
-              maxWidth: "800px",
+              fontWeight: 800,
+              textShadow: "2px 2px 8px rgba(0,0,0,0.7)",
+              mb: 3,
+              maxWidth: "900px",
+              fontSize: { xs: "2.5rem", md: "4rem" },
+              lineHeight: 1.2,
             }}
           >
             {images[currentIndex].title}
           </Typography>
+        </Fade>
 
+        <Slide in direction="up" timeout={1000} key={`subtitle-${currentIndex}`}>
           <Typography
-            variant="h5"
+            variant="h4"
             sx={{
               color: "white",
-              mb: 4,
+              mb: 5,
               maxWidth: "700px",
-              textShadow: "1px 1px 3px rgba(0,0,0,0.6)",
-              animation: `${fadeIn} 0.8s ease-out 0.3s`,
-              animationFillMode: "backwards",
+              textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
+              fontWeight: 300,
+              fontSize: { xs: "1.2rem", md: "1.8rem" },
             }}
           >
             {images[currentIndex].subtitle}
           </Typography>
+        </Slide>
 
+        <Fade in timeout={1200}>
           <Box
             sx={{
               display: "flex",
               gap: 3,
               flexWrap: "wrap",
               justifyContent: "center",
-              animation: `${slideInRight} 0.8s ease-out 0.6s`,
-              animationFillMode: "backwards",
             }}
           >
             <Button
-              variant="contained"
-              color="primary"
-              size="large"
               onClick={() => dispatch(openDialog("signupDialog"))}
+              variant="contained"
+              size="large"
               sx={{
-                px: 4,
-                py: 1.5,
-                mb: 2,
+                px: 5,
+                py: 2,
+                fontSize: "1.2rem",
                 fontWeight: 600,
-                borderRadius: 2,
-                fontSize: "1.1rem",
-                boxShadow: "0 4px 14px rgba(0, 0, 0, 0.25)",
+                borderRadius: 3,
+                boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.4)}`,
+                textTransform: 'none',
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 "&:hover": {
-                  transform: "translateY(-3px)",
-                  boxShadow: "0 6px 20px rgba(0, 0, 0, 0.3)",
+                  transform: "translateY(-4px) scale(1.02)",
+                  boxShadow: `0 12px 35px ${alpha(theme.palette.primary.main, 0.6)}`,
                 },
-                transition: "all 0.3s ease",
               }}
             >
-              Get Started
+              Get Started Today
             </Button>
-          </Box>
-        </Box>
 
-        {/* Carousel Indicators */}
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: "30px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            gap: "12px",
-            zIndex: 20,
-          }}
-        >
-          {images.map((_, index) => (
-            <IconButton
-              key={index}
-              size="small"
-              onClick={() => handleIndicatorClick(index)}
+            {/* <Button
+              variant="outlined"
+              size="large"
               sx={{
-                color: index === currentIndex ? "white" : "rgba(255,255,255,0.5)",
+                px: 5,
+                py: 2,
+                fontSize: "1.1rem",
+                fontWeight: 500,
+                borderRadius: 3,
+                borderColor: "white",
+                color: "white",
+                textTransform: 'none',
+                borderWidth: 2,
                 transition: "all 0.3s ease",
-                transform: index === currentIndex ? "scale(1.2)" : "scale(1)",
+                "&:hover": {
+                  backgroundColor: alpha('#fff', 0.1),
+                  borderColor: "white",
+                  transform: "translateY(-2px)",
+                },
               }}
             >
-              <FiberManualRecordIcon fontSize="small" />
-            </IconButton>
-          ))}
-        </Box>
-
-        {/* Slideshow */}
-        <Box
-          sx={{
-            display: "flex",
-            transition: "transform 0.8s ease",
-            transform: `translateX(-${currentIndex * 100}%)`,
-            height: "100%",
-          }}
-        >
-          {images.map((img, index) => (
-            <Box
-              key={index}
-              component="img"
-              src={img.src}
-              alt={img.alt}
-              sx={{
-                width: "100vw",
-                height: "100%",
-                objectFit: "cover",
-                flexShrink: 0,
-                filter: "brightness(0.9)",
-              }}
-            />
-          ))}
-        </Box>
-
-        {/* Controls */}
-        <IconButton
-          onClick={handlePrev}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: { xs: "5px", md: "20px" },
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            color: "white",
-            zIndex: 20,
-            "&:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              transform: "translateY(-50%) scale(1.1)",
-            },
-            transition: "all 0.3s ease",
-          }}
-        >
-          <ArrowBackIosIcon fontSize="medium" />
-        </IconButton>
-
-        <IconButton
-          onClick={handleNext}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            right: { xs: "5px", md: "20px" },
-            transform: "translateY(-50%)",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            color: "white",
-            zIndex: 20,
-            "&:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              transform: "translateY(-50%) scale(1.1)",
-            },
-            transition: "all 0.3s ease",
-          }}
-        >
-          <ArrowForwardIosIcon fontSize="medium" />
-        </IconButton>
+              Watch Demo
+            </Button> */}
+          </Box>
+        </Fade>
       </Box>
-    </FlexEvenly>
+
+      {/* Navigation Arrows */}
+      <IconButton
+        onClick={handlePrev}
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: { xs: 16, md: 32 },
+          transform: "translateY(-50%)",
+          backgroundColor: alpha('#fff', 0.2),
+          backdropFilter: "blur(10px)",
+          color: "white",
+          zIndex: 3,
+          width: 56,
+          height: 56,
+          transition: "all 0.3s ease",
+          "&:hover": {
+            backgroundColor: alpha('#fff', 0.3),
+            transform: "translateY(-50%) scale(1.1)",
+          },
+        }}
+      >
+        <ArrowBackIosIcon sx={{ fontSize: 24 }} />
+      </IconButton>
+
+      <IconButton
+        onClick={handleNext}
+        sx={{
+          position: "absolute",
+          top: "50%",
+          right: { xs: 16, md: 32 },
+          transform: "translateY(-50%)",
+          backgroundColor: alpha('#fff', 0.2),
+          backdropFilter: "blur(10px)",
+          color: "white",
+          zIndex: 3,
+          width: 56,
+          height: 56,
+          transition: "all 0.3s ease",
+          "&:hover": {
+            backgroundColor: alpha('#fff', 0.3),
+            transform: "translateY(-50%) scale(1.1)",
+          },
+        }}
+      >
+        <ArrowForwardIosIcon sx={{ fontSize: 24 }} />
+      </IconButton>
+
+      {/* Indicators */}
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 40,
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          gap: 2,
+          zIndex: 3,
+        }}
+      >
+        {images.map((_, index) => (
+          <IconButton
+            key={index}
+            size="small"
+            onClick={() => handleIndicatorClick(index)}
+            sx={{
+              color: index === currentIndex ? "white" : alpha('#fff', 0.5),
+              transition: "all 0.3s ease",
+              transform: index === currentIndex ? "scale(1.3)" : "scale(1)",
+              "&:hover": {
+                color: "white",
+                transform: "scale(1.2)",
+              },
+            }}
+          >
+            <FiberManualRecordIcon sx={{ fontSize: 12 }} />
+          </IconButton>
+        ))}
+      </Box>
+    </Box>
   );
 };
 
