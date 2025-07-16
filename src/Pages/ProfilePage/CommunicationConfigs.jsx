@@ -99,6 +99,10 @@ const CommunicationConfigs = ({ studio }) => {
                   isEdit={editProf}
                   fieldName="passcode"
                   setData={setEditedValues}
+                  validation={{
+                    pattern: /^[^\s]{16}$/,
+                    errorMessage: "Must be exactly 16 characters with no spaces",
+                  }}
                 />
                 <Box flexGrow={1}></Box>
               </FlexBetween>

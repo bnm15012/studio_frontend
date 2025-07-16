@@ -37,6 +37,7 @@ export const AlertProvider = ({ children }) => {
 
 AlertProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  duration: PropTypes.number,
 };
 
 // eslint-disable-next-line react-refresh/only-export-components

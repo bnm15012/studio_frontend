@@ -19,7 +19,6 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const showAlert = useAlert()
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const [loading, setLoading] = useState(false)
-
   const invoiceRef = useRef();
 
   const handlePrintPDF = () => {
@@ -67,6 +66,8 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
       if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
         showAlert("Failed to get upload URL", "error");
         return;
+      } else {
+        showAlert("Preparing to upload invoice...", "info");
       }
 
       const uploadResponse = await fetch(s3Bucket.uploadUrl, {
@@ -78,20 +79,24 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
       });
 
       if (!uploadResponse.ok) {
+        showAlert("Failed to upload invoice to S3", "error");
         throw new Error('Upload to S3 failed');
+      } else {
+        showAlert("Invoice uploaded successfully", "success");
       }
 
       const payload = {
         branchId: currentBranch.branchId,
-        notiticationType: "EMAIL",
+        notificationType: "EMAIL",
         title: "Invoice",
         templateName: "MEMBERSHIP_INVOICE",
         studioId: studio.studioId,
         invoiceUrl: s3Bucket.fileUrl,
-        activityType: activityData.activity.activityType,
+        activityType: activityData?.activityName,
         memberIds: [studentData.studentId],
       };
 
+      showAlert("Sending email...", "info");
 
       const { success: emailSent, message } = await sendMessageApi({ token, data: payload });
 
