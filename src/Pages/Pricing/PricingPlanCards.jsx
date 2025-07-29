@@ -1,0 +1,239 @@
+import {
+    Box,
+    Typography,
+    Card,
+    CardContent,
+    CardHeader,
+    Button,
+    Chip,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    useTheme,
+} from '@mui/material';
+import {
+    Check as CheckIcon,
+    Close,
+} from '@mui/icons-material';
+import { useCallback, useEffect, useState } from 'react';
+import { getAllPlans } from './plans.api';
+// import { setPricingPlans } from '../../state/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import PaymentDialog from '../RazorPay/Payment';
+import Loading from '../../Components/Loading/Loading';
+import { openDialog } from '../../state/dialogSlice';
+import PropTypes from 'prop-types';
+
+const PricingPlanCards = ({ buttonText = "Get Started" }) => {
+    const dispatch = useDispatch();
+    const theme = useTheme()
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [dialogPlanOpen, setPanDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [allPlans, setAllPlans] = useState(null); //useSelector((state) => state.auth.pricingPlans));
+    const user = useSelector((state) => state.auth.user);
+
+    const handlePayment = async (plan) => {
+        if (!user) {
+            dispatch(openDialog("loginDialog"));
+        } else {
+            setSelectedPlan(plan);
+            setPanDialogOpen(true);
+        }
+    };
+
+    const closePlansDialog = () => {
+        setPanDialogOpen(false);
+        setSelectedPlan(null);
+    };
+
+    const fetchPlans = useCallback(async () => {
+        setIsLoading(true);
+        const { data, success } = await getAllPlans();
+        if (success) {
+            setAllPlans(data);
+            // dispatch(setPricingPlans({ pricingPlans: data }));
+        }
+        setIsLoading(false);
+    }, []);
+    useEffect(() => {
+        !allPlans && fetchPlans();
+    }, [allPlans, fetchPlans]);
+
+
+    return (
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr 1fr' }, gap: 4, mb: 8 }}>
+            {isLoading && <Loading />}
+            {allPlans && allPlans.map((plan, index) => (
+                <Box key={index}>
+                    <Card
+                        sx={{
+                            position: 'relative',
+                            height: '100%',
+                            p: 4,
+                            border: plan.popular ? '2px solid' : '2px solid',
+                            borderColor: plan.popular ? 'primary.main' : 'rgba(0, 0, 0, 0.12)',
+                            transition: 'all 0.3s ease',
+                            backgroundColor: plan.popular ? theme.palette.primary.light : theme.palette.background.paper,
+                            backdropFilter: 'blur(10px)',
+                            transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
+                            '&:hover': {
+                                transform: plan.popular ? 'scale(1.05) translateY(-8px)' : 'translateY(-8px)',
+                                boxShadow: '0 20px 40px rgba(139, 92, 246, 0.15)',
+                                borderColor: 'primary.main',
+                            },
+                        }}
+                    >
+                        {plan.popular && (
+                            <Chip
+                                label="⭐ Most Popular"
+                                sx={{
+                                    position: 'absolute',
+                                    top: 5,
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
+                                    color: 'white',
+                                    fontWeight: 600,
+                                    px: 3,
+                                }}
+                            />
+                        )}
+
+                        <CardHeader
+                            sx={{ textAlign: 'center', pb: 4 }}
+                            title={
+                                <Box>
+                                    {/* <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          mb: 2,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            p: 2,
+                            borderRadius: 2,
+                            background: plan.popular
+                              ? 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)'
+                              : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)',
+                            transition: 'transform 0.3s ease',
+                            '&:hover': {
+                              transform: 'scale(1.1)',
+                            },
+                          }}
+                        >
+                          {plan.popular ? <StarIcon /> : <FlashOn />}
+                        </Box>
+                      </Box> */}
+                                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                        {plan?.planType?.replace("_", " ")}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                                        {plan?.description}
+                                    </Typography>
+                                    <Box>
+                                        <Typography
+                                            variant="h3"
+                                            sx={{
+                                                fontWeight: 'bold',
+                                                background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
+                                                backgroundClip: 'text',
+                                                WebkitBackgroundClip: 'text',
+                                                color: 'transparent',
+                                                display: 'inline',
+                                            }}
+                                        >
+                                            {plan.amount}
+                                        </Typography>
+                                        <Typography
+                                            variant="body1"
+                                            sx={{ color: 'text.secondary', display: 'inline', ml: 1 }}
+                                        >
+                                            {plan.period}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            }
+                        />
+
+                        <CardContent sx={{ pt: 0 }}>
+                            <Button
+                                onClick={() => {
+                                    handlePayment(plan);
+                                }}
+                                variant={!plan?.popular ? "outlined" : "contained"}
+                                size="large"
+                                fullWidth
+                                sx={{
+                                    mb: 4,
+                                    py: 1.5,
+                                    fontSize: '1.125rem',
+                                    transition: 'transform 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'scale(1.05)',
+                                    },
+                                }}
+                            >
+                                {buttonText}
+                            </Button>
+
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+                                What&apos;s included:
+                            </Typography>
+                            <List sx={{ p: 0 }}>
+                                {plan?.enabledFeatures.map((feature, featureIndex) => (
+                                    <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
+                                        <ListItemIcon sx={{ minWidth: 32 }}>
+                                            <CheckIcon sx={{ color: '#10B981', fontSize: '1.25rem' }} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={feature}
+                                            slotProps={{
+                                                primary: {
+                                                    variant: 'body2',
+                                                    color: 'text.secondary',
+                                                }
+                                            }}
+                                        />
+                                    </ListItem>
+                                ))}
+                                {plan?.disabledFeatures.map((feature, featureIndex) => (
+                                    <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
+                                        <ListItemIcon sx={{ minWidth: 32 }}>
+                                            <Close sx={{ color: '#b91310ff', fontSize: '1.25rem' }} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={feature}
+                                            slotProps={{
+                                                primary: {
+                                                    variant: 'body2',
+                                                    color: 'text.secondary',
+                                                }
+                                            }}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </CardContent>
+                    </Card>
+                </Box>
+            ))}
+            {/* PaymentDialog */}
+            {selectedPlan && (
+                <PaymentDialog
+                    open={dialogPlanOpen}
+                    onClose={closePlansDialog}
+                    plan={selectedPlan}
+                />
+            )}
+        </Box>
+    )
+}
+
+PricingPlanCards.propTypes = {
+    buttonText: PropTypes.string,
+};
+export default PricingPlanCards

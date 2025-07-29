@@ -26,10 +26,10 @@ const ServerErrorDialog = () => {
   const { palette } = useTheme();
   const pingServer = async () => {
     let attempts = 0;
-    let isServerUp = false;
+    let isServerUp = true;
 
     while (attempts < 5) {
-      isServerUp = await checkServerStatus();
+      // isServerUp = await checkServerStatus();
       if (isServerUp) {
         break;
       }

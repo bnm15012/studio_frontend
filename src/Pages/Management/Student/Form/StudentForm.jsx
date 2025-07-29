@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import FlexBetweenColumn from "../../../../Components/FlexBetweenColumn";
 import FlexBetween from "../../../../Components/FlexBetween";
-import { Box, Divider, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../../../utils/Alert";
 import Loading from "../../../../Components/Loading/Loading";
@@ -38,6 +38,7 @@ const initialData = {
   imageUrl: null,
 };
 const StudentForm = ({ page, ID }) => {
+  const theme = useTheme();
   const showAlert = useAlert();
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
@@ -161,7 +162,7 @@ const StudentForm = ({ page, ID }) => {
   return (
     <FlexBetweenColumn sx={{ p: 1, gap: 1 }}>
       {loading && <Loading />}
-      <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: 'white', borderRadius: 2, boxShadow: '0px 2px 4px rgba(0,0,0,0.1)' }}>
+      <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2, boxShadow: theme.shadows[2] }}>
         <FlexBetween alignItems={"center"} gap={2}>
           <IconButton onClick={() => navigate(`/management/${page}`)}>
             <ArrowBack sx={{ color: "black" }} />
@@ -177,16 +178,14 @@ const StudentForm = ({ page, ID }) => {
               <IconButton
                 disabled={loading}
                 onClick={() => setDeleteDialogOpen(true)}
-                sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
               >
                 <Delete sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}
                 onClick={() => setIsEdit(true)}
-                sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <Edit sx={{ color: "blue" }} />
+                <Edit sx={{ color: "green" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />
@@ -197,16 +196,14 @@ const StudentForm = ({ page, ID }) => {
               <IconButton
                 disabled={loading}
                 onClick={() => { setIsEdit(false); if (ID == "NEW") navigate("/management/student/"); }}
-                sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
               >
                 <Cancel sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}
                 onClick={() => saveNewEditStudentData()}
-                sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <CloudUploadIcon sx={{ color: "blue" }} />
+                <CloudUploadIcon sx={{ color: "green" }} />
               </IconButton>
             </FlexBetween>
           )}
@@ -217,8 +214,9 @@ const StudentForm = ({ page, ID }) => {
         <FlexBetween
           my={1}
           p={2}
+          backgroundColor={theme.palette.background.paper}
           sx={{
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+            boxShadow: theme.shadows[7],
           }}
         >
           <FlexBetweenColumn flexGrow={1} p={1} gap={1}>
@@ -333,8 +331,9 @@ const StudentForm = ({ page, ID }) => {
           <FlexBetweenColumn
             my={1}
             p={2}
+            backgroundColor={theme.palette.background.paper}
             sx={{
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+              boxShadow: theme.shadows[10],
             }}
           >
             <AssignActivity studentData={studentData} studentId={ID} />

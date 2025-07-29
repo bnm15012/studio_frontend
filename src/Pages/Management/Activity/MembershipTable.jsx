@@ -6,11 +6,12 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { BG_COLORS } from "./Activities.constants";
 
 const MembershipTable = ({ plans, index }) => {
+  const theme = useTheme();
   return (
     <TableContainer sx={{ maxHeight: 160 }}>
       <Table stickyHeader size="small">
@@ -18,7 +19,7 @@ const MembershipTable = ({ plans, index }) => {
           <TableRow>
             <TableCell
               sx={{
-                backgroundColor: BG_COLORS[index % BG_COLORS.length],
+                background: theme.palette.background.paper,
                 whiteSpace: "normal",
                 wordBreak: "break-word",
               }}
@@ -30,8 +31,8 @@ const MembershipTable = ({ plans, index }) => {
 
             <TableCell
               sx={{
-                backgroundColor: BG_COLORS[index % BG_COLORS.length],
-                whiteSpace: "normal",                
+                background: theme.palette.background.paper,
+                whiteSpace: "normal",
               }}
             >
               <Typography variant="subtitle1" fontWeight="bold">
@@ -41,12 +42,12 @@ const MembershipTable = ({ plans, index }) => {
 
             <TableCell
               sx={{
-                backgroundColor: BG_COLORS[index % BG_COLORS.length],
+                background: theme.palette.background.paper,
                 whiteSpace: "normal",
               }}
-              
+
             >
-              <Typography variant="subtitle1"  textAlign={"right"}fontWeight="bold">
+              <Typography variant="subtitle1" textAlign={"right"} fontWeight="bold">
                 Amount
               </Typography>
             </TableCell>

@@ -9,6 +9,7 @@ import { AlertProvider } from "./utils/Alert";
 import ServerErrorDialog from "./utils/ServerErrorDialog";
 import { clearCacheIfNewDay } from "./utils/cacheManager";
 import { loadInitialDataAPI } from "./utils/loadInitialData";
+import { UIProvider } from "./context/UIContext";
 
 const App = () => {
   const mode = useSelector((state) => state.auth.mode);
@@ -28,7 +29,9 @@ const App = () => {
       <Router>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <AllRoutes />
+          <UIProvider>
+            <AllRoutes />
+          </UIProvider>
           <ServerErrorDialog />
         </ThemeProvider>
       </Router>

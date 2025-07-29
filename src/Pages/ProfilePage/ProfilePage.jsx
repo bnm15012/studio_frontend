@@ -122,7 +122,7 @@ const ProfilePage = () => {
           <Box>
             <UserWidgets admin={admin} studio={studio} />
           </Box>
-        ) : tabValue === 1 ? (
+        ) : tabValue === 1 && admin ? (
           <ChangePassword user={admin} />
         ) : tabValue === 2 ? (
           <SubscriptionTab user={admin} />

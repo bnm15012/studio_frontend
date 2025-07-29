@@ -7,7 +7,8 @@ import {
   MenuItem,
   Select,
   InputLabel,
-  FormControl
+  FormControl,
+  useTheme
 } from '@mui/material';
 
 import html2pdf from 'html2pdf.js';
@@ -29,6 +30,7 @@ import { reportsAPi } from './reports.api';
 
 const Reports = () => {
   const reportRef = useRef();
+  const theme = useTheme();
   const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -217,7 +219,7 @@ const Reports = () => {
         p={2}
         sx={{
           minWidth: '30rem',
-          backgroundColor: '#f5f7fb',
+          backgroundColor: theme.palette.background.paper,
           borderRadius: '8px',
           boxShadow: 2
         }}
@@ -298,7 +300,7 @@ const Reports = () => {
         flexGrow={1}
         height="85vh"
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: theme.palette.background.paper,
           overflowY: 'auto',
           padding: 2,
           borderRadius: '8px',

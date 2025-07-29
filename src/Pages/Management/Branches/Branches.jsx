@@ -1,5 +1,4 @@
 import { useState } from "react";
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import { Add } from "@mui/icons-material";
@@ -60,9 +59,9 @@ const Branches = () => {
   };
 
   return (
-    <FlexBetweenColumn>
+    <Box>
       {/* {loading && <Loading />} */}
-      <FlexBetween paddingBottom={2} flexDirection={"row-reverse"} gap={1} height={80}>
+      <FlexBetween paddingBottom={2} flexDirection={"row-reverse"} gap={1}>
         <Button
           variant="contained"
           color="primary"
@@ -76,19 +75,17 @@ const Branches = () => {
           Add new Branch
         </Button>
       </FlexBetween>
-      <Box>
-        {branches && (
-          <TableWithEditAddDelete
-            initialData={branches}
-            currentBranch={currentBranch}
-            token={token}
-            newRow={newRow}
-            setNewRow={setNewRow}
-            studioId={studio.studioId}
-          />
-        )}
-      </Box>
-    </FlexBetweenColumn>
+      {branches && (
+        <TableWithEditAddDelete
+          initialData={branches}
+          currentBranch={currentBranch}
+          token={token}
+          newRow={newRow}
+          setNewRow={setNewRow}
+          studioId={studio.studioId}
+        />
+      )}
+    </Box>
   );
 };
 

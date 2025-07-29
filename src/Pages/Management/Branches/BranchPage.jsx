@@ -9,6 +9,7 @@ import { Add, ArrowBack } from '@mui/icons-material';
 import ManagerUserTable from './ManagerUser/ManagerUserTable';
 import { getAllManagersAPI } from './ManagerUser/manageruser.api';
 import Loading from '../../../Components/Loading/Loading';
+import FlexBetweenColumn from '../../../Components/FlexBetweenColumn';
 
 const BranchPage = ({ page, ID }) => {
   const showAlert = useAlert();
@@ -68,7 +69,7 @@ const BranchPage = ({ page, ID }) => {
     });
   };
   return (
-    <FlexBetween flexDirection={'column'} gap={2} >
+    <FlexBetweenColumn gap={2} >
       <FlexBetween alignItems={"center"} gap={2}>
         <IconButton onClick={() => navigate(`/management/${page}`)}>
           <ArrowBack sx={{ color: "black" }} />
@@ -102,7 +103,7 @@ const BranchPage = ({ page, ID }) => {
           initialData={managers}
         />
       }
-    </FlexBetween>
+    </FlexBetweenColumn>
   )
 }
 BranchPage.propTypes = {

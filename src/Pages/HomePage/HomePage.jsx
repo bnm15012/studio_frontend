@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import WidgetsOnPage from "../../Components/WidgetsOnPage";
 import { useNavigate } from "react-router-dom";
-import Carousel from "./Carousel";
-import ContentSection from "./ContentSection";
-import FlexBetweenColumn from "../../Components/FlexBetweenColumn";
-import PricingPlans from "../Pricing/PricingPlans";
-import TrustedPartners from "./TrustedPartners";
+import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
+import { HeroSection } from "./HeroSection";
+import { TestimonialsSection } from "./TestimonialsSection";
+import { FeaturesSection } from "./FeaturesSection";
+import Footer from "../../Components/Footer";
+import PricingSection from "../Pricing/PricingSection";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,21 +18,19 @@ const HomePage = () => {
     }
   }, [navigate, user]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  })
+
   return (
-    <WidgetsOnPage
-      footer={true}
-      scrollable={false}
-      components={
-        <FlexBetweenColumn>
-          <Carousel />
-          <ContentSection />
-          <TrustedPartners />
-          <Box id="pricing">
-            <PricingPlans />
-          </Box>
-        </FlexBetweenColumn>
-      }
-    />
+    <Box sx={{ minHeight: '100vh' }}>
+      <Navbar />
+      <HeroSection />
+      <FeaturesSection />
+      <TestimonialsSection />
+      <PricingSection />
+      <Footer />
+    </Box>
   );
 };
 

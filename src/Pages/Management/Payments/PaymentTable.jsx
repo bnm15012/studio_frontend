@@ -251,7 +251,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                   <StyledTableCell>
                     <IconButton
                       disabled={row.status === "COMPLETED"}
-                      sx={{ color: "blue" }}
+                      sx={{ color: "green" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />

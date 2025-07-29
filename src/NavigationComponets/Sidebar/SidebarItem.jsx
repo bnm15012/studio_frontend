@@ -1,37 +1,58 @@
 import { Box, ListItemButton, Typography, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 
-const SidebarItem = ({ route, isSelected, onClick, isNonMobileScreens }) => {
+
+const SidebarItem = ({
+  route,
+  isSelected,
+  onClick,
+  isNonMobileScreens,
+}) => {
   const theme = useTheme();
 
   return (
     <ListItemButton
       selected={isSelected}
       onClick={onClick}
-      alignItems={"center"}
       sx={{
-        my: ".2rem",
-        "&.Mui-selected": {
-          bgcolor: theme.palette.primary.main,
-          color: theme.palette.primary.contrastText,
-        },
-        "&.Mui-selected:hover": {
-          bgcolor: theme.palette.primary.light,
-        },
+        m: "0.2rem",
+        py: "1rem",
+        borderRadius: "0.75rem",
+        flexDirection: "row",
+        justifyContent: "left",
+        alignItems: "center",
+        transition: "all 0.25s ease-in-out",
+        color: isSelected ? theme.palette.primary.main : theme.palette.primary.dark,
         "&:hover": {
-          bgcolor: theme.palette.primary.light,
+          backgroundColor: isSelected
+            ? theme.palette.primary.main
+            : theme.palette.primary.light,
+          color: theme.palette.primary.main,
         },
       }}
     >
-      <Box>{route.icon}</Box>
-      {isNonMobileScreens && (
-        <Typography mx={2} fontSize={"1.2rem"}>
-          {route.label}
-        </Typography>
-      )}
+      <Box
+        fontSize={isNonMobileScreens ? "2.4rem" : "2rem"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {route.icon}
+      </Box>
+
+      <Typography
+        fontSize={isNonMobileScreens ? "1rem" : "0.85rem"}
+        fontWeight={500}
+        mx={2}
+        color="inherit"
+        textAlign="center"
+      >
+        {route.label}
+      </Typography>
     </ListItemButton>
   );
 };
+
 SidebarItem.propTypes = {
   route: PropTypes.shape({
     path: PropTypes.string.isRequired,

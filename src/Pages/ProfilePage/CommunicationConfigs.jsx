@@ -7,8 +7,6 @@ import {
   Divider,
   IconButton,
   Typography,
-  Card,
-  CardContent,
   Tooltip,
   Box,
 } from "@mui/material";
@@ -55,63 +53,61 @@ const CommunicationConfigs = ({ studio }) => {
 
 
   return (
-    <Card sx={{ px: 3 }}>
-      <CardContent>
-        {loading && <Loading />}
-        {/* Email Configuration Section */}
-        <FlexBetween flexDirection={"column"} gap={5}>
-          {
-            user?.role === "ADMIN" &&
-            <Box>
-              <FlexBetween>
-                <Typography variant="h6" fontWeight="bold">
-                  Email Configuration
-                </Typography>
-                <Tooltip title={editProf ? "Save Changes" : "Edit"}>
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      if (editProf) saveProfile();
-                      setEditProf(!editProf);
-                    }}
-                  >
-                    {editProf ? <Save /> : <Edit />}
-                  </IconButton>
-                </Tooltip>
-              </FlexBetween>
-              <Divider sx={{ mb: 2 }} />
-              <FlexBetween>
-                <Typography width={"8rem"} color="primary" fontWeight={"bolder"}>
-                  Email
-                </Typography>
-                <Box px={1}>
-                  {studio.email}
-                </Box>
-                <Box flexGrow={1}></Box>
-              </FlexBetween>
-              <FlexBetween>
-                <Typography width={"8rem"} color="primary" fontWeight={"bolder"}>
-                  Passcode
-                </Typography>
-                <EditableData
-                  showFieldName={false}
-                  data={editedValues}
-                  isEdit={editProf}
-                  fieldName="passcode"
-                  setData={setEditedValues}
-                  validation={{
-                    pattern: /^[^\s]{16}$/,
-                    errorMessage: "Must be exactly 16 characters with no spaces",
+    <Box sx={{ px: 3 }}>
+      {loading && <Loading />}
+      {/* Email Configuration Section */}
+      <FlexBetween flexDirection={"column"} gap={5}>
+        {
+          user?.role === "ADMIN" &&
+          <Box>
+            <FlexBetween>
+              <Typography variant="h6" fontWeight="bold">
+                Email Configuration
+              </Typography>
+              <Tooltip title={editProf ? "Save Changes" : "Edit"}>
+                <IconButton
+                  color="primary"
+                  onClick={() => {
+                    if (editProf) saveProfile();
+                    setEditProf(!editProf);
                   }}
-                />
-                <Box flexGrow={1}></Box>
-              </FlexBetween>
-            </Box>
-          }
-          <WhatsAppConfiguration studio={studio} />
-        </FlexBetween>
-      </CardContent>
-    </Card >
+                >
+                  {editProf ? <Save /> : <Edit />}
+                </IconButton>
+              </Tooltip>
+            </FlexBetween>
+            <Divider sx={{ mb: 2 }} />
+            <FlexBetween>
+              <Typography width={"8rem"} color="primary" fontWeight={"bolder"}>
+                Email
+              </Typography>
+              <Box px={1}>
+                {studio.email}
+              </Box>
+              <Box flexGrow={1}></Box>
+            </FlexBetween>
+            <FlexBetween>
+              <Typography width={"8rem"} color="primary" fontWeight={"bolder"}>
+                Passcode
+              </Typography>
+              <EditableData
+                showFieldName={false}
+                data={editedValues}
+                isEdit={editProf}
+                fieldName="passcode"
+                setData={setEditedValues}
+                validation={{
+                  pattern: /^[^\s]{16}$/,
+                  errorMessage: "Must be exactly 16 characters with no spaces",
+                }}
+              />
+              <Box flexGrow={1}></Box>
+            </FlexBetween>
+          </Box>
+        }
+        <WhatsAppConfiguration studio={studio} />
+      </FlexBetween>
+    </Box >
   );
 };
 

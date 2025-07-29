@@ -6,7 +6,7 @@ const initialState = {
   token: null,
   studio: null,
   subscriptionPlan: null,
-  pricingPlans: null,
+  // pricingPlans: null,
   settings: [],
 };
 
@@ -14,7 +14,7 @@ export const authState = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setMode: (state) => {
+    toggleMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
     setLogin: (state, action) => {
@@ -29,6 +29,7 @@ export const authState = createSlice({
       state.studio = studio || null;
       state.token = token ? `Bearer ${token}` : null;
       state.settings = settings || [];
+      state.mode = "light";
     },
     setSettings: (state, action) => {
       state.settings = action.payload.settings || [];
@@ -36,9 +37,9 @@ export const authState = createSlice({
     setSubscriptionPlan: (state, action) => {
       state.subscriptionPlan = action.payload.subscriptionPlan || null;
     },
-    setPricingPlans: (state, action) => {
-      state.pricingPlans = action.payload.pricingPlans || null;
-    },
+    // setPricingPlans: (state, action) => {
+    //   state.pricingPlans = action.payload.pricingPlans || null;
+    // },
     setStudio: (state, action) => {
       state.studio = action.payload.studio || null;
     },
@@ -50,13 +51,13 @@ export const authState = createSlice({
 });
 
 export const {
-  setMode,
+  toggleMode,
   setLogin,
   setToken,
   setSubscriptionPlan,
   setSettings,
   setStudio,
-  setPricingPlans,
+  // setPricingPlans,
   clearAuthState,
 } = authState.actions;
 

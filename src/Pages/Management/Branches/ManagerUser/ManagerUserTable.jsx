@@ -213,7 +213,7 @@ const ManagerUserTable = ({
                   <StyledTableCell>
                     <IconButton
                       disabled={(editingRowIndex !== index && editingRowIndex !== null) || newRow !== null}
-                      sx={{ color: "blue" }}
+                      sx={{ color: "green" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />

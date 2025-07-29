@@ -142,21 +142,12 @@ const DashBoard = () => {
     <WidgetsOnPage
       isSidebarShouldBeOn={true}
       components={
-        <Box
-          sx={{
-            p: { xs: 1.5 },
-            height: "90vh",
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            gap: 2
-          }}
-        >
+        <>
           {loading && <Loading />}
-
           <Paper
             elevation={2}
             sx={{
+              boxShadow: `0px 4px 4px #1976D2 `,
               p: { xs: 1.5, md: 2 },
               mb: 2,
               borderRadius: 3,
@@ -272,7 +263,7 @@ const DashBoard = () => {
               ))}
             </Grid>
           </Box>
-        </Box>
+        </>
       }
     />
   );

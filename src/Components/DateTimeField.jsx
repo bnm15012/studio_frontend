@@ -5,7 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { convertUTCToLocal } from "../utils/DateUtil";
-import { GlobalStyles } from "@mui/system";
+import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const DateTimeField = ({
@@ -16,6 +16,7 @@ const DateTimeField = ({
     textFieldVarient = "standard",
     customStyle = {},
 }) => {
+    const theme = useTheme();
     const [localDateTime, setLocalDateTime] = useState(null);
 
     useEffect(() => {
@@ -50,8 +51,7 @@ const DateTimeField = ({
                 fullWidth: true,
                 placeholder: format === "DATE" ? "Select date" : "Select date and time",
                 sx: {
-                    borderRadius: 2,
-                    backgroundColor: "#fafafa",
+                    borderRadius: 2,                    
                     "& .MuiOutlinedInput-root": {
                         "& fieldset": {
                             borderColor: "#1976d2",
@@ -77,8 +77,8 @@ const DateTimeField = ({
                     // Style the picker popper/panel background
                     ".MuiPickersPopper-root .MuiPaper-root": {
                         borderRadius: 12,
-                        backgroundColor: "#ffffff",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                        backgroundColor: theme.palette.background.paper,
+                        boxShadow: theme.shadows[2],
                         padding: "8px",
                     },
 

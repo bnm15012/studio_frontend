@@ -1,4 +1,4 @@
-import { Box, List, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -15,14 +15,16 @@ import SidebarItem from "./SidebarItem";
 import { Assessment } from "@mui/icons-material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import { useSelector } from "react-redux";
+import { useUI } from "../../context/UIContext";
 // import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 
-const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
+const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const settings = useSelector((state) => state.auth.settings);
   const user = useSelector((state) => state.auth.user)
+  const { isMobile } = useUI();
 
   const routes = [
     {
@@ -30,22 +32,14 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Dashboard",
       show: true,
       icon: (
-        <DashboardIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <DashboardIcon />
       ),
     }, {
       path: "/management/branch",
       label: "Branches",
       show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && user?.role === "ADMIN",
       icon: (
-        <DeviceHubIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <DeviceHubIcon />
       ),
     },
     {
@@ -53,11 +47,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Clients",
       show: settings.find((setting) => setting.navBarName === "CLIENT")?.enabled,
       icon: (
-        <Contacts
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <Contacts />
       ),
     },
     {
@@ -65,11 +55,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Bookings",
       show: settings.find((setting) => setting.navBarName === "BOOKINGS")?.enabled,
       icon: (
-        <EventNote
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <EventNote />
       ),
     },
     {
@@ -77,11 +63,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Instructors",
       show: settings.find((setting) => setting.navBarName === "INSTRUCTOR")?.enabled,
       icon: (
-        <SchoolIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <SchoolIcon />
       ),
     },
     {
@@ -89,11 +71,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Students",
       show: settings.find((setting) => setting.navBarName === "STUDENT")?.enabled,
       icon: (
-        <GroupIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <GroupIcon />
       ),
     },
     {
@@ -101,22 +79,14 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Activities",
       show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && user?.role === "ADMIN",
       icon: (
-        <EventIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <EventIcon />
       ),
     }, {
       path: "/management/communication",
       label: "Communication",
       show: settings.find((setting) => setting.navBarName === "COMMUNICATION")?.enabled,
       icon: (
-        <EmailIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <EmailIcon />
       ),
     },
     {
@@ -124,11 +94,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Payments",
       show: settings.find((setting) => setting.navBarName === "PAYMENTS")?.enabled,
       icon: (
-        <PaymentIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <PaymentIcon />
       ),
     },
     {
@@ -136,11 +102,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Expense",
       show: settings.find((setting) => setting.navBarName === "EXPENSE")?.enabled,
       icon: (
-        <CurrencyRupeeIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <CurrencyRupeeIcon />
       ),
     },
     {
@@ -148,11 +110,7 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Analysis",
       show: settings.find((setting) => setting.navBarName === "ANALYSIS")?.enabled && user?.role === "ADMIN",
       icon: (
-        <BarChartIcon
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <BarChartIcon />
       ),
     },
     {
@@ -160,44 +118,42 @@ const Sidebar = ({ isNonMobileScreens, sidebarOn }) => {
       label: "Reports",
       show: settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && user?.role === "ADMIN",
       icon: (
-        <Assessment
-          sx={{
-            color: "whitesmoke",
-          }}
-        />
+        <Assessment />
       ),
     },
   ];
 
   return (
-    <Box
-      width={isNonMobileScreens ? "15rem" : "4rem"}
-      display={sidebarOn ? "flex" : "none"}
-      flexDirection="column"
-      boxShadow={`4px 0px 4px -4px ${theme.palette.neutral.dark}`}
-      bgcolor={"#3f4859"}
-      overflow="auto"
-      color={"whitesmoke"}
-      sx={{ padding: "1rem 0" }}
-    >
-      <List>
-        {routes.map((route) => (
-          route.show === true &&
+    <>
+      <Box
+        width={"13rem"}
+        display={sidebarOn ? isMobile ? "flex" : "" : "none"}
+        height={"100%"}
+        flexDirection={"column"}
+        bgcolor={theme.palette.background.paper}
+        boxShadow={theme.shadows[5]}
+        sx={{
+          zIndex: 999,
+          overflowY: "auto",
+          padding: !isMobile ? "1rem 0.5rem" : "0.5rem",
+          transition: "all 0.3s ease-in-out",
+        }}
+      >
+        {routes.filter(r => r.show).map((route) => (
           <SidebarItem
-            isNonMobileScreens={isNonMobileScreens}
             key={route.path}
             route={route}
             isSelected={location.pathname === route.path}
             onClick={() => navigate(route.path)}
+            isNonMobileScreens={!isMobile}
           />
         ))}
-      </List>
-    </Box>
+      </Box>
+    </>
   );
 };
 
 Sidebar.propTypes = {
-  isNonMobileScreens: PropTypes.bool.isRequired,
   sidebarOn: PropTypes.bool.isRequired,
 };
 export default Sidebar;

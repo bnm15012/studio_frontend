@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Box, Divider, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
@@ -61,6 +61,7 @@ const initialData = {
   }
 };
 const BookingFormView = ({ page, ID }) => {
+  const theme = useTheme();
   const showAlert = useAlert();
   const dispatch = useDispatch()
   const navigate = useNavigate();
@@ -164,7 +165,7 @@ const BookingFormView = ({ page, ID }) => {
     else {
       if (ID == "NEW") {
         paymentEntry["amount"] = bookingData.totalAmount;
-        paymentEntry["actualAmount"] =  bookingData.totalAmount;
+        paymentEntry["actualAmount"] = bookingData.totalAmount;
         paymentEntry["branchId"] = currentBranch.branchId;
         bookingData["paymentEntry"] = paymentEntry;
         bookingData["advanceAmount"] = bookingData.totalAmount;
@@ -252,7 +253,7 @@ const BookingFormView = ({ page, ID }) => {
   return (
     <FlexBetweenColumn sx={{ p: 1, gap: 1 }}>
       {loading && <Loading />}
-      <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: 'white', borderRadius: 2, boxShadow: '0px 2px 4px rgba(0,0,0,0.1)' }}>
+      <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2, boxShadow: theme.shadows[2] }}>
         <FlexBetween alignItems={"center"} gap={2}>
           <IconButton onClick={() => navigate(`/management/${page}`)}>
             <ArrowBack sx={{ color: "black" }} />
@@ -277,7 +278,7 @@ const BookingFormView = ({ page, ID }) => {
                 onClick={() => setIsEdit(true)}
                 sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <Edit sx={{ color: "blue" }} />
+                <Edit sx={{ color: "green" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />
@@ -299,7 +300,7 @@ const BookingFormView = ({ page, ID }) => {
                 }
                 sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <CloudUploadIcon sx={{ color: "blue" }} />
+                <CloudUploadIcon sx={{ color: "green" }} />
               </IconButton>
             </FlexBetween>
           )}
@@ -313,7 +314,7 @@ const BookingFormView = ({ page, ID }) => {
           sx={{
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
             borderRadius: 2,
-            backgroundColor: 'white',
+            backgroundColor: theme.palette.background.paper,
             width: '100%'
           }}
         >

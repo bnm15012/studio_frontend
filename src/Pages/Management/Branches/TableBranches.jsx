@@ -278,14 +278,14 @@ const TableWithEditAddDelete = ({
                   <StyledTableCell>
                     <IconButton
                       disabled={(editingRowIndex !== index && editingRowIndex !== null) || newRow !== null}
-                      sx={{ color: "blue" }}
+                      sx={{ color: "green" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
                     </IconButton>
                     <IconButton
                       disabled={editingRowIndex !== null || newRow !== null || !row.isActive}
-                      sx={{ color: "blue" }}
+                      sx={{ color: "green" }}
                       onClick={() => {
                         dispatch(setSelectedBranch(row))
                         navigate(`/management/branch/${row.branchId}`);

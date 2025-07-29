@@ -6,14 +6,14 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import PricingPlans from "../Pricing/PricingPlans";
+import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import FlexBetween from "../../Components/FlexBetween";
 import { Close } from "@mui/icons-material";
 import { convertUTCToLocal } from "../../utils/DateUtil";
 
-const SubscriptionPopup = ({ popupOn = false , setPopup}) => {
+const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
   const [open, setOpen] = useState(popupOn);
   const [isExpired, setIsExpired] = useState(false)
   const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
@@ -67,15 +67,16 @@ const SubscriptionPopup = ({ popupOn = false , setPopup}) => {
               </IconButton>
             </FlexBetween>
           </DialogTitle>
-          <DialogContent sx={{ backgroundColor: "rgb(37,10,49)" }}>
+          <DialogContent>
             <Box
+              mt={5}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
               }}
             >
-              <PricingPlans />
+              <PricingPlanCards buttonText={"Subscribe"} />
             </Box>
           </DialogContent>
         </Box>

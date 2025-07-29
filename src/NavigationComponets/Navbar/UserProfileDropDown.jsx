@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Tooltip, Menu, MenuItem, Button, Box } from "@mui/material";
+import { Menu, MenuItem, Button, Box } from "@mui/material";
 import { ArrowDropDown, Logout } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import FlexBetween from "../../Components/FlexBetween";
@@ -28,18 +28,12 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
       alignItems={"center"}
       p={1}
     >
-      <Tooltip title={`${user.userName}`}>
-        <Box sx={{ fontWeight: 700 }} color={"white"}>
-          Welcome
-          <Button onClick={handleClick}>
-            <FlexBetween alignItems={"center"}>
-              <Box color={"white"}>{user.userName}</Box>
-              <ArrowDropDown sx={{ color: "white" }} />
-            </FlexBetween>
-          </Button>
-        </Box>
-      </Tooltip>
-
+      <Button onClick={handleClick}>
+        <FlexBetween alignItems={"center"}>
+          <Box>Welcome {user.userName}</Box>
+          <ArrowDropDown />
+        </FlexBetween>
+      </Button>
       <Menu
         anchorEl={anchorEl}
         open={openMenu}

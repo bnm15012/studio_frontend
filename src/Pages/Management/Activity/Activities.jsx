@@ -11,6 +11,7 @@ import {
   Select,
   InputLabel,
   FormControl,
+  useTheme,
 } from "@mui/material";
 import {
   Edit,
@@ -32,11 +33,12 @@ import {
 import { validateAmount } from "./Activity.constraints"; // Import constraints
 import MembershipTable from "./MembershipTable";
 import DeleteDialog from "../../../Components/DeleteDialog";
-import { getIcon, validActivityTypes, validMembershipTypes, CARD_BG_COLORS } from "./Activities.constants";
+import { getIcon, validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import { addActivity, deleteActivity, setActivities, updateActivity } from "../../../state/activitySlice";
 
 const Activities = () => {
   const showAlert = useAlert();
+  const theme = useTheme();
   const allActivities = useSelector((state) => state.activity.activities);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const token = useSelector((state) => state.auth.token);
@@ -294,15 +296,16 @@ const Activities = () => {
                 maxWidth: 450,
                 textAlign: "center",
                 borderRadius: 4,
-                p: 1,
-                height: "32rem",
+                p: 2,
+                m: "auto",
+                height: "35rem",
                 boxShadow: 5,
                 display: "flex",
                 flexDirection: "column",
                 aspectRatio: "1/1",
                 transition: "transform 0.3s",
                 position: "relative",
-                background: CARD_BG_COLORS[index % CARD_BG_COLORS.length],
+                background: theme.palette.activityCardGradient[index % theme.palette.activityCardGradient.length],
                 "&:hover": {
                   transform: "scale(1.03)",
                 },
@@ -311,48 +314,47 @@ const Activities = () => {
               <Box
                 sx={{
                   backgroundColor: "transparent",
-                  boxShadow: "0 0px rgba(0, 0, 0, 0.1)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mt: 0.5,
+                  boxShadow: theme.shadows[0],
+                  width: "100%",
                 }}
+                mb={2}
               >
-                {editMode === activity.activityType ? (
-                  <>
-                    <IconButton
-                      onClick={() => handleSaveCard(index)}
-                      color="success"
-                    >
-                      <Check />
-                    </IconButton>
-                    <IconButton onClick={handleCancelEdit} color="error">
-                      <Close />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <IconButton
-                      disabled={editMode !== null}
-                      sx={{ color: "red" }}
-                      onClick={() => setOpenDeleteDialog(true)}
-                    >
-                      <Delete />
-                    </IconButton>
-                    <IconButton
-                      disabled={editMode !== null}
-                      sx={{ color: "blue" }}
-                      onClick={() => handleEditCard(activity)}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </>
-                )}
+                <FlexBetween>
+                  {editMode === activity.activityType ? (
+                    <>
+                      <IconButton
+                        onClick={() => handleSaveCard(index)}
+                        color="success"
+                      >
+                        <Check />
+                      </IconButton>
+                      <IconButton onClick={handleCancelEdit} color="error">
+                        <Close />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <>
+                      <IconButton
+                        disabled={editMode !== null}
+                        sx={{ color: "red" }}
+                        onClick={() => setOpenDeleteDialog(true)}
+                      >
+                        <Delete />
+                      </IconButton>
+                      <IconButton
+                        disabled={editMode !== null}
+                        sx={{ color: "green" }}
+                        onClick={() => handleEditCard(activity)}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </>
+                  )}
+                </FlexBetween>
               </Box>
-              <Box sx={{
-                flexGrow: "1",
-              }}>
+              <Box sx={{ flexGrow: "1", }}>
                 {editMode === activity.activityType ? (
-                  <CardContent>
+                  <FlexBetween flexDirection={"column"} sx={{ gap: 2 }}>
                     <FormControl fullWidth>
                       <InputLabel>Activity Type</InputLabel>
                       <Select
@@ -474,7 +476,7 @@ const Activities = () => {
                     >
                       Add Plan
                     </Button>
-                  </CardContent>
+                  </FlexBetween>
                 ) : (
                   <CardContent sx={{ height: "100%" }}>
                     <FlexBetween flexDirection="column" height={"100%"}>
@@ -533,12 +535,12 @@ const Activities = () => {
             <Typography
               variant="h5"
               sx={{
-                background: "linear-gradient(45deg, #666666 30%, #999999 90%)",
+                background: theme.palette.primary.main,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 fontWeight: "bold",
                 letterSpacing: "0.1em",
-                textShadow: "2px 2px 4px rgba(0,0,0,0.2)"
+                textShadow: theme.shadows[2]
               }}
             >
               No Activities Added Yet!

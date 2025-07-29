@@ -35,7 +35,7 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
       sx={{
         background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`,
         color: theme.palette.common.white,
-        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.15)",
+        boxShadow: `0px 4px 10px ${color}`,
         borderRadius: 3,
         display: "flex",
         flexDirection: "column",

@@ -272,7 +272,7 @@ const TableWithEditAddDelete = ({
                   <StyledTableCell>{row.notes}</StyledTableCell>
                   <StyledTableCell>
                     <IconButton
-                      sx={{ color: "blue" }}
+                      sx={{ color: "green" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />

@@ -14,6 +14,7 @@ import {
   TextField,
   Grid,
   Divider,
+  useTheme,
 } from "@mui/material";
 import MultiSelectDialog from "../../../Components/MultiSelectDialog";
 import { getStudentNamesAPI } from "../Student/Student.api";
@@ -24,7 +25,7 @@ import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
 
-const MAIL_TYPE = ["EMAIL", "WHATSAPP"];
+const MAIL_TYPE = ["WHATSAPP", "EMAIL"];
 
 const audienceTypes = [
   { value: "all", label: "Everyone" },
@@ -45,6 +46,7 @@ const initialTemplate = {
 
 const Communication = () => {
   const token = useSelector((state) => state.auth.token);
+  const theme = useTheme()
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const studio = useSelector((state) => state.auth.studio);
   const showAlert = useAlert();
@@ -172,7 +174,7 @@ const Communication = () => {
             width: "70%",
             p: 2,
             gap: 1,
-            backgroundColor: "#f9f9f9",
+            backgroundColor: theme.palette.background.paper,
             boxShadow: "0px 4px 8px rgba(0,0,0,0.3)",
             borderRadius: "8px",
           }}
@@ -357,8 +359,8 @@ const Communication = () => {
           <Box
             sx={{
               p: 2,
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0px 4px 8px rgba(0,0,0,0.3)",
+              backgroundColor: theme.palette.background.paper,
+              boxShadow: theme.shadows[5],
               borderRadius: "8px",
             }}
           >
@@ -387,7 +389,7 @@ const Communication = () => {
             </Box>
 
           </Box>
-          <FlexBetween flexDirection="row-reverse">
+          <FlexBetween flexDirection="row-reverse" p={2}>
             <Button variant="contained" color="primary" onClick={sendMail}>
               Send
             </Button>

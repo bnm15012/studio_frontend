@@ -416,7 +416,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={100} align="center">
                   <Typography variant="body2" color="textSecondary">
                     No activities enrolled yet. Add a new activity below.
                   </Typography>
@@ -500,7 +500,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell align="center" colSpan={7}>
+                <TableCell align="center" colSpan={100}>
                   <IconButton
                     disabled={editIndex != null || showAddNewRow}
                     sx={{

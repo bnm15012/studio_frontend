@@ -100,13 +100,12 @@ const Form = ({ pageType, editProfile = false, user }) => {
           <Button
             fullWidth
             type="submit"
+            variant="contained"
             disabled={loading}
             sx={{
               m: "1rem 0 0.5rem 0",
               p: "1rem",
-              backgroundColor: palette.primary.main,
-              color: palette.background.alt,
-              "&:hover": { color: palette.primary.main },
+              "&:hover": { color: palette.primary.dark },
             }}
           >
             {isLogin ? "LOGIN" : editProfile ? "Save Changes" : "REGISTER"}

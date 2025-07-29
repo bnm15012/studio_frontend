@@ -23,15 +23,10 @@ const BranchesDropdown = () => {
   };
 
   return (
-    <FormControl fullWidth variant="standard" sx={{ width: "10rem" }}>
+    <FormControl variant="standard" sx={{ width: "10rem", mx: "auto" }}>
       <Select
         id="branches"
         sx={{
-          color: "white",
-          backgroundColor: "transparent",
-          border: "none",
-          boxShadow: "none",
-          "& .MuiSelect-icon": { color: "white" },
           "&:before": { borderBottom: "none" },
           "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
           "&:after": { borderBottom: "none" },

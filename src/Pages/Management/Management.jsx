@@ -7,7 +7,6 @@ import Instructors from "./Instructor/Instructors";
 import Activities from "./Activity/Activities";
 import InstructorForm from "./Instructor/Form/InstructorForm";
 import StudentForm from "./Student/Form/StudentForm";
-import { Box } from "@mui/material";
 import Expenses from "./Expense/Expenses";
 import Payments from "./Payments/Payments";
 import Reports from "./Reports/Reports";
@@ -54,7 +53,7 @@ const Management = () => {
   return (
     <WidgetsOnPage
       isSidebarShouldBeOn={true}
-      components={<Box p={2}>{renderComponent()}</Box>}
+      components={<>{renderComponent()}</>}
     />
   );
 };

@@ -1,117 +1,95 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
   Typography,
-  useTheme,
   useMediaQuery,
+  AppBar,
+  Drawer,
+  useTheme,
 } from "@mui/material";
 import { Menu, Close } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import FlexBetween from "../../Components/FlexBetween";
 import MenuItems from "./MenuItems";
 import ImageComponent from "../../Components/ImageComponent";
+import FlexBetween from "../../Components/FlexBetween";
+import PropTypes from "prop-types";
 
-export const Navbar = () => {
-  const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-  const isNonMobileScreens = useMediaQuery("(min-width: 660px)");
-  const navigate = useNavigate();
+export const Navbar = ({ position = "fixed" }) => {
   const theme = useTheme();
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <>
-      <FlexBetween
-        boxShadow={`0px 4px 4px -4px ${theme.palette.neutral.dark}`}
-        backgroundColor={"rgb(37,10,49)"}
-        zIndex={1000}
+    <FlexBetween zIndex={1000}>
+      <AppBar
+        position={position}
+        sx={{
+          height: "5rem",
+          boxShadow: theme.shadows[2],
+          backgroundColor: isScrolled ? theme.palette.background.default : theme.palette.background.paper,
+          backdropFilter: 'blur(50px)',
+          transition: 'all 0.3s ease',
+          color: 'primary',
+        }}
       >
-        <FlexBetween gap={1} paddingRight={1} height={"7vh"}>
-          <FlexBetween
-            onClick={(event) => {
-              event.preventDefault();
-              navigate("/");
-              setTimeout(() => {
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-              }, 100);
-            }}
-            alignItems={"center"}
-            gap={1}
-          >
-            <ImageComponent
-              size={"7vh"}
-              image={"/logo.png"}
-              isCircular={false}
-            />
-            <Typography
-              color={"white"}
-              fontSize={"1.2rem"}
-              sx={{
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}
-              textTransform={"uppercase"}
-              fontWeight={"bold"}
-            >
+        <FlexBetween px={2} my={"auto"}>
+          {/* Logo */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <ImageComponent size={"5vh"} image={"/logo.png"} isCircular={false} />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }} color="primary">
               Book & Manage
             </Typography>
-          </FlexBetween>
-        </FlexBetween>
-        <FlexBetween gap={3} height={"7vh"} alignItems={"center"}>
-          {isNonMobileScreens ? (
-            <MenuItems />
-          ) : (
-            <Box sx={{ zIndex: "100" }}>
-              <IconButton
-                onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
-              >
-                {isMobileMenuToggled ? (
-                  <Close sx={{ color: "whitesmoke" }} />
-                ) : (
-                  <Menu sx={{ color: "whitesmoke" }} />
-                )}
-              </IconButton>
-            </Box>
+          </Box>
+
+          {isNonMobileScreens && <MenuItems />}
+
+          {/* Mobile Menu Button */}
+          {!isNonMobileScreens && !isMenuOpen && (
+            <IconButton
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              sx={{ color: 'text.primary' }}
+            >
+              <Menu />
+            </IconButton>
           )}
         </FlexBetween>
-        {!isNonMobileScreens && (
-          <Box
-            sx={{
-              position: "fixed",
-              top: 0,
-              right: 0,
-              width: isMobileMenuToggled ? "70%" : "0",
-              height: "100%",
-              backgroundColor: "rgba(10,10,10,0.8)",
-              boxShadow: isMobileMenuToggled
-                ? `-5px 0px 15px rgba(0, 0, 0, 0.2)`
-                : "none",
-              zIndex: 10,
-              overflow: "hidden",
-              transition: "width 0.3s ease-in-out",
-            }}
-          >
-            <Box display="flex" justifyContent="flex-end" p="1rem">
-              <IconButton onClick={() => setIsMobileMenuToggled(false)}>
-                <Close />
-              </IconButton>
-            </Box>
-            <FlexBetween
-              flexDirection="column"
-              alignItems="center"
-              gap="2"
-              padding="1rem"
-              sx={{
-                opacity: isMobileMenuToggled ? 1 : 0,
-                transition: "opacity 0.3s ease-in-out",
-              }}
+        <Drawer
+          anchor="right"
+          open={isMenuOpen && !isNonMobileScreens}
+          onClose={() => setIsMenuOpen(false)}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: 250,
+            },
+          }}
+        >
+          <FlexBetween>
+            <Box></Box>
+            <IconButton
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              sx={{ p: 3, color: 'text.primary' }}
             >
-              <MenuItems />
-            </FlexBetween>
-          </Box>
-        )}
-      </FlexBetween>
-    </>
+              <Close />
+            </IconButton>
+          </FlexBetween>
+          <MenuItems />
+        </Drawer>
+      </AppBar>
+    </FlexBetween>
   );
+};
+
+Navbar.propTypes = {
+    position: PropTypes.string,
 };

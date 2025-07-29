@@ -10,11 +10,11 @@ import SignupDialog from "../Pages/Auth/SignupDialog";
 import LoginDialog from "../Pages/Auth/LoginDialog";
 import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
 import AboutUsPage from "../Pages/AboutUs/AboutUsPage";
-import ContactUsPage from "../Pages/ContactUs/ContactUsPage";
 import CancellationRefundPolicy from "../Pages/CancellationRefundPolicy/CancellationRefundPolicy";
 import TermsConditionPage from "../Pages/TermsCondition/TermsConditionPage";
 import PrivacyPolicyPage from "../Pages/PrivacyPolicy/PrivacyPolicyPage";
 import Analysis from "../Pages/Analysis/Analysis";
+import ContactUsPage from "../Pages/ContactUs/ContactUs";
 
 export const AllRoutes = () => {
   const user = useSelector((state) => state.auth.user);
@@ -27,7 +27,7 @@ export const AllRoutes = () => {
         <Route path="/aboutus" element={<AboutUsPage />} />
         <Route path="/contactus" element={<ContactUsPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms-conditions" element={<TermsConditionPage />} />
+        <Route path="/terms-and-condition" element={<TermsConditionPage />} />
         <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
 
         {user && (

@@ -58,11 +58,11 @@ const Notification = () => {
                 >
                     {
                         loading ? (
-                            <CircularProgress size={24} sx={{ color: "white" }} />
+                            <CircularProgress size={24} />
                         ) : unreadCount === 0 ? (
-                            <NotificationsNoneIcon sx={{ color: "white" }} />
+                            <NotificationsNoneIcon />
                         ) : (
-                            <NotificationsActiveIcon sx={{ color: "white" }} />
+                            <NotificationsActiveIcon />
                         )
                     }
                 </Badge>
@@ -76,7 +76,7 @@ const Notification = () => {
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
                 PaperProps={{
                     sx: {
-                        backgroundColor: theme.palette.grey[100],
+                        backgroundColor: theme.palette.background.default,
                         color: theme.palette.text.primary,
                         maxWidth: 700,
                         maxHeight: 500,

@@ -371,7 +371,7 @@ const BookingsTable = ({
                         <Delete />
                       </IconButton>
                       <IconButton
-                        sx={{ color: "blue" }}
+                        sx={{ color: "green" }}
                         onClick={() => navigate(`/management/bookings/${row.id}`)}
                       >
                         <Edit />

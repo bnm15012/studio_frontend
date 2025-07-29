@@ -24,8 +24,6 @@ const dialogSlice = createSlice({
       const dialog = action.payload;
       if (activeDialogs.includes(dialog) && !state.dialogStack.includes(dialog)) {
         state.dialogStack.push(dialog);
-      } {
-        console.error("add dialog to list")
       }
     },
     closeDialog: (state, action) => {

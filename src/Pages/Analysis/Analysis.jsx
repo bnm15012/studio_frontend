@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Typography, FormControl, Select, MenuItem } from "@mui/material";
+import { Box, Card, CardContent, Grid, Typography, FormControl, Select, MenuItem, useTheme } from "@mui/material";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -70,6 +70,7 @@ const chartOptions = {
 // ... imports remain unchanged
 
 const Analysis = () => {
+  const theme = useTheme();
   const dispatch = useDispatch()
   const years = Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i);
   const [selectedYear, setSelectedYear] = useState(years[years.length - 1]);
@@ -122,7 +123,7 @@ const Analysis = () => {
     <WidgetsOnPage
       isSidebarShouldBeOn={true}
       components={
-        <Box p={3} sx={{ backgroundColor: "#f9fafc" }}>
+        <Box p={3} sx={{ backgroundColor: theme.palette.background.paper }}>
           <Box
             sx={{
               display: 'flex',
@@ -136,7 +137,7 @@ const Analysis = () => {
             <Typography variant="h4" sx={{ color: "#3f51b5" }}>
               Reports Analysis
             </Typography>
-            <FormControl size="small" sx={{ minWidth: 150, backgroundColor: "white" }}>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
               <Select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}

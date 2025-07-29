@@ -60,14 +60,3 @@ export const getIcon = (activityType) => {
       return null;
   }
 };
-
-export const BG_COLORS = [
-  "rgb(243, 187, 134)",
-  "rgb(121, 229, 229)",
-  "rgb(233, 243, 123)",
-  "rgb(228, 128, 207)",
-  "rgb(196, 245, 140)",
-  "rgb(249, 181, 113)",
-  "rgb(134, 209, 246)",
-] 
-export const CARD_BG_COLORS = BG_COLORS.map(c=> `linear-gradient(135deg, #fef6e4, ${c})`)
