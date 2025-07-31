@@ -41,7 +41,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
     }
   };
 
-  const NavButton = styled(Button)(({ theme }) => ({
+  const NavButton = styled(Button)(() => ({
     color: "white",
     textTransform: 'none',
     fontSize: '1rem',
@@ -49,7 +49,6 @@ const MenuItems = ({ isNonMobileScreens }) => {
     textWrap: "nowrap",
     width: isNonMobileScreens ? "" : "100%",
     '&:hover': {
-      color: theme.palette.primary.dark,
       transform: 'scale(1.05)',
       backgroundColor: 'transparent',
     },

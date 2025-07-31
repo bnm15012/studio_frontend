@@ -10,6 +10,7 @@ const AuthButtons = ({ isNonMobileScreens }) => {
             <Button
                 variant="contained"
                 sx={{
+                    color: "white",
                     textWrap: "nowrap",
                     m: "0.2rem",
                     padding: "0 0.5rem !important",

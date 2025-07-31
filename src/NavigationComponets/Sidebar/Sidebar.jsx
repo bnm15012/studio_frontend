@@ -16,7 +16,7 @@ import { Assessment } from "@mui/icons-material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import { useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
-// import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
+import { Upload } from "lucide-react";
 
 const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
@@ -56,6 +56,14 @@ const Sidebar = ({ sidebarOn }) => {
       show: settings.find((setting) => setting.navBarName === "BOOKINGS")?.enabled,
       icon: (
         <EventNote />
+      ),
+    },
+    {
+      path: "/management/bulk_upload",
+      label: "Upload Data",
+      show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
+      icon: (
+        <Upload />
       ),
     },
     {
@@ -130,7 +138,7 @@ const Sidebar = ({ sidebarOn }) => {
         display={sidebarOn ? isMobile ? "flex" : "" : "none"}
         height={"100%"}
         flexDirection={"column"}
-        bgcolor={"#3f4859"}
+        bgcolor={"#283650ff"}
         boxShadow={theme.shadows[10]}
         sx={{
           zIndex: 999,

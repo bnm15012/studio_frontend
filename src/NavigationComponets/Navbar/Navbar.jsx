@@ -57,7 +57,7 @@ export const Navbar = ({ position = "fixed" }) => {
           {!isNonMobileScreens && !isMenuOpen && (
             <IconButton
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              sx={{ color: 'text.primary' }}
+              sx={{ color: 'white' }}
             >
               <Menu />
             </IconButton>
@@ -70,19 +70,22 @@ export const Navbar = ({ position = "fixed" }) => {
           sx={{
             '& .MuiDrawer-paper': {
               width: 250,
+              backgroundColor: "rgb(37,10,49)"
             },
           }}
         >
-          <FlexBetween>
-            <Box></Box>
-            <IconButton
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              sx={{ p: 3, color: 'text.primary' }}
-            >
-              <Close />
-            </IconButton>
-          </FlexBetween>
-          <MenuItems />
+          <Box >
+            <FlexBetween p={2}>
+              <Box></Box>
+              <IconButton
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                sx={{ p: 3, color: 'white' }}
+              >
+                <Close />
+              </IconButton>
+            </FlexBetween>
+            <MenuItems />
+          </Box>
         </Drawer>
       </AppBar>
     </FlexBetween>

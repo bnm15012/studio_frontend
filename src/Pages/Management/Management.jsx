@@ -14,6 +14,7 @@ import BookingFormView from "./Booking/BookingFormView";
 import Communication from "./Communication/Communication";
 import Branches from "./Branches/Branches";
 import BranchPage from "./Branches/BranchPage";
+import BulkUploadJobs from "./BulkUploadJobs/BulkUploadJobs.jsx";
 
 const Management = () => {
   const { page } = useParams();
@@ -42,6 +43,8 @@ const Management = () => {
         return <Reports />;
       case "communication":
         return <Communication />;
+      case "bulk_upload":
+        return <BulkUploadJobs />;
       case "branch":
         if (ID) return <BranchPage ID={ID} page={page} />;
         return <Branches />;
