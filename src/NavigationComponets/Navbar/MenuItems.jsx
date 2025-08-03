@@ -93,7 +93,7 @@ const MenuItems = () => {
           {isHomePage && navButton("Pricing", "#pricing")}
         </>
       )}
-      {user && (
+      {user === "xyz" && (
         renderIconButton(
           mode === "dark" ? <LightMode sx={{ color: "whitesmoke" }} /> :
             <DarkMode sx={{ color: "black" }} />,

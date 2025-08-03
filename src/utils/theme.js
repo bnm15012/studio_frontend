@@ -134,6 +134,7 @@ export const themeSettings = (mode) => {
             default: colorTokens.grey[1000],
             paper: colorTokens.grey[800],
             odd: colorTokens.grey[700],
+            alt: colorTokens.grey[800],
           },
           text: {
             primary: colorTokens.grey[100],
@@ -162,7 +163,8 @@ export const themeSettings = (mode) => {
           background: {
             default: colorTokens.grey[0],
             paper: colorTokens.grey[50],
-            odd: colorTokens.grey[100],
+            alt: colorTokens.grey[100],
+            odd: colorTokens.grey[10],
           },
           text: {
             primary: colorTokens.grey[900],
@@ -290,11 +292,11 @@ export const themeSettings = (mode) => {
         styleOverrides: {
           root: {
             borderRadius: 16,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
             transition: 'all 0.3s ease',
             '&:hover': {
               transform: 'translateY(-4px)',
-              boxShadow: '0 20px 40px rgba(139, 92, 246, 0.15)',
+              // boxShadow: '0 20px 40px rgba(139, 92, 246, 0.15)',
             },
           },
         },
@@ -305,7 +307,6 @@ export const themeSettings = (mode) => {
             backgroundColor: 'rgba(255, 255, 255, 0.8)',
             backdropFilter: 'blur(20px)',
             borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
-            boxShadow: 'none',
           },
         },
       },
@@ -317,6 +318,13 @@ export const themeSettings = (mode) => {
           },
         },
       },
+      MuiDialogPaper: {
+        styleOverrides: {
+          roots: {
+            boxShadow: 'none !important',
+          }
+        }
+      }
     },
   };
 };

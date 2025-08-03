@@ -389,7 +389,7 @@ const Communication = () => {
             </Box>
 
           </Box>
-          <FlexBetween flexDirection="row-reverse" p={2}>
+          <FlexBetween flexDirection="row-reverse" py={2}>
             <Button variant="contained" color="primary" onClick={sendMail}>
               Send
             </Button>

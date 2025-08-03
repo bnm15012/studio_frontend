@@ -2,7 +2,11 @@
     width: 2px;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
     border-radius: 100px;
     background-color: aliceblue;
+}
+
+.css-ylubir-MuiPaper-root-MuiDialog-paper {
+    box-shadow: none !important;
 }

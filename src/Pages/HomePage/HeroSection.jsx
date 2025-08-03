@@ -13,6 +13,7 @@ import {
   CheckCircle as CheckCircleIcon,
   People as PeopleIcon,
   // CalendarToday as CalendarIcon,
+  WhatsApp as Communication,
   CreditCard as CreditCardIcon,
   TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
@@ -33,7 +34,7 @@ export function HeroSection() {
 
   const benefits = [
     'Automated scheduling and booking system',
-    'Seamless payment processing and billing',
+    'Seamless communication and billing process',
     'Comprehensive member management tools',
   ];
 
@@ -44,11 +45,6 @@ export function HeroSection() {
   ];
 
   const featureCards = [
-    // {
-    //   icon: CalendarIcon,
-    //   title: 'Smart Scheduling',
-    //   description: 'Automated booking system with real-time availability and conflict prevention.',
-    // },
     {
       icon: CreditCardIcon,
       title: 'Payment Processing',
@@ -59,6 +55,11 @@ export function HeroSection() {
       title: 'Member Management',
       description: 'Complete member profiles with attendance tracking and personalized experiences.',
     },
+    {
+      icon: Communication,
+      title: 'Seamless Communication',
+      description: 'Effortlessly connect with clients and staff through integrated messaging, and updates in real time.',
+    }
   ];
 
   return (
@@ -201,14 +202,14 @@ export function HeroSection() {
 
               {/* Trust Indicators */}
               <Box sx={{ pt: 4, borderTop: '1px solid rgba(255, 255, 255, 0.2)' }}>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 2 }}>
+                <Typography variant="body2" fontWeight={"bolder"} sx={{ color: 'rgba(255, 255, 255, 1)', mb: 2 }}>
                   Trusted by 50+ studios worldwide
                 </Typography>
                 <Stack direction="row" spacing={4} flexWrap="wrap">
                   {trustIndicators.map((indicator, index) => (
                     <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <indicator.icon sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '1.25rem' }} />
-                      <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                      <indicator.icon sx={{ color: 'rgba(255, 255, 255)', fontSize: '1.25rem' }} />
+                      <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255)' }}>
                         {indicator.label}
                       </Typography>
                     </Box>

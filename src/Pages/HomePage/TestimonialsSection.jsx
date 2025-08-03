@@ -12,32 +12,32 @@ import {
   Star as StarIcon,
   FormatQuote as QuoteIcon,
 } from '@mui/icons-material';
+import TrustedPartners from './TrustedPartners';
 
 export function TestimonialsSection() {
   const testimonials = [
     {
-      name: "Sarah Mitchell",
+      name: "Ajay Roy",
       role: "Owner, Rhythmix International",
       content: "Book & Manage has completely transformed how we operate. The automated scheduling saves us hours every week, and our members love the easy booking system.",
       rating: 5,
       image: "assets/rhythmix.png"
     },
     {
-      name: "Michael Chen",
-      role: "Director, Studio7 GHY",
+      name: "Krishna",
+      role: "Owner, Studio7 GHY",
       content: "The payment processing is seamless and the financial reporting gives us insights we never had before. Our revenue has increased by 30% since implementation.",
       rating: 5,
       image: "assets/studio7.png"
     },
     {
-      name: "Emma Rodriguez",
       role: "Manager, Urban Beats",
       content: "Customer support is exceptional and the platform is incredibly user-friendly. Both our staff and members adapted to it immediately.",
       rating: 5,
       image: "assets/urban_beats.png"
     },
     {
-      name: "David Thompson",
+      name: "Rajiv",
       role: "Owner, Gymnastics Terminal",
       content: "The member management features help us provide personalized experiences. Our retention rate has improved significantly since we started using Book & Manage.",
       rating: 5,
@@ -262,21 +262,7 @@ export function TestimonialsSection() {
           <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
             Trusted by leading studios worldwide
           </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 4,
-              opacity: 0.6,
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Rhythmix International</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Studio7 GHY</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Urban Beats</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>Gymnastics Terminal</Typography>
-          </Box>
+          <TrustedPartners />
         </Box>
       </Container>
     </Box>

@@ -30,7 +30,7 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
     >
       <Button onClick={handleClick}>
         <FlexBetween alignItems={"center"}>
-          <Box>Welcome {user.userName}</Box>
+          <Box>WELCOME {user.userName}</Box>
           <ArrowDropDown />
         </FlexBetween>
       </Button>

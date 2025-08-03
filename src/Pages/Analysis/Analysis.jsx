@@ -135,7 +135,7 @@ const Analysis = () => {
             }}
           >
             <Typography variant="h4" sx={{ color: "#3f51b5" }}>
-              Reports Analysis
+              Analysis
             </Typography>
             <FormControl size="small" sx={{ minWidth: 150 }}>
               <Select

@@ -12,6 +12,7 @@ import {
     ListItemText,
     useTheme,
 } from '@mui/material';
+import { Crown } from 'lucide-react';
 import {
     Check as CheckIcon,
     Close,
@@ -24,6 +25,7 @@ import PaymentDialog from '../RazorPay/Payment';
 import Loading from '../../Components/Loading/Loading';
 import { openDialog } from '../../state/dialogSlice';
 import PropTypes from 'prop-types';
+import { alpha } from '@mui/material/styles';
 
 const PricingPlanCards = ({ buttonText = "Get Started" }) => {
     const dispatch = useDispatch();
@@ -34,6 +36,17 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
     const [allPlans, setAllPlans] = useState(null); //useSelector((state) => state.auth.pricingPlans));
     const user = useSelector((state) => state.auth.user);
 
+    const gradient = `linear-gradient(
+      to left,
+      ${alpha(theme.palette.primary.main, 0.3)},
+      ${alpha(theme.palette.primary.main, 0.2)}
+    )`;
+
+    const gradient2 = `linear-gradient(
+      to left,
+      ${alpha(theme.palette.primary.main, 0.05)},
+      ${alpha(theme.palette.primary.main, 0.1)}
+    )`;
     const handlePayment = async (plan) => {
         if (!user) {
             dispatch(openDialog("loginDialog"));
@@ -75,7 +88,7 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
                             border: plan.popular ? '2px solid' : '2px solid',
                             borderColor: plan.popular ? 'primary.main' : 'rgba(0, 0, 0, 0.12)',
                             transition: 'all 0.3s ease',
-                            backgroundColor: plan.popular ? theme.palette.primary.light : theme.palette.background.paper,
+                            background: plan.popular ? gradient : gradient2,
                             backdropFilter: 'blur(10px)',
                             transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
                             '&:hover': {
@@ -85,9 +98,11 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
                             },
                         }}
                     >
+                        {/* //crown */}
                         {plan.popular && (
                             <Chip
-                                label="⭐ Most Popular"
+                                icon={<Crown color='white' />}
+                                label=" Most Popular"
                                 sx={{
                                     position: 'absolute',
                                     top: 5,
@@ -146,7 +161,7 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
                                                 display: 'inline',
                                             }}
                                         >
-                                            {plan.amount}
+                                            Rs. {plan.amount}/-
                                         </Typography>
                                         <Typography
                                             variant="body1"

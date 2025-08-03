@@ -130,8 +130,8 @@ const Sidebar = ({ sidebarOn }) => {
         display={sidebarOn ? isMobile ? "flex" : "" : "none"}
         height={"100%"}
         flexDirection={"column"}
-        bgcolor={theme.palette.background.paper}
-        boxShadow={theme.shadows[5]}
+        bgcolor={theme.palette.background.alt}
+        boxShadow={theme.shadows[10]}
         sx={{
           zIndex: 999,
           overflowY: "auto",
