@@ -271,7 +271,7 @@ const Reports = () => {
             )}
 
             <Button variant="contained" onClick={getData} fullWidth disabled={loading}>
-              generate Report
+              Generate Report
             </Button>
             <FlexBetween gap={2}>
               <Button

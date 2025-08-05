@@ -3,25 +3,24 @@ import {
   Button,
   IconButton,
   styled,
-  useMediaQuery,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
-import { openDialog } from "../../state/dialogSlice";
 import { logoutUser } from "../../state/thunks";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { toggleMode } from "../../state/authSlice";
+import PropTypes from "prop-types";
+import AuthButtons from "./AuthButtons";
 
-const MenuItems = () => {
+const MenuItems = ({ isNonMobileScreens }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const mode = useSelector(s => s.auth.mode);
   const isHomePage = location.pathname === "/";
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const user = useSelector((state) => state.auth.user);
   const settings = useSelector((state) => state.auth.settings);
 
@@ -75,83 +74,63 @@ const MenuItems = () => {
 
 
   return (
-    <Box
-      display={isNonMobileScreens ? "flex" : "flex"}
-      flexDirection={isNonMobileScreens ? "row" : "column"}
-      alignItems={isNonMobileScreens ? "center" : "flex-start"}
-      gap={isNonMobileScreens ? 3 : 2}
-      px={isNonMobileScreens ? 0 : 1}
-      py={isNonMobileScreens ? 0 : 1}
-    >
-      {/* Public Nav Items */}
-      {!user && (
-        <>
-          {!isHomePage && navButton("Home", "/")}
-          {navButton("About Us", "/aboutus")}
-          {navButton("Contact Us", "/contactus")}
-          {isHomePage && navButton("Testimonials", "#testimonials")}
-          {isHomePage && navButton("Pricing", "#pricing")}
-        </>
-      )}
-      {user === "xyz" && (
-        renderIconButton(
-          mode === "dark" ? <LightMode sx={{ color: "whitesmoke" }} /> :
-            <DarkMode sx={{ color: "black" }} />,
-          async () => {
-            dispatch(toggleMode())
-          },
-          "change mode"
-        )
-      )}
+    <>
+      <Box
+        display={isNonMobileScreens ? "flex" : "flex"}
+        flexDirection={isNonMobileScreens ? "row" : "column"}
+        alignItems={isNonMobileScreens ? "center" : "flex-start"}
+        gap={isNonMobileScreens ? 3 : 2}
+        px={isNonMobileScreens ? 0 : 1}
+        py={isNonMobileScreens ? 0 : 1}
+      >
+        {/* Public Nav Items */}
+        {!user && (
+          <>
+            {!isHomePage && navButton("Home", "/")}
+            {navButton("About Us", "/aboutus")}
+            {navButton("Contact Us", "/contactus")}
+            {isHomePage && navButton("Testimonials", "#testimonials")}
+            {isHomePage && navButton("Pricing", "#pricing")}
+          </>
+        )}
+        {user && (
+          renderIconButton(
+            mode === "dark" ? <LightMode sx={{ color: "whitesmoke" }} /> :
+              <DarkMode sx={{ color: "black" }} />,
+            async () => {
+              dispatch(toggleMode())
+            },
+            "change mode"
+          )
+        )}
 
-      {/* Authenticated User Menu */}
-      {user ? (
-        <>
-          <Box sx={{ mx: "auto" }}>
-            <Notification />
-          </Box>
-          {user.role === "ADMIN" &&
-            settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && (
-              <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
-            )}
-          <UserProfileDropdown
-            user={user}
-            navigate={navigate}
-            handleLogout={handleLogout}
-          />
-        </>
-      ) : (
-        // Auth buttons
-        <Box display="flex" gap={2} width={isNonMobileScreens ? "auto" : "100%"} mt={isNonMobileScreens ? 0 : 2}>
-          <Button
-            variant="outlined"
-            sx={{
-              textWrap: "nowrap",
-              m: "0.2rem",
-              padding: "0 0.5rem !important",
-            }}
-            color="primary"
-            fullWidth={!isNonMobileScreens}
-            onClick={() => dispatch(openDialog("loginDialog"))}
-          >
-            Log In
-          </Button>
-          <Button
-            variant="contained"
-            color="primary" sx={{
-              m: "0.2rem",
-              padding: "0 0.5rem !important",
-              textWrap: "nowrap",
-            }}
-            fullWidth={!isNonMobileScreens}
-            onClick={() => dispatch(openDialog("signupDialog"))}
-          >
-            Get Started
-          </Button>
-        </Box>
-      )}
-    </Box>
+        {/* Authenticated User Menu */}
+        {user && (
+          <>
+            <Box sx={{ mx: "auto" }}>
+              <Notification />
+            </Box>
+            {user.role === "ADMIN" &&
+              settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && (
+                <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
+              )}
+            <UserProfileDropdown
+              user={user}
+              navigate={navigate}
+              handleLogout={handleLogout}
+            />
+          </>
+        )}
+      </Box>
+      {
+        !user && <AuthButtons isNonMobileScreens={isNonMobileScreens} />
+      }
+    </>
   );
+};
+
+MenuItems.propTypes = {
+  isNonMobileScreens: PropTypes.bool.isRequired,
 };
 
 export default MenuItems;

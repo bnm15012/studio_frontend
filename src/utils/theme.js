@@ -85,7 +85,7 @@ export const colorTokens = {
   },
   gradients: {
     light: {
-      primary: "linear-gradient(90deg, #3366FF 0%, #6690FF 100%)",
+      primary: "linear-gradient(90deg, #3392ffff 0%, #6690FF 100%)",
       secondary: "linear-gradient(90deg, #FFE229 0%, #FFF7A4 100%)",
       greenToPurple: "linear-gradient(135deg, #3366FF 0%, #9C27B0 100%)",
       darkOverlay: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)",
@@ -183,17 +183,8 @@ export const themeSettings = (mode) => {
         main: '#EF4444',
         contrastText: '#ffffff',
       },
+      gradients: colorTokens.gradients[mode],
       activityCardGradient: colorTokens.activityCardGradient[mode],
-      gradient: {
-        primary: `linear-gradient(135deg, ${colorTokens.primary[500]}, ${colorTokens.primary[700]})`,
-        hero: `linear-gradient(135deg, ${colorTokens.primary[500]}, ${colorTokens.secondary[500]})`,
-        features: `linear-gradient(135deg, ${colorTokens.primary[25]}, ${colorTokens.secondary[25]})`,
-        testimonials: `linear-gradient(135deg, ${colorTokens.primary[50]}, ${colorTokens.grey[10]})`,
-        pricing: `linear-gradient(135deg, ${colorTokens.secondary[25]}, ${colorTokens.primary[25]})`,
-        footer: `linear-gradient(135deg, ${colorTokens.grey[900]}, ${colorTokens.grey[800]})`,
-        card: `linear-gradient(180deg, ${colorTokens.grey[0]}, ${colorTokens.grey[10]})`,
-        cardHover: `linear-gradient(180deg, ${colorTokens.primary[25]}, ${colorTokens.secondary[25]})`,
-      },
     },
     typography: {
       fontFamily: ["Rubik", "sans-serif"].join(","),

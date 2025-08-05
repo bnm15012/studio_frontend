@@ -17,7 +17,8 @@ import PropTypes from "prop-types";
 export const Navbar = ({ position = "fixed" }) => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-
+  const gradient2 = `linear-gradient(130deg, #8B5CF6 0%, #7ca4e4ff 100%)`;
+  const gradient = `linear-gradient(130deg, #ac8bf8ff 0%, #7eabf5ff 100%)`;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -37,7 +38,7 @@ export const Navbar = ({ position = "fixed" }) => {
         sx={{
           height: "3.2rem",
           boxShadow: theme.shadows[2],
-          backgroundColor: isScrolled ? theme.palette.background.default : theme.palette.background.alt,
+          background: isScrolled ? gradient2 : gradient,
           backdropFilter: 'blur(50px)',
           transition: 'all 0.3s ease',
           color: 'primary',
@@ -52,7 +53,7 @@ export const Navbar = ({ position = "fixed" }) => {
             </Typography>
           </Box>
 
-          {isNonMobileScreens && <MenuItems />}
+          {isNonMobileScreens && <MenuItems isNonMobileScreens={isNonMobileScreens} />}
 
           {/* Mobile Menu Button */}
           {!isNonMobileScreens && !isMenuOpen && (
@@ -91,5 +92,5 @@ export const Navbar = ({ position = "fixed" }) => {
 };
 
 Navbar.propTypes = {
-    position: PropTypes.string,
+  position: PropTypes.string,
 };
