@@ -67,17 +67,23 @@ const Footer = () => {
 
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 10 }}>
         {/* Main Footer Content */}
-        <Box sx={{ py: 8 }}>
+        <Box sx={{ padding: '2rem 0' }}>
           <Box sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr 1fr 1fr' },
-            gap: 4
+            gridTemplateColumns: { xs: '1fr', lg: '1.2fr 0.8fr 1fr 1fr' },
+            gap: 4,
+            alignItems: 'flex-start'
           }}>
             {/* Company Info */}
             <Box>
-              <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <ImageComponent size={"5vh"} image={"/logo.png"} isCircular={false} />
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', height: '48px', mb: 3 }}>
+                <ImageComponent size={"48px"} image={"/logo.png"} isCircular={false} sx={{ flexShrink: 0 }} />
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 'bold', 
+                  color: 'white', 
+                  lineHeight: '48px',
+                  ml: 1.5
+                }}>
                   Book & Manage
                 </Typography>
               </Box>
@@ -157,58 +163,103 @@ const Footer = () => {
             </Box>
 
             {/* Quick Links */}
-            <Box sx={{ gridColumn: { xs: '1', sm: '1 / 2', lg: 'auto' } }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', mb: 3 }}>
-                Quick Links
-              </Typography>
+            <Box>
+              <Box sx={{ height: '48px', display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 600, 
+                  color: 'white',
+                  lineHeight: '48px'
+                }}>
+                  Quick Links
+                </Typography>
+              </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {['Home', 'Features', 'Pricing', 'Testimonials', 'Contact'].map((item) => (
-                  <Link
-                    key={item}
-                    href={item === 'Home' ? '/#' : `/#${item.toLowerCase()}`}
-                    sx={{
-                      color: 'rgba(255, 255, 255, 0.7)',
-                      textDecoration: 'none',
-                      '&:hover': {
-                        color: 'white',
-                      },
-                    }}
-                  >
-                    {item}
-                  </Link>
-                ))}
+                {['Home', 'Features', 'Pricing', 'Testimonials'].map((item) => {
+                  const sectionId = item === 'Home' ? '' : item.toLowerCase();
+                  return (
+                    <Link
+                      key={item}
+                      href={`#${sectionId}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (sectionId) {
+                          const element = document.getElementById(sectionId);
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                          }
+                        } else {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                      }}
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        textDecoration: 'none',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          color: 'white',
+                        },
+                      }}
+                    >
+                      {item}
+                    </Link>
+                  );
+                })}
               </Box>
             </Box>
 
             {/* Support */}
-            <Box sx={{ gridColumn: { xs: '1', sm: '2 / 3', lg: 'auto' } }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', mb: 3 }}>
-                Support
-              </Typography>
+            <Box>
+              <Box sx={{ height: '48px', display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 600, 
+                  color: 'white',
+                  lineHeight: '48px'
+                }}>
+                  Support
+                </Typography>
+              </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {['Contact Us', 'System Status', 'Training Resources', 'Community Forum'].map((item) => (
-                  <Link
-                    key={item}
-                    href={item === 'Contact Us' ? '#contact' : '#'}
-                    sx={{
-                      color: 'rgba(255, 255, 255, 0.7)',
-                      textDecoration: 'none',
-                      '&:hover': {
-                        color: 'white',
-                      },
-                    }}
-                  >
-                    {item}
-                  </Link>
-                ))}
+                {['Contact Us', 'System Status', 'Training Resources', 'Community Forum'].map((item) => {
+                  const isNonActionable = ['System Status', 'Training Resources', 'Community Forum'].includes(item);
+                  
+                  return (
+                    <Link
+                      key={item}
+                      href={isNonActionable ? '#' : '/contactus'}
+                      onClick={(e) => {
+                        if (isNonActionable) {
+                          e.preventDefault();
+                        } else {
+                          // Let the default navigation handle it
+                        }
+                      }}
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        textDecoration: 'none',
+                        cursor: 'pointer',
+                        '&:hover': {
+                          color: 'white',
+                        },
+                      }}
+                    >
+                      {item}
+                    </Link>
+                  );
+                })}
               </Box>
             </Box>
 
             {/* Newsletter */}
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'white', mb: 3 }}>
-                Stay Updated
-              </Typography>
+              <Box sx={{ height: '48px', display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h6" sx={{ 
+                  fontWeight: 600, 
+                  color: 'white',
+                  lineHeight: '48px'
+                }}>
+                  Stay Updated
+                </Typography>
+              </Box>
               <Typography
                 variant="body2"
                 sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 3 }}
