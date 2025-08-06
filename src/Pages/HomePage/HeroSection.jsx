@@ -233,7 +233,7 @@ export function HeroSection() {
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: '0 20px 40px rgba(139, 92, 246, 0.3)',
+                      // boxShadow: '0 20px 40px rgba(139, 92, 246, 0.3)',
                     },
                   }}
                 >

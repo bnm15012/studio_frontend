@@ -50,7 +50,7 @@ const Notification = () => {
 
     return (
         <>
-            <IconButton onClick={handleClick}>
+            <IconButton onClick={handleClick} sx={{ color: "white" }}>
                 <Badge
                     badgeContent={unreadCount}
                     color="error"

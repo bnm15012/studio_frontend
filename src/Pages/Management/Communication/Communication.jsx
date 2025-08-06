@@ -360,7 +360,7 @@ const Communication = () => {
             sx={{
               p: 2,
               backgroundColor: theme.palette.background.paper,
-              boxShadow: theme.shadows[5],
+              boxShadow: theme.shadows[7],
               borderRadius: "8px",
             }}
           >

@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  IconButton,
   styled,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,8 +9,8 @@ import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
 import { logoutUser } from "../../state/thunks";
-import { DarkMode, LightMode } from "@mui/icons-material";
-import { toggleMode } from "../../state/authSlice";
+// import { DarkMode, LightMode } from "@mui/icons-material";
+// import { toggleMode } from "../../state/authSlice";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
 
@@ -19,7 +18,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const mode = useSelector(s => s.auth.mode);
+  // const mode = useSelector(s => s.auth.mode);
   const isHomePage = location.pathname === "/";
   const user = useSelector((state) => state.auth.user);
   const settings = useSelector((state) => state.auth.settings);
@@ -43,7 +42,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
   };
 
   const NavButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.primary.main,
+    color: "white",
     textTransform: 'none',
     fontSize: '1rem',
     fontWeight: 500,
@@ -66,12 +65,11 @@ const MenuItems = ({ isNonMobileScreens }) => {
     </NavButton>
   );
 
-  const renderIconButton = (icon, onClick, tooltip) => (
-    <IconButton sx={{ mx: "auto" }} onClick={onClick} title={tooltip}>
-      {icon}
-    </IconButton>
-  );
-
+  // const renderIconButton = (icon, onClick, tooltip) => (
+  //   <IconButton sx={{ mx: "auto" }} onClick={onClick} title={tooltip}>
+  //     {icon}
+  //   </IconButton>
+  // );
 
   return (
     <>
@@ -93,7 +91,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
             {isHomePage && navButton("Pricing", "#pricing")}
           </>
         )}
-        {user && (
+        {/* {user && (
           renderIconButton(
             mode === "dark" ? <LightMode sx={{ color: "whitesmoke" }} /> :
               <DarkMode sx={{ color: "black" }} />,
@@ -102,14 +100,12 @@ const MenuItems = ({ isNonMobileScreens }) => {
             },
             "change mode"
           )
-        )}
+        )} */}
 
         {/* Authenticated User Menu */}
         {user && (
           <>
-            <Box sx={{ mx: "auto" }}>
-              <Notification />
-            </Box>
+            <Notification />
             {user.role === "ADMIN" &&
               settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && (
                 <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   IconButton,
@@ -17,19 +17,17 @@ import PropTypes from "prop-types";
 export const Navbar = ({ position = "fixed" }) => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  const gradient2 = `linear-gradient(130deg, #8B5CF6 0%, #7ca4e4ff 100%)`;
-  const gradient = `linear-gradient(130deg, #ac8bf8ff 0%, #7eabf5ff 100%)`;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  // const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 50);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   return (
     <FlexBetween zIndex={1000}>
@@ -37,8 +35,8 @@ export const Navbar = ({ position = "fixed" }) => {
         position={position}
         sx={{
           height: "3.2rem",
-          boxShadow: theme.shadows[2],
-          background: isScrolled ? gradient2 : gradient,
+          boxShadow: theme.shadows[10],
+          backgroundColor: "rgb(37,10,49)",
           backdropFilter: 'blur(50px)',
           transition: 'all 0.3s ease',
           color: 'primary',
@@ -48,7 +46,7 @@ export const Navbar = ({ position = "fixed" }) => {
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <ImageComponent size={"5vh"} image={"/logo.png"} isCircular={false} />
-            <Typography fontSize={"1.4rem"} component="div" sx={{ fontWeight: 'bold' }} color="primary">
+            <Typography fontSize={"1.4rem"} component="div" sx={{ fontWeight: 'bold' }} color="white">
               Book & Manage
             </Typography>
           </Box>

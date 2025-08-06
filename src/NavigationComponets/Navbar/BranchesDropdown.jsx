@@ -27,6 +27,8 @@ const BranchesDropdown = () => {
       <Select
         id="branches"
         sx={{
+          color: "white",
+          "& .MuiSelect-icon": { color: "white" },
           "&:before": { borderBottom: "none" },
           "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
           "&:after": { borderBottom: "none" },

@@ -233,13 +233,13 @@ const TableWithEditAddDelete = ({
                       disabled={editingRowIndex !== index || row.branchId === currentBranch.branchId}
                       checked={row["isActive"]}
                       onChange={(e) => { handleChange(e.target.checked, index, "isActive"); }}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                     />
                   </StyledTableCell>
                   <StyledTableCell>
                     <FlexBetween>
                       <IconButton
-                        sx={{ color: "green" }}
+                        sx={{ color: "blue" }}
                         onClick={() => handleSave(index)}
                       >
                         <Save />
@@ -272,20 +272,20 @@ const TableWithEditAddDelete = ({
                       disabled={editingRowIndex !== null || newRow != null}
                       checked={row["isActive"]}
                       onChange={(e) => { hanldeToggleBranchState(row.branchId, e.target.checked); }}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                     />
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
                       disabled={(editingRowIndex !== index && editingRowIndex !== null) || newRow !== null}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
                     </IconButton>
                     <IconButton
                       disabled={editingRowIndex !== null || newRow !== null || !row.isActive}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => {
                         dispatch(setSelectedBranch(row))
                         navigate(`/management/branch/${row.branchId}`);
@@ -333,13 +333,13 @@ const TableWithEditAddDelete = ({
                 <Switch
                   checked={newRow["isActive"]}
                   onChange={(e) => handleChange(e.target.checked, null, "isActive")}
-                  sx={{ color: "green" }}
+                  sx={{ color: "blue" }}
                 />
               </StyledTableCell>
               <StyledTableCell>
                 <FlexBetween>
                   <IconButton
-                    sx={{ color: "green" }}
+                    sx={{ color: "blue" }}
                     onClick={() => handleSave(null)}
                   >
                     <Save />

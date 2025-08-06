@@ -259,11 +259,11 @@ export const themeSettings = (mode) => {
             },
           },
           containedPrimary: {
-            background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
+            background: 'linear-gradient(135deg, #601dfcff 0%, #1d6ef1ff 100%)',
             boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)',
             '&:hover': {
               background: 'linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)',
-              boxShadow: '0 8px 25px rgba(139, 92, 246, 0.6)',
+              // boxShadow: '0 8px 25px rgba(139, 92, 246, 0.6)',
             },
           },
           outlined: {

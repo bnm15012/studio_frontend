@@ -8,13 +8,13 @@ const AuthButtons = ({ isNonMobileScreens }) => {
     return (
         <Box display="flex" gap={2} width={isNonMobileScreens ? "auto" : "100%"} mt={isNonMobileScreens ? 0 : 2}>
             <Button
-                variant="outlined"
+                variant="contained"
                 sx={{
                     textWrap: "nowrap",
                     m: "0.2rem",
                     padding: "0 0.5rem !important",
                 }}
-                color="primary"
+                color="white"
                 fullWidth={!isNonMobileScreens}
                 onClick={() => dispatch(openDialog("loginDialog"))}
             >

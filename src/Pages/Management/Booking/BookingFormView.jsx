@@ -278,7 +278,7 @@ const BookingFormView = ({ page, ID }) => {
                 onClick={() => setIsEdit(true)}
                 sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <Edit sx={{ color: "green" }} />
+                <Edit sx={{ color: "blue" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />

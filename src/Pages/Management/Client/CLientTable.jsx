@@ -250,7 +250,7 @@ const TableWithEditAddDelete = ({
                   <StyledTableCell>
                     <FlexBetween>
                       <IconButton
-                        sx={{ color: "green" }}
+                        sx={{ color: "blue" }}
                         onClick={() => handleSave(index)}
                       >
                         <Save />
@@ -272,7 +272,7 @@ const TableWithEditAddDelete = ({
                   <StyledTableCell>{row.notes}</StyledTableCell>
                   <StyledTableCell>
                     <IconButton
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
@@ -355,7 +355,7 @@ const TableWithEditAddDelete = ({
               <StyledTableCell>
                 <FlexBetween >
                   <IconButton
-                    sx={{ color: "green" }}
+                    sx={{ color: "blue" }}
                     onClick={() => handleSave(null)}
                   >
                     <Save />

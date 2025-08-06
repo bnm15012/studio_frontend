@@ -241,7 +241,7 @@ const TableWithEditAddDelete = ({
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleSave(index)}
                     >
                       <Save />
@@ -264,7 +264,7 @@ const TableWithEditAddDelete = ({
                   <StyledTableCell>{row.expenseCategory}</StyledTableCell>
                   <StyledTableCell>
                     <IconButton
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
@@ -336,7 +336,7 @@ const TableWithEditAddDelete = ({
               </StyledTableCell>
               <StyledTableCell>
                 <IconButton
-                  sx={{ color: "green" }}
+                  sx={{ color: "blue" }}
                   onClick={() => handleSave(null)}
                 >
                   <Save />

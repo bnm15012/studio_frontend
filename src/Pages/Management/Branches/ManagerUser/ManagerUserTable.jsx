@@ -175,13 +175,13 @@ const ManagerUserTable = ({
                       disabled={editingRowIndex !== index || row.branchId === selectedBranch.branchId}
                       checked={row["enabled"]}
                       onChange={(e) => { handleChange(e.target.checked, index, "enabled"); }}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                     />
                   </StyledTableCell>
                   <StyledTableCell>
                     <FlexBetween>
                       <IconButton
-                        sx={{ color: "green" }}
+                        sx={{ color: "blue" }}
                         onClick={() => handleSave(index)}
                       >
                         <Save />
@@ -207,13 +207,13 @@ const ManagerUserTable = ({
                       disabled={true}
                       checked={row["enabled"]}
                       onChange={(e) => { handleChange(e.target.checked, index, "enabled"); handleEdit(index) }}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                     />
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
                       disabled={(editingRowIndex !== index && editingRowIndex !== null) || newRow !== null}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
@@ -251,13 +251,13 @@ const ManagerUserTable = ({
                 <Switch
                   checked={newRow["enabled"]}
                   onChange={(e) => handleChange(e.target.checked, null, "enabled")}
-                  sx={{ color: "green" }}
+                  sx={{ color: "blue" }}
                 />
               </StyledTableCell>
               <StyledTableCell>
                 <FlexEvenly>
                   <IconButton
-                    sx={{ color: "green" }}
+                    sx={{ color: "blue" }}
                     onClick={() => handleSave(null)}
                   >
                     <Save />

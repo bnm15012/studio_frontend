@@ -177,7 +177,7 @@ const InstructorForm = ({ page, ID }) => {
                 disabled={loading}
                 onClick={() => setIsEdit(true)}
               >
-                <Edit sx={{ color: "green" }} />
+                <Edit sx={{ color: "blue" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />

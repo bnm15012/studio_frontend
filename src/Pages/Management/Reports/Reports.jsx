@@ -221,7 +221,7 @@ const Reports = () => {
           minWidth: '30rem',
           backgroundColor: theme.palette.background.paper,
           borderRadius: '8px',
-          boxShadow: 2
+          boxShadow: theme.shadows[7],
         }}
       >
         <Typography variant='h3' m={2} mb={6} textAlign={"center"}>
@@ -304,7 +304,7 @@ const Reports = () => {
           overflowY: 'auto',
           padding: 2,
           borderRadius: '8px',
-          boxShadow: 2
+          boxShadow: theme.shadows[7],
         }}
       >
         {loading && <Loading />}

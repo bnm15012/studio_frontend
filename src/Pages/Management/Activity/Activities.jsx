@@ -343,7 +343,7 @@ const Activities = () => {
                       </IconButton>
                       <IconButton
                         disabled={editMode !== null}
-                        sx={{ color: "green" }}
+                        sx={{ color: "blue" }}
                         onClick={() => handleEditCard(activity)}
                       >
                         <Edit />

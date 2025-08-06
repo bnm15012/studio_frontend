@@ -227,7 +227,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleSave(index)}
                     >
                       <Save />
@@ -251,7 +251,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                   <StyledTableCell>
                     <IconButton
                       disabled={row.status === "COMPLETED"}
-                      sx={{ color: "green" }}
+                      sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
                       <Edit />
@@ -319,7 +319,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
               </StyledTableCell>
               <StyledTableCell>
                 <IconButton
-                  sx={{ color: "green" }}
+                  sx={{ color: "blue" }}
                   onClick={() => handleSave(null)}
                 >
                   <Save />

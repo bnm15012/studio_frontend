@@ -28,8 +28,8 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
       alignItems={"center"}
     >
       <Button onClick={handleClick}>
-        <FlexBetween alignItems={"center"}>
-          <Box>WELCOME {user.userName}</Box>
+        <FlexBetween color={"whitesmoke"} alignItems={"center"}>
+          <Box >WELCOME {user.userName}</Box>
           <ArrowDropDown />
         </FlexBetween>
       </Button>

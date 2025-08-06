@@ -505,9 +505,9 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                     disabled={editIndex != null || showAddNewRow}
                     sx={{
                       color: "whitesmoke",
-                      backgroundColor: "green",
+                      backgroundColor: "blue",
                       ":hover": {
-                        backgroundColor: "darkgreen",
+                        backgroundColor: "darkblue",
                         color: "white",
                       },
                     }}

@@ -126,11 +126,11 @@ const Sidebar = ({ sidebarOn }) => {
   return (
     <>
       <Box
-        width={"13rem"}
+        width={"14rem"}
         display={sidebarOn ? isMobile ? "flex" : "" : "none"}
         height={"100%"}
         flexDirection={"column"}
-        bgcolor={theme.palette.background.alt}
+        bgcolor={"#3f4859"}
         boxShadow={theme.shadows[10]}
         sx={{
           zIndex: 999,

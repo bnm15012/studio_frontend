@@ -22,12 +22,15 @@ const SidebarItem = ({
         justifyContent: "left",
         alignItems: "center",
         transition: "all 0.25s ease-in-out",
-        color: isSelected ? theme.palette.primary.main : theme.palette.primary.dark,
+        color: "white",
+        "&.Mui-selected": {
+          bgcolor: theme.palette.primary.main,
+        },
+        "&.Mui-selected:hover": {
+          bgcolor: theme.palette.primary.dark,
+        },
         "&:hover": {
-          backgroundColor: isSelected
-            ? theme.palette.primary.main
-            : theme.palette.primary.light,
-          color: theme.palette.primary.main,
+          bgcolor: theme.palette.primary.dark,
         },
       }}
     >
@@ -42,8 +45,8 @@ const SidebarItem = ({
 
       <Typography
         fontSize={isNonMobileScreens ? "1rem" : "0.85rem"}
-        fontWeight={500}
         mx={2}
+        fontWeight={isSelected ? 700 : 200}
         color="inherit"
         textAlign="center"
       >

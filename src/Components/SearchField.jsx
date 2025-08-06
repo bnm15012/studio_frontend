@@ -10,7 +10,7 @@ const StyledSearchField = styled(Box)(({ theme }) => ({
   alignItems: "center",
   padding: theme.spacing(2),
   borderRadius: theme.shape.borderRadius,
-  boxShadow: theme.shadows[2],
+  boxShadow: theme.shadows[7],
   backgroundColor: theme.palette.background.paper,
 }));
 
