@@ -14,7 +14,7 @@ const WidgetsOnPage = ({
   return (
     <Box sx={{ backgroundColor: theme.palette.background.default }} height={"100vh"} >
       <Navbar position="static" />
-      <FlexBetween height={"calc(100vh - 4rem)"}>
+      <FlexBetween height={"calc(100vh - 3.2rem)"}>
         <Sidebar
           sidebarOn={isSidebarShouldBeOn}
         />

@@ -26,7 +26,6 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
     <FlexBetween
       height={"100%"}
       alignItems={"center"}
-      p={1}
     >
       <Button onClick={handleClick}>
         <FlexBetween alignItems={"center"}>

@@ -127,6 +127,8 @@ const MenuItems = () => {
             variant="outlined"
             sx={{
               textWrap: "nowrap",
+              m: "0.2rem",
+              padding: "0 0.5rem !important",
             }}
             color="primary"
             fullWidth={!isNonMobileScreens}
@@ -137,6 +139,8 @@ const MenuItems = () => {
           <Button
             variant="contained"
             color="primary" sx={{
+              m: "0.2rem",
+              padding: "0 0.5rem !important",
               textWrap: "nowrap",
             }}
             fullWidth={!isNonMobileScreens}

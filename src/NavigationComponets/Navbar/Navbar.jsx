@@ -35,7 +35,7 @@ export const Navbar = ({ position = "fixed" }) => {
       <AppBar
         position={position}
         sx={{
-          height: "4rem",
+          height: "3.2rem",
           boxShadow: theme.shadows[2],
           backgroundColor: isScrolled ? theme.palette.background.default : theme.palette.background.alt,
           backdropFilter: 'blur(50px)',
@@ -47,7 +47,7 @@ export const Navbar = ({ position = "fixed" }) => {
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <ImageComponent size={"5vh"} image={"/logo.png"} isCircular={false} />
-            <Typography fontSize={"1.6rem"} component="div" sx={{ fontWeight: 'bold' }} color="primary">
+            <Typography fontSize={"1.4rem"} component="div" sx={{ fontWeight: 'bold' }} color="primary">
               Book & Manage
             </Typography>
           </Box>

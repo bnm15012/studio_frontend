@@ -346,6 +346,7 @@ const Footer = () => {
                   '&:hover': {
                     color: 'white',
                   },
+                  cursor: 'pointer',
                 }}
               >
                 {item}
