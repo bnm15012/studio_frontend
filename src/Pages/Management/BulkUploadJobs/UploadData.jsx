@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import { Link } from "react-router-dom";
 import { Close, UploadFile } from '@mui/icons-material';
 import FileDropZone from '../../../Components/FileDropZone';
 import FlexBetween from '../../../Components/FlexBetween';
@@ -50,7 +51,7 @@ const validationSchema = {
 // State for pagination
 
 
-const UploadData = ({ handleUploadFile }) => {
+const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [file, setFile] = useState(null);
   const [parsedData, setParsedData] = useState([]);
@@ -60,7 +61,6 @@ const UploadData = ({ handleUploadFile }) => {
 
   const [page, setPage] = useState(0);
   const rowsPerPage = 5;
-
   const startIndex = (parseInt(page)) * rowsPerPage
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -184,43 +184,51 @@ const UploadData = ({ handleUploadFile }) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Select
-            value={entityType}
-            onChange={(e) => setEntityType(e.target.value)}
-            displayEmpty
-            size="small"
-            sx={{ minWidth: 150, mr: 2 }}
-          >
-            <MenuItem value="STUDENT">STUDENT</MenuItem>
-            <MenuItem value="INSTRUCTOR">INSTRUCTOR</MenuItem>
-          </Select>
-          <Button
-            variant="contained"
-            onClick={async () => {
-              const hasErrors = validationErrors.some((row) =>
-                Object.values(row).some((err) => !!err)
-              );
-              if (!hasErrors) {
-                if (!entityType) {
-                  alert('Please select an entity type.');
-                  return;
-                }
+          <FlexBetween width="100%" >
+            <Box my="auto">
+              <Link to={sampleFIlePath} target="_blank" download>
+                Downloan Sample File
+              </Link>
+            </Box>
+            <Box>
+              <Select
+                value={entityType}
+                onChange={(e) => setEntityType(e.target.value)}
+                displayEmpty
+                size="small"
+                sx={{ minWidth: 150, mr: 2, padding: '0.42rem' }}
+              >
+                <MenuItem value="STUDENT">STUDENT</MenuItem>
+                <MenuItem value="INSTRUCTOR">INSTRUCTOR</MenuItem>
+              </Select>
+              <Button
+                variant="contained"
+                onClick={async () => {
+                  const hasErrors = validationErrors.some((row) =>
+                    Object.values(row).some((err) => !!err)
+                  );
+                  if (!hasErrors) {
+                    if (!entityType) {
+                      alert('Please select an entity type.');
+                      return;
+                    }
 
-                await handleUploadFile(file, parsedData.length, entityType);
-                setOpenDialog(false);
-                setEntityType('');
-                setFile(null);
-                setParsedData([]);
-                setValidationErrors([]);
-                setPage(0);
-              } else {
-                alert('Fix validation errors before uploading.');
-              }
-            }}
-            disabled={!file || parsedData.length === 0}
-          >
-            Upload
-          </Button>
+                    await handleUploadFile(file, parsedData.length, entityType);
+                    setOpenDialog(false);
+                    setEntityType('');
+                    setFile(null);
+                    setParsedData([]);
+                    setValidationErrors([]);
+                    setPage(0);
+                  } else {
+                    alert('Fix validation errors before uploading.');
+                  }
+                }}
+                disabled={!file || parsedData.length === 0}
+              >
+                Upload
+              </Button>
+            </Box></FlexBetween>
         </DialogActions>
       </Dialog>
     </>
@@ -228,6 +236,7 @@ const UploadData = ({ handleUploadFile }) => {
 };
 
 UploadData.propTypes = {
+  sampleFIlePath: PropTypes.string,
   handleUploadFile: PropTypes.func,
 };
 

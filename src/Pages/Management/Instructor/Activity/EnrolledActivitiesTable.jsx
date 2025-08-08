@@ -28,7 +28,7 @@ import PropTypes from "prop-types";
 import { getCurrentDateTimeUTC, getLocalDateTime } from "../../../../utils/DateUtil";
 import DateTimeField from "../../../../Components/DateTimeField";
 import DeleteDialog from "../../../../Components/DeleteDialog";
-import { Upload, View } from "lucide-react";
+import { Upload } from "lucide-react";
 import InstructorContract from "./IntructorContract";
 import ContractDoc from "./ContractDoc";
 
@@ -283,25 +283,31 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                       row.membershipStatus
                     )}
                   </TableCell>
-                  <TableCell
-                  >
+                  <TableCell>
                     {editIndex === index ? (
                       <Button
-                        onClick={() =>
+                        onClick={() => {
                           setUploadDisplayContract(true)
-                        }
+                          setDeleteDialogIndex(index);
+                        }}
                       >
                         <Upload sx={{ fontSize: "2rem" }} />
                       </Button>
                     ) : (
-                      <Button
-                        onClick={() => {
-                          setUploadDisplayContract(true);
-                          setDeleteDialogIndex(index);
-                        }}
-                      >
-                        <View sx={{ fontSize: "2rem" }} />
-                      </Button>
+                      row.contractDocument ?
+                        <Button
+                          sx={{ p: 0, m: 0, textWrap: "nowrap" }}
+                          onClick={() => {
+                            setUploadDisplayContract(true);
+                            setDeleteDialogIndex(index);
+                          }}
+                        >
+                          View Contract
+                        </Button> :
+                        <Typography
+                          sx={{ textWrap: "nowrap", color: "grey" }}>
+                          No Contract
+                        </Typography>
                     )}
                   </TableCell>
 

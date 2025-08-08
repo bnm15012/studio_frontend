@@ -45,8 +45,8 @@ export const Navbar = ({ position = "fixed" }) => {
         <FlexBetween px={2} my={"auto"}>
           {/* Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <ImageComponent size={"5vh"} image={"/logo.png"} isCircular={false} />
-            <Typography fontSize={"1.4rem"} component="div" sx={{ fontWeight: 'bold' }} color="white">
+            <ImageComponent size={"2.5rem"} image={"/logo.png"} isCircular={false} />
+            <Typography fontSize={"1.4rem"} component="div" sx={{ textWrap: "nowrap", fontWeight: 'bold' }} color="white">
               Book & Manage
             </Typography>
           </Box>

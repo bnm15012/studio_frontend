@@ -11,7 +11,6 @@ import {
   useTheme
 } from '@mui/material';
 
-import html2pdf from 'html2pdf.js';
 import { useEffect, useRef, useState } from 'react';
 import FlexBetween from '../../../Components/FlexBetween';
 import {
@@ -142,7 +141,7 @@ const Reports = () => {
 
   const handleDownloadPDF = () => {
     if (reportRef.current) {
-      html2pdf()
+      window.html2pdf()
         .set({
           filename: reportType === "incomeExpense" ? 'IncomeExpenseReport.pdf' : "paymentreport.pdf",
           image: { type: 'jpeg', quality: 1 },
@@ -157,7 +156,7 @@ const Reports = () => {
   const handlePrintPDF = () => {
     const element = reportRef.current;
 
-    html2pdf()
+    window.html2pdf()
       .set({
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 4, useCORS: true, allowTaint: true },

@@ -1,8 +1,9 @@
 import ImageComponent from '../../../../Components/ImageComponent'
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import PropTypes from 'prop-types'
 
 const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => {
+
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle> Contract</DialogTitle>
@@ -10,11 +11,14 @@ const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => {
                 <ImageComponent
                     size='30rem 100%'
                     setImage={setImage}
-                    image={image}
+                    image={image || "/assets/paper_2.jpg"}
                     isCircular={false}
                     allowEdit={isEdit}
                 />
             </DialogContent>
+            <DialogActions>
+                <Button variant='contained' onClick={onClose}>Done</Button>
+            </DialogActions>
         </Dialog>
     )
 }

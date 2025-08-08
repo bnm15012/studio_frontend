@@ -5,7 +5,6 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useRef, useState } from 'react';
-import html2pdf from 'html2pdf.js';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
 import { useAlert } from '../../../../utils/Alert';
@@ -25,7 +24,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
     setLoading(true)
     const element = invoiceRef.current;
 
-    html2pdf()
+    window.html2pdf()
       .set({
         image: { type: 'jpeg', quality: 1 },
         html2canvas: { scale: 4, useCORS: true, allowTaint: true },
@@ -52,7 +51,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
       setLoading(true);
 
       const element = invoiceRef.current;
-      const pdfBlob = await html2pdf()
+      const pdfBlob = await window.html2pdf()
         .set({
           image: { type: 'jpeg', quality: 1 },
           html2canvas: { scale: 2, useCORS: true },
@@ -118,7 +117,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const handleDownloadPDF = () => {
     setLoading(true)
     const element = invoiceRef.current;
-    html2pdf()
+    window.html2pdf()
       .set({
         filename: `Invoice-${studentData.name}.pdf`,
         image: { type: 'jpeg', quality: 1 },

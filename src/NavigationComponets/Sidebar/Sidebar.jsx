@@ -16,7 +16,7 @@ import { Assessment } from "@mui/icons-material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
 import { useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
-import { Upload } from "lucide-react";
+import { BookTemplate, Upload } from "lucide-react";
 
 const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
@@ -128,6 +128,14 @@ const Sidebar = ({ sidebarOn }) => {
       show: settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && user?.role === "ADMIN",
       icon: (
         <Assessment />
+      ),
+    },
+    {
+      path: "/management/template",
+      label: "Templates",
+      show: true, //settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && user?.role === "ADMIN",
+      icon: (
+        <BookTemplate />
       ),
     },
   ];

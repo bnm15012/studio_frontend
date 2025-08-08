@@ -1,6 +1,6 @@
 import {
   Table, TableBody, TableHead,
-  Paper, Typography, Pagination, Box
+  Paper, Pagination, Box
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { StyledTableCell, StyledTableContainer, StyledTableRow } from '../../../Components/StyledTableComponents';
@@ -47,10 +47,7 @@ const UploadJobHistory = () => {
   };
 
   return (
-    <Box p={2}>
-      <Typography variant="h6" gutterBottom>
-        Upload Job History
-      </Typography>
+    <Box>
       {loading && <Loading />}
       <StyledTableContainer component={Paper}>
         <Table>

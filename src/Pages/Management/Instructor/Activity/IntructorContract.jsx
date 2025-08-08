@@ -4,11 +4,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
-import { useRef, useState } from 'react';
-import html2pdf from 'html2pdf.js';
+import { useEffect, useRef, useState } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
 import Loading from '../../../../Components/Loading/Loading';
+import { DialogTitle, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
+import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
+import { useAlert } from '../../../../utils/Alert';
 
 const tableStyle = {
     width: '100%',
@@ -36,24 +38,66 @@ const sectionTitle = {
     fontSize: '14px',
 };
 
-const termsListStyle = {
-    paddingLeft: '18px',
-    lineHeight: '1.6',
-    marginTop: '5mm',
-};
 
+// Helper to replace placeholders like {{instructorData.name}} with actual values
+function replacePlaceholders(templateStr, dataMap) {
+    if (!templateStr) return "";
+    return templateStr.replace(/{{\s*([\w.]+)\s*}}/g, (_, key) => {
+        // Support nested keys like instructorData.name
+        const keys = key.split('.');
+        let value = dataMap;
+        for (let k of keys) {
+            value = value?.[k];
+            if (value === undefined || value === null) return "";
+        }
+        if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+            if (typeof dataMap.getLocalDateTime === 'function') {
+                return dataMap.getLocalDateTime(value);
+            }
+        }
+        return value;
+    });
+}
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
+    const showAlert = useAlert();
+    const [templates, setTemplates] = useState([]);
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
     const invoiceRef = useRef();
+    const token = useSelector((state) => state.auth.token);
+
+    const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+
+    useEffect(() => {
+        const fetchTemplates = async () => {
+            try {
+                const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token });
+                if (res.success) {
+                    setTemplates(res.data || []);
+                } else {
+                    showAlert(res.message || "Failed to load templates", "error");
+                }
+            } catch {
+                showAlert("Error loading templates", "error");
+            }
+        };
+        fetchTemplates();
+    }, [currentBranch.branchId, showAlert, token]);
+
+    // Select first template by default when templates load
+    useEffect(() => {
+        if (templates.length && !selectedTemplateId) {
+            setSelectedTemplateId(templates[0].id);
+        }
+    }, [templates, selectedTemplateId]);
 
     const handlePrintPDF = () => {
-        setLoading(true)
+        setLoading(true);
         const element = invoiceRef.current;
 
-        html2pdf()
+        window.html2pdf()
             .set({
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 4, useCORS: true },
@@ -72,14 +116,13 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                     printWindow.print();
                 };
             });
-        setLoading(false)
+        setLoading(false);
     };
 
-
     const handleDownloadPDF = () => {
-        setLoading(true)
+        setLoading(true);
         const element = invoiceRef.current;
-        html2pdf()
+        window.html2pdf()
             .set({
                 filename: `Invoice-${instructorData.name}.pdf`,
                 image: { type: 'jpeg', quality: 1 },
@@ -88,11 +131,41 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
             })
             .from(element)
             .save();
-        setLoading(false)
+        setLoading(false);
     };
+
+    const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
+
+    const preparedDescription = selectedTemplate
+        ? replacePlaceholders(selectedTemplate.description, {
+            instructorData,
+            studio,
+            currentBranch,
+            activityData,
+            getLocalDateTime
+        })
+        : "";
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>
+                Instructor Contract
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel id="template-select-label">Select Template</InputLabel>
+                    <Select
+                        labelId="template-select-label"
+                        value={selectedTemplateId || ""}
+                        label="Select Template"
+                        onChange={(e) => setSelectedTemplateId(e.target.value)}
+                    >
+                        {templates.map((t) => (
+                            <MenuItem key={t.id} value={t.id}>
+                                {t.templateName}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </DialogTitle>
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <div
@@ -106,6 +179,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                         fontSize: '12px',
                         color: '#000',
                         lineHeight: 1.6,
+                        width: '100%',
                     }}
                 >
                     <div>
@@ -120,7 +194,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             <tbody>
                                 {[
                                     ['Name', instructorData?.name],
-                                    ['Date of Birth', instructorData?.dob],
+                                    ['Date of Birth', getLocalDateTime(instructorData?.dob)],
                                     ['Email', instructorData?.email],
                                     ['Mobile', instructorData?.phone],
                                     ['Emergency Contact', instructorData?.emergencyContactNumber],
@@ -153,26 +227,19 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             </tbody>
                         </table>
 
-                        {/* Terms */}
-                        <h3 style={sectionTitle}>Terms and Conditions</h3>
-                        <p style={{ textAlign: 'justify' }}>
-                            I, <strong>{instructorData?.name}</strong>, hereby agree to serve as an Instructor at
-                            <strong> {studio?.studioName}</strong> starting from <strong>{getLocalDateTime(activityData?.startDate)}</strong> until further notice. I understand and agree to the following terms and conditions:
-                        </p>
-
-                        <ol style={termsListStyle}>
-                            <li>Conduct classes as per the assigned schedule with dedication and discipline.</li>
-                            <li>Maintain professional behavior toward students, parents, and staff.</li>
-                            <li>Comply with the studio’s curriculum, policies, and dress code.</li>
-                            <li>Protect the confidentiality of student and studio-related information.</li>
-                            <li>Receive payment as mutually agreed by both parties.</li>
-                            <li>Allow either party to terminate this agreement with a 15-day written notice.</li>
-                            <li>Acknowledge that any breach of the terms may result in immediate termination.</li>
-                        </ol>
-
-                        <p style={{ marginTop: '5mm' }}>
-                            I confirm that the personal and bank details provided above are true and accurate to the best of my knowledge.
-                        </p>
+                        {/* Terms and Conditions */}
+                        <div style={sectionTitle}>
+                            <h3>Terms and Conditions</h3>
+                            {preparedDescription ? (
+                                <Typography
+                                    variant="body2"
+                                    sx={{ textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                                    dangerouslySetInnerHTML={{ __html: preparedDescription.replace(/\n/g, "<br />") }}
+                                />
+                            ) : (
+                                <p>No template selected.</p>
+                            )}
+                        </div>
 
                         {/* Signature Section */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10mm' }}>
@@ -184,7 +251,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             <div style={{ textAlign: 'right' }}>
                                 <p>_________________________</p>
                                 <p>Authorized Studio Representative</p>
-                                <p>{studio?.studioName}</p> 
+                                <p>{studio?.studioName}</p>
                                 <p>{currentBranch?.name}</p>
                             </div>
                         </div>
@@ -196,9 +263,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                         <p>Powered by Book & Manage</p>
                     </div>
                 </div>
-
             </DialogContent>
-
             <DialogActions>
                 <FlexBetween width={"100%"} mx={2} gap={2}>
                     <FlexBetween gap={1}>
@@ -211,7 +276,6 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         </Dialog>
     );
 };
-
 
 InstructorContract.propTypes = {
     open: PropTypes.bool.isRequired,

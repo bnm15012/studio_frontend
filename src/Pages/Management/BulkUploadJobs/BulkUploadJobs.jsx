@@ -28,9 +28,6 @@ const BulkUploadJobs = () => {
         showAlert("Preparing to upload file...", "info");
       }
 
-      // Here you would typically upload the file to the presigned URL
-      // For example, using fetch or axios to PUT the file to s3Bucket.uploadUrl
-
       const uploadResponse = await uploadToS3(file, s3Bucket.uploadUrl, token, showAlert);
       if (!uploadResponse) {
         throw Error("Failed to upload file to S3", "error");
@@ -66,7 +63,7 @@ const BulkUploadJobs = () => {
   return (
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
       <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
-        <UploadData handleUploadFile={handleUploadFile} />
+        <UploadData sampleFIlePath={"/assets/student_data.csv"} handleUploadFile={handleUploadFile} />
       </FlexBetween>
       {loading && <Loading />}
       <UploadJobHistory />
