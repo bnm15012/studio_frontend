@@ -536,7 +536,6 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
           studentData={{ ...studentData, studentId }}
           activityData={tableData[deleteDialogIndex]}
         />
-
       }
       <PaymentEntryDialog open={open} setOpen={setOpen} onSave={() => {
         setOpen(false);

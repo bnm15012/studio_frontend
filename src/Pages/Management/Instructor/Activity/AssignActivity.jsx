@@ -6,11 +6,11 @@ const AssignActivity = ({ instructorData, instructorId }) => {
   return (
     <>
       <Typography variant="h6" fontWeight={"bold"}>
-        EnrolledActivities
+        Contract
       </Typography>
       <EnrolledActivitiesTableInstructor
         instructorId={instructorId}
-        data={instructorData.assignments}
+        data={instructorData}
       />
     </>
   );

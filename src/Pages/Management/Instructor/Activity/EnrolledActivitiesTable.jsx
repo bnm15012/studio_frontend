@@ -12,7 +12,7 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
-import { Add, Cancel, Close, Delete, Edit, Save } from "@mui/icons-material";
+import { Add, Cancel, Close, Delete, Edit, Feed, Save } from "@mui/icons-material";
 import ActivityMembershipSelector from "../../Activity/ActivityMembershipSelector";
 import { useSelector } from "react-redux";
 import { useAlert } from "../../../../utils/Alert";
@@ -28,6 +28,9 @@ import PropTypes from "prop-types";
 import { getCurrentDateTimeUTC, getLocalDateTime } from "../../../../utils/DateUtil";
 import DateTimeField from "../../../../Components/DateTimeField";
 import DeleteDialog from "../../../../Components/DeleteDialog";
+import { Upload, View } from "lucide-react";
+import InstructorContract from "./IntructorContract";
+import ContractDoc from "./ContractDoc";
 
 const initialNewRowState = {
   activityName: "",
@@ -35,11 +38,12 @@ const initialNewRowState = {
   startDate: getCurrentDateTimeUTC(),
   endDate: null,
   membershipStatus: "INACTIVE",
+  contractDocument: null,
 };
 const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
   const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
-  const [tableData, setTableData] = useState(data || []);
+  const [tableData, setTableData] = useState(data?.assignments || []);
   const [editIndex, setEditIndex] = useState(null);
   const [newRow, setNewRow] = useState(initialNewRowState);
   const [pastDataOfEditRow, setPastDataOfEditRow] = useState();
@@ -47,6 +51,9 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteDialogIndex, setDeleteDialogIndex] = useState(null);
+  const [generateContractDoc, setGenerateContractDoc] = useState(false)
+
+  const [uploadDisplayContract, setUploadDisplayContract] = useState(false)
 
   const saveActivity = (index) => {
     setEditIndex(index);
@@ -198,6 +205,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                 End Date
               </TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Membership Status</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Contract</TableCell>
               <TableCell sx={{ fontWeight: 700, textAlign: "center" }}>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -275,6 +283,31 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                       row.membershipStatus
                     )}
                   </TableCell>
+                  <TableCell
+                  >
+                    {editIndex === index ? (
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          setUploadDisplayContract(true)
+
+                        }
+                      >
+                        <Upload />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        onClick={() => {
+                          setUploadDisplayContract(true);
+                          setDeleteDialogIndex(index);
+                        }}
+                      >
+                        <View />
+                      </Button>
+                    )}
+                  </TableCell>
+
                   <TableCell>
                     <FlexEvenly gap={1}>
                       {editIndex === index ? (
@@ -301,6 +334,13 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                             onClick={() => handleEdit(index)}
                           >
                             <Edit />
+                          </Button>
+                          <Button
+                            variant="contained"
+                            disabled={editIndex != null || showAddNewRow}
+                            onClick={() => { setGenerateContractDoc(true); setDeleteDialogIndex(index) }}
+                          >
+                            <Feed />
                           </Button>
                           <Button
                             variant="contained"
@@ -374,6 +414,8 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                   </Typography>
                 </TableCell>
                 <TableCell>
+                </TableCell>
+                <TableCell>
                   <FlexEvenly>
                     <Button
                       variant="contained"
@@ -394,7 +436,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
               </TableRow>
             ) : (
               <TableRow>
-                <TableCell align="center" colSpan={6}>
+                <TableCell align="center" colSpan={60}>
                   <IconButton
                     disabled={editIndex != null || showAddNewRow}
                     sx={{
@@ -415,6 +457,27 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {
+        generateContractDoc && <InstructorContract
+          open={generateContractDoc}
+          onClose={() => setGenerateContractDoc(false)}
+          instructorData={{ ...data, instructorId }}
+          activityData={tableData[deleteDialogIndex]}
+        />
+      }
+      {
+        uploadDisplayContract && <ContractDoc
+          open={uploadDisplayContract}
+          onClose={() => setUploadDisplayContract(false)}
+          image={tableData[deleteDialogIndex]?.contractDocument}
+          isEdit={editIndex === deleteDialogIndex}
+          setImage={(image) => {
+            const updatedData = [...tableData];
+            updatedData[deleteDialogIndex].contractDocument = image;
+            setTableData(updatedData);
+          }}
+        />
+      }
       {loading && <Loading />}
       {deleteDialogOpen && <DeleteDialog
         open={deleteDialogOpen}
