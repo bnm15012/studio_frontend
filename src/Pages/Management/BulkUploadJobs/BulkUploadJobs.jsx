@@ -65,7 +65,7 @@ const BulkUploadJobs = () => {
 
   return (
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
-      <FlexBetween paddingBottom={2} gap={1}>
+      <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
         <UploadData handleUploadFile={handleUploadFile} />
       </FlexBetween>
       {loading && <Loading />}
