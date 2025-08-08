@@ -67,6 +67,14 @@ const Sidebar = ({ sidebarOn }) => {
         <EventNote />
       ),
     },
+    // {
+    //   path: "/management/form",
+    //   label: "Forms",
+    //   show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
+    //   icon: (
+    //     <Feed />
+    //   ),
+    // },
     {
       path: "/management/instructor",
       label: "Instructors",
