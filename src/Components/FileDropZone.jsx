@@ -25,7 +25,7 @@ const FileDropZone = ({
 }) => {
   const theme = useTheme();
   const showAlert = useAlert();
-
+const [width, height] = size.split(" ");
   const [previewUrl, setPreviewUrl] = useState(file || null);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -70,8 +70,8 @@ const FileDropZone = ({
         <Box
           {...getRootProps()}
           position="relative"
-          width={size}
-          height={size}
+          width={width}
+          height={height || width}
           display="flex"
           justifyContent="center"
           alignItems="center"
@@ -153,7 +153,7 @@ const FileDropZone = ({
 };
 
 FileDropZone.propTypes = {
-  file: PropTypes.string,
+  file: PropTypes.object,
   uploadFileApiCall: PropTypes.func.isRequired,
   setFile: PropTypes.func.isRequired,
   size: PropTypes.string,

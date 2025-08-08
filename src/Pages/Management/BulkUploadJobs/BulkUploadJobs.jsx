@@ -1,44 +1,77 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import SearchField from "../../../Components/SearchField";
-import { Box, Button, Pagination } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
 import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
-import { useNavigate } from "react-router-dom";
-import UploadData from "../../../Components/UploadData";
-import { generatePresignUrl } from "../../../api/s3.api";
+import UploadData from "./UploadData";
+import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
+import { createBulkUploadJobAPI } from "./BulkUploadJobs.api";
+import UploadJobHistory from "./UploadJobHistory";
 
 
 const BulkUploadJobs = () => {
   const showAlert = useAlert();
-  const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
 
   const [loading, setLoading] = useState(false);
 
-    // setLoading(true);
-    //   const { data: s3Bucket, success } = await generatePresignUrl(`Invoice-${studentData.name}.pdf`, token);
+  const handleUploadFile = useCallback(async (file, totalRecords, entityType) => {
+    setLoading(true);
+    try {
+      const { data: s3Bucket, success } = await generatePresignUrl(`BulkUpload-${currentBranch.name}.csv`, token);
 
-    //   if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-    //     showAlert("Failed to get upload URL", "error");
-    //     return;
-    //   } else {
-    //     showAlert("Preparing to upload invoice...", "info");
-    //   }
-    // setLoading(false);
-  
-  
+      if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
+        showAlert("Failed to get upload URL", "error");
+        return;
+      } else {
+        showAlert("Preparing to upload file...", "info");
+      }
+
+      // Here you would typically upload the file to the presigned URL
+      // For example, using fetch or axios to PUT the file to s3Bucket.uploadUrl
+
+      const uploadResponse = await uploadToS3(file, s3Bucket.uploadUrl, token, showAlert);
+      if (!uploadResponse) {
+        return;
+      }
+
+      const payload = {
+        "branchEntry": currentBranch,
+        "entityType": entityType,
+        "status": "PENDING",
+        "totalRecords": totalRecords,
+        "processedRecords": 0,
+        "successfulRecords": 0,
+        "failedRecords": 0,
+        "fileUrl": s3Bucket.fileUrl,
+        "fileName": file.name,
+      }
+
+      const { success: successFileUpload, data, message } = await createBulkUploadJobAPI(payload, token);
+
+      if (!successFileUpload) {
+        showAlert(message, "error");
+        return;
+      }
+
+      setAllJos((prev) => [...prev, data]);
+      showAlert("File uploaded successfully!", "success");
+    } catch (error) {
+      showAlert("Error uploading file: " + error.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentBranch, token, showAlert]);
 
   return (
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
       <FlexBetween paddingBottom={2} gap={1}>
-        <UploadData />
-       </FlexBetween>
+        <UploadData handleUploadFile={handleUploadFile} />
+      </FlexBetween>
       {loading && <Loading />}
+      <UploadJobHistory/>
     </FlexBetweenColumn>
   );
 };

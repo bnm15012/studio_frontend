@@ -28,10 +28,10 @@ export const generatePresignUrl = async (fileName, token, contentType = "applica
     }
 };
 
-export const uploadToS3 = async (file, uploadUrl) => {
+export const uploadToS3 = async (file, uploadUrl, token, showAlert) => {
     if (!file || !uploadUrl) {
-        console.error("Missing file or upload URL");
-        return;
+        showAlert("Missing file or upload URL", "error");
+        return false;
     }
 
     try {
@@ -43,18 +43,15 @@ export const uploadToS3 = async (file, uploadUrl) => {
             body: file,
         });
 
-        if (response.ok) {
-            return {
-                success: true,
-                message: "File uploaded successfully",
-            };
-        } else {
+        if (!response.ok) {
             throw new Error("Failed to upload file: " + response.statusText);
         }
+        showAlert("File uploaded successfully!", "success");
+        return true;
     } catch (err) {
-        return {
-            success: false,
-            message: err.message || "An error occurred while uploading the file",
-        }
+        showAlert("Error uploading file: " + err.message, "error");
+        console.error("Error uploading file:", err);
+         // Return a structured error response
+         return false;
     }
 };
