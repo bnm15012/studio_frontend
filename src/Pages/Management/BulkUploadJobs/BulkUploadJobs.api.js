@@ -1,9 +1,9 @@
 import api from "../../../utils/api";
 
 
-export const createBulkUploadJobAPI = async (data, token) => {
+export const createBulkUploadJobAPI = async (jobData, token) => {
     try {
-        const response = await api.post('/generatePresignUrl', data, {
+        const response = await api.post('/jobs/bulk-uploads/add', jobData, {
             headers: {
                 Authorization: `${token}`,
             },
@@ -11,7 +11,7 @@ export const createBulkUploadJobAPI = async (data, token) => {
         const { data, status } = response.data;
         return {
             success: true,
-            data: response.data,
+            data: data,
             message: status.statusMessage || 'Started uploading data, will be processed shortly.'
         };
     } catch (error) {

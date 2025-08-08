@@ -287,23 +287,20 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                   >
                     {editIndex === index ? (
                       <Button
-                        variant="contained"
                         onClick={() =>
                           setUploadDisplayContract(true)
-
                         }
                       >
-                        <Upload />
+                        <Upload sx={{ fontSize: "2rem" }} />
                       </Button>
                     ) : (
                       <Button
-                        variant="contained"
                         onClick={() => {
                           setUploadDisplayContract(true);
                           setDeleteDialogIndex(index);
                         }}
                       >
-                        <View />
+                        <View sx={{ fontSize: "2rem" }} />
                       </Button>
                     )}
                   </TableCell>
@@ -313,44 +310,39 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                       {editIndex === index ? (
                         <>
                           <Button
-                            variant="contained"
                             onClick={() => handleSave(index)}
                           >
-                            <Save />
+                            <Save sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
-                            variant="contained"
-                            sx={{ background: "red" }}
+                            sx={{ color: "red" }}
                             onClick={() => handleEdit(null)}
                           >
-                            <Cancel />
+                            <Cancel sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       ) : (
                         <>
                           <Button
-                            variant="contained"
                             disabled={editIndex != null || showAddNewRow}
                             onClick={() => handleEdit(index)}
                           >
-                            <Edit />
+                            <Edit sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
-                            variant="contained"
                             disabled={editIndex != null || showAddNewRow}
                             onClick={() => { setGenerateContractDoc(true); setDeleteDialogIndex(index) }}
                           >
-                            <Feed />
+                            <Feed sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
-                            variant="contained"
-                            sx={{ background: "red" }}
+                            sx={{ color: "red" }}
                             onClick={() => {
                               setDeleteDialogIndex(index);
                               setDeleteDialogOpen(true);
                             }}
                           >
-                            <Delete />
+                            <Delete sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       )}

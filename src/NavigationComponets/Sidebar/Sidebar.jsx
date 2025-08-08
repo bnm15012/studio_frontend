@@ -34,7 +34,16 @@ const Sidebar = ({ sidebarOn }) => {
       icon: (
         <DashboardIcon />
       ),
-    }, {
+    },
+    {
+      path: "/management/bulk_upload",
+      label: "Upload Data",
+      show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
+      icon: (
+        <Upload />
+      ),
+    },
+    {
       path: "/management/branch",
       label: "Branches",
       show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && user?.role === "ADMIN",
@@ -56,14 +65,6 @@ const Sidebar = ({ sidebarOn }) => {
       show: settings.find((setting) => setting.navBarName === "BOOKINGS")?.enabled,
       icon: (
         <EventNote />
-      ),
-    },
-    {
-      path: "/management/bulk_upload",
-      label: "Upload Data",
-      show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
-      icon: (
-        <Upload />
       ),
     },
     {

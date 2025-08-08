@@ -184,7 +184,8 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             <div style={{ textAlign: 'right' }}>
                                 <p>_________________________</p>
                                 <p>Authorized Studio Representative</p>
-                                <p>{studio?.studioName} — {currentBranch?.name}</p>
+                                <p>{studio?.studioName}</p> 
+                                <p>{currentBranch?.name}</p>
                             </div>
                         </div>
                     </div>

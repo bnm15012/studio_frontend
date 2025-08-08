@@ -367,46 +367,41 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       {editIndex === index ? (
                         <>
                           <Button
-                            variant="contained"
                             onClick={() => handleSave(index)}
                           >
-                            <Save />
+                            <Save sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
-                            variant="contained"
-                            sx={{ background: "red" }}
+                            sx={{ color: "red" }}
                             onClick={() => handleEdit(null)}
                           >
-                            <Cancel />
+                            <Cancel sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       ) : (
                         <>
                           <Button
                             disabled={editIndex != null || showAddNewRow}
-                            variant="contained"
                             onClick={() => handleEdit(index)}
                           >
-                            <Edit />
+                            <Edit sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Tooltip title={row.paymentEntry.status !== "COMPLETED" ? "Payment is still pending or it's failed" : "View Invoice"}>
                             <Button
                               disabled={editIndex != null || showAddNewRow || row.paymentEntry.status !== "COMPLETED"}
-                              variant="contained"
                               onClick={() => { setShowInvoice(true); setDeleteDialogIndex(index) }}
                             >
-                              <Receipt />
+                              <Receipt sx={{ fontSize: "2rem" }} />
                             </Button>
                           </Tooltip>
                           <Button
-                            variant="contained"
-                            sx={{ background: "red" }}
+                            sx={{ color: "red" }}
                             onClick={() => {
                               setDeleteDialogIndex(index);
                               setDeleteDialogOpen(true);
                             }}
                           >
-                            <Delete />
+                            <Delete sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       )}
@@ -480,7 +475,6 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                 <TableCell>
                   <FlexEvenly>
                     <Button
-                      variant="contained"
                       sx={{ background: "green" }}
                       onClick={() => {
                         setOpen(true);
@@ -489,8 +483,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       Add
                     </Button>
                     <Button
-                      variant="contained"
-                      sx={{ background: "red" }}
+                      sx={{ color: "red" }}
                       onClick={() => setShowAddNewRow(false)}
                     >
                       <Close />

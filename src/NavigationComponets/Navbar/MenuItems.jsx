@@ -56,7 +56,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
 
   const navButton = (label, path) => (
     <NavButton
-      variant={location.pathname === path ? "contained" : ""}
+      // variant={location.pathname === path ? "contained" : ""}
       key={label}
       onClick={() => handleNavigation(path)}
     >

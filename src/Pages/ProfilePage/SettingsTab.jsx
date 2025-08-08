@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Switch, Box, Button } from "@mui/material";
+import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../utils/Alert";
@@ -83,7 +83,9 @@ const SettingsTab = () => {
           onClick={updateSettings}
           disabled={!isChanged || isLoading}
         >
-          {isLoading ? "Saving..." : "Save Settings"}
+          <Typography variant="button" fontWeight={"bold"} color="white">
+            {isLoading ? "Saving..." : "Save Settings"}
+          </Typography>
         </Button>
       </Box>
     </Box>

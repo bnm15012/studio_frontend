@@ -20,11 +20,10 @@ const BulkUploadJobs = () => {
   const handleUploadFile = useCallback(async (file, totalRecords, entityType) => {
     setLoading(true);
     try {
-      const { data: s3Bucket, success } = await generatePresignUrl(`BulkUpload-${currentBranch.name}.csv`, token);
+      const { data: s3Bucket, success } = await generatePresignUrl(`BulkUpload-${currentBranch.name}.csv`, token, "text/csv");
 
       if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-        showAlert("Failed to get upload URL", "error");
-        return;
+        throw Error("Failed to get upload URL", "error");
       } else {
         showAlert("Preparing to upload file...", "info");
       }
@@ -34,8 +33,10 @@ const BulkUploadJobs = () => {
 
       const uploadResponse = await uploadToS3(file, s3Bucket.uploadUrl, token, showAlert);
       if (!uploadResponse) {
-        return;
+        throw Error("Failed to upload file to S3", "error");
       }
+
+      showAlert("File uploaded to S3 successfully!", "success");
 
       const payload = {
         "branchEntry": currentBranch,
@@ -49,14 +50,11 @@ const BulkUploadJobs = () => {
         "fileName": file.name,
       }
 
-      const { success: successFileUpload, data, message } = await createBulkUploadJobAPI(payload, token);
+      const { success: successFileUpload, message } = await createBulkUploadJobAPI(payload, token);
 
       if (!successFileUpload) {
-        showAlert(message, "error");
-        return;
+        throw Error(message || "Failed to create bulk upload job", "error");
       }
-
-      setAllJos((prev) => [...prev, data]);
       showAlert("File uploaded successfully!", "success");
     } catch (error) {
       showAlert("Error uploading file: " + error.message, "error");
@@ -71,7 +69,7 @@ const BulkUploadJobs = () => {
         <UploadData handleUploadFile={handleUploadFile} />
       </FlexBetween>
       {loading && <Loading />}
-      <UploadJobHistory/>
+      <UploadJobHistory />
     </FlexBetweenColumn>
   );
 };

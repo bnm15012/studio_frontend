@@ -56,7 +56,7 @@ const UploadJobHistory = () => {
         <Table>
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell>S. No</StyledTableCell>
               <StyledTableCell>Entity Type</StyledTableCell>
               <StyledTableCell>Status</StyledTableCell>
               <StyledTableCell>Total</StyledTableCell>
@@ -69,9 +69,9 @@ const UploadJobHistory = () => {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {data && data.map((row) => (
+            {data && data.map((row, index) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell>{row.id}</StyledTableCell>
+                <StyledTableCell>{index+1}</StyledTableCell>
                 <StyledTableCell>{row.entityType}</StyledTableCell>
                 <StyledTableCell>{row.status}</StyledTableCell>
                 <StyledTableCell>{row.totalRecords}</StyledTableCell>
