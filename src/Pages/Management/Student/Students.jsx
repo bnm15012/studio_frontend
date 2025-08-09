@@ -76,7 +76,7 @@ const Students = () => {
       <FlexBetween paddingBottom={2} gap={1}>
         <SearchField handleSearch={handleSearch} />
         <QrForm
-          qrSize={500}
+          qrSize={480}
           title="Student Form"
           link={"student-form"}
         />
