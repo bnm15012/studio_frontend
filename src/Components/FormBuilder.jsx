@@ -7,6 +7,7 @@ import DateTimeField from './DateTimeField';
 
 const FormBuilder = ({ form }) => {
   const [formState, setFormState] = useState({});
+  const [errors, setErrors] = useState({});  // To track field validation errors
   const [loading, setLoading] = useState(false);
   const showAlert = useAlert();
   const theme = useTheme();
@@ -14,12 +15,48 @@ const FormBuilder = ({ form }) => {
   // Load signature and public key from env
   const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
 
+  const validateField = (key, value, config) => {
+    if (config.required && !value) {
+      return 'This field is required';
+    }
+    if (config.validation?.regex) {
+      const regex = new RegExp(config.validation.regex);
+      if (!regex.test(value)) {
+        return config.validation.errorMessage || 'Invalid format';
+      }
+    }
+    return null;
+  };
+
   const handleChange = (key, value) => {
     setFormState(prev => ({ ...prev, [key]: value }));
+
+    // Validate as user types
+    const fieldConfig = form.fields[key];
+    const error = validateField(key, value, fieldConfig);
+    setErrors(prev => ({ ...prev, [key]: error }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate all fields on submit
+    const newErrors = {};
+    Object.entries(form.fields).forEach(([key, config]) => {
+      const error = validateField(key, formState[key], config);
+      if (error) {
+        newErrors[key] = error;
+      }
+    });
+
+    setErrors(newErrors);
+
+    // If any errors, don't submit
+    if (Object.keys(newErrors).length > 0) {
+      showAlert('Please fix validation errors before submitting.', 'error');
+      return;
+    }
+
     try {
       setLoading(true);
       const { success, message } = await form.onSubmit({
@@ -64,18 +101,21 @@ const FormBuilder = ({ form }) => {
         {Object.entries(form.fields).map(([key, config]) => {
           const { type, required, options } = config;
           const label = key.charAt(0).toUpperCase() + key.slice(1);
+          const error = errors[key];
 
           if (type === 'text') {
             return (
               <TextField
-                size='small'
+                size="small"
                 key={key}
                 label={label}
                 type={type}
-                variant='outlined'
+                variant="outlined"
                 required={required}
                 value={formState[key] || ''}
                 onChange={(e) => handleChange(key, e.target.value)}
+                error={!!error}
+                helperText={error}
                 fullWidth
               />
             );
@@ -86,17 +126,18 @@ const FormBuilder = ({ form }) => {
               <DateTimeField
                 onChange={(e) => handleChange(key, e)}
                 value={formState[key]}
-                format='DATE'
+                placeholder="Date of birth"
+                format="DATE"
                 key={key}
-                textFieldVarient='outlined'
+                textFieldVarient="outlined"
               />
-            )
+            );
           }
           if (type === 'selection') {
             return (
               <TextField
                 key={key}
-                size='small'
+                size="small"
                 select
                 label={label}
                 required={required}

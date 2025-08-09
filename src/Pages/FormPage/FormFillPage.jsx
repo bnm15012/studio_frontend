@@ -10,23 +10,36 @@ const formData = [{
   onSubmit: addStudentAPI,
   fields: {
     name: { type: 'text', required: true },
-    email: { type: 'email', required: true },
-    phone: { type: 'tel', required: true },
-    dob: { type: 'date', required: true },
-    emergencyContactNumber: { type: 'tel', required: true },
-    address: { type: 'textarea', required: true },
-    city: {
-      type: 'selection',
+    email: { 
+      type: 'text', 
       required: true,
-      options: [
-        ['ahmedabad', 'Ahmedabad'],
-        ['mumbai', 'Mumbai'],
-        ['delhi', 'Delhi']
-      ]
-    }
+      validation: {
+        regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        errorMessage: "Please enter a valid email address",
+      }
+    },
+    phone: { 
+      type: 'text', 
+      required: true,
+      validation: {
+        // Example: 10-digit phone number, digits only
+        regex: /^\d{10}$/,
+        errorMessage: "Please enter a valid 10-digit phone number",
+      }
+    },
+    dob: { type: 'date', required: true },
+    emergencyContactNumber: { 
+      type: 'text', 
+      required: true,
+      validation: {
+        // Allow digits, 10-12 length, or customize as needed
+        regex: /^\d{10,12}$/,
+        errorMessage: "Please enter a valid emergency contact number",
+      }
+    },
+    address: { type: 'text', required: true },
   }
 }];
-
 
 const FormFillPage = () => {
   const { formId } = useParams();

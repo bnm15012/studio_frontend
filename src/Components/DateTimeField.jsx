@@ -14,6 +14,7 @@ const DateTimeField = ({
     format = "DATETIME",
     minDateTime,
     textFieldVarient = "standard",
+    placeholder = "Select date and time",
     customStyle = {},
 }) => {
     const theme = useTheme();
@@ -49,9 +50,9 @@ const DateTimeField = ({
                 variant: textFieldVarient,
                 size: "small",
                 fullWidth: true,
-                placeholder: format === "DATE" ? "Select date" : "Select date and time",
+                placeholder: placeholder ? placeholder : format === "DATE" ? "Select date" : "Select date and time",
                 sx: {
-                    borderRadius: 2,                    
+                    borderRadius: 2,
                     "& .MuiOutlinedInput-root": {
                         "& fieldset": {
                             borderColor: "#1976d2",
@@ -139,6 +140,7 @@ DateTimeField.propTypes = {
     textFieldVarient: PropTypes.string,
     format: PropTypes.oneOf(["DATE", "DATETIME"]),
     minDateTime: PropTypes.string,
+    placeholder: PropTypes.string,
     customStyle: PropTypes.object,
 };
 

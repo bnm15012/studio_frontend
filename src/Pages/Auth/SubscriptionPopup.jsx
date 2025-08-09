@@ -5,6 +5,7 @@ import {
   DialogContent,
   Box,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
@@ -14,6 +15,7 @@ import { Close } from "@mui/icons-material";
 import { convertUTCToLocal } from "../../utils/DateUtil";
 
 const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(popupOn);
   const [isExpired, setIsExpired] = useState(false)
   const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
@@ -44,7 +46,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
         <Box sx={{ borderRadius: "5px" }}>
           <DialogTitle
             sx={{
-              backgroundColor: isExpired ? "red" : "white",
+              backgroundColor: isExpired ? "red" : theme.palette.background.paper,
               color: "white",
               fontWeight: "bold",
               fontSize: "1.2rem",
