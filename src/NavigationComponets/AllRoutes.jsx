@@ -15,7 +15,7 @@ import TermsConditionPage from "../Pages/TermsCondition/TermsConditionPage";
 import PrivacyPolicyPage from "../Pages/PrivacyPolicy/PrivacyPolicyPage";
 import Analysis from "../Pages/Analysis/Analysis";
 import ContactUsPage from "../Pages/ContactUs/ContactUs";
-import FormPage from "../Pages/FormPage/FormPage";
+import FormFillPage from "../Pages/FormPage/FormFillPage";
 
 export const AllRoutes = () => {
   const user = useSelector((state) => state.auth.user);
@@ -30,7 +30,7 @@ export const AllRoutes = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-and-condition" element={<TermsConditionPage />} />
         <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
-        <Route path="/form/:id" element={<FormPage />} />
+        <Route path="/form/:id" element={<FormFillPage />} />
 
         {user && (
           <>

@@ -1,15 +1,37 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useAlert } from '../utils/Alert';
 
 const FormBuilder = ({ form }) => {
   const [formState, setFormState] = useState({});
+  const [loading, setLoading] = useState(false)
+  
+  const showAlert = useAlert();
+
 
   const handleChange = (key, value) => {
     setFormState(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formState);
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const { data, success, message } = await form.onSubmit({
+        studentData: formState,
+        token,
+      });
+      if (success) {
+        showAlert(message, "success");
+      } else {
+        showAlert(message, "error");
+      }
+
+    } catch (error) {
+      console.error(error);
+      showAlert("Failed to save/update student", "error");
+    }
+    setLoading(false);
   };
 
   return (
@@ -63,4 +85,7 @@ const FormBuilder = ({ form }) => {
   );
 };
 
+FormBuilder.propTypes = {
+  form: { name: PropTypes.string.isRequired, fields: PropTypes.object.isRequired, onSubmit: PropTypes.func.isRequired}
+}
 export default FormBuilder;

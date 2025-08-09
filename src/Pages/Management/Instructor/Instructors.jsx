@@ -11,6 +11,7 @@ import { getAllInstructorsAPI } from "./Instructor.api";
 import Loading from "../../../Components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import Filter from "../../../Components/Filter";
+import QrForm from "../../../Components/QrForm";
 
 const size = 7;
 
@@ -65,6 +66,10 @@ const Instructors = () => {
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
       <FlexBetween paddingBottom={2} gap={1}>
         <SearchField handleSearch={handleSearch} />
+        <QrForm
+          title="Instructor Form"
+          link={"instructor-form"}
+        />
         <Filter onChange={onApplyFIlter} checkboxes={[{ key: 'ACTIVE', label: 'Active' }, { key: 'INACTIVE', label: 'Inactive' }]} />
         <Button
           variant="contained"

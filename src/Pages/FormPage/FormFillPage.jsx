@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom';
 import FormBuilder from '../../Components/FormBuilder';
+import { addStudentAPI } from '../Management/Student/Student.api';
 
 
 const mockFormData = {
-  id: 'form123',
+  id: 'student-form',
   name: 'User Information Form',
+  onSubmit: addStudentAPI,
   fields: {
     name: { type: 'text', required: true },
     dob: { type: 'date', required: true },
@@ -20,7 +22,7 @@ const mockFormData = {
   }
 };
 
-const FormPage = () => {
+const FormFillPage = () => {
   const { formId } = useParams();
 
   const formData = mockFormData;
@@ -28,4 +30,4 @@ const FormPage = () => {
   return <FormBuilder form={formData} />;
 };
 
-export default FormPage;
+export default FormFillPage;

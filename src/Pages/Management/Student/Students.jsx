@@ -11,6 +11,8 @@ import { getAllStudentsAPI } from "./Student.api";
 import Loading from "../../../Components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
 import Filter from "../../../Components/Filter";
+import QrForm from "../../../Components/QrForm";
+
 const size = 7;
 const Students = () => {
   const showAlert = useAlert();
@@ -73,6 +75,11 @@ const Students = () => {
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
       <FlexBetween paddingBottom={2} gap={1}>
         <SearchField handleSearch={handleSearch} />
+        <QrForm
+          qrSize={500}
+          title="Student Form"
+          link={"student-form"}
+        />
         <Filter onChange={onApplyFIlter} checkboxes={[{ key: 'ACTIVE', label: 'Active' }, { key: 'INACTIVE', label: 'Inactive' }]} />
         <Button
           variant="contained"
