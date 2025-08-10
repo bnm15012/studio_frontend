@@ -12,6 +12,7 @@ const FormBuilder = ({ form, branchId }) => {
   const [loading, setLoading] = useState(false);
   const showAlert = useAlert();
   const theme = useTheme();
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const validateField = (key, value, config) => {
     if (config.required && !value) {
@@ -63,10 +64,11 @@ const FormBuilder = ({ form, branchId }) => {
     try {
       setLoading(true);
       const { success, message } = await form.onSubmit({
-        studentData: { ...cleanData, "branchEntry": { branchId } },
+        studentData: { ...cleanData, branchId: parseInt(branchId) },
         formSignature: FORM_SIG,
       });
       if (success) {
+        setIsSubmitted(true);
         showAlert(message, 'success');
       } else {
         showAlert(message, 'error');
@@ -89,139 +91,142 @@ const FormBuilder = ({ form, branchId }) => {
         borderRadius: '24px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
       }}
-    >
-      <Typography
-        variant="h4"
-        color="primary"
-        gutterBottom
-        sx={{
-          textAlign: 'center',
-          fontWeight: 700,
-          letterSpacing: 1,
-          mb: 3,
-        }}
-      >
-        {form.name}
-      </Typography>
+    >{
+        isSubmitted ? <>Form Submitted Successfully </> :
+          <>
+            <Typography
+              variant="h4"
+              color="primary"
+              gutterBottom
+              sx={{
+                textAlign: 'center',
+                fontWeight: 700,
+                letterSpacing: 1,
+                mb: 3,
+              }}
+            >
+              {form.name}
+            </Typography>
 
-      <Box
-        component="form"
-        onClick={() => handleSubmit()}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: theme.spacing(3),
-        }}
-      >
-        <input
-          type="hidden"
-          name="_form_sig"
-          value={formState._form_sig}
-          onChange={(e) => handleChange('_form_sig', e.target.value)}
-        />
-
-        {Object.entries(form.fields).map(([key, config]) => {
-          const { type, required, options } = config;
-          const label = key.charAt(0).toUpperCase() + key.slice(1);
-          const error = errors[key];
-
-          if (type === 'text') {
-            return (
-              <TextField
-                size="medium"
-                key={key}
-                label={label}
-                type={type}
-                variant="outlined"
-                required={required}
-                value={formState[key] || ''}
-                onChange={(e) => handleChange(key, e.target.value)}
-                error={!!error}
-                helperText={error}
-                fullWidth
-                sx={{
-                  background: theme.palette.background.default,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '1.1rem',
-                  },
-                }}
+            <Box
+              component="form"
+              onClick={(e) => handleSubmit(e)}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: theme.spacing(3),
+              }}
+            >
+              <input
+                type="hidden"
+                name="_form_sig"
+                value={formState._form_sig}
+                onChange={(e) => handleChange('_form_sig', e.target.value)}
               />
-            );
-          }
 
-          if (type === 'date') {
-            return (
-              <DateTimeField
-                onChange={(e) => handleChange(key, e)}
-                value={formState[key]}
-                placeholder="Date of birth"
-                format="DATE"
-                key={key}
-                textFieldVarient="outlined"
+              {Object.entries(form.fields).map(([key, config]) => {
+                const { type, required, options } = config;
+                const label = key.charAt(0).toUpperCase() + key.slice(1);
+                const error = errors[key];
+
+                if (type === 'text') {
+                  return (
+                    <TextField
+                      size="medium"
+                      key={key}
+                      label={label}
+                      type={type}
+                      variant="outlined"
+                      required={required}
+                      value={formState[key] || ''}
+                      onChange={(e) => handleChange(key, e.target.value)}
+                      error={!!error}
+                      helperText={error}
+                      fullWidth
+                      sx={{
+                        background: theme.palette.background.default,
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                        '& .MuiOutlinedInput-root': {
+                          fontSize: '1.1rem',
+                        },
+                      }}
+                    />
+                  );
+                }
+
+                if (type === 'date') {
+                  return (
+                    <DateTimeField
+                      onChange={(e) => handleChange(key, e)}
+                      value={formState[key]}
+                      placeholder="Date of birth"
+                      format="DATE"
+                      key={key}
+                      textFieldVarient="outlined"
+                      sx={{
+                        background: theme.palette.background.default,
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      }}
+                    />
+                  );
+                }
+                if (type === 'selection') {
+                  return (
+                    <TextField
+                      key={key}
+                      size="medium"
+                      select
+                      label={label}
+                      required={required}
+                      value={formState[key] || ''}
+                      onChange={(e) => handleChange(key, e.target.value)}
+                      fullWidth
+                      sx={{
+                        background: theme.palette.background.default,
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                        '& .MuiOutlinedInput-root': {
+                          fontSize: '1.1rem',
+                        },
+                      }}
+                    >
+                      <MenuItem value="">Select...</MenuItem>
+                      {options.map(([val, label]) => (
+                        <MenuItem key={val} value={val}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  );
+                }
+
+                return null;
+              })}
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
                 sx={{
-                  background: theme.palette.background.default,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                }}
-              />
-            );
-          }
-          if (type === 'selection') {
-            return (
-              <TextField
-                key={key}
-                size="medium"
-                select
-                label={label}
-                required={required}
-                value={formState[key] || ''}
-                onChange={(e) => handleChange(key, e.target.value)}
-                fullWidth
-                sx={{
-                  background: theme.palette.background.default,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '1.1rem',
+                  padding: theme.spacing(1.5),
+                  fontWeight: 'bold',
+                  borderRadius: '16px',
+                  fontSize: '1.1rem',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+                  background: `linear-gradient(90deg, ${theme.palette.primary.main} 60%, ${theme.palette.secondary.main} 100%)`,
+                  transition: 'background 0.3s',
+                  '&:hover': {
+                    background: `linear-gradient(90deg, ${theme.palette.primary.dark} 60%, ${theme.palette.secondary.dark} 100%)`,
                   },
                 }}
               >
-                <MenuItem value="">Select...</MenuItem>
-                {options.map(([val, label]) => (
-                  <MenuItem key={val} value={val}>
-                    {label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            );
-          }
-
-          return null;
-        })}
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={loading}
-          sx={{
-            padding: theme.spacing(1.5),
-            fontWeight: 'bold',
-            borderRadius: '16px',
-            fontSize: '1.1rem',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
-            background: `linear-gradient(90deg, ${theme.palette.primary.main} 60%, ${theme.palette.secondary.main} 100%)`,
-            transition: 'background 0.3s',
-            '&:hover': {
-              background: `linear-gradient(90deg, ${theme.palette.primary.dark} 60%, ${theme.palette.secondary.dark} 100%)`,
-            },
-          }}
-        >
-          {loading ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+                {loading ? 'Submitting...' : 'Submit'}
+              </Button>
+            </Box>
+          </>}
     </Paper>
   );
 };
