@@ -10,7 +10,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
     const [open, setOpen] = useState(false);
     const qrRef = useRef(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-
+    const qrLink = `${window.location.origin}/form/${link}/${currentBranch.branchId}`;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -71,10 +71,10 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                 <DialogContent>
                     <div ref={qrRef} style={{ textAlign: "center", padding: "20px", marginTop: "50px" }}>
                         <Box padding={2} backgroundColor="white">
-                            <QRCode value={`${window.location.origin}/form/${link}`} size={qrSize} />
+                            <QRCode value={qrLink} size={qrSize} />
                         </Box>
                         <Typography variant="body2" sx={{ fontSize: "1.2rem", mt: 2 }}>
-                            {`${window.location.origin}/form/${link}/${currentBranch.branchId}`}
+                            {qrLink}
                         </Typography>
                     </div>
                     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
