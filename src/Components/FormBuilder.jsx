@@ -6,14 +6,12 @@ import { Box, Typography, TextField, MenuItem, Button, Paper } from '@mui/materi
 import DateTimeField from './DateTimeField';
 
 const FormBuilder = ({ form }) => {
-  const [formState, setFormState] = useState({});
-  const [errors, setErrors] = useState({});  // To track field validation errors
+  const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
+  const [formState, setFormState] = useState({_form_sig: FORM_SIG});
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const showAlert = useAlert();
   const theme = useTheme();
-
-  // Load signature and public key from env
-  const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
 
   const validateField = (key, value, config) => {
     if (config.required && !value) {
@@ -31,16 +29,22 @@ const FormBuilder = ({ form }) => {
   const handleChange = (key, value) => {
     setFormState(prev => ({ ...prev, [key]: value }));
 
-    // Validate as user types
     const fieldConfig = form.fields[key];
-    const error = validateField(key, value, fieldConfig);
-    setErrors(prev => ({ ...prev, [key]: error }));
+    if (fieldConfig) {
+      const error = validateField(key, value, fieldConfig);
+      setErrors(prev => ({ ...prev, [key]: error }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate all fields on submit
+    const { _form_sig, ...cleanData } = formState;
+    if (_form_sig !== FORM_SIG) {
+      showAlert('Invalid form signature', 'error');
+      return;
+    }
+
     const newErrors = {};
     Object.entries(form.fields).forEach(([key, config]) => {
       const error = validateField(key, formState[key], config);
@@ -51,7 +55,6 @@ const FormBuilder = ({ form }) => {
 
     setErrors(newErrors);
 
-    // If any errors, don't submit
     if (Object.keys(newErrors).length > 0) {
       showAlert('Please fix validation errors before submitting.', 'error');
       return;
@@ -60,7 +63,7 @@ const FormBuilder = ({ form }) => {
     try {
       setLoading(true);
       const { success, message } = await form.onSubmit({
-        studentData: formState,
+        studentData: cleanData,
         formSignature: FORM_SIG,
       });
 
@@ -78,14 +81,27 @@ const FormBuilder = ({ form }) => {
 
   return (
     <Paper
+      elevation={8}
       sx={{
-        maxWidth: 600,
-        margin: 'auto',
-        padding: theme.spacing(4),
-        backgroundColor: theme.palette.background.paper,
+        maxWidth: 500,
+        margin: '40px auto',
+        padding: theme.spacing(5),
+        background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.background.paper} 100%)`,
+        borderRadius: '24px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
       }}
     >
-      <Typography variant="h4" color="primary" gutterBottom>
+      <Typography
+        variant="h4"
+        color="primary"
+        gutterBottom
+        sx={{
+          textAlign: 'center',
+          fontWeight: 700,
+          letterSpacing: 1,
+          mb: 3,
+        }}
+      >
         {form.name}
       </Typography>
 
@@ -98,6 +114,13 @@ const FormBuilder = ({ form }) => {
           gap: theme.spacing(3),
         }}
       >
+        <input
+          type="hidden"
+          name="_form_sig"
+          value={formState._form_sig}
+          onChange={(e) => handleChange('_form_sig', e.target.value)}
+        />
+
         {Object.entries(form.fields).map(([key, config]) => {
           const { type, required, options } = config;
           const label = key.charAt(0).toUpperCase() + key.slice(1);
@@ -106,7 +129,7 @@ const FormBuilder = ({ form }) => {
           if (type === 'text') {
             return (
               <TextField
-                size="small"
+                size="medium"
                 key={key}
                 label={label}
                 type={type}
@@ -117,6 +140,14 @@ const FormBuilder = ({ form }) => {
                 error={!!error}
                 helperText={error}
                 fullWidth
+                sx={{
+                  background: theme.palette.background.default,
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  '& .MuiOutlinedInput-root': {
+                    fontSize: '1.1rem',
+                  },
+                }}
               />
             );
           }
@@ -130,6 +161,11 @@ const FormBuilder = ({ form }) => {
                 format="DATE"
                 key={key}
                 textFieldVarient="outlined"
+                sx={{
+                  background: theme.palette.background.default,
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                }}
               />
             );
           }
@@ -137,13 +173,21 @@ const FormBuilder = ({ form }) => {
             return (
               <TextField
                 key={key}
-                size="small"
+                size="medium"
                 select
                 label={label}
                 required={required}
                 value={formState[key] || ''}
                 onChange={(e) => handleChange(key, e.target.value)}
                 fullWidth
+                sx={{
+                  background: theme.palette.background.default,
+                  borderRadius: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  '& .MuiOutlinedInput-root': {
+                    fontSize: '1.1rem',
+                  },
+                }}
               >
                 <MenuItem value="">Select...</MenuItem>
                 {options.map(([val, label]) => (
@@ -166,7 +210,14 @@ const FormBuilder = ({ form }) => {
           sx={{
             padding: theme.spacing(1.5),
             fontWeight: 'bold',
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: '16px',
+            fontSize: '1.1rem',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+            background: `linear-gradient(90deg, ${theme.palette.primary.main} 60%, ${theme.palette.secondary.main} 100%)`,
+            transition: 'background 0.3s',
+            '&:hover': {
+              background: `linear-gradient(90deg, ${theme.palette.primary.dark} 60%, ${theme.palette.secondary.dark} 100%)`,
+            },
           }}
         >
           {loading ? 'Submitting...' : 'Submit'}

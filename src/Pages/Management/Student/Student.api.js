@@ -1,6 +1,6 @@
 import api from "../../../utils/api";
 
-export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday=false }) => {
+export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday = false }) => {
   try {
     const response = await api.get(`/students/getAllStudentsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page - 1}&size=${size}&birthday=${birthday ? 1 : 0}`, {
       headers: {
@@ -35,7 +35,7 @@ export const getStudentNamesOncePerDay = async ({ branchId, token, page, size, b
   //   const parsed = JSON.parse(cachedResult);
   //   return { ...parsed, message: "Fetched from cache" };
   // }
-  
+
   const result = await getStudentNamesAPI({ branchId, token, page, size, birthday });
 
   // if (result.success) {
@@ -86,6 +86,7 @@ export const addStudentAPI = async ({ studentData, token }) => {
     const response = await api.post("/students/add", studentData, {
       headers: {
         Authorization: `${token}`,
+        "Form-Authorization": import.meta.env.VITE_APP_FORM_SIG,
       },
     });
     const { data, status } = response.data;
