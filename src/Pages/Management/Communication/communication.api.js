@@ -8,6 +8,7 @@ const getHeaders = (token) => ({
     headers: { Authorization: `${token}`, },
 });
 
+// TODO: remove this function, not required anymore
 export const getAllTemplatesApi = async ({ token, studioId }) => {
     try {
         const response = await api.get(

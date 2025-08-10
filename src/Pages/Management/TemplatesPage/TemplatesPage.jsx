@@ -74,6 +74,7 @@ const TemplatesPage = () => {
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
+        setLoading(true);
         const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token });
         if (res.success) {
           setTemplates(res.data || []);
@@ -82,6 +83,8 @@ const TemplatesPage = () => {
         }
       } catch {
         showAlert("Error loading templates", "error");
+      }finally{
+        setLoading(false);
       }
     };
     fetchTemplates();

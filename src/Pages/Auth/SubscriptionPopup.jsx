@@ -44,7 +44,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
         <Box sx={{ borderRadius: "5px" }}>
           <DialogTitle
             sx={{
-              backgroundColor: "red",
+              backgroundColor: isExpired ? "red" : "white",
               color: "white",
               fontWeight: "bold",
               fontSize: "1.2rem",

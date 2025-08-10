@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { getAllTemplatesApi, sendMessageApi } from "./communication.api";
 import { useEffect, useState, useCallback } from "react";
 import {
   Box,
@@ -24,6 +23,8 @@ import { useAlert } from "../../../utils/Alert";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
+import { sendMessageApi } from "./communication.api";
+import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
 
 const MAIL_TYPE = ["WHATSAPP", "EMAIL"];
 
@@ -48,7 +49,6 @@ const Communication = () => {
   const token = useSelector((state) => state.auth.token);
   const theme = useTheme()
   const currentBranch = useSelector((state) => state.branch.currentBranch);
-  const studio = useSelector((state) => state.auth.studio);
   const showAlert = useAlert();
 
   const [open, setOpen] = useState(false);
@@ -60,18 +60,28 @@ const Communication = () => {
   const [audienceType, setAudienceType] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
 
-  const getTemplates = useCallback(async () => {
+  const fetchTemplates = useCallback(async () => {
     try {
-      setLoading(true);
-      const { data } = await getAllTemplatesApi({ token, studioId: studio.studioId });
-      setTemplates([initialTemplate, ...data]);
-    } catch (error) {
-      console.error("Failed to fetch templates:", error);
-      showAlert("Failed to fetch templates", "error");
-    } finally {
-      setLoading(false);
+      const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token, templateType: "COMMUNICATION" });
+      if (res.success) {
+        setTemplates(res?.data ? [initialTemplate, ...res.data] : [initialTemplate]);
+      } else {
+        showAlert(res.message || "Failed to load templates", "error");
+      }
+    } catch {
+      showAlert("Error loading templates", "error");
     }
-  }, [showAlert, studio.studioId, token]);
+  }, [currentBranch.branchId, token, showAlert]);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [currentBranch.branchId, fetchTemplates, showAlert, token]);
+
+  useEffect(() => {
+    if (templates.length && !selectedTemplateId) {
+      setSelectedTemplateId(templates[0].id);
+    }
+  }, [templates, selectedTemplateId]);
 
   const getAllStudentNames = async (page, size) => {
     try {
@@ -110,13 +120,9 @@ const Communication = () => {
     }
   };
 
-  useEffect(() => {
-    getTemplates();
-  }, [getTemplates]);
-
   const sendMail = async () => {
     if (!selectedTemplate.title || !selectedTemplate.content) {
-      showAlert("Please select or create a valid template.", "error");
+      showAlert("Please fill the title and content.", "error");
       return;
     }
 
@@ -248,8 +254,8 @@ const Communication = () => {
                     if (template) {
                       setSelectedTemplate({
                         ...selectedTemplate,
-                        title: template.subject || "",
-                        content: template.templateBody || "",
+                        title: template.templateSubject || "",
+                        content: template.templateContent || "",
                       });
                     }
                   }}

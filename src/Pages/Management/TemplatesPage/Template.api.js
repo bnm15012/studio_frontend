@@ -74,6 +74,7 @@ export const getAllTemplatesAPI = async ({
   branchId,
   token,
   searchTerm = "",
+  templateType = "",
   page = 1,
   size = 10,
 }) => {
@@ -84,6 +85,7 @@ export const getAllTemplatesAPI = async ({
         headers: { Authorization: `${token}` },
         params: {
           searchTerm,
+          templateType,
           page: page - 1,
           size,
         },

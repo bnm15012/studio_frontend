@@ -73,7 +73,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token });
+                const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token, templateType: "INSTRUCTOR_CONTRACT" });
                 if (res.success) {
                     setTemplates(res.data || []);
                 } else {
@@ -86,12 +86,20 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         fetchTemplates();
     }, [currentBranch.branchId, showAlert, token]);
 
-    // Select first template by default when templates load
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
-            setSelectedTemplateId(templates[0].id);
+            const matchedTemplate = templates.find(t =>
+                t.templateType?.toLowerCase().includes(activityData.activityName?.toLowerCase())
+            );
+
+            if (matchedTemplate) {
+                setSelectedTemplateId(matchedTemplate.id);
+            } else {
+                setSelectedTemplateId(templates[0].id);
+            }
         }
-    }, [templates, selectedTemplateId]);
+
+    }, [templates, selectedTemplateId, activityData.activityName]);
 
     const handlePrintPDF = () => {
         setLoading(true);
@@ -137,7 +145,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
 
     const preparedDescription = selectedTemplate
-        ? replacePlaceholders(selectedTemplate.description, {
+        ? replacePlaceholders(selectedTemplate.templateContent, {
             instructorData,
             studio,
             currentBranch,
