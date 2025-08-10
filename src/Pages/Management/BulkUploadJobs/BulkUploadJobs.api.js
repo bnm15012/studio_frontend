@@ -3,7 +3,7 @@ import api from "../../../utils/api";
 
 export const createBulkUploadJobAPI = async (jobData, token) => {
     try {
-        const response = await api.post('/jobs/bulk-uploads/add', jobData, {
+        const response = await api.post('/jobs/bulk-uploads/process', jobData, {
             headers: {
                 Authorization: `${token}`,
             },

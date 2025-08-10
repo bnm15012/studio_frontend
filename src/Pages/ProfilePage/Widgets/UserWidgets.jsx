@@ -137,6 +137,7 @@ const UserWidgets = ({ admin, studio }) => {
             }}
           >
             <ImageComponent
+              dirName="user"
               size={isNonMobileScreens ? "100px" : "50px"}
               setImage={setImageUrl}
               image={admin?.imageUrl}
@@ -195,6 +196,7 @@ const UserWidgets = ({ admin, studio }) => {
                 </Box>
                 <FlexBetween height={"17rem"} flexDirection={"column-reverse"}>
                   <ImageComponent
+                    dirName="studio"
                     size={isNonMobileScreens ? "200px" : "50px"}
                     setImage={setStudioLogo}
                     image={studio?.logo || "/assets/default_logo.png"}

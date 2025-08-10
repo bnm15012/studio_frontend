@@ -4,7 +4,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -31,6 +30,7 @@ import DeleteDialog from "../../../../Components/DeleteDialog";
 import { Upload } from "lucide-react";
 import InstructorContract from "./IntructorContract";
 import ContractDoc from "./ContractDoc";
+import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 
 const initialNewRowState = {
   activityName: "",
@@ -192,7 +192,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
 
   return (
     <>
-      <TableContainer>
+      <StyledTableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -454,7 +454,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </StyledTableContainer>
       {
         generateContractDoc && <InstructorContract
           open={generateContractDoc}

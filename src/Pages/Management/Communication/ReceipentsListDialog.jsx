@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Table,
   TableHead,
   TableRow,
   TableCell,
@@ -19,6 +18,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { StyledTable } from "../../../Components/StyledTableComponents";
 
 const ReceipentsListDialog = ({ open, onClose, messageId }) => {
   const showAlert = useAlert();
@@ -79,7 +79,7 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
         ) : history.length === 0 ? (
           <Typography>No recipients found.</Typography>
         ) : (
-          <Table stickyHeader>
+          <StyledTable stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
@@ -102,7 +102,7 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+          </StyledTable>
         )}
       </DialogContent>
       <DialogActions>

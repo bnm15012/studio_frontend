@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import {
-  Table,
   TableBody,
   TableHead,
   IconButton,
@@ -10,7 +9,7 @@ import {
 import { Delete, Edit } from "@mui/icons-material";
 import FlexEvenly from "./FlexEvenly";
 import ImageComponent from "./ImageComponent";
-import { StyledTableCell, StyledTableContainer, StyledTableRow } from "./StyledTableComponents";
+import { StyledTable, StyledTableCell, StyledTableContainer, StyledTableRow } from "./StyledTableComponents";
 import { getLocalDateTime } from "../utils/DateUtil";
 
 const StatusCell = ({ status }) => {
@@ -34,7 +33,7 @@ const DataTable = ({
   onClickOnRow = undefined,
 }) => {
   return <StyledTableContainer component={Paper}>
-    <Table>
+    <StyledTable>
       <TableHead>
         <StyledTableRow>
           <StyledTableCell>S. No</StyledTableCell>
@@ -143,7 +142,7 @@ const DataTable = ({
           </StyledTableRow>
         )}
       </TableBody>
-    </Table>
+    </StyledTable>
   </StyledTableContainer>
 };
 StatusCell.propTypes = {

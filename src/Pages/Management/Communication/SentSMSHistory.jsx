@@ -1,5 +1,6 @@
-import { IconButton, Pagination, Table, TableBody, TableHead } from "@mui/material";
+import { IconButton, Pagination, TableBody, TableHead } from "@mui/material";
 import {
+  StyledTable,
   StyledTableCell,
   StyledTableContainer,
   StyledTableRow,
@@ -60,7 +61,7 @@ const SentSMSHistory = () => {
     <>
       {loading && <Loading />}
       <StyledTableContainer>
-        <Table>
+        <StyledTable>
           <TableHead>
             <StyledTableRow>
               <StyledTableCell sx={{ py: 1.5 }}>Title</StyledTableCell>
@@ -94,7 +95,7 @@ const SentSMSHistory = () => {
               )
             }
           </TableBody>
-        </Table>
+        </StyledTable>
       </StyledTableContainer >
       <FlexBetween p={2} flexDirection={"row-reverse"} >
         <Pagination

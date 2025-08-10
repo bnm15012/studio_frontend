@@ -8,7 +8,6 @@ import {
   Typography,
   IconButton,
   DialogActions,
-  Table,
   TableHead,
   TableRow,
   TableCell,
@@ -22,6 +21,7 @@ import FileDropZone from '../../../Components/FileDropZone';
 import FlexBetween from '../../../Components/FlexBetween';
 import Papa from 'papaparse';
 import { TablePagination, Box } from '@mui/material'; // Make sure this is imported
+import { StyledTable } from '../../../Components/StyledTableComponents';
 
 
 const validationSchema = {
@@ -130,7 +130,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
           {parsedData.length > 0 && (
             <>
               <Box sx={{ mt: 3, maxHeight: '300px', overflowY: 'auto' }}>
-                <Table size="small" stickyHeader>
+                <StyledTable size="small" stickyHeader>
                   <TableHead>
                     <TableRow>
                       <TableCell>
@@ -169,7 +169,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
                         );
                       })}
                   </TableBody>
-                </Table>
+                </StyledTable>
               </Box>
 
               <TablePagination
@@ -213,7 +213,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
                       return;
                     }
 
-                    await handleUploadFile(file, parsedData.length, entityType);
+                    await handleUploadFile(file, entityType);
                     setOpenDialog(false);
                     setEntityType('');
                     setFile(null);

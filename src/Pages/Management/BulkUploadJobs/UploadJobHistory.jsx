@@ -1,13 +1,16 @@
 import {
-  Table, TableBody, TableHead,
-  Paper, Pagination, Box
+  TableBody, TableHead, Table,
+  Pagination, Box,
+  TableContainer,
+  Typography
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { StyledTableCell, StyledTableContainer, StyledTableRow } from '../../../Components/StyledTableComponents';
+import { StyledTableCell, StyledTableRow } from '../../../Components/StyledTableComponents';
 import { getBulkUploadJobsAPI } from './BulkUploadJobs.api';
 import { useAlert } from '../../../utils/Alert';
 import { useSelector } from 'react-redux';
 import Loading from '../../../Components/Loading/Loading';
+import { getLocalDateTime } from '../../../utils/DateUtil';
 
 const size = 7;
 const UploadJobHistory = () => {
@@ -49,11 +52,11 @@ const UploadJobHistory = () => {
   return (
     <Box>
       {loading && <Loading />}
-      <StyledTableContainer component={Paper}>
+      <TableContainer>
         <Table>
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell>S. No</StyledTableCell>
+              <StyledTableCell sx={{textWrap:"nowrap"}}>S. No</StyledTableCell>
               <StyledTableCell>Entity Type</StyledTableCell>
               <StyledTableCell>Status</StyledTableCell>
               <StyledTableCell>Total</StyledTableCell>
@@ -68,7 +71,7 @@ const UploadJobHistory = () => {
           <TableBody>
             {data && data.map((row, index) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell>{index+1}</StyledTableCell>
+                <StyledTableCell>{index + 1}</StyledTableCell>
                 <StyledTableCell>{row.entityType}</StyledTableCell>
                 <StyledTableCell>{row.status}</StyledTableCell>
                 <StyledTableCell>{row.totalRecords}</StyledTableCell>
@@ -79,7 +82,10 @@ const UploadJobHistory = () => {
                   {row.fileName}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {row.completedAt || "—"}
+                  <Typography sx={{ wordBreak: "break-all" }}>
+                    {row?.completedAt ?
+                      getLocalDateTime(row.completedAt, "DATETIME") : "—"}
+                  </Typography>
                 </StyledTableCell>
                 <StyledTableCell>
                   {row.errorMessages.length > 0
@@ -99,7 +105,7 @@ const UploadJobHistory = () => {
             }
           </TableBody>
         </Table>
-      </StyledTableContainer>
+      </TableContainer>
 
       <Box display="flex" justifyContent="right" mt={2}>
         <Pagination

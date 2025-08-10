@@ -9,6 +9,7 @@ const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => {
             <DialogTitle> Contract</DialogTitle>
             <DialogContent>
                 <ImageComponent
+                    dirName='instructor_contract'
                     size='30rem 100%'
                     setImage={setImage}
                     image={image || "/assets/paper_2.jpg"}

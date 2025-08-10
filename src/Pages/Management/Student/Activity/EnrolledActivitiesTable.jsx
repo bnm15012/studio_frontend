@@ -4,7 +4,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -34,6 +33,7 @@ import PaymentEntryDialog from "../../Payments/PaymentEntryDialog";
 import DeleteDialog from "../../../../Components/DeleteDialog";
 import StudentInvoice from "./StudentInvoice";
 import { clearPaymentPages } from "../../../../state/paymentSlice";
+import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 
 const PAYMENT_STATUS = [
   { label: "COMPLETED", value: "COMPLETED" },
@@ -259,7 +259,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
 
   return (
     <>
-      <TableContainer>
+      <StyledTableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -513,7 +513,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </StyledTableContainer>
       {loading && <Loading />}
       {deleteDialogOpen && <DeleteDialog
         open={deleteDialogOpen}

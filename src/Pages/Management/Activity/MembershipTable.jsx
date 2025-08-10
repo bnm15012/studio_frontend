@@ -1,5 +1,4 @@
 import {
-  Table,
   TableBody,
   TableCell,
   TableContainer,
@@ -9,12 +8,13 @@ import {
   useTheme,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import { StyledTable } from "../../../Components/StyledTableComponents";
 
-const MembershipTable = ({ plans, index }) => {
+const MembershipTable = ({ plans }) => {
   const theme = useTheme();
   return (
     <TableContainer sx={{ maxHeight: 160 }}>
-      <Table stickyHeader size="small">
+      <StyledTable stickyHeader size="small">
         <TableHead>
           <TableRow>
             <TableCell
@@ -74,13 +74,12 @@ const MembershipTable = ({ plans, index }) => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </StyledTable>
     </TableContainer>
   );
 };
 
 MembershipTable.propTypes = {
-  index: PropTypes.number,
   plans: PropTypes.arrayOf(
     PropTypes.shape({
       amount: PropTypes.string.isRequired,

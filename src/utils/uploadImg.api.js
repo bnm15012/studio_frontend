@@ -1,11 +1,11 @@
 import api from "./api";
 
-export const uploadImageApiCall = async (file, token) => {
+export const uploadImageApiCall = async (file, token, dirName = "default") => {
   const formData = new FormData();
   formData.append("file", file);
 
   try {
-    const response = await api.post("/uploadImage/student", formData, {
+    const response = await api.post(`/uploadImage/${dirName}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: token,

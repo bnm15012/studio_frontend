@@ -17,7 +17,7 @@ const BulkUploadJobs = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleUploadFile = useCallback(async (file, totalRecords, entityType) => {
+  const handleUploadFile = useCallback(async (file, entityType) => {
     setLoading(true);
     try {
       const { data: s3Bucket, success } = await generatePresignUrl(`BulkUpload-${currentBranch.name}.csv`, token, "text/csv");
@@ -38,13 +38,7 @@ const BulkUploadJobs = () => {
       const payload = {
         "branchEntry": currentBranch,
         "entityType": entityType,
-        "status": "PENDING",
-        "totalRecords": totalRecords,
-        "processedRecords": 0,
-        "successfulRecords": 0,
-        "failedRecords": 0,
         "fileUrl": s3Bucket.fileUrl,
-        "fileName": file.name,
       }
 
       const { success: successFileUpload, message } = await createBulkUploadJobAPI(payload, token);
@@ -63,7 +57,7 @@ const BulkUploadJobs = () => {
   return (
     <FlexBetweenColumn sx={{ overflow: "auto" }}>
       <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
-        <UploadData sampleFIlePath={"/assets/student_data.csv"} handleUploadFile={handleUploadFile} />
+        <UploadData sampleFIlePath={"/assets/sample_file.csv"} handleUploadFile={handleUploadFile} />
       </FlexBetween>
       {loading && <Loading />}
       <UploadJobHistory />

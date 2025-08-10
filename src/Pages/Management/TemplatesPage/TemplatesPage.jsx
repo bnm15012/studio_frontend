@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,34 +9,66 @@ import {
   TextField,
   Select,
   MenuItem,
-  Table,
+  Paper,
   TableHead,
-  TableRow,
   TableBody,
   IconButton,
   Typography
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { StyledTableCell, StyledTableContainer, StyledTableRow } from "../../../Components/StyledTableComponents";
+import { StyledTable, StyledTableCell, StyledTableContainer, StyledTableRow } from "../../../Components/StyledTableComponents";
 import { useSelector } from "react-redux";
 import { addTemplateAPI, deleteTemplateAPI, updateTemplateAPI, getAllTemplatesAPI } from "./Template.api";
 import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
 import DeleteDialog from "../../../Components/DeleteDialog";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { Collapse } from '@mui/material';
+import PropTypes from "prop-types";
+
+const templateTypes = new Set(["COMMUNICATION"]);
+
+const ExpandedRow = ({ isExpanded, description }) => (
+  <StyledTableRow>
+    <StyledTableCell colSpan={6} sx={{ paddingBottom: 0, paddingTop: 0 }}>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+        <Box sx={{ margin: 1, backgroundColor: "#f9f9f9", borderRadius: 1, padding: 2 }}>
+          <Typography variant="subtitle2" gutterBottom>
+            Full Content:
+          </Typography>
+          <Typography sx={{ whiteSpace: "pre-wrap", maxWidth: "100%" }}>
+            {description || <i>No description available.</i>}
+          </Typography>
+        </Box>
+      </Collapse>
+    </StyledTableCell>
+  </StyledTableRow>
+);
+
+ExpandedRow.propTypes = {
+  isExpanded: PropTypes.bool.isRequired,
+  description: PropTypes.string,
+};
 
 const TemplatesPage = () => {
-  const [templates, setTemplates] = useState([]);
+  useSelector((state) => state.activity.activities)?.map(x => templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType)) || [];
+  const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-  const showAlert = useAlert();
+
+  const [templates, setTemplates] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [expandedId, setExpandedId] = useState(null);
+
+  const toggleExpand = (id) => {
+    setExpandedId((prevId) => (prevId === id ? null : id));
+  };
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const allActivities = useSelector((state) => state.activity.activities)?.map(x => x.activityType) || [];
 
   // Load templates on mount
   useEffect(() => {
@@ -59,10 +91,10 @@ const TemplatesPage = () => {
     setCurrentTemplate(
       template || {
         id: null,
-        entityType: "",
-        description: "",
-        activityType: "",
+        templateType: templateTypes[0],
         templateName: "",
+        templateSubject: "",
+        templateContent: "",
         branchId: currentBranch.branchId,
       }
     );
@@ -81,12 +113,12 @@ const TemplatesPage = () => {
       showAlert("Template Name is required", "warning");
       return;
     }
-    if (!currentTemplate.entityType) {
-      showAlert("Entity Type is required", "warning");
+    if (!currentTemplate.templateSubject) {
+      showAlert("Template SUbject is required", "warning");
       return;
     }
-    if (!currentTemplate.activityType) {
-      showAlert("Activity Type is required", "warning");
+    if (!currentTemplate.templateType) {
+      showAlert("Template Type is required", "warning");
       return;
     }
     setLoading(true);
@@ -140,53 +172,78 @@ const TemplatesPage = () => {
 
   return (
     <Box p={3}>
-      <FlexBetween flexDirection={"row-reverse"}>
+      <FlexBetween paddingBottom={2} flexDirection={"row-reverse"}>
         <Button variant="contained" color="primary" onClick={() => handleOpen()}>
           Add Template
         </Button>
       </FlexBetween>
-      <StyledTableContainer>
-        <Table sx={{ marginTop: 2 }}>
+      <StyledTableContainer component={Paper}>
+        <StyledTable>
           <TableHead>
             <StyledTableRow>
-              <StyledTableCell>Template Name</StyledTableCell>
-              <StyledTableCell>Entity Type</StyledTableCell>
-              <StyledTableCell>Activity Type</StyledTableCell>
-              <StyledTableCell>Description</StyledTableCell>
-              <StyledTableCell>Actions</StyledTableCell>
+              <StyledTableCell>S. No</StyledTableCell>
+              <StyledTableCell>Type</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Subject</StyledTableCell>
+              <StyledTableCell width={"40%"}>Content</StyledTableCell>
+              <StyledTableCell sx={{ textAlign: "center" }}>Actions</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {templates.map((t) => (
-              <TableRow key={t.id}>
-                <StyledTableCell>{t.templateName}</StyledTableCell>
-                <StyledTableCell>{t.entityType}</StyledTableCell>
-                <StyledTableCell>{t.activityType}</StyledTableCell>
-                <StyledTableCell>
-                  <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", maxHeight: "10rem", overflowY: "auto", maxWidth: "50rem" }}>
-                    {t.description}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <FlexBetween>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleOpen(t)}
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => setCurrentTemplate(t) || setDeleteDialogOpen(true)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </FlexBetween>
-                </StyledTableCell>
-              </TableRow>
-            ))}
+            {templates.map((t, index) => {
+              const isExpanded = expandedId === t.id;
+              return (
+                <React.Fragment key={t.id}>
+                  {/* Summary Row */}
+                  <StyledTableRow                  >
+                    <StyledTableCell>{index + 1}</StyledTableCell>
+                    <StyledTableCell>{t.templateType}</StyledTableCell>
+                    <StyledTableCell>{t.templateName}</StyledTableCell>
+                    <StyledTableCell>{t.templateSubject}</StyledTableCell>
+                    <StyledTableCell
+                      sx={{ width: "30%", wordBreak: "break-word" }} e>
+                      {t.templateContent?.length > 100 ? t.templateContent.slice(0, 100) + "..." : t.templateContent || <i>No description</i>}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <FlexBetween>
+                        <IconButton
+                          color="primary"
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent row toggle when clicking edit
+                            handleOpen(t);
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          color="primary"
+                          onClick={() => toggleExpand(t.id)}
+                        >
+                          {expandedId === t.id ?
+                            <ArrowUp />
+                            :
+                            <ArrowDown />
+                          }
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent row toggle when clicking delete
+                            setCurrentTemplate(t);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </FlexBetween>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <ExpandedRow isExpanded={isExpanded} description={t.templateContent} />
+                </React.Fragment>
+              );
+            })}
           </TableBody>
-        </Table>
+        </StyledTable>
       </StyledTableContainer>
 
       {/* Add/Edit Dialog */}
@@ -204,38 +261,38 @@ const TemplatesPage = () => {
             }
             fullWidth
           />
-          <TextField
-            sx={{ mt: 2 }}
-            label="Entity Type"
-            value={currentTemplate?.entityType || ""}
-            onChange={(e) =>
-              setCurrentTemplate({ ...currentTemplate, entityType: e.target.value })
-            }
-            fullWidth
-          />
           <Select
-            value={currentTemplate?.activityType || ""}
+            value={currentTemplate?.templateType || ""}
             onChange={(e) =>
-              setCurrentTemplate({ ...currentTemplate, activityType: e.target.value })
+              setCurrentTemplate({ ...currentTemplate, templateType: e.target.value })
             }
             fullWidth
             displayEmpty
           >
             {
-              allActivities.map((activity) => (
-                <MenuItem key={activity} value={activity}>
-                  {activity}
+              [...templateTypes].map((templateType) => (
+                <MenuItem key={templateType} value={templateType}>
+                  {templateType}
                 </MenuItem>
               ))
             }
           </Select>
           <TextField
-            label="Description"
+            label="Subject"
+            rows={8}
+            value={currentTemplate?.templateSubject || ""}
+            onChange={(e) =>
+              setCurrentTemplate({ ...currentTemplate, templateSubject: e.target.value })
+            }
+            fullWidth
+          />
+          <TextField
+            label="Content"
             multiline
             rows={8}
-            value={currentTemplate?.description || ""}
+            value={currentTemplate?.templateContent || ""}
             onChange={(e) =>
-              setCurrentTemplate({ ...currentTemplate, description: e.target.value })
+              setCurrentTemplate({ ...currentTemplate, templateContent: e.target.value })
             }
             fullWidth
           />

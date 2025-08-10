@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
-  Table,
   TableBody,
   TableHead,
   Paper,
@@ -19,6 +18,7 @@ import {
   updatePaymentAPI,
 } from "./payment.api.js";
 import {
+  StyledTable,
   StyledTableCell,
   StyledTableContainer,
   StyledTableRow,
@@ -149,7 +149,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <Table>
+      <StyledTable>
         <TableHead>
           <StyledTableRow>
             <StyledTableCell sx={{ fontWeight: "bold" }}>S no.</StyledTableCell>
@@ -340,7 +340,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
             </StyledTableRow>
           )}
         </TableBody>
-      </Table>
+      </StyledTable>
       {/* {
         deleteDialogOpen && (
           <DeleteDialog

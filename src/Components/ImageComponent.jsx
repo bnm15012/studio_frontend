@@ -19,6 +19,7 @@ const ImageComponent = ({
   size = "200px",
   isCircular = true,
   allowEdit = false,
+  dirName = "default",
 }) => {
   const theme = useTheme();
   const showAlert = useAlert();
@@ -38,7 +39,7 @@ const ImageComponent = ({
 
       try {
         // Upload Image
-        const result = await uploadImageApiCall(file, token);
+        const result = await uploadImageApiCall(file, token, dirName);
 
         if (result.success) {
           showAlert(result.message, "success");
@@ -147,6 +148,7 @@ ImageComponent.propTypes = {
   size: PropTypes.string,
   isCircular: PropTypes.bool,
   allowEdit: PropTypes.bool,
+  dirName: PropTypes.string,
 };
 
 export default ImageComponent;

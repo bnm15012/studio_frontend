@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Table,
   TableBody,
   TableHead,
   Paper,
@@ -13,6 +12,7 @@ import { useAlert } from "../../../../utils/Alert";
 import Loading from "../../../../Components/Loading/Loading";
 import FlexEvenly from "../../../../Components/FlexEvenly";
 import {
+  StyledTable,
   StyledTableCell,
   StyledTableContainer,
   StyledTableRow,
@@ -123,7 +123,7 @@ const ManagerUserTable = ({
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <Table sx={{ minWidth: 650 }}>
+      <StyledTable sx={{ minWidth: 650 }}>
         <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
           <StyledTableRow>
             <StyledTableCell sx={{ textWrap: "nowrap", fontWeight: "bold", color: "#1976d2" }}>
@@ -270,7 +270,7 @@ const ManagerUserTable = ({
             </StyledTableRow>
           )}
         </TableBody>
-      </Table>
+      </StyledTable>
     </StyledTableContainer >
   );
 };

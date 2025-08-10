@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Table,
   TableBody,
   TableHead,
   Paper,
@@ -20,6 +19,7 @@ import {
 import Loading from "../../../Components/Loading/Loading";
 import FlexEvenly from "../../../Components/FlexEvenly";
 import {
+  StyledTable,
   StyledTableCell,
   StyledTableContainer,
   StyledTableRow,
@@ -166,7 +166,7 @@ const BookingsTable = ({
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <Table sx={{ minWidth: 650 }}>
+      <StyledTable sx={{ minWidth: 650 }}>
         <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
           <StyledTableRow>
             <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
@@ -530,7 +530,7 @@ const BookingsTable = ({
             </StyledTableRow>
           )}
         </TableBody>
-      </Table>
+      </StyledTable>
       {
         deleteDialogOpen && (
           <DeleteDialog

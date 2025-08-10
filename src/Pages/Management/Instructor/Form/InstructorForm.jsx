@@ -368,6 +368,7 @@ const InstructorForm = ({ page, ID }) => {
             </FlexBetween>
           </FlexBetweenColumn>
           <ImageComponent
+            dirName="instructor"
             setImage={setImage}
             image={newInstructorData?.imageUrl}
             isCircular={false}

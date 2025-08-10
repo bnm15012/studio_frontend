@@ -497,7 +497,6 @@ const Activities = () => {
                         plans={
                           activity.membershipPlanRequest.membershipPlanEntryList
                         }
-                        index={index}
                       />
                     </FlexBetween>
                   </CardContent>

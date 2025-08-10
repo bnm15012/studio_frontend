@@ -1,4 +1,4 @@
-import { styled, TableContainer, TableRow } from "@mui/material";
+import { styled, Table, TableContainer, TableRow } from "@mui/material";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -32,4 +32,9 @@ export const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: "8px",
   overflow: "hidden",
   boxShadow: theme.shadows[7],
+}));
+
+
+export const StyledTable = styled(Table)(() => ({
+  // tableLayout: "fixed",
 }));
