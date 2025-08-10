@@ -4,10 +4,13 @@ import { Button, Dialog, DialogTitle, DialogContent, IconButton, Typography, Sta
 import { Close } from "@mui/icons-material";
 import QRCode from "react-qr-code";
 import { QrCodeIcon } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contained" }) => {
     const [open, setOpen] = useState(false);
     const qrRef = useRef(null);
+    const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
+
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -71,7 +74,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                             <QRCode value={`${window.location.origin}/form/${link}`} size={qrSize} />
                         </Box>
                         <Typography variant="body2" sx={{ fontSize: "1.2rem", mt: 2 }}>
-                            {`${window.location.origin}/form/${link}`}
+                            {`${window.location.origin}/form/${link}/${currentBranch.branchId}`}
                         </Typography>
                     </div>
                     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>

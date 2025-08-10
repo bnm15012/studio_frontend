@@ -30,7 +30,7 @@ export const AllRoutes = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-and-condition" element={<TermsConditionPage />} />
         <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
-        <Route path="/form/:formId" element={<FormFillPage />} />
+        <Route path="/form/:formId/:branchId" element={<FormFillPage />} />
 
         {user && (
           <>

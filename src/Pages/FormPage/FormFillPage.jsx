@@ -10,16 +10,16 @@ const formData = [{
   onSubmit: addStudentAPI,
   fields: {
     name: { type: 'text', required: true },
-    email: { 
-      type: 'text', 
+    email: {
+      type: 'text',
       required: true,
       validation: {
         regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         errorMessage: "Please enter a valid email address",
       }
     },
-    phone: { 
-      type: 'text', 
+    phone: {
+      type: 'text',
       required: true,
       validation: {
         // Example: 10-digit phone number, digits only
@@ -28,8 +28,8 @@ const formData = [{
       }
     },
     dob: { type: 'date', required: true },
-    emergencyContactNumber: { 
-      type: 'text', 
+    emergencyContactNumber: {
+      type: 'text',
       required: true,
       validation: {
         // Allow digits, 10-12 length, or customize as needed
@@ -42,7 +42,7 @@ const formData = [{
 }];
 
 const FormFillPage = () => {
-  const { formId } = useParams();
+  const { formId, branchId } = useParams();
 
   useEffect(() => {
 
@@ -51,7 +51,7 @@ const FormFillPage = () => {
   ])
 
   const form = formData.filter(fd => fd.id === formId)[0];
-  return <>{form?.length !== 0 ? <FormBuilder form={form} /> : <div>Form not found</div>
+  return <>{form?.length !== 0 ? <FormBuilder form={form} branchId={branchId} /> : <div>Form not found</div>
   }</>
 };
 

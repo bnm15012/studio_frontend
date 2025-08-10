@@ -5,9 +5,9 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Typography, TextField, MenuItem, Button, Paper } from '@mui/material';
 import DateTimeField from './DateTimeField';
 
-const FormBuilder = ({ form }) => {
+const FormBuilder = ({ form, branchId }) => {
   const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
-  const [formState, setFormState] = useState({_form_sig: FORM_SIG});
+  const [formState, setFormState] = useState({ _form_sig: FORM_SIG });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const showAlert = useAlert();
@@ -63,10 +63,9 @@ const FormBuilder = ({ form }) => {
     try {
       setLoading(true);
       const { success, message } = await form.onSubmit({
-        studentData: cleanData,
+        studentData: { ...cleanData, "branchEntry": { branchId } },
         formSignature: FORM_SIG,
       });
-
       if (success) {
         showAlert(message, 'success');
       } else {
@@ -107,7 +106,7 @@ const FormBuilder = ({ form }) => {
 
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onClick={() => handleSubmit()}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -233,6 +232,7 @@ FormBuilder.propTypes = {
     fields: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired,
   }).isRequired,
+  branchId: PropTypes.number,
 };
 
 export default FormBuilder;
