@@ -9,26 +9,26 @@ const getHeaders = (token) => ({
 });
 
 // TODO: remove this function, not required anymore
-export const getAllTemplatesApi = async ({ token, studioId }) => {
-    try {
-        const response = await api.get(
-            `/getTemplates/${studioId}`,
-            getHeaders(token)
-        );
-        const { data, status } = response.data;
-        return {
-            data,
-            success: true,
-            totalCount: status.totalCount,
-            message: status.statusMessage || "Templates fetched successfully!",
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: getErrorMessage(error, "Failed to fetch Templates!"),
-        };
-    }
-};
+// export const getAllTemplatesApi = async ({ token, studioId }) => {
+//     try {
+//         const response = await api.get(
+//             `/getTemplates/${studioId}`,
+//             getHeaders(token)
+//         );
+//         const { data, status } = response.data;
+//         return {
+//             data,
+//             success: true,
+//             totalCount: status.totalCount,
+//             message: status.statusMessage || "Templates fetched successfully!",
+//         };
+//     } catch (error) {
+//         return {
+//             success: false,
+//             message: getErrorMessage(error, "Failed to fetch Templates!"),
+//         };
+//     }
+// };
 
 export const sendMessageApi = async ({ token, data }) => {
     try {

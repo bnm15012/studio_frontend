@@ -38,7 +38,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/bulk_upload",
       label: "Upload Data",
-      show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
+      show: settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
       icon: (
         <Upload />
       ),
@@ -67,14 +67,6 @@ const Sidebar = ({ sidebarOn }) => {
         <EventNote />
       ),
     },
-    // {
-    //   path: "/management/form",
-    //   label: "Forms",
-    //   show: true, //settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
-    //   icon: (
-    //     <Feed />
-    //   ),
-    // },
     {
       path: "/management/instructor",
       label: "Instructors",
@@ -141,7 +133,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/template",
       label: "Templates",
-      show: true, //settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "TEMPLATES")?.enabled && user?.role === "ADMIN",
       icon: (
         <BookTemplate />
       ),

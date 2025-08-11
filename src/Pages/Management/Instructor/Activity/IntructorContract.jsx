@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
 import Loading from '../../../../Components/Loading/Loading';
-import { DialogTitle, Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
+import { DialogTitle, Typography } from '@mui/material';
 import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
 import { useAlert } from '../../../../utils/Alert';
 
@@ -73,7 +73,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token, templateType: "INSTRUCTOR_CONTRACT" });
+                const res = await getAllTemplatesAPI({ studioId: studio.studioId, token, templateType: "INSTRUCTOR_CONTRACT" });
                 if (res.success) {
                     setTemplates(res.data || []);
                 } else {
@@ -84,7 +84,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
             }
         };
         fetchTemplates();
-    }, [currentBranch.branchId, showAlert, token]);
+    }, [showAlert, studio.studioId, token]);
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
@@ -94,9 +94,10 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
 
             if (matchedTemplate) {
                 setSelectedTemplateId(matchedTemplate.id);
-            } else {
-                setSelectedTemplateId(templates[0].id);
             }
+            // else {
+            //     setSelectedTemplateId(templates[0].id);
+            // }
         }
 
     }, [templates, selectedTemplateId, activityData.activityName]);
@@ -158,7 +159,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
                 Instructor Contract
-                <FormControl fullWidth sx={{ mt: 2 }}>
+                {/* <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel id="template-select-label">Select Template</InputLabel>
                     <Select
                         labelId="template-select-label"
@@ -172,7 +173,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             </MenuItem>
                         ))}
                     </Select>
-                </FormControl>
+                </FormControl> */}
             </DialogTitle>
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
@@ -245,7 +246,12 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                                     dangerouslySetInnerHTML={{ __html: preparedDescription.replace(/\n/g, "<br />") }}
                                 />
                             ) : (
-                                <p>No template selected.</p>
+                                <Typography
+                                    variant="body2"
+                                    sx={{ color:"red", fontWeight: 'bold', textAlign: 'center' , fontSize: '20px' }}
+                                >
+                                    No Contract Template Created.
+                                </Typography>
                             )}
                         </div>
 

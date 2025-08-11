@@ -55,7 +55,7 @@ const TemplatesPage = () => {
   useSelector((state) => state.activity.activities)?.map(x => templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType)) || [];
   const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
-  const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
+  const studio = useSelector((state) => state.auth.studio);
 
   const [templates, setTemplates] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -75,7 +75,7 @@ const TemplatesPage = () => {
     const fetchTemplates = async () => {
       try {
         setLoading(true);
-        const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token });
+        const res = await getAllTemplatesAPI({ studioId: studio.studioId, token });
         if (res.success) {
           setTemplates(res.data || []);
         } else {
@@ -83,12 +83,12 @@ const TemplatesPage = () => {
         }
       } catch {
         showAlert("Error loading templates", "error");
-      }finally{
+      } finally {
         setLoading(false);
       }
     };
     fetchTemplates();
-  }, [currentBranch.branchId, showAlert, token]);
+  }, [showAlert, studio.studioId, token]);
 
   const handleOpen = (template = null) => {
     setCurrentTemplate(
@@ -98,7 +98,7 @@ const TemplatesPage = () => {
         templateName: "",
         templateSubject: "",
         templateContent: "",
-        branchId: currentBranch.branchId,
+        studioId: studio.studioId,
       }
     );
     setIsEditMode(!!template);

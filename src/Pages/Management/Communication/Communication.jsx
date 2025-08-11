@@ -48,6 +48,7 @@ const initialTemplate = {
 const Communication = () => {
   const token = useSelector((state) => state.auth.token);
   const theme = useTheme()
+  const studio = useSelector((state) => state.auth.studio);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const showAlert = useAlert();
 
@@ -62,20 +63,33 @@ const Communication = () => {
 
   const fetchTemplates = useCallback(async () => {
     try {
-      const res = await getAllTemplatesAPI({ branchId: currentBranch.branchId, token, templateType: "COMMUNICATION" });
+      const res = await getAllTemplatesAPI({ studioId: studio.studioId, token, templateType: "COMMUNICATION" });
       if (res.success) {
-        setTemplates(res?.data ? [initialTemplate, ...res.data] : [initialTemplate]);
+        setTemplates((prevTemplates) => {
+          const prevMaxId = Math.max(
+            ...prevTemplates.map((t) => t.id || 0),
+            initialTemplate.id || 0
+          );
+          let nextId = prevMaxId + 1;
+          const processedData = (res?.data || []).map((template) => {
+            if (!template.id) {
+              return { ...template, id: nextId++ };
+            }
+            return template;
+          });
+          return [initialTemplate, ...processedData];
+        });
       } else {
         showAlert(res.message || "Failed to load templates", "error");
       }
     } catch {
       showAlert("Error loading templates", "error");
     }
-  }, [currentBranch.branchId, token, showAlert]);
+  }, [studio.studioId, token, showAlert]);
 
   useEffect(() => {
     fetchTemplates();
-  }, [currentBranch.branchId, fetchTemplates, showAlert, token]);
+  }, [studio.studioId, fetchTemplates, showAlert, token]);
 
   useEffect(() => {
     if (templates.length && !selectedTemplateId) {
@@ -121,8 +135,8 @@ const Communication = () => {
   };
 
   const sendMail = async () => {
-    if (!selectedTemplate.title || !selectedTemplate.content) {
-      showAlert("Please fill the title and content.", "error");
+    if (!selectedTemplate.title || !selectedTemplate.content || !selectedTemplate.notificationType) {
+      showAlert("Please fill the title, mail type and content.", "error");
       return;
     }
 
