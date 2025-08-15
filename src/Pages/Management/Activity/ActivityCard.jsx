@@ -44,11 +44,10 @@ export const ActivityCard = ({
 }) => {
     const theme = useTheme();
     const [editedActivity, setEditedActivity] = useState(activity);
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
     const handleSave = () => {
         onUpdate(editedActivity);
-        setIsEditing(false);
     };
 
     const handleCancel = () => {
@@ -94,6 +93,7 @@ export const ActivityCard = ({
         <Fade in timeout={600}>
             <Card
                 sx={{
+                    // height: "100%",
                     position: 'relative',
                     overflow: 'visible',
                     '&::before': {

@@ -49,7 +49,7 @@ export const BatchCard = ({
         transition: 'all 0.2s ease',
         '&:hover': {
           backgroundColor: alpha(theme.palette.background.default, 0.8),
-          transform: 'translateY(-1px)',
+          // transform: 'translateY(-1px)',
         }
       }}
     >
@@ -92,13 +92,21 @@ export const BatchCard = ({
 
             {isEditing ? (
               <Box display="grid" gridTemplateColumns="1fr 1fr" gap={1}>
+                {/* <DateTimeField
+                  format="TIME"
+                  value={editedBatch.startTime}
+                  onChange={(value) => updateField("startTime", value)}
+                  textFieldVarient="outlined"
+                  placeholder="Start Time"
+                /> */}
                 <TextField
                   size="small"
                   label="Start Time"
+                  sx={{ transform: 'nonez' }}
                   type="time"
                   value={editedBatch.startTime}
                   onChange={(e) => updateField("startTime", e.target.value)}
-                  InputLabelProps={{ shrink: true }}
+                  // InputLabelProps={{ shrink: true }}
                   variant="outlined"
                 />
                 <TextField
@@ -107,7 +115,7 @@ export const BatchCard = ({
                   type="time"
                   value={editedBatch.endTime}
                   onChange={(e) => updateField("endTime", e.target.value)}
-                  InputLabelProps={{ shrink: true }}
+                  // InputLabelProps={{ shrink: true }}
                   variant="outlined"
                 />
               </Box>

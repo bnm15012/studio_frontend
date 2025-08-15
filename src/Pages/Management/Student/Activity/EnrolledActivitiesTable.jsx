@@ -275,7 +275,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               <TableCell sx={{ fontWeight: 700 }}>Membership</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Batch</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Batch Time</TableCell>
+              <TableCell sx={{ fontWeight: 700, textWrap: "nowrap" }}>Batch Time</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Registration Date</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>
                 Membership Start Date

@@ -22,10 +22,10 @@ const ActivityMembershipSelector = ({
   );
   const [daysPerWeek, setDaysPerWeek] = useState(null);
   const [amount, setAmount] = useState(null);
-  const [batchName, setBatchName] = useState(selectedData?.batchName || "default batch");
+  const [batchName, setBatchName] = useState(selectedData?.batchName);
   const [availableDaysOptions, setAvailableDaysOptions] = useState([]);
   const [availableBatches, setAvailableBatches] = useState([]);
-  const [batchTime, setBatchTime] = useState("00:00 - 00:00");
+  const [batchTime, setBatchTime] = useState("");
 
   useEffect(() => {
     if (onSelect) {
@@ -175,19 +175,16 @@ const ActivityMembershipSelector = ({
                 fullWidth
                 disabled={availableBatches.length === 0}
               >
-                {availableBatches.length > 0 ? (
+                {availableBatches &&
                   availableBatches.map((batch, idx) => (
                     <MenuItem key={idx} value={batch.name}>
                       {batch.name}
                     </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="default batch">default batch</MenuItem>
-                )}
+                  ))}
               </Select>
             </FormControl>
           </TableCell>
-          <TableCell></TableCell>
+          <TableCell>{batchTime}</TableCell>
         </>
       )}
     </>

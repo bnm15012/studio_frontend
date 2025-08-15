@@ -27,10 +27,14 @@ import {
 } from '@mui/icons-material';
 import { BatchCard } from './BatchCard';
 import PropTypes from 'prop-types';
+import { validMembershipTypes } from './Activities.constants';
 
 const membershipTypeColors = {
   MONTHLY: '#7c3aed',
   QUARTERLY: '#3b82f6',
+  REGISTRATION: '#10b981',
+  YEARLY: '#f59e0b',
+  HALF_YEARLY: '#ef4444',
 };
 
 
@@ -100,9 +104,11 @@ export const MembershipPlanCard = ({
                     label="Type"
                     onChange={(e) => updateField("membershipType", e.target.value)}
                   >
-                    <MenuItem value="MONTHLY">Monthly</MenuItem>
-                    <MenuItem value="QUARTERLY">Quarterly</MenuItem>
-                    <MenuItem value="YEARLY">Yearly</MenuItem>
+                    {
+                      validMembershipTypes.map((type) => (
+                        <MenuItem key={type} value={type}>{type}</MenuItem>
+                      ))
+                    }
                   </Select>
                 </FormControl>
                 <TextField

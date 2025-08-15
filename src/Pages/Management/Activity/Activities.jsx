@@ -112,26 +112,32 @@ const Activities = () => {
   };
 
   const handleSaveCard = async (updatedActivity) => {
-    // const validationErrors = {};
-    // const { isDuplicate, duplicateType, duplicateDays } = checkPlanUniqueness(
-    //   tempData.membershipPlanRequest.membershipPlanEntryList
-    // );
-    // if (isDuplicate) {
-    //   showAlert(`Membership plan with type "${duplicateType}" and ${duplicateDays} days/week already exists.`, "error")
-    //   return;
-    // }
+    if (!updatedActivity.membershipPlanEntry?.length) {
+      showAlert("You must add at least one membership plan.", "error");
+      return;
+    }
 
-    // tempData.membershipPlanRequest.membershipPlanEntryList.map((plan, idx) => {
-    //   if (!validateAmount(plan.amount)) {
-    //     validationErrors[`amount_${idx}`] = "Invalid amount.";
-    //   }
-    //   return plan;
-    // });
+    for (let i = 0; i < updatedActivity.membershipPlanEntry.length; i++) {
+      const plan = updatedActivity.membershipPlanEntry[i];
 
-    // if (Object.keys(validationErrors).length > 0) {
-    //   setErrors(validationErrors);
-    //   return;
-    // }
+      if (!plan.activityBatchEntries || plan.activityBatchEntries.length === 0) {
+        showAlert(
+          `Membership plan "${plan.membershipType}" must have at least one batch.`,
+          "error"
+        );
+        return;
+      }
+    }
+
+    if (!updatedActivity.activityType || updatedActivity.activityType === "NEW") {
+      showAlert("Activity type is required.", "error");
+      return;
+    }
+
+    if(allActivities.some(activity => activity.activityType === updatedActivity.activityType && activity.activityId !== updatedActivity.activityId)) {
+      showAlert("Activity type must be unique.", "error");
+      return;
+    }
 
     try {
       if (updatedActivity?.activityId === undefined) {
@@ -167,6 +173,7 @@ const Activities = () => {
         }
       }
     } catch (error) {
+      setEditMode(false);
       console.error(error);
       showAlert("Error updating activity!", "error");
     }
