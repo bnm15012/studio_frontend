@@ -44,7 +44,7 @@ export const ActivityCard = ({
 }) => {
     const theme = useTheme();
     const [editedActivity, setEditedActivity] = useState(activity);
-    const [expanded, setExpanded] = useState(false);
+    const [expanded, setExpanded] = useState(isEditing === activity.activityType);
 
     const handleSave = () => {
         onUpdate(editedActivity);
@@ -172,11 +172,11 @@ export const ActivityCard = ({
                             ) : (
                                 <>
                                     <Tooltip title="Edit Activity">
-                                        <IconButton onClick={() => setIsEditing(activity.activityType)} size="small">
+                                        <IconButton onClick={() => setIsEditing(activity.activityType)} size="small" disabled={isEditing}>
                                             <Edit />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Delete Activity">
+                                    <Tooltip title="Delete Activity" disabled={isEditing}>
                                         <IconButton
                                             onClick={() => onDelete(activity.activityId)}
                                             color="error"
