@@ -64,7 +64,7 @@ export const colorTokens = {
     900: "#1B071F",
   },
   activityCardGradient: {
-    light: [
+    dark: [
       "linear-gradient(130deg,rgb(243, 187, 134), #F0F0F0)",
       "linear-gradient(130deg,rgb(121, 229, 229), #F0F0F0)",
       "linear-gradient(130deg,rgb(233, 243, 123), #F0F0F0)",
@@ -73,7 +73,7 @@ export const colorTokens = {
       "linear-gradient(130deg,rgb(249, 181, 113), #F0F0F0)",
       "linear-gradient(130deg,rgb(134, 209, 246), #F0F0F0)",
     ],
-    dark: [
+    light: [
       `linear-gradient(120deg,rgba(11, 120, 175, 1), #262626)`,
       `linear-gradient(120deg,rgba(182, 99, 17, 1), #262626)`,
       `linear-gradient(120deg,rgba(143, 226, 48, 1), #262626)`,

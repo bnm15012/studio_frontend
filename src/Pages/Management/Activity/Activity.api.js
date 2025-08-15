@@ -3,8 +3,7 @@ import { validMembershipTypes } from "./Activities.constants";
 
 export const addActivityAPI = async ({ activityData, token }) => {
   try {
-    const sortedActivity = sortMembershipPlans(activityData);
-    const response = await api.post(`/activities/add`, sortedActivity, {
+    const response = await api.post(`/activities/add`, activityData, {
       headers: {
         Authorization: `${token}`,
       },
@@ -27,7 +26,7 @@ export const addActivityAPI = async ({ activityData, token }) => {
 
 export const updateActivityAPI = async ({ activityId, activityData, token }) => {
   try {
-    const sortedActivity = sortMembershipPlans(activityData);    
+    const sortedActivity = sortMembershipPlans(activityData);
     const response = await api.put(`/activities/update/${activityId}`, sortedActivity, {
       headers: {
         Authorization: `${token}`,

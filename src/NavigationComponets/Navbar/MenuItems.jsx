@@ -125,7 +125,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
 };
 
 MenuItems.propTypes = {
-  isNonMobileScreens: PropTypes.bool.isRequired,
+  isNonMobileScreens: PropTypes.bool,
 };
 
 export default MenuItems;

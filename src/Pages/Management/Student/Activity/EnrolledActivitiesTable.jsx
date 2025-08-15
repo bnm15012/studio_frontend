@@ -53,6 +53,8 @@ const initialNewRowState = {
   membershipEndDate: "",
   membershipStatus: "INACTIVE",
   activityAmount: 0,
+  batchName: "default",
+  batchTime: "",
   daysPerWeek: 0,
   paymentEntry: {
     payeeType: "STUDENT",
@@ -226,6 +228,8 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
     index,
     activity,
     membershipType,
+    batchName,
+    batchTime,
     daysPerWeek,
     amount
   ) => {
@@ -234,19 +238,23 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
       const updatedData = [...tableData];
       updatedData[index].activityName = activity?.activityType;
       updatedData[index].membershipType = membershipType;
-      if (activity && membershipType) {
+      updatedData[index].batchName = batchName;
+      if (batchName) {
         updatedData[index].daysPerWeek = daysPerWeek;
         updatedData[index].activityAmount = amount
+        updatedData[index].batchTime = batchTime;
       }
       setTableData(updatedData);
     } else {
       newRow.activityName = activity?.activityType;
-      if (activity && membershipType) {
+      newRow.batchName = batchName;
+      if (batchName) {
         newRow.membershipType = membershipType;
         newRow.daysPerWeek = daysPerWeek;
         newRow.activityAmount = amount
         paymentEntry.amount = amount;
         paymentEntry.actualAmount = amount;
+        newRow.batchTime = batchTime;
       }
       setNewRow((prev) => ({
         ...prev,
@@ -266,6 +274,8 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               <TableCell sx={{ fontWeight: 700 }}>Activity</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Membership</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Batch</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Batch Time</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Registration Date</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>
                 Membership Start Date
@@ -316,6 +326,12 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                         </>
                       )
                     }
+                  </TableCell>
+                  <TableCell>
+                    {(row.batchName)}
+                  </TableCell>
+                  <TableCell>
+                    {(row.batchTime)}
                   </TableCell>
                   <TableCell>
                     {getLocalDateTime(row.registrationDate)}
@@ -422,15 +438,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
             {showAddNewRow ? (
               <TableRow>
                 <ActivityMembershipSelector
-                  onSelect={(activity, membershipType, daysPerWeek, amount) =>
-                    handleActivityMembershipChange(
-                      null,
-                      activity,
-                      membershipType,
-                      daysPerWeek,
-                      amount
-                    )
-                  }
+                  onSelect={handleActivityMembershipChange}
                 />
                 <TableCell>
                   <DateTimeField

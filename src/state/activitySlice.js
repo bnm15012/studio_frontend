@@ -22,7 +22,7 @@ const activitySlice = createSlice({
       }
     },
     deleteActivity: (state, action) => {
-      state.activities = state.activities.filter(a => a.activityId !== action.payload.activityId);
+      state.activities = state.activities.filter(a => a.activityId !== action.payload);
     },
     clearActivities: (state) => {
       state.activities = [];

@@ -1,28 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Card,
-  CardContent,
   Typography,
-  IconButton,
   Box,
   Button,
-  TextField,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  useTheme,
+  Container,
 } from "@mui/material";
 import {
-  Edit,
-  Delete,
   Add,
-  Check,
-  Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import FlexEvenly from "../../../Components/FlexEvenly";
 import FlexBetween from "../../../Components/FlexBetween";
+import { ActivityCard } from "./ActivityCard";
 import { useAlert } from "../../../utils/Alert";
 import {
   addActivityAPI,
@@ -30,27 +18,21 @@ import {
   getAllActivitiesAPI,
   updateActivityAPI,
 } from "./Activity.api";
-import { validateAmount } from "./Activity.constraints"; // Import constraints
-import MembershipTable from "./MembershipTable";
 import DeleteDialog from "../../../Components/DeleteDialog";
-import { getIcon, validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import { addActivity, deleteActivity, setActivities, updateActivity } from "../../../state/activitySlice";
 
 const Activities = () => {
   const showAlert = useAlert();
-  const theme = useTheme();
   const allActivities = useSelector((state) => state.activity.activities);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [activityData, setActivityData] = useState(allActivities);
-  const [editMode, setEditMode] = useState(null);
-  const [tempData, setTempData] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [editMode, setEditMode] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const handleAddCard = () => {
-    if (editMode !== null) {
+    if (editMode) {
       showAlert(
         "Please save or cancel the current edit before adding a new activity.",
         "warning"
@@ -61,14 +43,26 @@ const Activities = () => {
     const newActivity = {
       activityType: "NEW",
       description: "",
-      membershipPlanRequest: {
-        membershipPlanEntryList: [{ membershipType: "", daysPerWeek: 7, amount: "" }],
-      },
-    };
-
-    setActivityData((prev) => [...prev, newActivity]);
+      branchId: currentBranch.branchId,
+      membershipPlanEntry: [
+        {
+          membershipType: "MONTHLY",
+          daysPerWeek: 5,
+          activityBatchEntries: [
+            {
+              price: 0.0,
+              name: "Default Batch",
+              startTime: "00:00",
+              endTime: "00:00"
+            }
+          ]
+        }
+      ]
+    }
+    setActivityData((prev) => {
+      return [...prev, newActivity]
+    });
     setEditMode(newActivity.activityType);
-    setTempData(newActivity);
   };
 
   const fetchActivityData = useCallback(async () => {
@@ -88,28 +82,27 @@ const Activities = () => {
   }, [dispatch, showAlert, currentBranch.branchId, token]);
 
   useEffect(() => {
-    allActivities.lengh == 0 && fetchActivityData();
-  }, [fetchActivityData]);
+    if (allActivities.lengh == 0 && !activityData) {
+      fetchActivityData();
+    }
+  }, [allActivities.lengh, fetchActivityData, allActivities, activityData]);
 
-  const handleEditCard = (activity) => {
-    setEditMode(activity.activityType);
-    setTempData({ ...activity });
-    setErrors({});
-  };
+  useEffect(() => {
+    setActivityData(allActivities);
+  }, [allActivities]);
 
-  const handleDeleteActivity = async (idx) => {
+  const handleDeleteActivity = async (activityId) => {
     try {
       const { success } = await deleteActivityAPI({
         token,
-        activityId: activityData[idx].activityId,
+        activityId: activityId,
       });
       if (success) {
         const updatedData = activityData.filter(
-          (_, activityIdx) => activityIdx !== idx
+          (activity) => activity.activityId !== activityId
         );
-
         setActivityData(updatedData);
-        dispatch(deleteActivity(activityData[idx]));
+        dispatch(deleteActivity(activityId));
         showAlert("Activity deleted successfully!", "success");
       }
     } catch (error) {
@@ -118,79 +111,56 @@ const Activities = () => {
     }
   };
 
-  const checkPlanUniqueness = (plans, excludeIndex = null) => {
-    const seen = new Set();
-    for (let i = 0; i < plans.length; i++) {
-      if (i === excludeIndex) continue; // Skip the plan being updated
-      const plan = plans[i];
-      if (!plan.membershipType || plan.daysPerWeek == null) continue;
-      const key = `${plan.membershipType}-${plan.daysPerWeek}`;
-      if (seen.has(key)) {
-        return {
-          isDuplicate: true,
-          duplicateType: plan.membershipType,
-          duplicateDays: plan.daysPerWeek,
-        };
-      }
-      seen.add(key);
-    }
-    return { isDuplicate: false };
-  };
+  const handleSaveCard = async (updatedActivity) => {
+    // const validationErrors = {};
+    // const { isDuplicate, duplicateType, duplicateDays } = checkPlanUniqueness(
+    //   tempData.membershipPlanRequest.membershipPlanEntryList
+    // );
+    // if (isDuplicate) {
+    //   showAlert(`Membership plan with type "${duplicateType}" and ${duplicateDays} days/week already exists.`, "error")
+    //   return;
+    // }
 
-  const handleSaveCard = async (id) => {
-    const validationErrors = {};
-    const { isDuplicate, duplicateType, duplicateDays } = checkPlanUniqueness(
-      tempData.membershipPlanRequest.membershipPlanEntryList
-    );
-    if (isDuplicate) {
-      showAlert(`Membership plan with type "${duplicateType}" and ${duplicateDays} days/week already exists.`, "error")
-      return;
-    }
+    // tempData.membershipPlanRequest.membershipPlanEntryList.map((plan, idx) => {
+    //   if (!validateAmount(plan.amount)) {
+    //     validationErrors[`amount_${idx}`] = "Invalid amount.";
+    //   }
+    //   return plan;
+    // });
 
-    tempData.membershipPlanRequest.membershipPlanEntryList.map((plan, idx) => {
-      if (!validateAmount(plan.amount)) {
-        validationErrors[`amount_${idx}`] = "Invalid amount.";
-      }
-      return plan;
-    });
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    const updatedData = [...activityData];
-    updatedData[id] = tempData;
+    // if (Object.keys(validationErrors).length > 0) {
+    //   setErrors(validationErrors);
+    //   return;
+    // }
 
     try {
-      if (updatedData[id]?.activityId === undefined) {
-        updatedData[id]["branchId"] = currentBranch.branchId;
+      if (updatedActivity?.activityId === undefined) {
         const { success, data, message } = await addActivityAPI({
-          activityData: updatedData[id],
+          activityData: updatedActivity,
           token,
         });
         if (success) {
-          updatedData[id] = data;
-          setActivityData(updatedData);
-          dispatch(addActivity(updatedData[id]));
-          setEditMode(null);
-          setTempData(null);
+          setActivityData((prev) => {
+            return [...prev.filter(f => f.activityId !== undefined), data]
+          });
+          dispatch(addActivity(data));
+          setEditMode(false);
           showAlert(message, "success");
         } else {
           showAlert(message, "error");
         }
       } else {
         const { success, data, message } = await updateActivityAPI({
-          activityId: updatedData[id].activityId,
-          activityData: updatedData[id],
+          activityId: updatedActivity.activityId,
+          activityData: updatedActivity,
           token,
         });
         if (success) {
           dispatch(updateActivity(data));
-          updatedData[id] = data;
-          setActivityData(updatedData);
-          setEditMode(null);
-          setTempData(null);
+          setActivityData((prev) => {
+            return [...prev.filter(f => f.activityId !== data.activityId), data]
+          });
+          setEditMode(false);
           showAlert(message, "success");
         } else {
           throw Error();
@@ -202,67 +172,6 @@ const Activities = () => {
     }
   };
 
-  const handleCancelEdit = () => {
-    if (tempData && tempData?.activityId === undefined) {
-      // Remove the newly added unsaved activity
-      setActivityData((prev) =>
-        prev.filter((activity) => activity?.activityId !== undefined)
-      );
-    }
-    setEditMode(null);
-    setTempData(null);
-    setErrors({});
-  };
-
-  const handleAddNewPlan = () => {
-    setTempData((prev) => ({
-      ...prev,
-      membershipPlanRequest: {
-        membershipPlanEntryList: [
-          ...prev.membershipPlanRequest.membershipPlanEntryList,
-          { membershipType: "", daysPerWeek: 7, amount: "" },
-        ],
-      },
-    }));
-  };
-
-  const updateMembershipPlan = (idx, field, value) => {
-    setTempData((prev) => {
-      const updatedPlans =
-        prev.membershipPlanRequest.membershipPlanEntryList.map(
-          (plan, planIdx) =>
-            planIdx === idx ? { ...plan, [field]: value } : plan
-        );
-
-      return {
-        ...prev,
-        membershipPlanRequest: {
-          membershipPlanEntryList: updatedPlans,
-        },
-      };
-    });
-  };
-
-  const handleDeletePlan = (idx) => {
-    // Constraint: Ensure the plan is not the last one in the list
-    const plansList = tempData.membershipPlanRequest.membershipPlanEntryList;
-
-    if (plansList.length === 1) {
-      // If there's only one plan left, prevent deletion
-      showAlert("You cannot delete the last membership plan.", "warning");
-      return;
-    }
-
-    setTempData((prev) => ({
-      ...prev,
-      membershipPlanRequest: {
-        membershipPlanEntryList:
-          prev.membershipPlanRequest.membershipPlanEntryList.filter(
-            (_, planIdx) => planIdx !== idx
-          ),
-      },
-    }));
-  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -271,282 +180,72 @@ const Activities = () => {
         <Button
           variant="contained"
           color="primary"
-          disabled={editMode !== null}
+          disabled={editMode}
           sx={{ fontWeight: "bold", padding: ".8rem" }}
           onClick={handleAddCard}
         >
           <Add />
         </Button>
       </FlexBetween>
-
-      <FlexEvenly
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(auto-fit, minmax(450px, 1fr))" },
-          gap: 2,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        flexWrap="wrap">
-        {activityData &&
-          activityData.map((activity, index) => (
-            <Card
-              key={index}
-              sx={{
-                maxWidth: 450,
-                textAlign: "center",
-                borderRadius: 4,
-                p: 2,
-                m: "auto",
-                height: "35rem",
-                boxShadow: 5,
-                display: "flex",
-                flexDirection: "column",
-                aspectRatio: "1/1",
-                transition: "transform 0.3s",
-                position: "relative",
-                background: theme.palette.activityCardGradient[index % theme.palette.activityCardGradient.length],
-                "&:hover": {
-                  transform: "scale(1.03)",
-                },
-              }}
-            >
-              <Box
-                sx={{
-                  backgroundColor: "transparent",
-                  boxShadow: theme.shadows[0],
-                  width: "100%",
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        <Box
+          display="grid"
+          gridTemplateColumns={{
+            xs: '1fr',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(3, 1fr)'
+          }}
+          gap={3}
+        >
+          {activityData && activityData.map((activity, index) => (
+            <Box key={activity.activityId}>
+              <ActivityCard
+                index={index}
+                cancelEdit={() => {
+                  setEditMode(false);
+                  setActivityData((prev) => {
+                    return [...prev.filter(f => f.activityId !== undefined)]
+                  });
                 }}
-                mb={2}
-              >
-                <FlexBetween>
-                  {editMode === activity.activityType ? (
-                    <>
-                      <IconButton
-                        onClick={() => handleSaveCard(index)}
-                        color="success"
-                      >
-                        <Check />
-                      </IconButton>
-                      <IconButton onClick={handleCancelEdit} color="error">
-                        <Close />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <IconButton
-                        disabled={editMode !== null}
-                        sx={{ color: "red" }}
-                        onClick={() => setOpenDeleteDialog(true)}
-                      >
-                        <Delete />
-                      </IconButton>
-                      <IconButton
-                        disabled={editMode !== null}
-                        sx={{ color: "blue" }}
-                        onClick={() => handleEditCard(activity)}
-                      >
-                        <Edit />
-                      </IconButton>
-                    </>
-                  )}
-                </FlexBetween>
-              </Box>
-              <Box sx={{ flexGrow: "1", }}>
-                {editMode === activity.activityType ? (
-                  <FlexBetween flexDirection={"column"} sx={{ gap: 2 }}>
-                    <FormControl fullWidth>
-                      <InputLabel>Activity Type</InputLabel>
-                      <Select
-                        label="Activity Type"
-                        value={tempData.activityType}
-                        onChange={(e) =>
-                          setTempData((prev) => ({
-                            ...prev,
-                            activityType: e.target.value,
-                          }))
-                        }
-                        error={!!errors.activityType}
-                      >
-                        {validActivityTypes.map((m) => {
-                          return (
-                            <MenuItem value={m} key={m}>
-                              {m}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                      {errors.activityType && (
-                        <span style={{ color: "red" }}>
-                          {errors.activityType}
-                        </span>
-                      )}
-                    </FormControl>
-                    <TextField
-                      label="Description"
-                      value={tempData.description}
-                      onChange={(e) =>
-                        setTempData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      error={!!errors.description}
-                      helperText={errors.description}
-                      fullWidth
-                    />
-                    <Typography variant="subtitle1" fontWeight="bold" mt={2}>
-                      Membership Plans
-                    </Typography>
-                    <Box sx={{ overflow: "auto", height: "10rem" }}>
-                      {tempData.membershipPlanRequest.membershipPlanEntryList.map(
-                        (plan, idx) => (
-                          <FlexBetween
-                            alignItems={"center"}
-                            key={idx}
-                            gap={1}
-                          >
-                            <FormControl variant="standard" fullWidth>
-                              <InputLabel>Membership Type</InputLabel>
-                              <Select
-                                label="Membership Type"
-                                value={plan.membershipType}
-                                onChange={(e) => {
-                                  updateMembershipPlan(
-                                    idx,
-                                    "membershipType",
-                                    e.target.value
-                                  )
-                                  e.target.value === "REGISTRATION" && updateMembershipPlan(idx, "daysPerWeek", 0)
-                                }
-                                }
-                                error={!!errors[`membershipType_${idx}`]}
-                              >
-                                {validMembershipTypes.map((m) => {
-                                  return (
-                                    <MenuItem value={m} key={m}>
-                                      {m}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
-                              {errors.activityType && (
-                                <span style={{ color: "red" }}>
-                                  {errors.activityType}
-                                </span>
-                              )}
-                            </FormControl>
-                            <TextField
-                              label="Days Per Week"
-                              type="number"
-                              variant="standard"
-                              disabled={plan.membershipType === "REGISTRATION"}
-                              value={plan.daysPerWeek}
-                              onChange={(e) =>
-                                updateMembershipPlan(idx, "daysPerWeek", e.target.value)
-                              }
-                            />
-                            <TextField
-                              label="Amount"
-                              type="number"
-                              variant="standard"
-                              value={plan.amount}
-                              onChange={(e) =>
-                                updateMembershipPlan(idx, "amount", e.target.value)
-                              }
-                              error={!!errors[`amount_${idx}`]}
-                              helperText={errors[`amount_${idx}`]}
-                            />
-                            <Button
-                              sx={{ color: "red" }}
-                              onClick={() => handleDeletePlan(idx)}
-                            >
-                              <Delete />
-                            </Button>
-                          </FlexBetween>
-                        )
-                      )}
-                    </Box>
-
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                      onClick={handleAddNewPlan}
-                    >
-                      Add Plan
-                    </Button>
-                  </FlexBetween>
-                ) : (
-                  <CardContent sx={{ height: "100%" }}>
-                    <FlexBetween flexDirection="column" height={"100%"}>
-                      <Box>
-                        <Box>{getIcon(activity.activityType)}</Box>
-                        <Typography
-                          variant="h5"
-                          sx={{ fontWeight: "bold" }}
-                          gutterBottom
-                        >
-                          {activity.activityType}
-                        </Typography>
-                        <Typography variant="body1">
-                          {activity.description}
-                        </Typography>
-                      </Box>
-                      <MembershipTable
-                        plans={
-                          activity.membershipPlanRequest.membershipPlanEntryList
-                        }
-                      />
-                    </FlexBetween>
-                  </CardContent>
-                )}
-              </Box>
+                activity={activity}
+                onUpdate={handleSaveCard}
+                onDelete={() => setOpenDeleteDialog(true)}
+                isEditing={editMode}
+                setIsEditing={setEditMode}
+              />
               <DeleteDialog
                 displayData={activity.activityType}
                 id={activity.activityId}
                 open={openDeleteDialog}
                 key={activity.activityType}
-                onConfirm={() => handleDeleteActivity(index)}
+                onConfirm={handleDeleteActivity}
                 onClose={() => setOpenDeleteDialog(false)}
               />
-            </Card>
+            </Box>
           ))}
-        {activityData.length === 0 && (
+        </Box>
+
+        {activityData?.length === 0 && (
           <Box
-            sx={{
-              maxWidth: 500,
-              width: "100%",
-              textAlign: "center",
-              p: 10,
-              transition: "transform 0.3s",
-              position: "relative",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin: "0 auto",
-              "&:hover": {
-                transform: "scale(1.05)",
-              },
-            }}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            py={12}
+            textAlign="center"
           >
-            <Typography
-              variant="h5"
-              sx={{
-                background: theme.palette.primary.main,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                fontWeight: "bold",
-                letterSpacing: "0.1em",
-                textShadow: theme.shadows[2]
-              }}
-            >
-              No Activities Added Yet!
+            <Typography variant="h1" sx={{ fontSize: '4rem', mb: 2 }}>
+              🏋️
+            </Typography>
+            <Typography variant="h3" fontWeight={600} mb={2}>
+              No Activities Yet
+            </Typography>
+            <Typography variant="h6" color="text.secondary" mb={4}>
+              Start by creating your first activity
             </Typography>
           </Box>
         )}
-      </FlexEvenly>
+      </Container>
     </div >
   );
 };
