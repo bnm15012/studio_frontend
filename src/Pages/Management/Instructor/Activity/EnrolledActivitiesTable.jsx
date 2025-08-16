@@ -369,12 +369,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
               <TableRow>
                 <ActivityMembershipSelector
                   isMemberSHipToo={false}
-                  onSelect={(activity, membershipType) =>
-                    handleActivityMembershipChange(
-                      null,
-                      activity,
-                      membershipType
-                    )
+                  onSelect={handleActivityMembershipChange
                   }
                 />
                 <TableCell>

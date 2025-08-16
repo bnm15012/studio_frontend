@@ -46,13 +46,11 @@ const ActivityMembershipSelector = ({
   const handleMembershipChange = (event) => {
     const membership = event.target.value;
     setSelectedMembership(membership);
-    setDaysPerWeek(null);
-
     const plans = selectedActivity?.membershipPlanEntry || [];
     const filteredPlans = plans.filter((p) => p.membershipType === membership);
 
     const plan = filteredPlans[0];
-    setDaysPerWeek(plan?.daysPerWeek || null);
+    setDaysPerWeek(plan?.daysPerWeek || 0);
     setAvailableDaysOptions(filteredPlans);
 
     // Batches for selected plan
@@ -169,7 +167,7 @@ const ActivityMembershipSelector = ({
                   setBatchName(e.target.value);
                   const batch = availableBatches.find(batch => batch.name === e.target.value);
                   const amount = batch?.price;
-                  setAmount(typeof amount === "number" ? amount : null)
+                  setAmount(amount || 0)
                   setBatchTime(`${batch?.startTime || "00:00"} - ${batch?.endTime || "00:00"}`);
                 }}
                 fullWidth

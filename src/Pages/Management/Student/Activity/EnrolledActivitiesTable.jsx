@@ -102,7 +102,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
   };
 
   const handleSave = async (index) => {
-    if (!tableData[index].activity) {
+    if (!tableData[index].activityName) {
       showAlert("Activity must be selected!");
       return;
     }
