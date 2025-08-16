@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Select,
   MenuItem,
@@ -27,58 +27,96 @@ const ActivityMembershipSelector = ({
   const [availableBatches, setAvailableBatches] = useState([]);
   const [batchTime, setBatchTime] = useState("");
 
-  useEffect(() => {
-    if (onSelect) {
-      onSelect(null, selectedActivity, selectedMembership, batchName, batchTime, daysPerWeek, amount);
-    }
-  }, [selectedActivity, selectedMembership, daysPerWeek, amount, batchName, onSelect, batchTime]);
-
   const handleActivityChange = (_event, activity) => {
-    setSelectedActivity(activity);
-    setSelectedMembership("");
-    setDaysPerWeek(null);
-    setAmount(null);
-    setBatchName("default batch");
+    const updatedActivity = activity;
+    const updatedMembership = "";
+    const updatedDaysPerWeek = null;
+    const updatedAmount = null;
+    const updatedBatchName = "default batch";
+    const updatedBatchTime = "";
+
+    setSelectedActivity(updatedActivity);
+    setSelectedMembership(updatedMembership);
+    setDaysPerWeek(updatedDaysPerWeek);
+    setAmount(updatedAmount);
+    setBatchName(updatedBatchName);
     setAvailableDaysOptions([]);
     setAvailableBatches([]);
+
+    onSelect(
+      null,
+      updatedActivity,
+      updatedMembership,
+      updatedBatchName,
+      updatedBatchTime,
+      updatedDaysPerWeek,
+      updatedAmount
+    );
   };
 
   const handleMembershipChange = (event) => {
     const membership = event.target.value;
-    setSelectedMembership(membership);
     const plans = selectedActivity?.membershipPlanEntry || [];
     const filteredPlans = plans.filter((p) => p.membershipType === membership);
 
-    const plan = filteredPlans[0];
-    setDaysPerWeek(plan?.daysPerWeek || 0);
-    setAvailableDaysOptions(filteredPlans);
+    const plan = filteredPlans[0] || {};
+    const updatedDaysPerWeek = plan.daysPerWeek || 0;
+    const updatedDaysOptions = filteredPlans;
+    const batches = plan.activityBatchEntries || [];
+    const updatedBatchName = batches[0]?.name || "";
+    const updatedBatchTime = `${batches[0]?.startTime || "00:00"} - ${batches[0]?.endTime || "00:00"}`;
+    const updatedAmount = batches[0]?.price || 0;
 
-    // Batches for selected plan
-    const batches = plan?.activityBatchEntries || [];
+    setSelectedMembership(membership);
+    setDaysPerWeek(updatedDaysPerWeek);
+    setAvailableDaysOptions(updatedDaysOptions);
     setAvailableBatches(batches);
-    setBatchName(batches[0]?.name);
-    setBatchTime(`${batches[0]?.startTime || "00:00"} - ${batches[0]?.endTime || "00:00"}`);
-    setAmount(batches[0]?.price);
+    setBatchName(updatedBatchName);
+    setBatchTime(updatedBatchTime);
+    setAmount(updatedAmount);
+
+    onSelect(
+      null,
+      selectedActivity,
+      membership,
+      updatedBatchName,
+      updatedBatchTime,
+      updatedDaysPerWeek,
+      updatedAmount
+    );
   };
 
   const handleDaysPerWeekChange = (event) => {
     const selectedDays = event.target.value;
     const selectedPlan = availableDaysOptions.find(
       (p) => p.daysPerWeek === selectedDays
-    );
+    ) || {};
+
+    const batches = selectedPlan.activityBatchEntries || [];
+    const updatedBatchName = batches[0]?.name || "";
+    const updatedBatchTime = `${batches[0]?.startTime || "00:00"} - ${batches[0]?.endTime || "00:00"}`;
+    const updatedAmount = batches[0]?.price || 0;
 
     setDaysPerWeek(selectedDays);
-    // Update batches when days change
-    const batches = selectedPlan?.activityBatchEntries || [];
     setAvailableBatches(batches);
-    setBatchName(batches[0]?.name);
-    setBatchTime(`${batches[0]?.startTime || "00:00"} - ${batches[0]?.endTime || "00:00"}`);
-    setAmount(batches[0]?.price);
+    setBatchName(updatedBatchName);
+    setBatchTime(updatedBatchTime);
+    setAmount(updatedAmount);
 
+    onSelect(
+      null,
+      selectedActivity,
+      selectedMembership,
+      updatedBatchName,
+      updatedBatchTime,
+      selectedDays,
+      updatedAmount
+    );
   };
 
   return (
     <>
+      {amount == null}
       {/* Activity */}
       <TableCell>
         <FormControl fullWidth>
@@ -141,7 +179,7 @@ const ActivityMembershipSelector = ({
                 value={daysPerWeek ?? ""}
                 onChange={handleDaysPerWeekChange}
                 fullWidth
-                disabled={!selectedMembership}
+                disabled={!selectedMembership || selectedMembership === "REGISTRATION"}
               >
                 {availableDaysOptions.map((plan, index) => (
                   <MenuItem key={index} value={plan.daysPerWeek}>
@@ -171,18 +209,18 @@ const ActivityMembershipSelector = ({
                   setBatchTime(`${batch?.startTime || "00:00"} - ${batch?.endTime || "00:00"}`);
                 }}
                 fullWidth
-                disabled={availableBatches.length === 0}
+                disabled={availableBatches.length === 0 || selectedMembership === "REGISTRATION"}
               >
                 {availableBatches &&
                   availableBatches.map((batch, idx) => (
                     <MenuItem key={idx} value={batch.name}>
-                      {batch.name}
+                      {batch.name} (Rs. {batch.price} )
                     </MenuItem>
                   ))}
               </Select>
             </FormControl>
           </TableCell>
-          <TableCell>{batchTime}</TableCell>
+          <TableCell>{selectedMembership === "REGISTRATION" ? "-" : batchTime}</TableCell>
         </>
       )}
     </>

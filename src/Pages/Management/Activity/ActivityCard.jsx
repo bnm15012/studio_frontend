@@ -93,7 +93,6 @@ export const ActivityCard = ({
         <Fade in timeout={600}>
             <Card
                 sx={{
-                    // height: "100%",
                     position: 'relative',
                     overflow: 'visible',
                     '&::before': {

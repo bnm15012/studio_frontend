@@ -328,10 +328,10 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                     }
                   </TableCell>
                   <TableCell>
-                    {(row.batchName)}
+                    {row.membershipType === "REGISTRATION" ? "-" : (row.batchName)}
                   </TableCell>
                   <TableCell>
-                    {(row.batchTime)}
+                    {row.membershipType === "REGISTRATION" ? "-" : (row.batchTime)}
                   </TableCell>
                   <TableCell>
                     {getLocalDateTime(row.registrationDate)}
