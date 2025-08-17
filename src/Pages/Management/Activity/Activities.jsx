@@ -92,15 +92,15 @@ const Activities = () => {
 
   const checkUniqueConstraint = (batchEntries) => {
     const duplicates = new Set();
-
+    let isValid = true;
     batchEntries.forEach((batch) => {
       const key = `${batch.planType}-${batch.daysPerWeek}`;
       if (duplicates.has(key)) {
-        return false
+        isValid = false;
       }
       duplicates.add(key);
     });
-    return true;
+    return isValid;
   }
 
   const handleSaveCard = async (updatedActivity) => {

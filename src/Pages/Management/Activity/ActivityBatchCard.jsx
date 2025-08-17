@@ -32,9 +32,15 @@ const ActivityBatchCard = ({ batch }) => {
                             }}
                         />
                     </Stack>
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                        <CurrencyRupee fontSize="small" color="success" />
+                        <Typography variant="body2" fontWeight="500">
+                            {batch.price}
+                        </Typography>
+                    </Stack>
                 </Stack>
 
-                <Stack direction="row" spacing={3} color="text.secondary" mb={1}>
+                <Stack direction="row" spacing={3} mb={1}>
                     {isBatchEnabled && (
                         <Stack direction="row" spacing={0.5} alignItems="center">
                             <AccessTime fontSize="small" color="action" />
@@ -44,18 +50,11 @@ const ActivityBatchCard = ({ batch }) => {
                         </Stack>
                     )}
                     <Stack direction="row" spacing={0.5} alignItems="center">
-                        <CurrencyRupee fontSize="small" color="success" />
+                        <CalendarToday fontSize="small" color="primary" />
                         <Typography variant="body2" fontWeight="500">
-                            {batch.price}
+                            {batch.daysPerWeek} days/week
                         </Typography>
                     </Stack>
-                </Stack>
-
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <CalendarToday fontSize="small" color="primary" />
-                    <Typography variant="body2" fontWeight="500">
-                        {batch.daysPerWeek} days/week
-                    </Typography>
                 </Stack>
             </CardContent>
         </Card>
