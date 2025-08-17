@@ -10,7 +10,6 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "../../../Components/FlexBetween";
-import { ActivityCard } from "./ActivityCard";
 import { useAlert } from "../../../utils/Alert";
 import {
   addActivityAPI,
@@ -20,49 +19,31 @@ import {
 } from "./Activity.api";
 import DeleteDialog from "../../../Components/DeleteDialog";
 import { addActivity, deleteActivity, setActivities, updateActivity } from "../../../state/activitySlice";
+import ActivityCard from "./ActivityCard";
+import ActivityDialog from "./ActivityDialog";
+import { useUI } from "../../../context/UIContext";
 
 const Activities = () => {
   const showAlert = useAlert();
+  const { isBatchEnabled } = useUI();
   const allActivities = useSelector((state) => state.activity.activities);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-  const [activityData, setActivityData] = useState(allActivities);
-  const [editMode, setEditMode] = useState(false);
+  const [activityData, setActivityData] = useState();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  const handleAddCard = () => {
-    if (editMode) {
-      showAlert(
-        "Please save or cancel the current edit before adding a new activity.",
-        "warning"
-      );
-      return;
-    }
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingActivity, setEditingActivity] = useState();
 
-    const newActivity = {
-      activityType: "NEW",
-      description: "",
-      branchId: currentBranch.branchId,
-      membershipPlanEntry: [
-        {
-          membershipType: "MONTHLY",
-          daysPerWeek: 5,
-          activityBatchEntries: [
-            {
-              price: 0.0,
-              name: "Default Batch",
-              startTime: "00:00",
-              endTime: "00:00"
-            }
-          ]
-        }
-      ]
-    }
-    setActivityData((prev) => {
-      return [...prev, newActivity]
-    });
-    setEditMode(newActivity.activityType);
+  const handleAddActivity = () => {
+    setEditingActivity(undefined);
+    setDialogOpen(true);
+  };
+
+  const handleEditActivity = (activity) => {
+    setEditingActivity(activity);
+    setDialogOpen(true);
   };
 
   const fetchActivityData = useCallback(async () => {
@@ -82,7 +63,7 @@ const Activities = () => {
   }, [dispatch, showAlert, currentBranch.branchId, token]);
 
   useEffect(() => {
-    if (allActivities.lengh == 0 && !activityData) {
+    if (allActivities.length == 0 && !activityData) {
       fetchActivityData();
     }
   }, [allActivities.lengh, fetchActivityData, allActivities, activityData]);
@@ -111,22 +92,23 @@ const Activities = () => {
     }
   };
 
-  const handleSaveCard = async (updatedActivity) => {
-    if (!updatedActivity.membershipPlanEntry?.length) {
-      showAlert("You must add at least one membership plan.", "error");
-      return;
-    }
+  const checkUniqueConstraint = (batchEntries) => {
+    const duplicates = new Set();
 
-    for (let i = 0; i < updatedActivity.membershipPlanEntry.length; i++) {
-      const plan = updatedActivity.membershipPlanEntry[i];
-
-      if (!plan.activityBatchEntries || plan.activityBatchEntries.length === 0) {
-        showAlert(
-          `Membership plan "${plan.membershipType}" must have at least one batch.`,
-          "error"
-        );
-        return;
+    batchEntries.forEach((batch) => {
+      const key = `${batch.planType}-${batch.daysPerWeek}`;
+      if (duplicates.has(key)) {
+        return false
       }
+      duplicates.add(key);
+    });
+    return true;
+  }
+
+  const handleSaveCard = async (updatedActivity) => {
+    if (!updatedActivity.batchEntries.length) {
+      showAlert(`You must add at least one ${isBatchEnabled ? "batch" : "membership"}.`, "error");
+      return;
     }
 
     if (!updatedActivity.activityType || updatedActivity.activityType === "NEW") {
@@ -134,28 +116,40 @@ const Activities = () => {
       return;
     }
 
-    if(allActivities.some(activity => activity.activityType === updatedActivity.activityType && activity.activityId !== updatedActivity.activityId)) {
+    if (allActivities.some(activity => activity.activityType === updatedActivity.activityType && activity.activityId !== updatedActivity.activityId)) {
       showAlert("Activity type must be unique.", "error");
       return;
     }
 
+    if (!checkUniqueConstraint(updatedActivity.batchEntries)) {
+      showAlert(`plan type and days per week can not be same for multiple ${isBatchEnabled ? "batch" : "membership"}.`, "error");
+      return;
+    }
+
     try {
-      if (updatedActivity?.activityId === undefined) {
+      if (updatedActivity?.activityId === "NEW") {
+        delete updatedActivity.activityId;
+        updatedActivity.batchEntries.map((batch) => {
+          delete batch.batchId;
+        })
         const { success, data, message } = await addActivityAPI({
           activityData: updatedActivity,
           token,
         });
         if (success) {
           setActivityData((prev) => {
-            return [...prev.filter(f => f.activityId !== undefined), data]
+            return [...prev.filter(f => f.activityId !== "NEW"), data]
           });
           dispatch(addActivity(data));
-          setEditMode(false);
+          setDialogOpen(false);
           showAlert(message, "success");
         } else {
           showAlert(message, "error");
         }
       } else {
+        updatedActivity.batchEntries.map((batch) => {
+          if ("string" === typeof batch.batchId) delete batch.batchId;
+        })
         const { success, data, message } = await updateActivityAPI({
           activityId: updatedActivity.activityId,
           activityData: updatedActivity,
@@ -166,19 +160,17 @@ const Activities = () => {
           setActivityData((prev) => {
             return [...prev.filter(f => f.activityId !== data.activityId), data]
           });
-          setEditMode(false);
+          setDialogOpen(false);
           showAlert(message, "success");
         } else {
           throw Error();
         }
       }
     } catch (error) {
-      setEditMode(false);
       console.error(error);
       showAlert("Error updating activity!", "error");
     }
   };
-
 
   return (
     <div style={{ padding: "20px" }}>
@@ -187,9 +179,8 @@ const Activities = () => {
         <Button
           variant="contained"
           color="primary"
-          disabled={editMode}
           sx={{ fontWeight: "bold", padding: ".8rem" }}
-          onClick={handleAddCard}
+          onClick={handleAddActivity}
         >
           <Add />
         </Button>
@@ -209,16 +200,13 @@ const Activities = () => {
               <ActivityCard
                 index={index}
                 cancelEdit={() => {
-                  setEditMode(false);
                   setActivityData((prev) => {
                     return [...prev.filter(f => f.activityId !== undefined)]
                   });
                 }}
                 activity={activity}
-                onUpdate={handleSaveCard}
+                onEdit={handleEditActivity}
                 onDelete={() => setOpenDeleteDialog(true)}
-                isEditing={editMode}
-                setIsEditing={setEditMode}
               />
               <DeleteDialog
                 displayData={activity.activityType}
@@ -253,6 +241,12 @@ const Activities = () => {
           </Box>
         )}
       </Container>
+      <ActivityDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        activity={editingActivity}
+        onSave={handleSaveCard}
+      />
     </div >
   );
 };

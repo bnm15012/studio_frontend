@@ -13,6 +13,7 @@ const EditableData = ({
   fieldName,
   label,
   valueField,
+  placeholder = "",
   showFieldName = true,
   icon,
   setData,
@@ -101,6 +102,7 @@ const EditableData = ({
                 <TextField
                   variant="standard"
                   name={fieldName}
+                  placeholder={placeholder}
                   defaultValue={data && fieldName in data ? data[fieldName] : ""}
                   onChange={(e) => { handleChange(e.target.value); }}
                   type={inputType}
@@ -143,6 +145,7 @@ EditableData.propTypes = {
   options: PropTypes.array,
   diffStyle: PropTypes.object,
   label: PropTypes.string,
+  placeholder: PropTypes.string,
   valueField: PropTypes.string,
   minDateTime: PropTypes.string,
   getOptions: PropTypes.func,

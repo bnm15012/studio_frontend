@@ -34,6 +34,7 @@ import DeleteDialog from "../../../../Components/DeleteDialog";
 import StudentInvoice from "./StudentInvoice";
 import { clearPaymentPages } from "../../../../state/paymentSlice";
 import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
+import { useUI } from "../../../../context/UIContext";
 
 const PAYMENT_STATUS = [
   { label: "COMPLETED", value: "COMPLETED" },
@@ -66,6 +67,7 @@ const initialNewRowState = {
   }
 };
 const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
+  const { isBatchEnabled } = useUI();
   const showAlert = useAlert();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -274,8 +276,12 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               <TableCell sx={{ fontWeight: 700 }}>Activity</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Membership</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Type</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Batch</TableCell>
-              <TableCell sx={{ fontWeight: 700, textWrap: "nowrap" }}>Batch Time</TableCell>
+              {
+                isBatchEnabled && <>
+                  <TableCell sx={{ fontWeight: 700 }}>Batch</TableCell>
+                  <TableCell sx={{ fontWeight: 700, textWrap: "nowrap" }}>Batch Time</TableCell>
+                </>
+              }
               <TableCell sx={{ fontWeight: 700 }}>Registration Date</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>
                 Membership Start Date
@@ -327,12 +333,16 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       )
                     }
                   </TableCell>
-                  <TableCell>
-                    {row.membershipType === "REGISTRATION" ? "-" : (row.batchName)}
-                  </TableCell>
-                  <TableCell>
-                    {row.membershipType === "REGISTRATION" ? "-" : (row.batchTime)}
-                  </TableCell>
+                  {
+                    isBatchEnabled && <>
+                      <TableCell>
+                        {row.membershipType === "REGISTRATION" ? "-" : (row.batchName)}
+                      </TableCell>
+                      <TableCell>
+                        {row.membershipType === "REGISTRATION" ? "-" : (row.batchTime)}
+                      </TableCell>
+                    </>
+                  }
                   <TableCell>
                     {getLocalDateTime(row.registrationDate)}
                   </TableCell>

@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
 import { useAlert } from "../../../utils/Alert";
 import FlexEvenlyColumn from "../../../Components/FlexEvenlyColumn";
+import { Percent } from "lucide-react";
 
 const UserWidgets = ({ admin, studio }) => {
   const theme = useTheme();
@@ -38,6 +39,7 @@ const UserWidgets = ({ admin, studio }) => {
     phone: "",
     studioName: "",
     location: "",
+    gstNumber: "",
   });
   const verifyValuesChangedOrNot = (values) => {
     const userData = {
@@ -51,6 +53,7 @@ const UserWidgets = ({ admin, studio }) => {
       studioName: values.studioName,
       location: values.location,
       logo: studioLogo,
+      gstNumber: values.gstNumber,
     };
 
     const isUserDataChanged =
@@ -58,6 +61,7 @@ const UserWidgets = ({ admin, studio }) => {
       imageUrl !== admin.imageUrl;
 
     const isStudioDataChanged =
+      values.gstNumber !== studio.gstNumber ||
       values.studioName !== studio?.studioName ||
       values.location !== studio?.location ||
       studioLogo !== studio.logo;
@@ -103,6 +107,7 @@ const UserWidgets = ({ admin, studio }) => {
       phone: admin.phone || "",
       studioName: studio?.studioName || "",
       location: studio?.location || "",
+      gstNumber: studio?.gstNumber || "",
     };
 
     setEditedValues((prev) => {
@@ -111,7 +116,7 @@ const UserWidgets = ({ admin, studio }) => {
       );
       return isSame ? prev : updatedValues;
     });
-  }, [admin.userName, admin.phone, studio?.studioName, studio?.location]);
+  }, [admin.userName, admin.phone, studio?.studioName, studio?.location, studio?.gstNumber]);
 
   if (!admin) return null;
 
@@ -191,6 +196,7 @@ const UserWidgets = ({ admin, studio }) => {
                     <FlexEvenlyColumn gap={2} sx={{ flexGrow: 1 }}>
                       <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"studioName"} icon={<Class />} setData={setEditedValues} />
                       <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"location"} icon={<LocationCity />} setData={setEditedValues} />
+                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"gstNumber"} icon={<Percent />} setData={setEditedValues} placeholder="Enter GST Number"/>
                     </FlexEvenlyColumn>
                   </FlexBetween>
                 </Box>
@@ -225,6 +231,7 @@ UserWidgets.propTypes = {
   studio: PropTypes.shape({
     studioId: PropTypes.number.isRequired,
     studioName: PropTypes.string.isRequired,
+    gstNumber: PropTypes.string,
     location: PropTypes.string.isRequired,
     logo: PropTypes.string,
   }).isRequired,

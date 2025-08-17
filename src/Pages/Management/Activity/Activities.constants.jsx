@@ -33,30 +33,39 @@ export const validMembershipTypes = [
 export const getIcon = (activityType) => {
   switch (activityType) {
     case "YOGA":
-      return (<SelfImprovementIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="primary" />);
+      return (<SelfImprovementIcon sx={{ paddingBottom: 0 }} color="primary" />);
     case "ZUMBA":
       return (
-        <SportsGymnasticsIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="secondary" />
+        <SportsGymnasticsIcon sx={{ paddingBottom: 0 }} color="secondary" />
       );
     case "GYM":
-      return <FitnessCenterIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="action" />;
+      return <FitnessCenterIcon sx={{ paddingBottom: 0 }} color="action" />;
     case "BACHATA":
-      return <DirectionsRunIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="success" />;
+      return <DirectionsRunIcon sx={{ paddingBottom: 0 }} color="success" />;
     case "SAMBA":
-      return <EmojiPeopleIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="warning" />;
+      return <EmojiPeopleIcon sx={{ paddingBottom: 0 }} color="warning" />;
     case "SOCA":
-      return <MusicNoteIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="info" />;
+      return <MusicNoteIcon sx={{ paddingBottom: 0 }} color="info" />;
     case "HIP_HOP":
-      return <TheaterComedyIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="error" />;
+      return <TheaterComedyIcon sx={{ paddingBottom: 0 }} color="error" />;
     case "DANCE":
       return (
-        <AccessibilityNewIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="error" />
+        <AccessibilityNewIcon sx={{ paddingBottom: 0 }} color="error" />
       );
     case "BHANGRA":
-      return <GroupsIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="primary" />;
+      return <GroupsIcon sx={{ paddingBottom: 0 }} color="primary" />;
     case "MARTIAL_ARTS":
-      return <SportsKabaddiIcon sx={{ fontSize: "8rem", paddingBottom: 0 }} color="success" />;
+      return <SportsKabaddiIcon sx={{ paddingBottom: 0 }} color="success" />;
     default:
       return null;
   }
 };
+
+export const membershipTypeColors = {
+  MONTHLY: '#7c3aed',
+  QUARTERLY: '#3b82f6',
+  REGISTRATION: '#10b981',
+  YEARLY: '#f59e0b',
+  HALF_YEARLY: '#ef4444',
+};
+
