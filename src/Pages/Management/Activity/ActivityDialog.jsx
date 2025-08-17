@@ -82,6 +82,26 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         onSave(formData);
     };
 
+    const isFormValid = () => {
+        if (!formData.activityType) return false;
+        if (formData.batchEntries.length === 0) return false;
+
+        for (const batch of formData.batchEntries) {
+            if (!batch.planType) return false;
+            if (isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7) return false;
+            if (batch.price == null || batch.price < 0) return false;
+
+            if (isBatchEnabled) {
+                if (!batch.name?.trim()) return false;
+                if (!batch.startTime) return false;
+                if (!batch.endTime) return false;
+            }
+        }
+
+        return true;
+    };
+
+
     return (
         <Dialog open={open} onClose={() => onOpenChange(false)} fullWidth >
             <DialogTitle>
@@ -216,7 +236,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             label="Days/Week"
                                             value={batch.daysPerWeek}
                                             onChange={(e) =>
-                                                updateBatch(batch.batchId, { daysPerWeek: parseInt(e.target.value) || 1 })
+                                                updateBatch(batch.batchId, { daysPerWeek: parseInt(e.target.value) })
                                             }
                                             fullWidth
                                             inputProps={{ min: 0, max: 7 }}
@@ -245,7 +265,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button onClick={handleSave} variant="contained">
+                <Button disabled={!isFormValid()} onClick={handleSave} variant="contained">
                     {activity ? "Update Activity" : "Create Activity"}
                 </Button>
             </DialogActions>
