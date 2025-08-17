@@ -17,7 +17,6 @@ import {
   getAllActivitiesAPI,
   updateActivityAPI,
 } from "./Activity.api";
-import DeleteDialog from "../../../Components/DeleteDialog";
 import { addActivity, deleteActivity, setActivities, updateActivity } from "../../../state/activitySlice";
 import ActivityCard from "./ActivityCard";
 import ActivityDialog from "./ActivityDialog";
@@ -31,7 +30,6 @@ const Activities = () => {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
   const [activityData, setActivityData] = useState();
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState();
@@ -206,15 +204,7 @@ const Activities = () => {
                 }}
                 activity={activity}
                 onEdit={handleEditActivity}
-                onDelete={() => setOpenDeleteDialog(true)}
-              />
-              <DeleteDialog
-                displayData={activity.activityType}
-                id={activity.activityId}
-                open={openDeleteDialog}
-                key={activity.activityType}
-                onConfirm={handleDeleteActivity}
-                onClose={() => setOpenDeleteDialog(false)}
+                onDelete={handleDeleteActivity}
               />
             </Box>
           ))}

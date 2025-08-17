@@ -18,11 +18,13 @@ import { useState } from "react";
 import ShowMoreBatches from "./ShowMoreBatches";
 import ActivityBatchCard from "./ActivityBatchCard";
 import { useUI } from "../../../context/UIContext";
+import DeleteDialog from "../../../Components/DeleteDialog";
 
 const ActivityCard = ({ activity, onEdit, onDelete }) => {
   const theme = useTheme();
   const [showMoreBatches, setShowMoreBatches] = useState(false);
   const { isBatchEnabled } = useUI();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   return (
     <Card
@@ -73,7 +75,7 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
               <Edit fontSize="small" />
             </IconButton>
             <IconButton
-              onClick={() => onDelete(activity)}
+              onClick={() => setOpenDeleteDialog(true)}
               color="error"
               size="small"
             >
@@ -133,12 +135,21 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
           onClose={() => setShowMoreBatches(false)}
         />
       )}
+      <DeleteDialog
+        displayData={activity.activityType}
+        id={activity.activityId}
+        open={openDeleteDialog}
+        key={activity.activityType}
+        onConfirm={() => onDelete(activity.activityId)}
+        onClose={() => setOpenDeleteDialog(false)}
+      />
     </Card>
   );
 };
 
 ActivityCard.propTypes = {
   activity: PropTypes.shape({
+    activityId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     activityType: PropTypes.string.isRequired,
     description: PropTypes.string,
     batchEntries: PropTypes.arrayOf(
