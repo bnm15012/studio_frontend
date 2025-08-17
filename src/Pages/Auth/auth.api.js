@@ -42,7 +42,7 @@ export const loginApiCall = async ({ values, dispatch, navigate }) => {
       })
     );
     dispatch(setBranches(authData.studioEntry.branchList))
-    dispatch(setCurrentBranch(authData.studioEntry.branchList[0]))
+    dispatch(setCurrentBranch(authData.studioEntry.branchList.filter(branch => branch.isActive)[0]))
     dispatch(setSubscriptionPlan({
       subscriptionPlan: authData.subscriptionEntry,
     }))

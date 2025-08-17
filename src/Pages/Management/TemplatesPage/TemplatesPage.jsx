@@ -26,6 +26,7 @@ import DeleteDialog from "../../../Components/DeleteDialog";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Collapse } from '@mui/material';
 import PropTypes from "prop-types";
+import TemplateEditor from "./TemplateEditor";
 
 const templateTypes = new Set(["COMMUNICATION"]);
 
@@ -245,6 +246,15 @@ const TemplatesPage = () => {
                 </React.Fragment>
               );
             })}
+            <StyledTableRow>
+              <StyledTableCell colSpan={6} sx={{ textAlign: "center" }}>
+                {templates.length === 0 ? (
+                  <Typography variant="subtitle1" color="textSecondary">
+                    No templates available
+                  </Typography>
+                ) : null}
+              </StyledTableCell>
+            </StyledTableRow>
           </TableBody>
         </StyledTable>
       </StyledTableContainer>
@@ -289,15 +299,11 @@ const TemplatesPage = () => {
             }
             fullWidth
           />
-          <TextField
-            label="Content"
-            multiline
-            rows={8}
+          <TemplateEditor
             value={currentTemplate?.templateContent || ""}
-            onChange={(e) =>
-              setCurrentTemplate({ ...currentTemplate, templateContent: e.target.value })
+            onChange={(val) =>
+              setCurrentTemplate({ ...currentTemplate, templateContent: val })
             }
-            fullWidth
           />
         </DialogContent>
         <DialogActions>
@@ -322,3 +328,5 @@ const TemplatesPage = () => {
 };
 
 export default TemplatesPage;
+
+

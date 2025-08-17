@@ -147,10 +147,9 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-            instructorData,
+            instructor: {...instructorData,...activityData},
             studio,
-            currentBranch,
-            activityData,
+            branch: currentBranch,
             getLocalDateTime
         })
         : "";
@@ -248,7 +247,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             ) : (
                                 <Typography
                                     variant="body2"
-                                    sx={{ color:"red", fontWeight: 'bold', textAlign: 'center' , fontSize: '20px' }}
+                                    sx={{ color: "red", fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}
                                 >
                                     No Contract Template Created.
                                 </Typography>
