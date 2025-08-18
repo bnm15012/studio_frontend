@@ -46,7 +46,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
         <Box sx={{ borderRadius: "5px" }}>
           <DialogTitle
             sx={{
-              backgroundColor: isExpired ? "red" : theme.palette.background.paper,
+              background: isExpired ? `linear-gradient(to bottom, #FF0000, #B02600)` : `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
               color: "white",
               fontWeight: "bold",
               fontSize: "1.2rem",

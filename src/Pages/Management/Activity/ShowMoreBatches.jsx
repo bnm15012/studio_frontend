@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import FlexBetween from "../../../Components/FlexBetween";
 
 const ShowMoreBatches = ({ batchEntries, onClose }) => {
-    return <Dialog open={true} fullWidth>
+    return <Dialog open={true} fullWidth onClose={onClose} >
         <DialogTitle>
             <Typography variant="h6">All Batches</Typography>
         </DialogTitle>
@@ -14,12 +14,12 @@ const ShowMoreBatches = ({ batchEntries, onClose }) => {
                     <ActivityBatchCard key={batch.batchId} batch={batch} />
                 ))}
             </FlexBetween>
-            <DialogActions>
-                <Button onClick={onClose} color="primary" variant="outlined">
-                    Close
-                </Button>
-            </DialogActions>
         </DialogContent>
+        <DialogActions>
+            <Button onClick={onClose} color="primary" variant="outlined">
+                Close
+            </Button>
+        </DialogActions>
     </Dialog>
 }
 

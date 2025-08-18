@@ -110,7 +110,6 @@ const FormBuilder = ({ form, branchId }) => {
 
             <Box
               component="form"
-              onClick={(e) => handleSubmit(e)}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -208,6 +207,7 @@ const FormBuilder = ({ form, branchId }) => {
               <Button
                 type="submit"
                 variant="contained"
+                onClick={(e) => handleSubmit(e)}
                 color="primary"
                 disabled={loading}
                 sx={{

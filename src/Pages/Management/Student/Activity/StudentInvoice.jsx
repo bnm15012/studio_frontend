@@ -199,7 +199,6 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
               <hr />
 
               {/* Table */}
-              Activity
               <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2mm' }}>
                 <thead>
                   <tr>
@@ -247,15 +246,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
               <div style={{ display: "flex", flexDirection: "row-reverse", textAlign: 'right', marginTop: '10mm', fontSize: '14px', paddingRight: "5px" }}>
                 <table border={1} style={{ width: '35%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
-                    {/* Original activity amount */}
-                    <tr>
-                      <td style={{ textAlign: 'left', padding: '2px 5px' }}>Amount</td>
-                      <td style={{ textAlign: 'right', padding: '2px 5px' }}>
-                        {Number(activityData.activityAmount || 0).toFixed(2)}
-                      </td>
-                    </tr>
-
-                    {/* Discount */}
+                   {/* Discount */}
                     <tr>
                       <td style={{ textAlign: 'left', padding: '2px 5px' }}>Discount</td>
                       <td style={{ textAlign: 'right', padding: '2px 5px' }}>
