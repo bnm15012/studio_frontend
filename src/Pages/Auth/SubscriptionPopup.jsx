@@ -62,10 +62,9 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
               <Box flexGrow={1}></Box>
               <IconButton
                 onClick={handleClose}
-                color="white"
                 sx={{ fontWeight: "bold" }}
               >
-                <Close />
+                <Close sx={{ color: "white" }} />
               </IconButton>
             </FlexBetween>
           </DialogTitle>

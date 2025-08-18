@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import FlexBetween from "../../../Components/FlexBetween";
 
 const ShowMoreBatches = ({ batchEntries, onClose }) => {
-    return <Dialog open={true} fullWidth onClose={onClose} >
+    return <Dialog open={true} fullWidth onClose={onClose} sx={{ maxHeight: '80vh', m:"auto" }}>
         <DialogTitle>
             <Typography variant="h6">All Batches</Typography>
         </DialogTitle>

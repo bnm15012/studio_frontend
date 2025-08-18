@@ -77,7 +77,7 @@ const Students = () => {
         <SearchField handleSearch={handleSearch} />
         <QrForm
           qrSize={480}
-          title="Student Form"
+          title=""
           link={"student-form"}
         />
         <Filter onChange={onApplyFIlter} checkboxes={[{ key: 'ACTIVE', label: 'Active' }, { key: 'INACTIVE', label: 'Inactive' }]} />
