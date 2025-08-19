@@ -34,7 +34,7 @@ const EditableData = ({
       return;
     }
 
-    if (validation?.pattern && !new RegExp(validation.pattern).test(newValue)) {
+    if (validation?.required && validation?.pattern && !new RegExp(validation.pattern).test(newValue)) {
       setError(validation.errorMessage || "Invalid value.");
       return;
     }
@@ -125,7 +125,7 @@ const EditableData = ({
           variant="body1"
           sx={{ width: "100%", height: "100%", lineHeight: 1.7, ...diffStyle }}
         >
-          
+
           {valueField && getValueFromPath(data, valueField)}
           {data && fieldName in data ? (inputType === "DATE" || inputType === "DATETIME") ? getLocalDateTime(data[fieldName], inputType) : data[fieldName] : ""}
         </Typography>

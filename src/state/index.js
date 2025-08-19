@@ -22,6 +22,7 @@ import paymentSlice from './paymentSlice'
 import analysisSlice from './analysisSlice'
 import clientSlice from './clientSlice'
 import bookingSlice from './bookingSlice'
+import membershipTypesSlice from './activityMembershipTypeSlice';
 
 const rootReducer = combineReducers({
   auth: authSlice,
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   client: clientSlice,
   booking: bookingSlice,
   notifications: notificationSlice,
+  membershipTypes: membershipTypesSlice,
 });
 
 const persistConfig = {

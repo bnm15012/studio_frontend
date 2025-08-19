@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import { EventNote } from "@mui/icons-material";
+import { EventNote, TypeSpecimen } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
 import { Contacts } from "@mui/icons-material";
 import SchoolIcon from "@mui/icons-material/School";
@@ -90,7 +90,16 @@ const Sidebar = ({ sidebarOn }) => {
       icon: (
         <EventIcon />
       ),
-    }, {
+    }, 
+    {
+      path: "/management/type",
+      label: "Membership Type",
+      show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && user?.role === "ADMIN",
+      icon: (
+        <TypeSpecimen />
+      ),
+    },
+    {
       path: "/management/communication",
       label: "Communication",
       show: settings.find((setting) => setting.navBarName === "COMMUNICATION")?.enabled,

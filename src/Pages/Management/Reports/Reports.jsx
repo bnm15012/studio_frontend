@@ -20,6 +20,7 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useSelector } from 'react-redux';
 import {
+  formatDate,
   getCurrentDateTimeUTC,
   getLocalDateTime
 } from '../../../utils/DateUtil';
@@ -35,26 +36,41 @@ const Reports = () => {
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const studio = useSelector((state) => state.auth.studio);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const today = new Date();
+
+  const [startDateValue, setStartDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [endDateValue, setEndDate] = useState(new Date(today.getFullYear(), today.getMonth() + 1, 0));
   const [loading, setLoading] = useState(false);
   const [eiData, setEiData] = useState(null);
   const [reportType, setReportType] = useState("incomeExpense");
   const [paymentStatus, setPaymentStatus] = useState("COMPLETED");
 
   const getData = async () => {
-    setLoading(true);
-    try {
+    if (!startDateValue || !endDateValue) {
+      showAlert("Please select both start and end dates.", "warning");
+      return;
+    }
 
+    if (startDateValue > endDateValue) {
+      showAlert("Start date cannot be after end date.", "warning");
+      return;
+    }
+    setLoading(true);
+    const commonPayload = {
+      endDate: endDateValue.getDate(),
+      startDate: startDateValue.getDate(),
+      endMonth: endDateValue.getMonth() + 1,
+      endYear: endDateValue.getFullYear(),
+      startMonth: startDateValue.getMonth() + 1,
+      startYear: startDateValue.getFullYear(),
+      studioId: studio.studioId,
+      branchId: currentBranch.branchId,
+    }
+    try {
       if (reportType === "incomeExpense") {
         const { data, success, message } = await reportsAPi({
           token,
-          endMonth: endDate.getMonth() + 1,
-          endYear: endDate.getFullYear(),
-          startMonth: startDate.getMonth() + 1,
-          startYear: startDate.getFullYear(),
-          studioId: studio.studioId,
-          branchId: currentBranch.branchId,
+          ...commonPayload,
         });
 
         if (success && data.length > 0) {
@@ -67,6 +83,7 @@ const Reports = () => {
             entry.studentName,
             entry.paymentMode,
             `${entry.activityName} (${entry.membershipType})`,
+            getLocalDateTime(entry.paymenDate),
             `₹${entry.amount}`
           ]);
 
@@ -97,12 +114,7 @@ const Reports = () => {
         const { data, success } = await reportsAPi({
           token,
           status: paymentStatus,
-          endMonth: endDate.getMonth() + 1,
-          endYear: endDate.getFullYear(),
-          startMonth: startDate.getMonth() + 1,
-          startYear: startDate.getFullYear(),
-          studioId: studio.studioId,
-          branchId: currentBranch.branchId,
+          ...commonPayload,
           type: "payment"
         });
 
@@ -203,8 +215,7 @@ const Reports = () => {
   );
 
   const formattedDateRange = () => {
-    const fmt = (d) => `${d.toLocaleString('default', { month: 'short' })}-${d.getFullYear()}`;
-    return `${startDate ? fmt(startDate) : 'N/A'} – ${endDate ? fmt(endDate) : 'N/A'}`;
+    return `${startDateValue ? formatDate(startDateValue, "DD-MM-YYYY") : 'N/A'} – ${endDateValue ? formatDate(endDateValue, "DD-MM-YYYY") : 'N/A'}`;
   };
 
   useEffect(() => {
@@ -229,16 +240,16 @@ const Reports = () => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <FlexBetween flexDirection="column" gap={2}>
             <DatePicker
-              views={['year', 'month']}
-              label="Start Month"
-              value={startDate}
+              format='dd/MM/yyyy'
+              label="Start Date"
+              value={startDateValue}
               onChange={setStartDate}
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
             <DatePicker
-              views={['year', 'month']}
-              label="End Month"
-              value={endDate}
+              label="End Date"
+              format='dd/MM/yyyy'
+              value={endDateValue}
               onChange={setEndDate}
               renderInput={(params) => <TextField {...params} fullWidth />}
             />
@@ -334,7 +345,7 @@ const Reports = () => {
           <Divider sx={{ my: 2 }} />
 
           {eiData?.income && renderTable("Income", eiData.income, [
-            "No.", "Name", "Payment Mode", "Activity (Type)", "Amount"
+            "No.", "Name", "Payment Mode", "Activity (Type)", "Date", "Amount"
           ])}
 
           {eiData?.expenses && renderTable("Expenses", eiData.expenses, [

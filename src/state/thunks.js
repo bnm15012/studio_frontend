@@ -1,3 +1,4 @@
+import { clearMemberShipTypes } from "./activityMembershipTypeSlice";
 import { clearActivities } from "./activitySlice";
 import { clearAnalysisState } from "./analysisSlice";
 import { clearAuthState } from "./authSlice";
@@ -22,4 +23,5 @@ export const clearAllstate = () => (dispatch) =>{
     dispatch(clearPaymentPages())
     dispatch(clearExpensePages())
     dispatch(clearAnalysisState())
+    dispatch(clearMemberShipTypes())
 }

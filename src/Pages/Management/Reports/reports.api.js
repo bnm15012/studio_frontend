@@ -1,10 +1,10 @@
 import api from "../../../utils/api"
 
-export const reportsAPi = async ({ startMonth, startYear, endMonth, endYear, studioId, branchId, token, type, status }) => {
+export const reportsAPi = async ({ startDate, startMonth, startYear, endDate, endMonth, endYear, studioId, branchId, token, type, status }) => {
     try {
         let response = null;
         if (type === "payment") {
-            response = await api.get(`/reports/payments/${studioId}/${branchId}/${startMonth}/${startYear}/${endMonth}/${endYear}?status=${status}`
+            response = await api.get(`/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}`
                 , {
                     headers: {
                         Authorization: token,
@@ -14,7 +14,7 @@ export const reportsAPi = async ({ startMonth, startYear, endMonth, endYear, stu
                 }
             )
         } else {
-            response = await api.get(`/reports/${studioId}/${branchId}/${startMonth}/${startYear}/${endMonth}/${endYear}`
+            response = await api.get(`/reports/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}`
                 , {
                     headers: {
                         Authorization: token,

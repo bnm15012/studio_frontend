@@ -71,7 +71,7 @@ export const getAllpaymentsAPI = async ({
   searchTerm = "",
 }) => {
   try {
-    const response = await api.get(`/payments/getAllPayments/${branchId}/0/0/0/0`, {
+    const response = await api.get(`/payments/getAllPayments/${branchId}`, {
       headers: {
         Authorization: token,
       },

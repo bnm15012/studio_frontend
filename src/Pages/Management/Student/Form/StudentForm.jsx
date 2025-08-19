@@ -77,10 +77,9 @@ const StudentForm = ({ page, ID }) => {
     if (
       !row.name ||
       !row.email ||
-      !row.phone ||
-      !row.emergencyContactNumber
+      !row.phone
     ) {
-      showAlert("All fields are required!", "error");
+      showAlert("name , email & phone are required!", "error");
       return false;
     }
 
@@ -302,7 +301,7 @@ const StudentForm = ({ page, ID }) => {
                 setIsEdit={setIsEdit}
                 isEdit={isEdit}
                 validation={{
-                  required: true,
+                  required: false,
                   pattern: "^\\d{10}$",
                   errorMessage: "Phone number must be 10 digits.",
                 }}

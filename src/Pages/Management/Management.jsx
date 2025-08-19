@@ -16,6 +16,7 @@ import Branches from "./Branches/Branches";
 import BranchPage from "./Branches/BranchPage";
 import BulkUploadJobs from "./BulkUploadJobs/BulkUploadJobs.jsx";
 import TemplatesPage from "./TemplatesPage/TemplatesPage";
+import MembershipType from "./MembershipType/MembershipType.jsx";
 
 const Management = () => {
   const { page } = useParams();
@@ -48,6 +49,8 @@ const Management = () => {
         return <BulkUploadJobs />;
       case "template":
         return <TemplatesPage />;
+      case "type":
+        return <MembershipType />;
       case "branch":
         if (ID) return <BranchPage ID={ID} page={page} />;
         return <Branches />;

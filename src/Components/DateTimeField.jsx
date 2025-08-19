@@ -29,10 +29,13 @@ const DateTimeField = ({
     }, [value]);
 
     const handleChange = (date) => {
-        if (!date) return;
-        setLocalDateTime(date);
-        const formatted = date.toISOString().slice(0, 19).replace("T", " ");
-        onChange(formatted);
+        if (date) {
+            setLocalDateTime(date);
+            const formatted = date.toISOString().slice(0, 19).replace("T", " ");
+            onChange(formatted);
+        } else {
+            onChange(null);
+        }
     };
 
     const minDate = minDateTime

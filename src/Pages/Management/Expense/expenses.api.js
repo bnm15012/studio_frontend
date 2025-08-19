@@ -18,7 +18,7 @@ const getHeaders = (token) => ({
 export const getAllExpensesAPI = async ({ branchId, page, size, token, searchTerm }) => {
   try {
     const response = await api.get(
-      `/expenses/getAllExpenses/${branchId}/0/0/0/0`,
+      `/expenses/getAllExpenses/${branchId}`,
       {
         headers: { Authorization: `${token}`, },
         params: { page: page - 1, size, searchTerm }
