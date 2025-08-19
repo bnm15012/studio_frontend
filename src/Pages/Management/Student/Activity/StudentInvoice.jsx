@@ -217,7 +217,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
                     <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipStartDate)}</td>
                     <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipEndDate)}</td>
                     {!isBatchEnabled && <td style={tableCellStyle}>{activityData?.daysPerWeek || '-'}</td>}
-                    <td style={tableCellStyle}>{activityData?.paymentEntry?.amount?.toFixed(2) || '0.00'}</td>
+                    <td style={tableCellStyle}>{activityData?.activityAmount?.toFixed(2) || '0.00'}</td>
                   </tr>
                 </tbody>
               </table>
@@ -246,21 +246,11 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
               <div style={{ display: "flex", flexDirection: "row-reverse", textAlign: 'right', marginTop: '10mm', fontSize: '14px', paddingRight: "5px" }}>
                 <table border={1} style={{ width: '35%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
-                   {/* Discount */}
-                    <tr>
-                      <td style={{ textAlign: 'left', padding: '2px 5px' }}>Discount</td>
-                      <td style={{ textAlign: 'right', padding: '2px 5px' }}>
-                        {(
-                          Number(activityData.paymentEntry?.amount || 0) -
-                          Number(activityData.activityAmount || 0)
-                        ).toFixed(2)}
-                      </td>
-                    </tr>
 
                     {/* GST calculation */}
                     {(() => {
-                      const total = Number(activityData.paymentEntry?.amount || 0);
-                      const gstRate = 0.18; // 18%
+                      const total = Number(activityData?.activityAmount || 0);
+                      const gstRate = 0.18;
                       const baseAmount = total / (1 + gstRate);
                       const gst = total - baseAmount;
 
@@ -287,11 +277,20 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
                             </>
                           )}
                           <tr>
+                            <td style={{ textAlign: 'left', padding: '2px 5px' }}>Discount</td>
+                            <td style={{ textAlign: 'right', padding: '2px 5px' }}>
+                              {Math.abs((
+                                Number(activityData?.paymentEntry?.amount || 0) -
+                                Number(activityData?.activityAmount || 0)
+                              ).toFixed(2))}
+                            </td>
+                          </tr>
+                          <tr>
                             <td style={{ textAlign: 'left', padding: '2px 5px', fontWeight: 'bold' }}>
                               Total
                             </td>
                             <td style={{ textAlign: 'right', padding: '2px 5px', fontWeight: 'bold' }}>
-                              {total.toFixed(2)}
+                              {Number(activityData?.paymentEntry?.amount || 0).toFixed(2)}
                             </td>
                           </tr>
                         </>

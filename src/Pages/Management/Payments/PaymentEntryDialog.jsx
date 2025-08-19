@@ -36,7 +36,7 @@ const PaymentEntryDialog = ({ open, setOpen, onSave, paymentEntry, setPaymentEnt
             Actual Amount:  {paymentEntry.actualAmount}
           </Typography>
           <TextField
-            label="Amount"
+            label="Final Amount"
             type="number"
             value={paymentEntry.amount}
             fullWidth
