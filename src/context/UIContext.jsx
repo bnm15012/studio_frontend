@@ -6,15 +6,19 @@ import PropTypes from "prop-types";
 const UIContext = createContext({
   isMobile: false,
   isBatchEnabled: false,
+  isMembershipTableEnabled: false,
 });
 export const UIProvider = ({ children }) => {
   const settings = useSelector((state) => state.auth.settings);
   const isMobile = useMediaQuery("(max-width: 700px)");
+  const user = useSelector((state) => state.auth.user)
   const isBatchEnabled =
     settings?.find((setting) => setting.navBarName === "BATCH")?.enabled ?? false;
+  const isMembershipTableEnabled =
+    (settings?.find((setting) => setting.navBarName === "MEMBERSHIP_PLAN_TABLE")?.enabled && user?.role === "ADMIN") ?? false;
 
   return (
-    <UIContext.Provider value={{ isMobile, isBatchEnabled }}>
+    <UIContext.Provider value={{ isMobile, isBatchEnabled, isMembershipTableEnabled }}>
       {children}
     </UIContext.Provider>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -13,17 +13,24 @@ import {
     Box,
     Divider,
     Paper,
+    Select,
 } from "@mui/material";
 import { Add, Delete, AccessTime, AttachMoney } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
+import { getAllActivityMembershipTypesAPI } from "../MembershipType/MembershipType.api";
+import Loading from "../../../Components/Loading/Loading";
+import { useAlert } from "../../../utils/Alert";
+import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
+    const showAlert = useAlert();
+    const dispatch = useDispatch();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const { isBatchEnabled } = useUI();
+    const { isBatchEnabled, isMembershipTableEnabled } = useUI();
     const [formData, setFormData] = useState({
         activityId: 0,
         activityType: "ZUMBA",
@@ -31,6 +38,41 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         branchId: currentBranch.branchId,
         batchEntries: [],
     });
+
+
+    const [loading, setLoading] = useState(false)
+    const studio = useSelector((state) => state.auth.studio);
+    const token = useSelector((state) => state.auth.token);
+    const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
+    const membershipTypes = isMembershipTableEnabled ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)] : [];
+
+    const fetchMembershipTypesData = useCallback(async () => {
+        try {
+            if (cachedMembershipTypes.length) {
+                return;
+            }
+            setLoading(true);
+            const { data, success, message } = await getAllActivityMembershipTypesAPI({
+                studioId: studio.studioId,
+                token,
+            });
+
+            if (success) {
+                dispatch(setMemberShipTypes(data));
+            } else {
+                showAlert(message, "error");
+            }
+        } catch (error) {
+            console.error(error);
+            showAlert("Failed to fetch expenses!", "error");
+        } finally {
+            setLoading(false);
+        }
+    }, [studio.studioId, token, showAlert]);
+
+    useEffect(() => {
+        isMembershipTableEnabled && fetchMembershipTypesData();
+    }, [loading, fetchMembershipTypesData]);
 
     useEffect(() => {
         if (activity) {
@@ -104,6 +146,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
 
     return (
         <Dialog open={open} onClose={() => onOpenChange(false)} fullWidth >
+            {loading && <Loading />}
             <DialogTitle>
                 {activity ? "Edit Activity" : "Create New Activity"}
             </DialogTitle>
@@ -185,19 +228,33 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                         </Grid>
                                     }
                                     <Grid item xs={12} md={6}>
-                                        <TextField
-                                            select
+                                        <Select
                                             label="Plan Type"
                                             value={batch.planType}
                                             onChange={(e) => updateBatch(batch.batchId, { planType: e.target.value })}
                                             fullWidth
+                                            MenuProps={{
+                                                PaperProps: {
+                                                    style: {
+                                                        maxHeight: 48 * 3 + 8,
+                                                    },
+                                                },
+                                            }}
                                         >
-                                            {validMembershipTypes.map((type) => (
+                                            {![...membershipTypes, ...validMembershipTypes].includes(batch.planType) && <MenuItem value={batch.planType} key={batch.planType}>
+                                                {batch.planType}
+                                            </MenuItem>}
+                                            {membershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
                                                     {type}
                                                 </MenuItem>
                                             ))}
-                                        </TextField>
+                                            {validMembershipTypes.map((type) => (
+                                                <MenuItem key={type} value={type}>
+                                                    {type} {isMembershipTableEnabled && <i>(default)</i>}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
                                     </Grid>
                                     {
                                         isBatchEnabled &&

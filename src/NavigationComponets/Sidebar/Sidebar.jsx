@@ -24,7 +24,7 @@ const Sidebar = ({ sidebarOn }) => {
   const theme = useTheme();
   const settings = useSelector((state) => state.auth.settings);
   const user = useSelector((state) => state.auth.user)
-  const { isMobile } = useUI();
+  const { isMobile, isMembershipTableEnabled } = useUI();
 
   const routes = [
     {
@@ -90,11 +90,11 @@ const Sidebar = ({ sidebarOn }) => {
       icon: (
         <EventIcon />
       ),
-    }, 
+    },
     {
       path: "/management/type",
-      label: "Membership Type",
-      show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && user?.role === "ADMIN",
+      label: "MembershipType",
+      show: isMembershipTableEnabled,
       icon: (
         <TypeSpecimen />
       ),

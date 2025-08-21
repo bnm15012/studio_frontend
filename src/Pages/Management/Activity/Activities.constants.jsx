@@ -61,11 +61,10 @@ export const getIcon = (activityType) => {
   }
 };
 
-export const membershipTypeColors = {
-  MONTHLY: '#7c3aed',
-  QUARTERLY: '#3b82f6',
-  REGISTRATION: '#10b981',
-  YEARLY: '#f59e0b',
-  HALF_YEARLY: '#ef4444',
-};
-
+export const membershipTypeColors = [
+  '#7c3aed',
+  '#3b82f6',
+  '#10b981',
+  '#f59e0b',
+  '#ef4444'
+]

@@ -26,7 +26,7 @@ const ActivityBatchCard = ({ batch }) => {
                             size="small"
                             label={batch.planType}
                             sx={{
-                                backgroundColor: membershipTypeColors[batch.planType] || "primary.main",
+                                backgroundColor: membershipTypeColors[(batch.batchId || 1) % membershipTypeColors.length] || "primary.main",
                                 color: "white",
                                 fontWeight: "bold",
                             }}
