@@ -39,7 +39,6 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         batchEntries: [],
     });
 
-
     const [loading, setLoading] = useState(false)
     const studio = useSelector((state) => state.auth.studio);
     const token = useSelector((state) => state.auth.token);
@@ -48,7 +47,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
 
     const fetchMembershipTypesData = useCallback(async () => {
         try {
-            if (cachedMembershipTypes.length) {
+            if (cachedMembershipTypes.length && !isMembershipTableEnabled) {
                 return;
             }
             setLoading(true);
@@ -72,7 +71,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
 
     useEffect(() => {
         isMembershipTableEnabled && fetchMembershipTypesData();
-    }, [loading, fetchMembershipTypesData]);
+    }, [isMembershipTableEnabled, fetchMembershipTypesData]);
 
     useEffect(() => {
         if (activity) {
