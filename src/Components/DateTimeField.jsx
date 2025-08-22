@@ -9,6 +9,7 @@ import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const DateTimeField = ({
+    disabled = false,
     value,
     onChange,
     format = "DATETIME",
@@ -44,6 +45,7 @@ const DateTimeField = ({
 
     const commonProps = {
         value: localDateTime,
+        disabled: disabled,
         onChange: handleChange,
         ampm: true,
         format: format === "DATE" ? "dd/MM/yyyy" : "dd/MM/yyyy, hh:mm a",
@@ -145,6 +147,7 @@ DateTimeField.propTypes = {
     minDateTime: PropTypes.string,
     placeholder: PropTypes.string,
     customStyle: PropTypes.object,
+    disabled: PropTypes.bool,
 };
 
 export default DateTimeField;

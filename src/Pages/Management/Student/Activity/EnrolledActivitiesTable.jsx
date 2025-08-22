@@ -35,6 +35,7 @@ import StudentInvoice from "./StudentInvoice";
 import { clearPaymentPages } from "../../../../state/paymentSlice";
 import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 import { useUI } from "../../../../context/UIContext";
+import { validMembershipTypes } from "../../Activity/Activities.constants";
 
 const PAYMENT_STATUS = [
   { label: "COMPLETED", value: "COMPLETED" },
@@ -113,7 +114,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
       showAlert("Membership plan must be selected!");
       return;
     }
-    tableData[index].membershipEndDate = getEndDateBySubscriptionPlan(tableData[index].membershipStartDate, tableData[index].membershipType.split()[0])
+    tableData[index].membershipEndDate = tableData[index].membershipEndDate || getEndDateBySubscriptionPlan(tableData[index].membershipStartDate, tableData[index].membershipType)
     if (
       !validateAndProcessDates({
         startDate: tableData[index].membershipStartDate,
@@ -183,7 +184,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
       showAlert("Membership plan must be selected!");
       return;
     }
-    newRow.membershipEndDate = getEndDateBySubscriptionPlan(newRow.membershipStartDate, newRow.membershipType.split()[0])
+    newRow.membershipEndDate = newRow.membershipEndDate || getEndDateBySubscriptionPlan(newRow.membershipStartDate, newRow.membershipType)
     if (
       !validateAndProcessDates({
         startDate: newRow.membershipStartDate,
@@ -350,7 +351,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                     {editIndex === index ? (
                       <DateTimeField
                         format="DATE"
-                        value={newRow.membershipStartDate}
+                        value={row.membershipStartDate}
                         onChange={(value) =>
                           handleInputChange(index, "membershipStartDate", value)}
                       />
@@ -360,7 +361,20 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                   </TableCell>
                   <TableCell>
                     {
-                      row.membershipStartDate && row.membershipType && getLocalDateTime(getEndDateBySubscriptionPlan(row.membershipStartDate, row.membershipType.split()[0]))
+                      editIndex === index ? (
+                        <DateTimeField
+                          disabled={validMembershipTypes.includes(row.membershipType) || !row.membershipStartDate}
+                          format="DATE"
+                          value={getEndDateBySubscriptionPlan(row.membershipStartDate, row.membershipType)}
+                          minDateTime={row.membershipStartDate}
+                          onChange={(value) =>
+                            handleNewRowChange(
+                              "membershipEndDate",
+                              value
+                            )}
+                        />) : (
+                        getLocalDateTime(row.membershipEndDate)
+                      )
                     }
                   </TableCell>
                   <TableCell
@@ -473,9 +487,17 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  {
-                    newRow.membershipStartDate && newRow.membershipType && getLocalDateTime(getEndDateBySubscriptionPlan(newRow.membershipStartDate, newRow.membershipType.split()[0]))
-                  }
+                  <DateTimeField
+                    disabled={validMembershipTypes.includes(newRow.membershipType) || !newRow.membershipStartDate}
+                    format="DATE"
+                    minDateTime={newRow.membershipStartDate}
+                    value={getEndDateBySubscriptionPlan(newRow.membershipStartDate, newRow.membershipType)}
+                    onChange={(value) =>
+                      handleNewRowChange(
+                        "membershipEndDate",
+                        value
+                      )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Typography variant="body1">
