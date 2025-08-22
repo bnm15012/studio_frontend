@@ -21,6 +21,7 @@ import DeleteDialog from "../../../Components/DeleteDialog";
 import { addActivityMembershipTypeAPI, deleteActivityMembershipTypeAPI, updateActivityMembershipTypeAPI } from "./MembershipType.api";
 import { useDispatch } from "react-redux";
 import { addMemberShipTypes, deleteMemberShipTypes, updateMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
+import { validMembershipTypes } from "../Activity/Activities.constants";
 
 const MembershipTypesTable = ({
   initialData,
@@ -36,18 +37,38 @@ const MembershipTypesTable = ({
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteDialogIndex, setDeleteDialogIndex] = useState(null);
+  const [originalRow, setOriginalRow] = useState(null);
 
-  const handleEdit = (index) => setEditingRowIndex(index);
+  const handleEdit = (index) => {
+    setOriginalRow({ ...data[index] });
+    setEditingRowIndex(index);
+  };
+
+  const handleCancel = () => {
+    if (newRow) {
+      setNewRow(null);
+    } else if (editingRowIndex !== null && originalRow) {
+      setData((prev) =>
+        prev.map((row, i) =>
+          i === editingRowIndex ? originalRow : row
+        )
+      );
+    }
+    setEditingRowIndex(null);
+    setOriginalRow(null);
+  };
 
   useEffect(() => {
     setData(initialData)
   }, [initialData])
 
-  const validateRow = (row) => {
-    if (
-      !row.activityMembershipType
-    ) {
-      showAlert("All fields are required!", "error");
+  const validateRow = (value, list) => {
+    if (!value || value.trim() === "") {
+      showAlert("Membership type cannot be empty!", "error");
+      return false;
+    }
+    if (list.includes(value.trim())) {
+      showAlert("Membership type already exists!", "error");
       return false;
     }
     return true;
@@ -58,7 +79,13 @@ const MembershipTypesTable = ({
 
     try {
       if (newRow !== null) {
-        if (!validateRow(newRow)) return;
+        if (!validateRow(newRow.activityMembershipType, [
+          ...validMembershipTypes,
+          ...data.map((d) => d.activityMembershipType),
+        ])) {
+          setLoading(false);
+          return;
+        }
         const newMembershipType = { ...newRow, studioId };
         const {
           data: addedMembershipType,
@@ -78,7 +105,14 @@ const MembershipTypesTable = ({
         setNewRow(null);
       } else {
         const updatedMembershipType = data[index];
-        if (!validateRow(updatedMembershipType)) return;
+        const existingTypes = data
+          .filter((_, i) => i !== index)
+          .map((d) => d.activityMembershipType);
+
+        if (!validateRow(updatedMembershipType.activityMembershipType, existingTypes)) {
+          setLoading(false);
+          return;
+        }
         const {
           data: updatedData,
           success,
@@ -106,11 +140,6 @@ const MembershipTypesTable = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleCancel = () => {
-    setNewRow(null);
-    setEditingRowIndex(null);
   };
 
   const handleDelete = async (index) => {
