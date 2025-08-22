@@ -365,13 +365,10 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                         <DateTimeField
                           disabled={validMembershipTypes.includes(row.membershipType) || !row.membershipStartDate}
                           format="DATE"
-                          value={getEndDateBySubscriptionPlan(row.membershipStartDate, row.membershipType)}
+                          value={row.membershipEndDate || getEndDateBySubscriptionPlan(row.membershipStartDate, row.membershipType)}
                           minDateTime={row.membershipStartDate}
                           onChange={(value) =>
-                            handleNewRowChange(
-                              "membershipEndDate",
-                              value
-                            )}
+                            handleInputChange(index, "membershipEndDate", value)}
                         />) : (
                         getLocalDateTime(row.membershipEndDate)
                       )
