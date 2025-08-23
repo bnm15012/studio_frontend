@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import { EventNote, TypeSpecimen } from "@mui/icons-material";
+import { EventNote, QuestionAnswer, TypeSpecimen } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
 import { Contacts } from "@mui/icons-material";
 import SchoolIcon from "@mui/icons-material/School";
@@ -49,6 +49,14 @@ const Sidebar = ({ sidebarOn }) => {
       show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && user?.role === "ADMIN",
       icon: (
         <DeviceHubIcon />
+      ),
+    },
+    {
+      path: "/management/enquiry",
+      label: "Enquiries",
+      show: settings.find((setting) => setting.navBarName === "ENQUIRY")?.enabled,
+      icon: (
+        <QuestionAnswer />
       ),
     },
     {

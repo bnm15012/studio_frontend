@@ -10,6 +10,7 @@ import StudentForm from "./Student/Form/StudentForm";
 import Expenses from "./Expense/Expenses";
 import Payments from "./Payments/Payments";
 import Reports from "./Reports/Reports";
+import Enquiry from "./Enquiry/Enquiry.jsx";
 import BookingFormView from "./Booking/BookingFormView";
 import Communication from "./Communication/Communication";
 import Branches from "./Branches/Branches";
@@ -43,6 +44,8 @@ const Management = () => {
         return <Payments />;
       case "reports":
         return <Reports />;
+      case "enquiry":
+        return <Enquiry />;
       case "communication":
         return <Communication />;
       case "bulk_upload":
