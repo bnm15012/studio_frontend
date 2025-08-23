@@ -6,10 +6,12 @@ import { useDispatch } from "react-redux";
 import FlexBetween from "../../Components/FlexBetween";
 import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";
 import { openDialog } from "../../state/dialogSlice";
+import { useUI } from "../../context/UIContext";
 
 
 const UserProfileDropdown = ({ user, handleLogout }) => {
   const dispatch = useDispatch();
+  const { isAdmin } = useUI();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openplansPopUp, setOpenplansPopUp] = useState(false)
   const openMenu = Boolean(anchorEl);
@@ -38,7 +40,7 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
         open={openMenu}
         onClose={handleClose}
       >
-        {user?.role === "ADMIN" &&
+        {isAdmin &&
           <MenuItem
             onClick={() => {
               dispatch(openDialog("profileDialog"));
@@ -56,7 +58,7 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
           Change Password
         </MenuItem>
         {
-          user?.role === "ADMIN" && <>
+          isAdmin && <>
             <MenuItem
               onClick={() => {
                 dispatch(openDialog("subscriptionDialog"));

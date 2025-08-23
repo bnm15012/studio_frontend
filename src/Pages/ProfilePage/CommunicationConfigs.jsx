@@ -18,12 +18,13 @@ import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "../../utils/Alert";
 import Loading from "../../Components/Loading/Loading";
 import WhatsAppConfiguration from "./WhatsAppConfiguration";
+import { useUI } from "../../context/UIContext";
 
 const CommunicationConfigs = ({ studio }) => {
   const showAlert = useAlert();
+  const { isAdmin } = useUI();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  const user = useSelector((state) => state.auth.user)
   const [loading, setLoading] = useState(false);
   const [editProf, setEditProf] = useState(false);
 
@@ -57,8 +58,7 @@ const CommunicationConfigs = ({ studio }) => {
       {loading && <Loading />}
       {/* Email Configuration Section */}
       <FlexBetween flexDirection={"column"} gap={5}>
-        {
-          user?.role === "ADMIN" &&
+        {isAdmin &&
           <Box>
             <FlexBetween>
               <Typography variant="h6" fontWeight="bold">

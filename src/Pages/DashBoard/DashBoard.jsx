@@ -20,6 +20,7 @@ import {
 import SummaryCard from "./SummaryCard";
 import ImageComponent from "../../Components/ImageComponent";
 import { convertUTCToLocal } from "../../utils/DateUtil";
+import { useUI } from "../../context/UIContext";
 
 // Define animations
 const fadeIn = keyframes`
@@ -35,6 +36,7 @@ const fadeIn = keyframes`
 
 const DashBoard = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useUI();
   const showAlert = useAlert();
   const user = useSelector((state) => state.auth.user);
   const studio = useSelector((state) => state.auth.studio);
@@ -178,9 +180,7 @@ const DashBoard = () => {
                   {studio?.studioName}
                 </Typography>
               </FlexBetween>
-              {
-                user?.role === "ADMIN" &&
-
+              {isAdmin &&
                 <Box sx={{
                   background: 'rgba(255,255,255,0.1)',
                   borderRadius: 2,

@@ -14,7 +14,6 @@ import PropTypes from "prop-types";
 import SidebarItem from "./SidebarItem";
 import { Assessment } from "@mui/icons-material";
 import DeviceHubIcon from '@mui/icons-material/DeviceHub';
-import { useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
 import { BookTemplate, Upload } from "lucide-react";
 
@@ -22,9 +21,7 @@ const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const settings = useSelector((state) => state.auth.settings);
-  const user = useSelector((state) => state.auth.user)
-  const { isMobile, isMembershipTableEnabled } = useUI();
+  const { isMobile, isMembershipTableEnabled, settings, isAdmin } = useUI();
 
   const routes = [
     {
@@ -46,7 +43,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/branch",
       label: "Branches",
-      show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && isAdmin,
       icon: (
         <DeviceHubIcon />
       ),
@@ -94,7 +91,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/activity",
       label: "Activities",
-      show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && isAdmin,
       icon: (
         <EventIcon />
       ),
@@ -102,7 +99,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/type",
       label: "MembershipType",
-      show: isMembershipTableEnabled,
+      show: isMembershipTableEnabled && isAdmin,
       icon: (
         <TypeSpecimen />
       ),
@@ -134,7 +131,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/analysis",
       label: "Analysis",
-      show: settings.find((setting) => setting.navBarName === "ANALYSIS")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "ANALYSIS")?.enabled && isAdmin,
       icon: (
         <BarChartIcon />
       ),
@@ -142,7 +139,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/reports",
       label: "Reports",
-      show: settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && isAdmin,
       icon: (
         <Assessment />
       ),
@@ -150,7 +147,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/template",
       label: "Templates",
-      show: settings.find((setting) => setting.navBarName === "TEMPLATES")?.enabled && user?.role === "ADMIN",
+      show: settings.find((setting) => setting.navBarName === "TEMPLATES")?.enabled && isAdmin,
       icon: (
         <BookTemplate />
       ),
