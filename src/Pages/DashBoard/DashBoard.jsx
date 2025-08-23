@@ -101,6 +101,7 @@ const DashBoard = () => {
             label: "Total Payment",
             navigateTo: "/management/payments",
             icon: <CurrencyRupeeIcon sx={{ fontSize: "40px" }} />,
+            blur: !isAdmin,
           },
           {
             color: "#795548",
@@ -258,6 +259,7 @@ const DashBoard = () => {
                     label={item.label}
                     icon={item.icon}
                     delay={0.1 * index}
+                    blurValue={item.blur}
                   />
                 </Grid>
               ))}

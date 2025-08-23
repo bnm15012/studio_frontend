@@ -1,6 +1,5 @@
 import { Box, Button, Card, CardContent, Typography, useTheme, keyframes } from "@mui/material";
 import PropTypes from "prop-types";
-import FlexBetweenColumn from "../../Components/FlexBetweenColumn";
 import { ArrowCircleRight } from "@mui/icons-material";
 
 // Define animations
@@ -27,7 +26,7 @@ const pulse = keyframes`
   }
 `;
 
-const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
+const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0, blurValue = false }) => {
   const theme = useTheme();
 
   return (
@@ -69,11 +68,11 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
         }
       }}
     >
-      <CardContent 
+      <CardContent
         className="card-content"
-        sx={{ 
-          display: "flex", 
-          flexGrow: 1, 
+        sx={{
+          display: "flex",
+          flexGrow: 1,
           alignItems: "center",
           width: "100%",
           transition: "all 0.3s ease",
@@ -84,11 +83,14 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
         <Box sx={{ flexGrow: 1, pr: 2 }}>
           <Typography
             variant="h3"
+            className={blurValue ? "blur-value" : ""}
             sx={{
               fontSize: { xs: "2rem", sm: "2.5rem" },
               fontWeight: 700,
               mb: 1,
-              textShadow: "0px 2px 4px rgba(0,0,0,0.1)"
+              textShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+              filter: blurValue ? "blur(10px)" : "none",
+              transition: "filter 0.3s ease"
             }}
           >
             {typeof value === 'number' ? value.toLocaleString() : value}
@@ -105,7 +107,7 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
             {label}
           </Typography>
         </Box>
-        <Box 
+        <Box
           className="icon-wrapper"
           sx={{
             transition: "all 0.3s ease",
@@ -140,9 +142,9 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
           },
         }}
       >
-        <Typography 
-          variant="button" 
-          sx={{ 
+        <Typography
+          variant="button"
+          sx={{
             fontWeight: 600,
             textTransform: "none",
             fontSize: "0.95rem",
@@ -151,12 +153,12 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0 }) => {
         >
           View Details
         </Typography>
-        <ArrowCircleRight 
+        <ArrowCircleRight
           className="arrow-icon"
-          sx={{ 
+          sx={{
             transition: "transform 0.3s ease",
             fontSize: "1.2rem"
-          }} 
+          }}
         />
       </Button>
     </Card>
@@ -170,6 +172,7 @@ SummaryCard.propTypes = {
   icon: PropTypes.object,
   onShowMore: PropTypes.func.isRequired,
   delay: PropTypes.number,
+  blurValue: PropTypes.bool
 };
 
 export default SummaryCard;

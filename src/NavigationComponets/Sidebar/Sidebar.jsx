@@ -35,7 +35,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/bulk_upload",
       label: "Upload Data",
-      show: settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled,
+      show: settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled && isAdmin,
       icon: (
         <Upload />
       ),
