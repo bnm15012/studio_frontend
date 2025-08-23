@@ -7,55 +7,32 @@ import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import MembershipTypesTable from "./MembershipTypesTable";
-import { getAllActivityMembershipTypesAPI } from "./MembershipType.api";
 import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
+import { getAllDataAPI } from "../../../api/common.api";
 
 const MembershipType = () => {
   const dispatch = useDispatch();
   const showAlert = useAlert();
   const [loading, setLoading] = useState(false);
-  const [membershipTypes, setMembershipTypes] = useState();
   const token = useSelector((state) => state.auth.token);
   const studio = useSelector((state) => state.auth.studio);
   const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
-
-  const fetchMembershipTypesData = useCallback(async () => {
-    try {
-      if (cachedMembershipTypes.length) {
-        setMembershipTypes(cachedMembershipTypes)
-        return;
-      }
-      setLoading(true);
-      const { data, success, message } = await getAllActivityMembershipTypesAPI({
-        studioId: studio.studioId,
-        token,
-      });
-
-      if (success) {
-        setMembershipTypes(data);
-        dispatch(setMemberShipTypes(data));
-      } else {
-        showAlert(message, "error");
-      }
-    } catch (error) {
-      console.error(error);
-      showAlert("Failed to fetch expenses!", "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [studio.studioId, token, showAlert]);
   const [newRow, setNewRow] = useState(null);
 
+  const fetchMembershipTypesData = useCallback(async () => {
+    dispatch(getAllDataAPI({ rootId: studio.studioId, token, showAlert, route: "activity-membership-type", setData: setMemberShipTypes, setLoading }));
+  }, [dispatch, studio.studioId, token, showAlert]);
+
   useEffect(() => {
-    !membershipTypes && fetchMembershipTypesData();
-  }, [membershipTypes, loading, fetchMembershipTypesData]);
-  
-  const handleAddNew = () => {
+    !cachedMembershipTypes.length && fetchMembershipTypesData();
+  }, [cachedMembershipTypes.length, fetchMembershipTypesData]);
+
+  function handleAddNew() {
     setNewRow({
       activityMembershipTypeId: undefined,
       activityMembershipType: "",
     });
-  };
+  }
 
   return (
     <FlexBetweenColumn>
@@ -72,15 +49,13 @@ const MembershipType = () => {
         </Button>
       </FlexBetween>
       <Box>
-        {membershipTypes && (
-          <MembershipTypesTable
-            initialData={(membershipTypes)}
-            studioId={studio.studioId}
-            token={token}
-            newRow={newRow}
-            setNewRow={setNewRow}
-          />
-        )}
+        <MembershipTypesTable
+          initialData={(cachedMembershipTypes)}
+          studioId={studio.studioId}
+          token={token}
+          newRow={newRow}
+          setNewRow={setNewRow}
+        />
       </Box>
     </FlexBetweenColumn>
   );

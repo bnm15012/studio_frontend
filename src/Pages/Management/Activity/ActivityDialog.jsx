@@ -21,10 +21,10 @@ import { validActivityTypes, validMembershipTypes } from "./Activities.constants
 import PropTypes from "prop-types";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
-import { getAllActivityMembershipTypesAPI } from "../MembershipType/MembershipType.api";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
+import { getAllDataAPI } from "../../../api/common.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
@@ -46,32 +46,13 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const membershipTypes = isMembershipTableEnabled ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)] : [];
 
     const fetchMembershipTypesData = useCallback(async () => {
-        try {
-            if (cachedMembershipTypes.length && !isMembershipTableEnabled) {
-                return;
-            }
-            setLoading(true);
-            const { data, success, message } = await getAllActivityMembershipTypesAPI({
-                studioId: studio.studioId,
-                token,
-            });
+        dispatch(getAllDataAPI({ rootId: studio.studioId, token, showAlert, route: "activity-membership-type", setData: setMemberShipTypes, setLoading }));
+    }, [dispatch, studio.studioId, token, showAlert]);
 
-            if (success) {
-                dispatch(setMemberShipTypes(data));
-            } else {
-                showAlert(message, "error");
-            }
-        } catch (error) {
-            console.error(error);
-            showAlert("Failed to fetch expenses!", "error");
-        } finally {
-            setLoading(false);
-        }
-    }, [studio.studioId, token, showAlert]);
 
     useEffect(() => {
-        isMembershipTableEnabled && fetchMembershipTypesData();
-    }, [isMembershipTableEnabled, fetchMembershipTypesData]);
+        isMembershipTableEnabled && !cachedMembershipTypes.length && fetchMembershipTypesData();
+    }, [isMembershipTableEnabled, fetchMembershipTypesData, cachedMembershipTypes.length]);
 
     useEffect(() => {
         if (activity) {

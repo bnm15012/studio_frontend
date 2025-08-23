@@ -18,10 +18,10 @@ import {
 } from "../../../Components/StyledTableComponents";
 import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
-import { addActivityMembershipTypeAPI, deleteActivityMembershipTypeAPI, updateActivityMembershipTypeAPI } from "./MembershipType.api";
 import { useDispatch } from "react-redux";
 import { addMemberShipTypes, deleteMemberShipTypes, updateMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
 import { validMembershipTypes } from "../Activity/Activities.constants";
+import { addDataAPI, deleteDataAPI, updateDataAPI } from "../../../api/common.api";
 
 const MembershipTypesTable = ({
   initialData,
@@ -87,21 +87,7 @@ const MembershipTypesTable = ({
           return;
         }
         const newMembershipType = { ...newRow, studioId };
-        const {
-          data: addedMembershipType,
-          success,
-          message,
-        } = await addActivityMembershipTypeAPI({
-          membershipTypeData: newMembershipType,
-          token,
-        });
-        if (success) {
-          setData((prev) => [...prev, addedMembershipType]);
-          dispatch(addMemberShipTypes(addedMembershipType));
-          showAlert(message, "success");
-        } else {
-          showAlert(message, "error");
-        }
+        dispatch(addDataAPI({ route: "activity-membership-type", newData: newMembershipType, token, showAlert, setData: addMemberShipTypes, setLoading }))
         setNewRow(null);
       } else {
         const updatedMembershipType = data[index];
@@ -113,25 +99,7 @@ const MembershipTypesTable = ({
           setLoading(false);
           return;
         }
-        const {
-          data: updatedData,
-          success,
-          message,
-        } = await updateActivityMembershipTypeAPI({
-          membershipTypeData: updatedMembershipType,
-          token,
-        });
-        if (success) {
-          setData((prev) =>
-            prev.map((expense, i) =>
-              i === index ? { ...expense, ...updatedData } : expense
-            )
-          );
-          dispatch(updateMemberShipTypes(updatedData));
-          showAlert(message, "success");
-        } else {
-          showAlert(message, "error");
-        }
+        dispatch(updateDataAPI({ route: "activity-membership-type", updatedData: updatedMembershipType, token, showAlert, id: updatedMembershipType["activityMembershipTypeId"], setData: updateMemberShipTypes, setLoading }))
         setEditingRowIndex(null);
       }
     } catch (error) {
@@ -147,14 +115,7 @@ const MembershipTypesTable = ({
 
     try {
       const membershipTypeId = data[index].activityMembershipTypeId;
-      const { success, message } = await deleteActivityMembershipTypeAPI({ membershipTypeId, token });
-      if (success) {
-        setData((prev) => prev.filter((_, i) => i !== index));
-        dispatch(deleteMemberShipTypes(membershipTypeId));
-        showAlert(message, "success");
-      } else {
-        showAlert(message, "error");
-      }
+      dispatch(deleteDataAPI({ route: "activity-membership-type", id: membershipTypeId, token, showAlert, setData: deleteMemberShipTypes, setLoading }))
     } catch (error) {
       console.error(error);
       showAlert("Failed to delete expense!", "error");
