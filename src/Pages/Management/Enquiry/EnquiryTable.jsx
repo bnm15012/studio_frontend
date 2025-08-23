@@ -74,7 +74,7 @@ const EnquiryTable = ({
           success,
           message,
         } = await addEnquiryAPI({
-          enquiryData: newEnquiry,
+          newData: newEnquiry,
           token,
         });
         if (success) {

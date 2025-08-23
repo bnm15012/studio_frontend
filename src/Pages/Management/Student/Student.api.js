@@ -81,9 +81,9 @@ export const getAllStudentsAPI = async ({
   }
 };
 
-export const addStudentAPI = async ({ studentData, token }) => {
+export const addStudentAPI = async ({ newData, token }) => {
   try {
-    const response = await api.post("/students/add", studentData, {
+    const response = await api.post("/students/add", newData, {
       headers: {
         Authorization: `${token}`,
         "Form-Authorization": import.meta.env.VITE_APP_FORM_SIG,

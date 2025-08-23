@@ -2,15 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button, Pagination } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import { Add, Refresh } from "@mui/icons-material";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEnquirysAPI } from "./enquiry.api";
-import { setEnquiries } from "../../../state/enquirySlice.js";
+import { clearEnquiry, setEnquiries } from "../../../state/enquirySlice.js";
 import EnquiryTable from "./EnquiryTable.jsx";
 import SearchField from "../../../Components/SearchField.jsx";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
+import QrForm from "../../../Components/QrForm.jsx";
 
 const size = 7;
 const Enquiry = () => {
@@ -82,6 +83,23 @@ const Enquiry = () => {
       {loading && <Loading />}
       <FlexBetween paddingBottom={2} gap={1}>
         <SearchField handleSearch={(searchTerm) => fetchEnquiryData(1, searchTerm)} />
+        <QrForm
+          qrSize={480}
+          title=""
+          link={"enquiry-form"}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={newRow != null}
+          onClick={() => {
+            dispatch(clearEnquiry());
+            fetchEnquiryData(page)
+          }}
+          sx={{ fontWeight: "bold", padding: ".8rem" }}
+        >
+          <Refresh sx={{ padding: 0, margin: "auto" }} />
+        </Button>
         <Button
           variant="contained"
           color="primary"

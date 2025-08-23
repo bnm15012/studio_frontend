@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom';
 import FormBuilder from '../../Components/FormBuilder';
 import { addStudentAPI } from '../Management/Student/Student.api';
 import { useEffect } from 'react';
-
+import { addEnquiryAPI } from '../Management/Enquiry/enquiry.api';
+import { getCurrentDateTimeUTC } from '../../utils/DateUtil';
 
 const formData = [{
   id: 'student-form',
@@ -22,7 +23,6 @@ const formData = [{
       type: 'text',
       required: true,
       validation: {
-        // Example: 10-digit phone number, digits only
         regex: /^\d{10}$/,
         errorMessage: "Please enter a valid 10-digit phone number",
       }
@@ -32,12 +32,29 @@ const formData = [{
       type: 'text',
       required: true,
       validation: {
-        // Allow digits, 10-12 length, or customize as needed
         regex: /^\d{10,12}$/,
         errorMessage: "Please enter a valid emergency contact number",
       }
     },
     address: { type: 'text', required: true },
+  }
+},
+{
+  id: 'enquiry-form',
+  name: 'Enquiry Form',
+  onSubmit: addEnquiryAPI,
+  fields: {
+    name: { type: 'text', required: true },
+    contact: {
+      type: 'text',
+      required: true,
+      validation: {
+        regex: /^\d{10}$/,
+        errorMessage: "Please enter a valid contact number",
+      }
+    },
+    enquiryPurpose: { type: 'text', required: true },
+    enquiryDate: { type: 'date', required: true, defaultValue: getCurrentDateTimeUTC(), readOnly: true }
   }
 }];
 

@@ -98,7 +98,7 @@ const StudentForm = ({ page, ID }) => {
         setLoading(true);
         if (ID === "NEW") {
           const { data, success, message } = await addStudentAPI({
-            studentData: newStudentData,
+            newData: newStudentData,
             token,
           });
           if (success) {

@@ -1,11 +1,12 @@
 import api from "../../../utils/api";
 
 // ✅ Add Enquiry
-export const addEnquiryAPI = async ({ enquiryData, token }) => {
+export const addEnquiryAPI = async ({ newData, token }) => {
     try {
-        const response = await api.post("/enquiries/add", enquiryData, {
+        const response = await api.post("/enquiries/add", newData, {
             headers: {
                 Authorization: `${token}`,
+                "Form-Authorization": import.meta.env.VITE_APP_FORM_SIG,
             },
         });
         const { data, status } = response.data;

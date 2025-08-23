@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAlert } from '../utils/Alert';
 import { useTheme } from '@mui/material/styles';
 import { Box, Typography, TextField, MenuItem, Button, Paper } from '@mui/material';
@@ -13,6 +13,17 @@ const FormBuilder = ({ form, branchId }) => {
   const showAlert = useAlert();
   const theme = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  useEffect(() => {
+    const initialState = { _form_sig: FORM_SIG };
+    Object.entries(form.fields).forEach(([key, config]) => {
+      if (config.defaultValue !== undefined) {
+        initialState[key] = config.defaultValue;
+      }
+    });
+    setFormState(prev => ({ ...initialState, ...prev }));
+  }, [form]);
+
 
   const validateField = (key, value, config) => {
     if (config.required && !value) {
@@ -55,8 +66,8 @@ const FormBuilder = ({ form, branchId }) => {
     });
 
     setErrors(newErrors);
-
     if (Object.keys(newErrors).length > 0) {
+      console.error(newErrors);
       showAlert('Please fix validation errors before submitting.', 'error');
       return;
     }
@@ -64,7 +75,7 @@ const FormBuilder = ({ form, branchId }) => {
     try {
       setLoading(true);
       const { success, message } = await form.onSubmit({
-        studentData: { ...cleanData, branchId: parseInt(branchId) },
+        newData: { ...cleanData, branchId: parseInt(branchId) },
         formSignature: FORM_SIG,
       });
       if (success) {
@@ -124,7 +135,7 @@ const FormBuilder = ({ form, branchId }) => {
               />
 
               {Object.entries(form.fields).map(([key, config]) => {
-                const { type, required, options } = config;
+                const { type, required, options, readOnly } = config;
                 const label = key.charAt(0).toUpperCase() + key.slice(1);
                 const error = errors[key];
 
@@ -133,6 +144,7 @@ const FormBuilder = ({ form, branchId }) => {
                     <TextField
                       size="medium"
                       key={key}
+                      disabled={readOnly || false}
                       label={label}
                       type={type}
                       variant="outlined"
@@ -159,6 +171,7 @@ const FormBuilder = ({ form, branchId }) => {
                     <DateTimeField
                       onChange={(e) => handleChange(key, e)}
                       value={formState[key]}
+                      disabled={readOnly || false}
                       placeholder="Date of birth"
                       format="DATE"
                       key={key}
