@@ -94,7 +94,7 @@ const Activities = () => {
     const duplicates = new Set();
     let isValid = true;
     batchEntries.forEach((batch) => {
-      const key = `${batch.planType}-${batch.daysPerWeek}`;
+      const key = `${batch.name}-${batch.planType}-${batch.daysPerWeek}`;
       if (duplicates.has(key)) {
         isValid = false;
       }
@@ -120,7 +120,7 @@ const Activities = () => {
     }
 
     if (!checkUniqueConstraint(updatedActivity.batchEntries)) {
-      showAlert(`plan type and days per week can not be same for multiple ${isBatchEnabled ? "batch" : "membership"}.`, "error");
+      showAlert(`name, plan type and days per week can not be same for multiple ${isBatchEnabled ? "batch" : "membership"}.`, "error");
       return;
     }
 

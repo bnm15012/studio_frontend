@@ -8,17 +8,15 @@ import {
   Link,
   Divider,
 } from '@mui/material';
-import {
-  Facebook,
-  Instagram,
-  LinkedIn,
-  Email,
-  Phone,
-  LocationOn,
-  ArrowForward,
-  WhatsApp,
-  X as Twitter,
-} from '@mui/icons-material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import XIcon from '@mui/icons-material/X'; 
 import ImageComponent from './ImageComponent';
 import { useNavigate } from 'react-router-dom';
 
@@ -109,7 +107,7 @@ const Footer = () => {
                     },
                   }}
                 >
-                  <Facebook />
+                  <FacebookIcon />
                 </IconButton>
                 <IconButton
                   href="https://x.com"
@@ -121,7 +119,7 @@ const Footer = () => {
                     },
                   }}
                 >
-                  <Twitter />
+                  <XIcon />
                 </IconButton>
                 <IconButton
                   href="https://www.instagram.com/"
@@ -133,7 +131,7 @@ const Footer = () => {
                     },
                   }}
                 >
-                  <Instagram />
+                  <InstagramIcon />
                 </IconButton>
                 <IconButton
                   href="https://wa.me/+917326027500"
@@ -145,7 +143,7 @@ const Footer = () => {
                     },
                   }}
                 >
-                  <WhatsApp />
+                  <WhatsAppIcon />
                 </IconButton>
                 <IconButton
                   href="https://www.linkedin.com/company/book-manage/"
@@ -157,7 +155,7 @@ const Footer = () => {
                     },
                   }}
                 >
-                  <LinkedIn />
+                  <LinkedInIcon />
                 </IconButton>
               </Box>
             </Box>
@@ -300,7 +298,7 @@ const Footer = () => {
                     background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
                   }}
                 >
-                  <ArrowForward />
+                  <ArrowForwardIcon />
                 </Button>
               </Box>
               <Typography
@@ -323,9 +321,9 @@ const Footer = () => {
           }}>
             {/* 89, 2nd Cross Road, Kaverappa Layout, */}
             {[
-              { icon: Email, title: 'Email', content: 'bookandmanage@gmail.com' },
-              { icon: Phone, title: 'Phone', content: '+91 73260 27500' },
-              { icon: LocationOn, title: 'Office', content: 'Bangalore, Karnataka 560103' },
+              { icon: EmailIcon, title: 'Email', content: 'bookandmanage@gmail.com' },
+              { icon: PhoneIcon, title: 'Phone', content: '+91 73260 27500' },
+              { icon: LocationOnIcon, title: 'Office', content: 'Bangalore, Karnataka 560103' },
             ].map((contact, index) => (
               <Box
                 key={index}

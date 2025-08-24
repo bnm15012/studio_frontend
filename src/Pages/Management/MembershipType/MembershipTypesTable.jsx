@@ -184,7 +184,7 @@ const MembershipTypesTable = ({
               S. No.
             </StyledTableCell>
             <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-              Membership Type
+              Package Name
             </StyledTableCell>
             <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
               Actions
@@ -251,7 +251,7 @@ const MembershipTypesTable = ({
             <StyledTableRow>
               <StyledTableCell colSpan={6}>
                 <FlexEvenly>
-                  No activityMembershipType data available. Add by clicking the &quot;+&quot; button!
+                  No Packages data available. Add by clicking the &quot;+&quot; button!
                 </FlexEvenly>
               </StyledTableCell>
             </StyledTableRow>

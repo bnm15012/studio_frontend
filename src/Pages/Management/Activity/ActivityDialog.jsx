@@ -127,21 +127,25 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         if (!formData.activityType) return false;
         if (formData.batchEntries.length === 0) return false;
 
+        const keys = formData.batchEntries.map((b) =>
+            `${b.name?.trim().toLowerCase()}|${b.planType}|${formData.activityId}|${b.daysPerWeek}`
+        );
+        const hasDuplicates = new Set(keys).size !== keys.length;
+        if (hasDuplicates) return false;
+
         for (const batch of formData.batchEntries) {
             if (!batch.planType) return false;
             if (isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7) return false;
-            if (batch.price == null || batch.price < 0) return false;
+            if (isNaN(batch.price) || batch.price < 0) return false;
 
             if (isBatchEnabled) {
                 if (!batch.name?.trim()) return false;
-                if (!batch.startTime) return false;
-                if (!batch.endTime) return false;
+                if (!(batch.startTime) || !(batch.endTime) || batch.endTime < batch.startTime) return false;
             }
         }
 
         return true;
     };
-
 
     return (
         <Dialog open={open} onClose={() => onOpenChange(false)} fullWidth >
@@ -219,6 +223,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                 label="Batch Name"
                                                 placeholder="e.g., Morning Zumba"
                                                 value={batch.name}
+                                                error={!(batch.name?.trim())}
                                                 onChange={(e) =>
                                                     updateBatch(batch.batchId, { name: e.target.value })
                                                 }
@@ -263,6 +268,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     type="time"
                                                     label="Start Time"
                                                     value={batch.startTime}
+                                                    error={!(batch.startTime)}
                                                     onChange={(e) => updateBatch(batch.batchId, { startTime: e.target.value })}
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
@@ -276,6 +282,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     type="time"
                                                     label="End Time"
                                                     value={batch.endTime}
+                                                    error={!(batch.endTime) || batch.endTime < batch.startTime}
                                                     onChange={(e) => updateBatch(batch.batchId, { endTime: e.target.value })}
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
@@ -295,6 +302,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                 updateBatch(batch.batchId, { daysPerWeek: parseInt(e.target.value) })
                                             }
                                             fullWidth
+                                            error={isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7}
                                             inputProps={{ min: 0, max: 7 }}
                                         />
                                     </Grid>
@@ -304,9 +312,10 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             label="Price"
                                             value={batch.price}
                                             onChange={(e) =>
-                                                updateBatch(batch.batchId, { price: parseFloat(e.target.value) || 0 })
+                                                updateBatch(batch.batchId, { price: parseFloat(e.target.value) })
                                             }
                                             fullWidth
+                                            error={batch.price < 0 || isNaN(batch.price)}
                                             inputProps={{ min: 0, step: 0.01 }}
                                             InputProps={{
                                                 startAdornment: <AttachMoney fontSize="small" />,

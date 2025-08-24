@@ -20,6 +20,10 @@ export const validActivityTypes = [
   // "HIP_HOP",
   // "BELLY_DANCE",
   // "BHANGRA",
+  "KATHAK", 
+  "BHARATNATYAM", 
+  "FREESTYLE", 
+  "SEMI_CLASSICAL",
   "MARTIAL_ARTS",
 ];
 export const validMembershipTypes = [

@@ -98,7 +98,7 @@ const Sidebar = ({ sidebarOn }) => {
     },
     {
       path: "/management/type",
-      label: "MembershipType",
+      label: "Packages",
       show: isMembershipTableEnabled && isAdmin,
       icon: (
         <TypeSpecimen />

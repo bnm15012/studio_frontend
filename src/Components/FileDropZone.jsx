@@ -8,7 +8,7 @@ import {
   IconButton,
   useTheme,
 } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import { useAlert } from "../utils/Alert";
 
 const MAX_FILE_SIZE_MB = 5;
@@ -142,7 +142,7 @@ const [width, height] = size.split(" ");
                 },
               }}
             >
-              <Edit />
+              <EditIcon />
               <input {...getInputProps()} />
             </IconButton>
           )}
