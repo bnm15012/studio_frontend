@@ -244,6 +244,17 @@ export const themeSettings = (mode) => {
       borderRadius: 12,
     },
     components: {
+      MuiSelect: {
+        defaultProps: {
+          MenuProps: {
+            PaperProps: {
+              style: {
+                maxHeight: 48 * 3 + 8,
+              },
+            },
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           root: {

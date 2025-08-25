@@ -28,7 +28,7 @@ import { Collapse } from '@mui/material';
 import PropTypes from "prop-types";
 import TemplateEditor from "./TemplateEditor";
 
-const templateTypes = new Set(["COMMUNICATION"]);
+const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);
 
 const ExpandedRow = ({ isExpanded, description }) => (
   <StyledTableRow>
@@ -246,15 +246,15 @@ const TemplatesPage = () => {
                 </React.Fragment>
               );
             })}
-            <StyledTableRow>
-              <StyledTableCell colSpan={6} sx={{ textAlign: "center" }}>
-                {templates.length === 0 ? (
+            {templates.length === 0 ? (
+              <StyledTableRow>
+                <StyledTableCell colSpan={6} sx={{ textAlign: "center" }}>
                   <Typography variant="subtitle1" color="textSecondary">
                     No templates available
                   </Typography>
-                ) : null}
-              </StyledTableCell>
-            </StyledTableRow>
+                </StyledTableCell>
+              </StyledTableRow>
+            ) : null}
           </TableBody>
         </StyledTable>
       </StyledTableContainer>

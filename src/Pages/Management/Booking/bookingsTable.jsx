@@ -9,7 +9,7 @@ import {
   Select,
   FormControl,
 } from "@mui/material";
-import { Delete, Save, Cancel, Edit } from "@mui/icons-material";
+import { Delete, Save, Cancel, Edit, Receipt } from "@mui/icons-material";
 import { useAlert } from "../../../utils/Alert";
 import {
   addBookingAPI,
@@ -30,6 +30,7 @@ import { getLocalDateTime } from "../../../utils/DateUtil";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useNavigate } from "react-router-dom";
 import DeleteDialog from "../../../Components/DeleteDialog";
+import BookingInvoice from "./BookingInvoice";
 
 const BookingsTable = ({
   initialData,
@@ -48,6 +49,7 @@ const BookingsTable = ({
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteDialogIndex, setDeleteDialogIndex] = useState(null);
+  const [showInvoice, setShowInvoice] = useState(false)
 
   useEffect(() => {
     setData(initialData)
@@ -376,6 +378,13 @@ const BookingsTable = ({
                       >
                         <Edit />
                       </IconButton>
+                      <IconButton
+                        sx={{ color: "blue" }}
+                        onClick={() => setShowInvoice(true)}
+                      >
+                        <Receipt />
+                      </IconButton>
+                      {showInvoice && <BookingInvoice open={showInvoice} onClose={() => setShowInvoice(false)} bookingData={row} />}
                     </FlexBetween>
                   </StyledTableCell>
                 </>

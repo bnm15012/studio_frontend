@@ -11,6 +11,7 @@ import Loading from '../../../../Components/Loading/Loading';
 import { DialogTitle, Typography } from '@mui/material';
 import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
 import { useAlert } from '../../../../utils/Alert';
+import { replacePlaceholders } from '../../../../utils/globalFuns';
 
 const tableStyle = {
     width: '100%',
@@ -37,27 +38,6 @@ const sectionTitle = {
     paddingBottom: '2mm',
     fontSize: '14px',
 };
-
-
-// Helper to replace placeholders like {{instructorData.name}} with actual values
-function replacePlaceholders(templateStr, dataMap) {
-    if (!templateStr) return "";
-    return templateStr.replace(/{{\s*([\w.]+)\s*}}/g, (_, key) => {
-        // Support nested keys like instructorData.name
-        const keys = key.split('.');
-        let value = dataMap;
-        for (let k of keys) {
-            value = value?.[k];
-            if (value === undefined || value === null) return "";
-        }
-        if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-            if (typeof dataMap.getLocalDateTime === 'function') {
-                return dataMap.getLocalDateTime(value);
-            }
-        }
-        return value;
-    });
-}
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
     const showAlert = useAlert();
