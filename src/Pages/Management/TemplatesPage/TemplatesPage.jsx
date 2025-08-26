@@ -35,9 +35,6 @@ const ExpandedRow = ({ isExpanded, description }) => (
     <StyledTableCell colSpan={6} sx={{ paddingBottom: 0, paddingTop: 0 }}>
       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
         <Box sx={{ margin: 1, backgroundColor: "#f9f9f9", borderRadius: 1, padding: 2 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Full Content:
-          </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", maxWidth: "100%" }}>
             {description || <i>No description available.</i>}
           </Typography>

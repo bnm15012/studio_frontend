@@ -1,47 +1,39 @@
-import SelfImprovementIcon from "@mui/icons-material/SelfImprovement"; // YOGA
-import SportsGymnasticsIcon from "@mui/icons-material/SportsGymnastics"; // ZUMBA
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"; // GYM
-import DirectionsRunIcon from "@mui/icons-material/DirectionsRun"; // BACHATA
-import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople"; // SAMBA
-import MusicNoteIcon from "@mui/icons-material/MusicNote"; // SOCA
-import TheaterComedyIcon from "@mui/icons-material/TheaterComedy"; // HIP_HOP
-import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew"; // BELLY_DANCE
-import GroupsIcon from "@mui/icons-material/Groups"; // BHANGRA
-import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi"; // MARTIAL_ARTS
+import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
+import SportsGymnasticsIcon from "@mui/icons-material/SportsGymnastics";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import GroupsIcon from "@mui/icons-material/Groups";
+import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
+import MusicVideoIcon from "@mui/icons-material/MusicVideo";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import GestureIcon from "@mui/icons-material/Gesture";
+import StarIcon from "@mui/icons-material/Star";
+import CelebrationIcon from "@mui/icons-material/Celebration";
 
 export const validActivityTypes = [
   "GYM",
   "DANCE",
   "ZUMBA",
   "YOGA",
-  // "BACHATA",
-  // "SAMBA",
-  // "SOCA",
-  // "HIP_HOP",
-  // "BELLY_DANCE",
-  // "BHANGRA",
-  "KATHAK", 
-  "BHARATNATYAM", 
-  "FREESTYLE", 
+  "BOLLYHOP",
+  "GYMASTIC",
+  "KATHAK",
+  "BHARATNATYAM",
+  "FREESTYLE",
   "SEMI_CLASSICAL",
   "MARTIAL_ARTS",
-];
-export const validMembershipTypes = [
-  "REGISTRATION",
-  "MONTHLY",
-  "QUARTERLY",
-  "HALF_YEARLY",
-  "YEARLY"
 ];
 
 export const getIcon = (activityType) => {
   switch (activityType) {
     case "YOGA":
-      return (<SelfImprovementIcon sx={{ paddingBottom: 0 }} color="primary" />);
+      return <SelfImprovementIcon sx={{ paddingBottom: 0 }} color="primary" />;
     case "ZUMBA":
-      return (
-        <SportsGymnasticsIcon sx={{ paddingBottom: 0 }} color="secondary" />
-      );
+      return <SportsGymnasticsIcon sx={{ paddingBottom: 0 }} color="secondary" />;
     case "GYM":
       return <FitnessCenterIcon sx={{ paddingBottom: 0 }} color="action" />;
     case "BACHATA":
@@ -53,17 +45,28 @@ export const getIcon = (activityType) => {
     case "HIP_HOP":
       return <TheaterComedyIcon sx={{ paddingBottom: 0 }} color="error" />;
     case "DANCE":
-      return (
-        <AccessibilityNewIcon sx={{ paddingBottom: 0 }} color="error" />
-      );
+      return <AccessibilityNewIcon sx={{ paddingBottom: 0 }} color="error" />;
     case "BHANGRA":
       return <GroupsIcon sx={{ paddingBottom: 0 }} color="primary" />;
     case "MARTIAL_ARTS":
       return <SportsKabaddiIcon sx={{ paddingBottom: 0 }} color="success" />;
+    case "BOLLYHOP":
+      return <MusicVideoIcon sx={{ paddingBottom: 0 }} color="secondary" />;
+    case "GYMASTIC":
+      return <SportsGymnasticsIcon sx={{ paddingBottom: 0 }} color="info" />;
+    case "KATHAK":
+      return <GestureIcon sx={{ paddingBottom: 0 }} color="warning" />;
+    case "BHARATNATYAM":
+      return <StarIcon sx={{ paddingBottom: 0 }} color="error" />;
+    case "FREESTYLE":
+      return <EmojiEmotionsIcon sx={{ paddingBottom: 0 }} color="primary" />;
+    case "SEMI_CLASSICAL":
+      return <CelebrationIcon sx={{ paddingBottom: 0 }} color="success" />;
     default:
       return null;
   }
 };
+
 
 export const membershipTypeColors = [
   '#7c3aed',
@@ -72,3 +75,11 @@ export const membershipTypeColors = [
   '#f59e0b',
   '#ef4444'
 ]
+
+export const validMembershipTypes = [
+  "REGISTRATION",
+  "MONTHLY",
+  "QUARTERLY",
+  "HALF_YEARLY",
+  "YEARLY"
+];
