@@ -185,13 +185,12 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                     ref={invoiceRef}
                     style={{
                         fontSize: '12px',
-                        width: '210mm',
-                        height: '290mm',
+                        width: '100%',
+                        height: '297mm',
                         padding: '12mm',
                         color: '#000',
                         fontFamily: 'Arial, sans-serif',
                         backgroundColor: '#fff',
-                        border: '1px solid #ccc',
                         boxSizing: 'border-box',
                     }}
                 >
@@ -235,9 +234,11 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     </div>
                                     <div>
                                         <h2 style={{ margin: 0 }}>Booking INVOICE</h2>
-                                        {studio?.gstNumber && (
-                                            <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
-                                        )}
+                                        <FlexBetween flexDirection="row-reverse">
+                                            {studio?.gstNumber && (
+                                                <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
+                                            )}
+                                        </FlexBetween>
                                     </div>
                                 </div>
                             </div>

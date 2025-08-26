@@ -364,15 +364,6 @@ const BookingsTable = ({
                   <StyledTableCell>
                     <FlexBetween>
                       <IconButton
-                        sx={{ color: "red" }}
-                        onClick={() => {
-                          setDeleteDialogIndex(index);
-                          setDeleteDialogOpen(true);
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
-                      <IconButton
                         sx={{ color: "blue" }}
                         onClick={() => navigate(`/management/bookings/${row.id}`)}
                       >
@@ -385,6 +376,15 @@ const BookingsTable = ({
                         <Receipt />
                       </IconButton>
                       {showInvoice && <BookingInvoice open={showInvoice} onClose={() => setShowInvoice(false)} bookingData={row} />}
+                      <IconButton
+                        sx={{ color: "red" }}
+                        onClick={() => {
+                          setDeleteDialogIndex(index);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
                     </FlexBetween>
                   </StyledTableCell>
                 </>

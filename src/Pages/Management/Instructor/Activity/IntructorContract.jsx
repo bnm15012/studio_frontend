@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
 import Loading from '../../../../Components/Loading/Loading';
-import { DialogTitle, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
 import { useAlert } from '../../../../utils/Alert';
 import { replacePlaceholders } from '../../../../utils/globalFuns';
@@ -53,7 +53,11 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                const res = await getAllTemplatesAPI({ studioId: studio.studioId, token, templateType: "INSTRUCTOR_CONTRACT" });
+                const res = await getAllTemplatesAPI({
+                    studioId: studio.studioId,
+                    token,
+                    templateType: "INSTRUCTOR_CONTRACT"
+                });
                 if (res.success) {
                     setTemplates(res.data || []);
                 } else {
@@ -75,37 +79,34 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
             if (matchedTemplate) {
                 setSelectedTemplateId(matchedTemplate.id);
             }
-            // else {
-            //     setSelectedTemplateId(templates[0].id);
-            // }
         }
-
     }, [templates, selectedTemplateId, activityData.activityName]);
+
+    const pdfOptions = {
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        // pagebreak: { mode: ['css', 'legacy'] },
+    };
 
     const handlePrintPDF = () => {
         setLoading(true);
         const element = invoiceRef.current;
-
         window.html2pdf()
-            .set({
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 4, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            })
+            .set(pdfOptions)
             .from(element)
             .toPdf()
             .get('pdf')
             .then((pdf) => {
                 const blob = pdf.output('blob');
                 const blobUrl = URL.createObjectURL(blob);
-
                 const printWindow = window.open(blobUrl, '_blank');
                 printWindow.onload = function () {
                     printWindow.focus();
                     printWindow.print();
                 };
-            });
-        setLoading(false);
+            })
+            .finally(() => setLoading(false));
     };
 
     const handleDownloadPDF = () => {
@@ -113,21 +114,18 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         const element = invoiceRef.current;
         window.html2pdf()
             .set({
-                filename: `Invoice-${instructorData.name}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 4, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                ...pdfOptions,
+                filename: `Instructor-Contract-${instructorData.name}.pdf`,
             })
             .from(element)
-            .save();
-        setLoading(false);
+            .save()
+            .finally(() => setLoading(false));
     };
-
     const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-            instructor: {...instructorData,...activityData},
+            instructor: { ...instructorData, ...activityData },
             studio,
             branch: currentBranch,
             getLocalDateTime
@@ -135,42 +133,28 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         : "";
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>
-                Instructor Contract
-                {/* <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel id="template-select-label">Select Template</InputLabel>
-                    <Select
-                        labelId="template-select-label"
-                        value={selectedTemplateId || ""}
-                        label="Select Template"
-                        onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    >
-                        {templates.map((t) => (
-                            <MenuItem key={t.id} value={t.id}>
-                                {t.templateName}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl> */}
-            </DialogTitle>
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <div
                     ref={invoiceRef}
                     style={{
-                        display: 'flex',
-                        margin: '20px',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        fontFamily: 'Arial, sans-serif',
                         fontSize: '12px',
-                        color: '#000',
-                        lineHeight: 1.6,
                         width: '100%',
+                        height: '297mm',
+                        padding: '12mm',
+                        color: '#000',
+                        fontFamily: 'Arial, sans-serif',
+                        backgroundColor: '#fff',
+                        boxSizing: 'border-box',
                     }}
                 >
-                    <div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        justifyContent: 'space-between',
+                    }}>
                         {/* Header */}
                         <h2 style={{ textAlign: 'center', textDecoration: 'underline', marginBottom: '10px' }}>
                             INSTRUCTOR UNDERTAKING
@@ -287,7 +271,7 @@ InstructorContract.propTypes = {
             branchName: PropTypes.string,
             ifscCode: PropTypes.string,
             upiId: PropTypes.string,
-        }).isRequired,
+        }),
     }).isRequired,
     activityData: PropTypes.shape({
         activityName: PropTypes.string.isRequired,
