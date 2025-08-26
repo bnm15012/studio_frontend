@@ -12,40 +12,15 @@ import { Typography } from '@mui/material';
 import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
 import { useAlert } from '../../../../utils/Alert';
 import { replacePlaceholders } from '../../../../utils/globalFuns';
-
-const tableStyle = {
-    width: '100%',
-    marginBottom: '8mm',
-};
-
-const labelStyle = {
-    fontWeight: 'bold',
-    width: '40%',
-    padding: '4px 8px',
-    verticalAlign: 'top',
-    borderBottom: '1px solid #eee',
-};
-
-const valueStyle = {
-    padding: '4px 8px',
-    borderBottom: '1px solid #eee',
-};
-
-const sectionTitle = {
-    marginTop: '8mm',
-    marginBottom: '3mm',
-    borderBottom: '1px solid #ccc',
-    paddingBottom: '2mm',
-    fontSize: '14px',
-};
+import HtmlToPdfViewer from '../../../../Components/Html2PDF';
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
     const showAlert = useAlert();
+    const pdfViewerRef = useRef();
     const [templates, setTemplates] = useState([]);
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const invoiceRef = useRef();
     const token = useSelector((state) => state.auth.token);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
@@ -53,6 +28,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
+                setLoading(true)
                 const res = await getAllTemplatesAPI({
                     studioId: studio.studioId,
                     token,
@@ -65,6 +41,8 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                 }
             } catch {
                 showAlert("Error loading templates", "error");
+            } finally {
+                setLoading(false)
             }
         };
         fetchTemplates();
@@ -82,45 +60,6 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         }
     }, [templates, selectedTemplateId, activityData.activityName]);
 
-    const pdfOptions = {
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, allowTaint: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        // pagebreak: { mode: ['css', 'legacy'] },
-    };
-
-    const handlePrintPDF = () => {
-        setLoading(true);
-        const element = invoiceRef.current;
-        window.html2pdf()
-            .set(pdfOptions)
-            .from(element)
-            .toPdf()
-            .get('pdf')
-            .then((pdf) => {
-                const blob = pdf.output('blob');
-                const blobUrl = URL.createObjectURL(blob);
-                const printWindow = window.open(blobUrl, '_blank');
-                printWindow.onload = function () {
-                    printWindow.focus();
-                    printWindow.print();
-                };
-            })
-            .finally(() => setLoading(false));
-    };
-
-    const handleDownloadPDF = () => {
-        setLoading(true);
-        const element = invoiceRef.current;
-        window.html2pdf()
-            .set({
-                ...pdfOptions,
-                filename: `Instructor-Contract-${instructorData.name}.pdf`,
-            })
-            .from(element)
-            .save()
-            .finally(() => setLoading(false));
-    };
     const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
 
     const preparedDescription = selectedTemplate
@@ -133,119 +72,96 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         : "";
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="md">
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
-                <div
-                    ref={invoiceRef}
-                    style={{
-                        fontSize: '12px',
-                        width: '100%',
-                        height: '297mm',
-                        padding: '12mm',
-                        color: '#000',
-                        fontFamily: 'Arial, sans-serif',
-                        backgroundColor: '#fff',
-                        boxSizing: 'border-box',
-                    }}
-                >
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        justifyContent: 'space-between',
-                    }}>
-                        {/* Header */}
-                        <h2 style={{ textAlign: 'center', textDecoration: 'underline', marginBottom: '10px' }}>
-                            INSTRUCTOR UNDERTAKING
-                        </h2>
+                <HtmlToPdfViewer
+                    ref={pdfViewerRef}
+                    header={
+                        <>
+                            <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                INSTRUCTOR UNDERTAKING
+                            </h2>
+                        </>
+                    }
+                    content={
+                        <>
+                            {/* Personal Details */}
+                            <h3>Instructor Personal Details</h3>
+                            <table style={{
+                                width: "100%",
+                                borderCollapse: "collapse",
+                                fontSize: "12px",
+                                marginTop: "10px",
+                            }}>
+                                <tbody>
+                                    {[
+                                        ['Name', instructorData?.name],
+                                        ['Date of Birth', getLocalDateTime(instructorData?.dob)],
+                                        ['Email', instructorData?.email],
+                                        ['Mobile', instructorData?.phone],
+                                        ['Emergency Contact', instructorData?.emergencyContactNumber],
+                                        ['Address', instructorData?.address],
+                                    ].map(([label, value], idx) => (
+                                        <tr key={idx}>
+                                            <td style={{
+                                                padding: "6px 10px",
+                                                borderBottom: "1px solid #ddd",
+                                                textAlign: "left"
+                                            }}>
+                                                <strong>{label}:</strong> {value || "-"}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {/* Terms and Conditions */}
+                            <div style={{ marginTop: "5mm" }}>
+                                <Typography fontWeight={"bolder"}>Terms and Conditions</Typography>
+                                {preparedDescription ? (
+                                    <>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ textAlign: 'justify', whiteSpace: 'pre-wrap' }}
+                                            dangerouslySetInnerHTML={{ __html: preparedDescription.replace(/\n/g, "<br />") }}
+                                        />
 
-                        {/* Personal Details */}
-                        <h3 style={sectionTitle}>Instructor Personal Details</h3>
-                        <table style={tableStyle}>
-                            <tbody>
-                                {[
-                                    ['Name', instructorData?.name],
-                                    ['Date of Birth', getLocalDateTime(instructorData?.dob)],
-                                    ['Email', instructorData?.email],
-                                    ['Mobile', instructorData?.phone],
-                                    ['Emergency Contact', instructorData?.emergencyContactNumber],
-                                    ['Address', instructorData?.address],
-                                ].map(([label, value], idx) => (
-                                    <tr key={idx}>
-                                        <td style={labelStyle}>{label}</td>
-                                        <td style={valueStyle}>{value}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Bank Details */}
-                        <h3 style={sectionTitle}>Bank Account Details</h3>
-                        <table style={tableStyle}>
-                            <tbody>
-                                {[
-                                    ['Account Number', instructorData?.bankAccountDetails?.accountNumber],
-                                    ['Bank Name', instructorData?.bankAccountDetails?.bankName],
-                                    ['IFSC Code', instructorData?.bankAccountDetails?.ifscCode],
-                                    ['Branch', instructorData?.bankAccountDetails?.branchName],
-                                    ['UPI ID', instructorData?.bankAccountDetails?.upiId],
-                                ].map(([label, value], idx) => (
-                                    <tr key={idx}>
-                                        <td style={labelStyle}>{label}</td>
-                                        <td style={valueStyle}>{value}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Terms and Conditions */}
-                        <div style={sectionTitle}>
-                            <h3>Terms and Conditions</h3>
-                            {preparedDescription ? (
-                                <Typography
-                                    variant="body2"
-                                    sx={{ textAlign: 'justify', whiteSpace: 'pre-wrap' }}
-                                    dangerouslySetInnerHTML={{ __html: preparedDescription.replace(/\n/g, "<br />") }}
-                                />
-                            ) : (
-                                <Typography
-                                    variant="body2"
-                                    sx={{ color: "red", fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}
-                                >
-                                    No Contract Template Created.
-                                </Typography>
-                            )}
-                        </div>
-
-                        {/* Signature Section */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10mm' }}>
-                            <div>
-                                <p>_________________________</p>
-                                <p>Instructor Signature</p>
-                                <p>Date: ____________</p>
+                                        I confirm that the personal details provided above are true and accurate to the best of my knowledge.
+                                    </>
+                                ) : (
+                                    <Typography
+                                        variant="body2"
+                                        sx={{ color: "red", fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}
+                                    >
+                                        No Contract Template Created.
+                                    </Typography>
+                                )}
                             </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <p>_________________________</p>
-                                <p>Authorized Studio Representative</p>
-                                <p>{studio?.studioName}</p>
-                                <p>{currentBranch?.name}</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Footer */}
-                    <div style={{ textAlign: 'center', fontSize: '11px', color: '#777' }}>
-                        <hr style={{ marginBottom: '5px', border: '0.5px solid #ccc' }} />
-                        <p>Powered by Book & Manage</p>
-                    </div>
-                </div>
+                            {/* Signature Section */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5mm' }}>
+                                <div>
+                                    <p>_________________________</p>
+                                    <p>Instructor Name & Signature</p>
+                                    <p>Date: ____________</p>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                    <p>_________________________</p>
+                                    <p>Authorized Studio Representative</p>
+                                    <p>{studio?.studioName}</p>
+                                    <p>{currentBranch?.name}</p>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    filename={`Instructor-Contract-${instructorData.name}.pdf`}
+                />
             </DialogContent>
             <DialogActions>
                 <FlexBetween width={"100%"} mx={2} gap={2}>
                     <FlexBetween gap={1}>
-                        <Button onClick={handleDownloadPDF} variant="contained">Download</Button>
-                        <Button onClick={handlePrintPDF} variant="contained">Print</Button>
+                        <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
+                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">Print</Button>
                     </FlexBetween>
                     <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
                 </FlexBetween>

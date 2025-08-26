@@ -27,9 +27,10 @@ import {
 import { useAlert } from '../../../utils/Alert';
 import Loading from '../../../Components/Loading/Loading';
 import { reportsAPi } from './reports.api';
+import HtmlToPdfViewer from '../../../Components/Html2PDF';
 
 const Reports = () => {
-  const reportRef = useRef();
+  const pdfViewerRef = useRef();
   const theme = useTheme();
   const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
@@ -151,44 +152,6 @@ const Reports = () => {
     }
   };
 
-  const handleDownloadPDF = () => {
-    if (reportRef.current) {
-      window.html2pdf()
-        .set({
-          filename: reportType === "incomeExpense" ? 'IncomeExpenseReport.pdf' : "paymentreport.pdf",
-          image: { type: 'jpeg', quality: 1 },
-          html2canvas: { scale: 4, useCORS: true },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        })
-        .from(reportRef.current)
-        .save();
-    }
-  };
-
-  const handlePrintPDF = () => {
-    const element = reportRef.current;
-
-    window.html2pdf()
-      .set({
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 4, useCORS: true, allowTaint: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      })
-      .from(element)
-      .toPdf()
-      .get('pdf')
-      .then((pdf) => {
-        const blob = pdf.output('blob');
-        const blobUrl = URL.createObjectURL(blob);
-
-        const printWindow = window.open(blobUrl, '_blank');
-        printWindow.onload = function () {
-          printWindow.focus();
-          printWindow.print();
-        };
-      });
-  };
-
   const renderTable = (title, data, headers) => (
     <Box mt={3}>
       <Typography variant="h6" gutterBottom>{title}</Typography>
@@ -286,7 +249,7 @@ const Reports = () => {
             <FlexBetween gap={2}>
               <Button
                 variant="outlined"
-                onClick={handleDownloadPDF}
+                onClick={() => pdfViewerRef.current.downloadPDF()}
                 fullWidth
                 disabled={!eiData}
               >
@@ -294,7 +257,7 @@ const Reports = () => {
               </Button>
               <Button
                 variant="outlined"
-                onClick={handlePrintPDF}
+                onClick={() => pdfViewerRef.current.printPDF()}
                 fullWidth
                 disabled={!eiData}
               >
@@ -318,104 +281,79 @@ const Reports = () => {
         }}
       >
         {loading && <Loading />}
-        <div ref={reportRef} style={styles.invoiceContainer}>
-          {/* Header */}
-          <FlexBetween>
-            <FlexBetween gap={2} width={"50%"}>
-              {studio?.logo && (
-                <img
-                  src={studio.logo}
-                  alt="Studio Logo"
-                  style={{ width: 60, height: 60 }}
-                  crossOrigin="anonymous"
-                />
-              )}
-              <Typography variant="h5" sx={{ textWrap: "wrap" }}>{studio?.studioName}</Typography>
-              <Box flexGrow={1}></Box>
-            </FlexBetween>
-            <Box textAlign="right">
+        <HtmlToPdfViewer ref={pdfViewerRef} fileName="Report.pdf"
+          header={
+            <>
               <Typography variant="h6">{eiData?.income && eiData?.expenses ? <>INCOME & EXPENSE </> : <>PAYMENT</>} REPORT</Typography>
               <Typography variant="body2">{formattedDateRange()}</Typography>
               <Typography variant="body2">
                 Generated on: {getLocalDateTime(getCurrentDateTimeUTC())}
               </Typography>
-            </Box>
-          </FlexBetween>
-
-          <Divider sx={{ my: 2 }} />
-
-          {eiData?.income && renderTable("Income", eiData.income, [
-            "No.", "Name", "Payment Mode", "Activity (Type)", "Date", "Amount"
-          ])}
-
-          {eiData?.expenses && renderTable("Expenses", eiData.expenses, [
-            "No.", "Description", "Category", "Date", "Amount"
-          ])}
-
-          {eiData?.pendingPaymentEntries && renderTable("Payment Report", eiData.pendingPaymentEntries, [
-            "No.", "PayeeType", "PayeeName", "Amount", "MODE", "Status", "Date"
-          ])}
-
-          {eiData?.completedPaymentEntries && renderTable("Payment Report", eiData.completedPaymentEntries, [
-            "No.", "PayeeType", "PayeeName", "Amount", "MODE", "Status", "Date"
-          ])}
-
-
-          {/* Summary Section */}
-          {eiData && (
-            <>
-              <Box mt={4}>
-                <Divider sx={{ mb: 2 }} />
-                <Typography variant="h6" gutterBottom>Summary</Typography>
-                <table style={{ width: '100%', fontSize: 16 }}>
-                  <tbody>
-                    {eiData?.totalIncome != null &&
-                      <tr>
-                        <td><strong>Total Income</strong></td>
-                        <td style={{ textAlign: 'right' }}>₹{eiData?.totalIncome?.toLocaleString("en-IN")}</td>
-                      </tr>}
-                    {eiData?.totalExpense != null &&
-                      <tr>
-                        <td><strong>Total Expense</strong></td>
-                        <td style={{ textAlign: 'right' }}>₹{eiData?.totalExpense?.toLocaleString("en-IN")}</td>
-                      </tr>}
-                    {eiData?.totalExpense != null && eiData?.totalIncome != null &&
-                      <tr>
-                        <td><strong>Net Balance</strong></td>
-                        <td style={{ textAlign: 'right' }}>
-                          ₹{(eiData?.totalIncome - eiData?.totalExpense)?.toLocaleString("en-IN")}
-                        </td>
-                      </tr>}
-                    {(eiData?.totalCompletedPayment != null || eiData?.totalPendingPayment != null) &&
-                      <tr>
-                        <td><strong>Total {eiData?.totalPendingPayment != null ? "pending" : "completd"} amount</strong></td>
-                        <td style={{ textAlign: 'right' }}>₹{eiData?.totalPendingPayment?.toLocaleString("en-IN") || eiData?.totalCompletedPayment?.toLocaleString("en-IN")}</td>
-                      </tr>}
-                  </tbody>
-                </table>
-              </Box>
             </>
-          )}
-        </div>
+          }
+          content={
+            <div>
+              {eiData?.income && renderTable("Income", eiData.income, [
+                "No.", "Name", "Payment Mode", "Activity (Type)", "Date", "Amount"
+              ])}
+
+              {eiData?.expenses && renderTable("Expenses", eiData.expenses, [
+                "No.", "Description", "Category", "Date", "Amount"
+              ])}
+
+              {eiData?.pendingPaymentEntries && renderTable("Payment Report", eiData.pendingPaymentEntries, [
+                "No.", "PayeeType", "PayeeName", "Amount", "MODE", "Status", "Date"
+              ])}
+
+              {eiData?.completedPaymentEntries && renderTable("Payment Report", eiData.completedPaymentEntries, [
+                "No.", "PayeeType", "PayeeName", "Amount", "MODE", "Status", "Date"
+              ])}
+
+
+              {/* Summary Section */}
+              {eiData && (
+                <>
+                  <Box mt={4}>
+                    <Divider sx={{ mb: 2 }} />
+                    <Typography variant="h6" gutterBottom>Summary</Typography>
+                    <table style={{ width: '100%', fontSize: 16 }}>
+                      <tbody>
+                        {eiData?.totalIncome != null &&
+                          <tr>
+                            <td><strong>Total Income</strong></td>
+                            <td style={{ textAlign: 'right' }}>₹{eiData?.totalIncome?.toLocaleString("en-IN")}</td>
+                          </tr>}
+                        {eiData?.totalExpense != null &&
+                          <tr>
+                            <td><strong>Total Expense</strong></td>
+                            <td style={{ textAlign: 'right' }}>₹{eiData?.totalExpense?.toLocaleString("en-IN")}</td>
+                          </tr>}
+                        {eiData?.totalExpense != null && eiData?.totalIncome != null &&
+                          <tr>
+                            <td><strong>Net Balance</strong></td>
+                            <td style={{ textAlign: 'right' }}>
+                              ₹{(eiData?.totalIncome - eiData?.totalExpense)?.toLocaleString("en-IN")}
+                            </td>
+                          </tr>}
+                        {(eiData?.totalCompletedPayment != null || eiData?.totalPendingPayment != null) &&
+                          <tr>
+                            <td><strong>Total {eiData?.totalPendingPayment != null ? "pending" : "completd"} amount</strong></td>
+                            <td style={{ textAlign: 'right' }}>₹{eiData?.totalPendingPayment?.toLocaleString("en-IN") || eiData?.totalCompletedPayment?.toLocaleString("en-IN")}</td>
+                          </tr>}
+                      </tbody>
+                    </table>
+                  </Box>
+                </>
+              )}
+            </div>
+          }
+        />
       </Box>
     </FlexBetween>
   );
 };
 
 const styles = {
-  invoiceContainer: {
-    width: '210mm',
-    minHeight: '297mm',
-    margin: 'auto',
-    padding: '24px',
-    backgroundColor: '#fff',
-    fontFamily: 'Arial, sans-serif',
-    fontSize: '14px',
-    color: '#333',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    boxSizing: 'border-box'
-  },
   table: {
     width: '100%',
     borderCollapse: 'collapse',
@@ -425,12 +363,10 @@ const styles = {
     backgroundColor: '#f1f1f1',
     padding: '10px',
     textAlign: 'left',
-    borderBottom: '1px solid #ccc',
     fontWeight: 'bold'
   },
   td: {
     padding: '10px',
-    borderBottom: '1px solid #eee'
   }
 };
 

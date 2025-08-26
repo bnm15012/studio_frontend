@@ -12,8 +12,10 @@ import Loading from '../../../../Components/Loading/Loading';
 import { generatePresignUrl } from '../../../../api/s3.api';
 import { sendMessageApi } from '../../Communication/communication.api';
 import { useUI } from '../../../../context/UIContext';
+import HtmlToPdfViewer from '../../../../Components/Html2PDF';
 
 const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
+  const pdfViewerRef = useRef();
   const { isBatchEnabled } = useUI();
   const studio = useSelector((state) => state.auth.studio);
   const token = useSelector((state) => state.auth.token);
@@ -21,32 +23,6 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const [loading, setLoading] = useState(false)
   const invoiceRef = useRef();
-
-  const handlePrintPDF = () => {
-    setLoading(true)
-    const element = invoiceRef.current;
-
-    window.html2pdf()
-      .set({
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 4, useCORS: true, allowTaint: true },
-        jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
-      })
-      .from(element)
-      .toPdf()
-      .get('pdf')
-      .then((pdf) => {
-        const blob = pdf.output('blob');
-        const blobUrl = URL.createObjectURL(blob);
-
-        const printWindow = window.open(blobUrl, '_blank');
-        printWindow.onload = function () {
-          printWindow.focus();
-          printWindow.print();
-        };
-      });
-    setLoading(false)
-  };
 
   const handleSendMail = async () => {
     try {
@@ -116,206 +92,153 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   };
 
 
-  const handleDownloadPDF = () => {
-    setLoading(true)
-    const element = invoiceRef.current;
-    window.html2pdf()
-      .set({
-        filename: `Invoice-${studentData.name}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 1, useCORS: true, allowTaint: false },
-        jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
-      })
-      .from(element)
-      .save();
-    setLoading(false)
-  };
-
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Dialog open={open} onClose={onClose} maxWidth="md">
+      <DialogContent sx={{ display: 'flex', justifyContent: 'center'}}>
         {loading && <Loading />}
-        <div
-          ref={invoiceRef}
-          style={{
-            fontSize: '12px',
-            width: '148mm',
-            height: '210mm',
-            padding: '8mm',
-            color: '#000',
-            fontFamily: 'Arial, sans-serif',
-            boxSizing: 'border-box',
-            backgroundColor: '#fff',
-            border: '1px solid #ccc',
-            position: 'relative',
-          }}
-        >
-          <div style={{ display: "flex", height: "100%", flexDirection: "column", justifyContent: "space-between" }}>
-            <div>
-              <div style={{ marginBottom: '2mm' }}>
-                <div style={{ display: 'flex', alignItems: 'center', borderRadius: '5px' }}>
-                  {studio?.logo && (
-                    <img
-                      src={studio.logo}
-                      alt="Studio Logo"
-                      style={{ width: '25mm', height: '25mm', marginBottom: '4mm' }}
-                      crossOrigin="anonymous"
-                    />
-                  )}
-                  <h1 style={{ padding: "2mm" }}>{studio?.studioName}</h1>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <HtmlToPdfViewer
+          ref={pdfViewerRef}
+          footer={<p>Thank you for choosing {studio?.studioName}!</p>}
+          header={
+            <>
+              <div>
+                <h1>
+                  INVOICE
+                </h1>
+                {studio?.gstNumber && <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>}
+              </div>
+            </>
+          }
+          content={
+            <div style={{ display: "flex", height: "100%", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                {/* Invoice Details */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2mm' }}>
                   <div>
-                    <p style={{ margin: 0 }}>{currentBranch?.address}</p>
-                    <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
-                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                    <p style={{ margin: 0 }}>{studio?.email}</p>
+                    <p><strong>Invoice #</strong>: INV-{activityData?.paymentEntry?.invoiceId || Math.floor(1000 + Math.random() * 9000)}</p>
+                    <p><strong>Invoice Date</strong>: {getLocalDateTime(activityData?.registrationDate) || '-'}</p>
                   </div>
-                  <div>
-                    <h1>
-                      INVOICE
-                    </h1>
-                    {studio?.gstNumber && <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>}
+                  <div style={{ textAlign: 'right' }}>
+                    <p><strong>Bill To</strong>:</p>
+                    <p>{studentData?.name}</p>
+                    <p>{studentData?.phone}</p>
+                    <p>{studentData?.email}</p>
                   </div>
                 </div>
-              </div>
-
-              <hr />
-
-              {/* Invoice Details */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2mm' }}>
-                <div>
-                  <p><strong>Invoice #</strong>: INV-{activityData?.paymentEntry?.invoiceId || Math.floor(1000 + Math.random() * 9000)}</p>
-                  <p><strong>Invoice Date</strong>: {getLocalDateTime(activityData?.registrationDate) || '-'}</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p><strong>Bill To</strong>:</p>
-                  <p>{studentData?.name}</p>
-                  <p>{studentData?.phone}</p>
-                  <p>{studentData?.email}</p>
-                </div>
-              </div>
-
-              <hr />
-
-              {/* Table */}
-              <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2mm' }}>
-                <thead>
-                  <tr>
-                    <th style={tableHeaderStyle}>Activity</th>
-                    <th style={tableHeaderStyle}>Plan</th>
-                    <th style={tableHeaderStyle}>Start Date</th>
-                    <th style={tableHeaderStyle}>End Date</th>
-                    {!isBatchEnabled && <th style={tableHeaderStyle}>Days Per Week</th>}
-                    <th style={tableHeaderStyle}>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style={tableCellStyle}>{activityData?.activityName}</td>
-                    <td style={tableCellStyle}>{activityData?.membershipType}</td>
-                    <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipStartDate)}</td>
-                    <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipEndDate)}</td>
-                    {!isBatchEnabled && <td style={tableCellStyle}>{activityData?.daysPerWeek || '-'}</td>}
-                    <td style={tableCellStyle}>{activityData?.activityAmount?.toFixed(2) || '0.00'}</td>
-                  </tr>
-                </tbody>
-              </table>
-              {isBatchEnabled && <>
-                Batch details:
-                <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                {/* Table */}
+                <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2mm' }}>
                   <thead>
                     <tr>
-                      <th style={tableHeaderStyle}>Batch Name</th>
-                      <th style={tableHeaderStyle}>Days Per Week</th>
-                      <th style={tableHeaderStyle}>Batch Time</th>
+                      <th style={tableHeaderStyle}>Activity</th>
+                      <th style={tableHeaderStyle}>Plan</th>
+                      <th style={tableHeaderStyle}>Start Date</th>
+                      <th style={tableHeaderStyle}>End Date</th>
+                      {!isBatchEnabled && <th style={tableHeaderStyle}>Days Per Week</th>}
+                      <th style={tableHeaderStyle}>Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td style={tableCellStyle}>{activityData?.batchName || '-'}</td>
-                      <td style={tableCellStyle}>{activityData?.daysPerWeek || '-'}</td>
-                      <td style={tableCellStyle}>{activityData?.batchTime || '-'}</td>
+                      <td style={tableCellStyle}>{activityData?.activityName}</td>
+                      <td style={tableCellStyle}>{activityData?.membershipType}</td>
+                      <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipStartDate)}</td>
+                      <td style={tableCellStyle}>{getLocalDateTime(activityData?.membershipEndDate)}</td>
+                      {!isBatchEnabled && <td style={tableCellStyle}>{activityData?.daysPerWeek || '-'}</td>}
+                      <td style={tableCellStyle}>{activityData?.activityAmount?.toFixed(2) || '0.00'}</td>
                     </tr>
                   </tbody>
                 </table>
-              </>
-              }
+                {isBatchEnabled && <>
+                  Batch details:
+                  <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr>
+                        <th style={tableHeaderStyle}>Batch Name</th>
+                        <th style={tableHeaderStyle}>Days Per Week</th>
+                        <th style={tableHeaderStyle}>Batch Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={tableCellStyle}>{activityData?.batchName || '-'}</td>
+                        <td style={tableCellStyle}>{activityData?.daysPerWeek || '-'}</td>
+                        <td style={tableCellStyle}>{activityData?.batchTime || '-'}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
+                }
 
-              {/* Subtotal & Total */}
-              <div style={{ display: "flex", flexDirection: "row-reverse", textAlign: 'right', marginTop: '10mm', fontSize: '14px', paddingRight: "5px" }}>
-                <table border={1} style={{ width: '35%', borderCollapse: 'collapse', border: '1px solid #000' }}>
-                  <tbody>
+                {/* Subtotal & Total */}
+                <div style={{ display: "flex", flexDirection: "row-reverse", textAlign: 'right', marginTop: '10mm', fontSize: '14px', paddingRight: "5px" }}>
+                  <table border={1} style={{ width: '35%', borderCollapse: 'collapse', border: '1px solid #000' }}>
+                    <tbody>
 
-                    {/* GST calculation */}
-                    {(() => {
-                      const total = Number(activityData?.activityAmount || 0);
-                      const gstRate = 0.18;
-                      const baseAmount = total / (1 + gstRate);
-                      const gst = total - baseAmount;
+                      {/* GST calculation */}
+                      {(() => {
+                        const total = Number(activityData?.activityAmount || 0);
+                        const gstRate = 0.18;
+                        const baseAmount = total / (1 + gstRate);
+                        const gst = total - baseAmount;
 
-                      return (
-                        <>
-                          {studio?.gstNumber && (
-                            <>
-                              <tr>
-                                <td style={{ textAlign: 'left', padding: '2px 5px' }}>
-                                  Base Amount
-                                </td>
-                                <td style={{ textAlign: 'right', padding: '2px 5px' }}>
-                                  {baseAmount.toFixed(2)}
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style={{ textAlign: 'left', padding: '2px 5px' }}>
-                                  GST (18%)
-                                </td>
-                                <td style={{ textAlign: 'right', padding: '2px 5px' }}>
-                                  {gst.toFixed(2)}
-                                </td>
-                              </tr>
-                            </>
-                          )}
-                          <tr>
-                            <td style={{ textAlign: 'left', padding: '2px 5px' }}>Discount</td>
-                            <td style={{ textAlign: 'right', padding: '2px 5px' }}>
-                              {Math.abs((
-                                Number(activityData?.paymentEntry?.amount || 0) -
-                                Number(activityData?.activityAmount || 0)
-                              ).toFixed(2))}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style={{ textAlign: 'left', padding: '2px 5px', fontWeight: 'bold' }}>
-                              Total
-                            </td>
-                            <td style={{ textAlign: 'right', padding: '2px 5px', fontWeight: 'bold' }}>
-                              {Number(activityData?.paymentEntry?.amount || 0).toFixed(2)}
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    })()}
-                  </tbody>
-                </table>
+                        return (
+                          <>
+                            {studio?.gstNumber && (
+                              <>
+                                <tr>
+                                  <td style={{ textAlign: 'left', padding: '2px 5px' }}>
+                                    Base Amount
+                                  </td>
+                                  <td style={{ textAlign: 'right', padding: '2px 5px' }}>
+                                    {baseAmount.toFixed(2)}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'left', padding: '2px 5px' }}>
+                                    GST (18%)
+                                  </td>
+                                  <td style={{ textAlign: 'right', padding: '2px 5px' }}>
+                                    {gst.toFixed(2)}
+                                  </td>
+                                </tr>
+                              </>
+                            )}
+                            <tr>
+                              <td style={{ textAlign: 'left', padding: '2px 5px' }}>Discount</td>
+                              <td style={{ textAlign: 'right', padding: '2px 5px' }}>
+                                {Math.abs((
+                                  Number(activityData?.paymentEntry?.amount || 0) -
+                                  Number(activityData?.activityAmount || 0)
+                                ).toFixed(2))}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style={{ textAlign: 'left', padding: '2px 5px', fontWeight: 'bold' }}>
+                                Total
+                              </td>
+                              <td style={{ textAlign: 'right', padding: '2px 5px', fontWeight: 'bold' }}>
+                                {Number(activityData?.paymentEntry?.amount || 0).toFixed(2)}
+                              </td>
+                            </tr>
+                          </>
+                        );
+                      })()}
+                    </tbody>
+                  </table>
+                </div>
               </div>
+              <div style={{ flexGrow: 1 }}></div>
             </div>
-            <div style={{ flexGrow: 1 }}></div>
-            {/* Footer */}
-            <div style={{ textAlign: 'center', marginTop: '15mm', fontSize: '10px', color: '#555' }}>
-              <p>Thank you for choosing {studio?.studioName}!</p>
-              <p>Powered by Book & Manage</p>
-            </div>
-          </div>
-        </div>
+          }
+        />
       </DialogContent>
 
       <DialogActions>
         <FlexBetween width={"100%"} mx={2} gap={2}>
           <FlexBetween gap={1}>
-            <Button onClick={handleDownloadPDF} variant="contained">Download</Button>
+            <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
             <Button onClick={handleSendMail} variant="contained">E-mail</Button>
-            <Button onClick={handlePrintPDF} variant="contained">Print</Button>
+            <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">Print</Button>
           </FlexBetween>
           <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
         </FlexBetween>

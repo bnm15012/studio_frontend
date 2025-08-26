@@ -13,12 +13,11 @@ import { getLocalDateTime } from '../../../utils/DateUtil';
 import FlexBetween from '../../../Components/FlexBetween';
 import { getAllTemplatesAPI } from '../TemplatesPage/Template.api';
 import { replacePlaceholders } from '../../../utils/globalFuns';
-import { Typography } from '@mui/material';
-
+import { Box, Typography } from '@mui/material';
+import HtmlToPdfViewer from '../../../Components/Html2PDF';
 const sectionTitle = {
     marginTop: '8mm',
     marginBottom: '3mm',
-    // borderBottom: '1px solid #ccc',
     paddingBottom: '2mm',
     fontSize: '14px',
 };
@@ -27,6 +26,7 @@ const tableHeaderStyle = { textAlign: 'left', padding: '6px' };
 const tableCellStyle = { padding: '6px' };
 
 const BookingInvoice = ({ open, onClose, bookingData }) => {
+    const pdfViewerRef = useRef();
     const studio = useSelector((state) => state.auth.studio);
     const token = useSelector((state) => state.auth.token);
     const showAlert = useAlert();
@@ -77,39 +77,12 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
         })
         : '';
 
-    const pdfOptions = {
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 2, useCORS: true, allowTaint: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        // pagebreak: { mode: ['css', 'legacy'] },
-    };
-
-    const handlePrintPDF = () => {
-        setLoading(true);
-        const element = invoiceRef.current;
-        window.html2pdf()
-            .set(pdfOptions)
-            .from(element)
-            .toPdf()
-            .get('pdf')
-            .then((pdf) => {
-                const blob = pdf.output('blob');
-                const blobUrl = URL.createObjectURL(blob);
-                const printWindow = window.open(blobUrl, '_blank');
-                printWindow.onload = function () {
-                    printWindow.focus();
-                    printWindow.print();
-                };
-            })
-            .finally(() => setLoading(false));
-    };
-
     const handleSendMail = async () => {
         try {
             setLoading(true);
             const element = invoiceRef.current;
             const pdfBlob = await window.html2pdf()
-                .set(pdfOptions)
+                // .set(pdfOptions)
                 .from(element)
                 .outputPdf('blob');
 
@@ -138,11 +111,11 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
 
             const payload = {
                 branchId: currentBranch.branchId,
+                studioId: studio.studioId,
+                invoiceUrl: s3Bucket.fileUrl,
                 notificationType: 'EMAIL',
                 title: 'Booking Invoice',
                 templateName: 'BOOKING_INVOICE',
-                studioId: studio.studioId,
-                invoiceUrl: s3Bucket.fileUrl,
                 memberIds: [bookingData?.clientEntry?.clientId],
             };
 
@@ -164,106 +137,49 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
         }
     };
 
-    const handleDownloadPDF = () => {
-        setLoading(true);
-        const element = invoiceRef.current;
-        window.html2pdf()
-            .set({
-                ...pdfOptions,
-                filename: `BookingInvoice-${bookingData.id}.pdf`,
-            })
-            .from(element)
-            .save()
-            .finally(() => setLoading(false));
-    };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
-                <div
-                    ref={invoiceRef}
-                    style={{
-                        fontSize: '12px',
-                        width: '100%',
-                        height: '297mm',
-                        padding: '12mm',
-                        color: '#000',
-                        fontFamily: 'Arial, sans-serif',
-                        backgroundColor: '#fff',
-                        boxSizing: 'border-box',
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            height: '100%',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                        <div>
-                            {/* Header */}
-                            <div style={{ marginBottom: '2mm' }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {studio?.logo && (
-                                        <img
-                                            src={studio.logo}
-                                            alt="Studio Logo"
-                                            style={{ width: '25mm', height: '25mm', marginRight: '4mm' }}
-                                            crossOrigin="anonymous"
-                                        />
+                <HtmlToPdfViewer
+                    ref={pdfViewerRef}
+                    footer={<p>Thank you for choosing {studio?.studioName}!</p>}
+                    header={
+                        <>
+                            <div>
+                                <h2 style={{ margin: 0 }}>Booking INVOICE</h2>
+                                <FlexBetween flexDirection="row-reverse">
+                                    {studio?.gstNumber && (
+                                        <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
                                     )}
-                                    <h1 style={{ margin: 0 }}>{studio?.studioName}</h1>
-                                </div>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <div>
-                                        <p style={{ margin: 0 }}>{currentBranch?.address}</p>
-                                        <p style={{ margin: 0 }}>
-                                            {currentBranch?.city}, {currentBranch?.state}{' '}
-                                            {currentBranch?.pincode}
-                                        </p>
-                                        <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                                        <p style={{ margin: 0 }}>{studio?.email}</p>
-                                    </div>
-                                    <div>
-                                        <h2 style={{ margin: 0 }}>Booking INVOICE</h2>
-                                        <FlexBetween flexDirection="row-reverse">
-                                            {studio?.gstNumber && (
-                                                <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
-                                            )}
-                                        </FlexBetween>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr />
-
-                            {/* Invoice Info */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                </FlexBetween>
                                 <div>
-                                    <p>
+                                    <div>
                                         <strong>Invoice #</strong>: INV-{bookingData?.id}
-                                    </p>
-                                    <p>
+                                    </div>
+                                    <div>
                                         <strong>Invoice Date</strong>:{' '}
                                         {getLocalDateTime(bookingData?.bookingDate)}
-                                    </p>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    <p>
-                                        <strong>Bill To</strong>:
-                                    </p>
-                                    <p>{bookingData?.clientEntry?.pocName}</p>
-                                    <p>{bookingData?.clientEntry?.pocPhone}</p>
-                                    <p>{bookingData?.clientEntry?.pocEmail}</p>
+                                    </div>
                                 </div>
                             </div>
+                        </>
+                    }
+                    content={
+                        <div>
+                            {/* Invoice Info */}
+                            <FlexBetween gap={1} flexDirection={"row"}>
+                                <div>
+                                    <strong>Bill To</strong>:
+                                </div>
+                                <div>
+                                    <div>{bookingData?.clientEntry?.pocName}</div>
+                                    <div>{bookingData?.clientEntry?.pocPhone}</div>
+                                    <div>{bookingData?.clientEntry?.pocEmail}</div>
+                                </div>
+                                <Box flexGrow={1}></Box>
+                            </FlexBetween>
 
                             {/* Booking Table */}
                             <table
@@ -311,16 +227,6 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     <strong>Payment Mode:</strong> {bookingData?.paymentMode}
                                 </p>
                             </div>
-
-                            {/* Notes
-                            {bookingData?.notes && (
-                                <p>
-                                    <strong>Notes:</strong> {bookingData.notes}
-                                </p>
-                            )} */}
-
-
-                            {/* Terms & Conditions */}
                             <div style={sectionTitle}>
                                 <h3>Terms and Conditions</h3>
                                 {preparedDescription ? (
@@ -348,33 +254,18 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     </Typography>
                                 )}
                             </div>
-                        </div>
-                        {/* Footer */}
-
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                marginTop: '10mm',
-                                fontSize: '10px',
-                                color: '#555',
-                            }}
-                        >
-                            <p>Thank you for choosing {studio?.studioName}!</p>
-                            <p>Powered by Book & Manage</p>
-                        </div>
-                    </div>
-                </div>
+                        </div>} />
             </DialogContent>
             <DialogActions>
                 <FlexBetween width={'100%'} mx={2} gap={2}>
                     <FlexBetween gap={1}>
-                        <Button onClick={handleDownloadPDF} variant="contained">
+                        <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">
                             Download
                         </Button>
                         <Button onClick={handleSendMail} variant="contained">
                             E-mail
                         </Button>
-                        <Button onClick={handlePrintPDF} variant="contained">
+                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">
                             Print
                         </Button>
                     </FlexBetween>
