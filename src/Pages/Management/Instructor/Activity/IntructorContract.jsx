@@ -162,7 +162,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                 <FlexBetween width={"100%"} mx={2} gap={2}>
                     <FlexBetween gap={1}>
                         <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">Print</Button>
+                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">Print</Button>
                     </FlexBetween>
                     <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
                 </FlexBetween>

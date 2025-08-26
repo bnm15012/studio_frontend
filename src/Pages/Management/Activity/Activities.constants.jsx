@@ -20,7 +20,7 @@ export const validActivityTypes = [
   "ZUMBA",
   "YOGA",
   "BOLLYHOP",
-  "GYMASTIC",
+  "GYMNASTICS",
   "KATHAK",
   "BHARATNATYAM",
   "FREESTYLE",
@@ -52,7 +52,7 @@ export const getIcon = (activityType) => {
       return <SportsKabaddiIcon sx={{ paddingBottom: 0 }} color="success" />;
     case "BOLLYHOP":
       return <MusicVideoIcon sx={{ paddingBottom: 0 }} color="secondary" />;
-    case "GYMASTIC":
+    case "GYMNASTICS":
       return <SportsGymnasticsIcon sx={{ paddingBottom: 0 }} color="info" />;
     case "KATHAK":
       return <GestureIcon sx={{ paddingBottom: 0 }} color="warning" />;

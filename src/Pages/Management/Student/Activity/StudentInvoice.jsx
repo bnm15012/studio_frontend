@@ -9,10 +9,12 @@ import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
 import { useUI } from '../../../../context/UIContext';
 import HtmlToPdfViewer from '../../../../Components/Html2PDF';
+import { useAlert } from '../../../../utils/Alert';
 
 const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const pdfViewerRef = useRef();
+  const showAlert = useAlert();
   const { isBatchEnabled } = useUI();
   const studio = useSelector((state) => state.auth.studio);
 
@@ -173,8 +175,9 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
         <FlexBetween width={"100%"} mx={2} gap={2}>
           <FlexBetween gap={1}>
             <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-            <Button onClick={() => pdfViewerRef.current.sendMail()} variant="contained">E-mail</Button>
-            <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">Print</Button>
+            <Button onClick={() => pdfViewerRef.current.sendMail()} variant="outlined">E-mail</Button>
+            <Button onClick={() => { showAlert("Will be available soon !") }} variant="outlined">WhatsApp</Button>
+            <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">Print</Button>
           </FlexBetween>
           <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
         </FlexBetween>
