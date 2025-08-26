@@ -4,108 +4,41 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
 import FlexBetween from '../../../../Components/FlexBetween';
-import { useAlert } from '../../../../utils/Alert';
-import Loading from '../../../../Components/Loading/Loading';
-import { generatePresignUrl } from '../../../../api/s3.api';
-import { sendMessageApi } from '../../Communication/communication.api';
 import { useUI } from '../../../../context/UIContext';
 import HtmlToPdfViewer from '../../../../Components/Html2PDF';
 
 const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
+  const currentBranch = useSelector((state) => state.branch.currentBranch);
   const pdfViewerRef = useRef();
   const { isBatchEnabled } = useUI();
   const studio = useSelector((state) => state.auth.studio);
-  const token = useSelector((state) => state.auth.token);
-  const showAlert = useAlert()
-  const currentBranch = useSelector((state) => state.branch.currentBranch);
-  const [loading, setLoading] = useState(false)
-  const invoiceRef = useRef();
-
-  const handleSendMail = async () => {
-    try {
-      setLoading(true);
-
-      const element = invoiceRef.current;
-      const pdfBlob = await window.html2pdf()
-        .set({
-          image: { type: 'jpeg', quality: 1 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'mm', format: [148, 210], orientation: 'portrait' }
-        })
-        .from(element)
-        .outputPdf('blob');
-
-      const { data: s3Bucket, success } = await generatePresignUrl(`Invoice-${studentData.name}.pdf`, token);
-
-      if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-        showAlert("Failed to get upload URL", "error");
-        return;
-      } else {
-        showAlert("Preparing to upload invoice...", "info");
-      }
-
-      const uploadResponse = await fetch(s3Bucket.uploadUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/pdf'
-        },
-        body: pdfBlob
-      });
-
-      if (!uploadResponse.ok) {
-        showAlert("Failed to upload invoice to S3", "error");
-        throw new Error('Upload to S3 failed');
-      } else {
-        showAlert("Invoice uploaded successfully", "success");
-      }
-
-      const payload = {
-        branchId: currentBranch.branchId,
-        notificationType: "EMAIL",
-        title: "Invoice",
-        templateName: "MEMBERSHIP_INVOICE",
-        studioId: studio.studioId,
-        invoiceUrl: s3Bucket.fileUrl,
-        activityType: activityData?.activityName,
-        memberIds: [studentData.studentId],
-      };
-
-      showAlert("Sending email...", "info");
-
-      const { success: emailSent, message } = await sendMessageApi({ token, data: payload });
-
-      if (emailSent) {
-        showAlert(message || "Mail sent successfully", "success");
-      } else {
-        showAlert("Failed to send email", "error");
-      }
-
-    } catch (error) {
-      console.error(error);
-      showAlert("Something went wrong, please try again later", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md">
-      <DialogContent sx={{ display: 'flex', justifyContent: 'center'}}>
-        {loading && <Loading />}
+      <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
         <HtmlToPdfViewer
           ref={pdfViewerRef}
+          fileName={"student-invoice"}
+          remainingPayload={
+            {
+              title: "Invoice",
+              templateName: "MEMBERSHIP_INVOICE",
+              activityType: activityData?.activityName,
+              memberIds: [studentData.studentId],
+            }
+          }
           footer={<p>Thank you for choosing {studio?.studioName}!</p>}
           header={
             <>
               <div>
-                <h1>
+                <h2>
                   INVOICE
-                </h1>
-                {studio?.gstNumber && <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>}
+                </h2>
+                <div><strong>Invoice #</strong>: INV-{activityData?.paymentEntry?.invoiceId || Math.floor(1000 + Math.random() * 9000)}</div>
+                <div><strong>Invoice Date</strong>: {getLocalDateTime(activityData?.registrationDate) || '-'}</div>
               </div>
             </>
           }
@@ -115,18 +48,21 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
                 {/* Invoice Details */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2mm' }}>
                   <div>
-                    <p><strong>Invoice #</strong>: INV-{activityData?.paymentEntry?.invoiceId || Math.floor(1000 + Math.random() * 9000)}</p>
-                    <p><strong>Invoice Date</strong>: {getLocalDateTime(activityData?.registrationDate) || '-'}</p>
+                    <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
+                    <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
+                    <p style={{ margin: 0 }}>{studio?.email}</p>
+                    {studio?.gstNumber && <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>}
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p><strong>Bill To</strong>:</p>
-                    <p>{studentData?.name}</p>
-                    <p>{studentData?.phone}</p>
-                    <p>{studentData?.email}</p>
+                    <div><strong>Bill To</strong>:</div>
+                    <div>{studentData?.name}</div>
+                    <div>{studentData?.phone}</div>
+                    <div>{studentData?.email}</div>
                   </div>
                 </div>
                 {/* Table */}
-                <table border={1} style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2mm' }}>
+                <table border={1} style={{ width: '100%', borderCollapse: 'collapse', margin: '5mm 0' }}>
                   <thead>
                     <tr>
                       <th style={tableHeaderStyle}>Activity</th>
@@ -237,7 +173,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
         <FlexBetween width={"100%"} mx={2} gap={2}>
           <FlexBetween gap={1}>
             <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-            <Button onClick={handleSendMail} variant="contained">E-mail</Button>
+            <Button onClick={() => pdfViewerRef.current.sendMail()} variant="contained">E-mail</Button>
             <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">Print</Button>
           </FlexBetween>
           <Button onClick={onClose} variant='outlined' color="primary">Close</Button>

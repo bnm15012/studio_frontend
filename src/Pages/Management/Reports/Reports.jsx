@@ -284,7 +284,7 @@ const Reports = () => {
         <HtmlToPdfViewer ref={pdfViewerRef} fileName="Report.pdf"
           header={
             <>
-              <Typography variant="h6">{eiData?.income && eiData?.expenses ? <>INCOME & EXPENSE </> : <>PAYMENT</>} REPORT</Typography>
+              {/* <Typography variant="h6">{eiData?.income && eiData?.expenses ? <>INCOME & EXPENSE </> : <>PAYMENT</>} REPORT</Typography> */}
               <Typography variant="body2">{formattedDateRange()}</Typography>
               <Typography variant="body2">
                 Generated on: {getLocalDateTime(getCurrentDateTimeUTC())}

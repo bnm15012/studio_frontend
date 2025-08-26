@@ -4,9 +4,9 @@ export const compareData = (obj1, obj2) => {
 
 export function replacePlaceholders(templateStr, dataMap) {
     if (!templateStr) return "";
-    return templateStr.replace(/{{\s*([\w.]+)\s*}}/g, (_, key) => {
+    return templateStr.replace(/{{\s*([\w_]+)\s*}}/g, (_, key) => {
         // Support nested keys like instructorData.name
-        const keys = key.split('.');
+        const keys = key.split('_');
         let value = dataMap;
         for (let k of keys) {
             value = value?.[k];

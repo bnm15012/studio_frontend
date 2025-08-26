@@ -76,12 +76,14 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
+                    fileName={`Instructor-Contract-${instructorData.name}.pdf`}
                     ref={pdfViewerRef}
                     header={
                         <>
-                            <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                INSTRUCTOR UNDERTAKING
-                            </h2>
+                            <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
+                            <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                            <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
+                            <p style={{ margin: 0 }}>{studio?.email}</p>
                         </>
                     }
                     content={
@@ -154,7 +156,6 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             </div>
                         </>
                     }
-                    filename={`Instructor-Contract-${instructorData.name}.pdf`}
                 />
             </DialogContent>
             <DialogActions>

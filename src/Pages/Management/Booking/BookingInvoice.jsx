@@ -6,17 +6,16 @@ import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { useAlert } from '../../../utils/Alert';
-import { generatePresignUrl } from '../../../api/s3.api';
-import { sendMessageApi } from '../Communication/communication.api';
 import Loading from '../../../Components/Loading/Loading';
 import { getLocalDateTime } from '../../../utils/DateUtil';
 import FlexBetween from '../../../Components/FlexBetween';
 import { getAllTemplatesAPI } from '../TemplatesPage/Template.api';
 import { replacePlaceholders } from '../../../utils/globalFuns';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import HtmlToPdfViewer from '../../../Components/Html2PDF';
+
 const sectionTitle = {
-    marginTop: '8mm',
+    marginTop: '10mm',
     marginBottom: '3mm',
     paddingBottom: '2mm',
     fontSize: '14px',
@@ -32,13 +31,13 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
     const showAlert = useAlert();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const invoiceRef = useRef();
     const [templates, setTemplates] = useState([]);
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
+                setLoading(true)
                 const res = await getAllTemplatesAPI({
                     studioId: studio.studioId,
                     token,
@@ -51,6 +50,8 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                 }
             } catch {
                 showAlert('Error loading templates', 'error');
+            } finally {
+                setLoading(false)
             }
         };
         if (open) fetchTemplates();
@@ -77,78 +78,22 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
         })
         : '';
 
-    const handleSendMail = async () => {
-        try {
-            setLoading(true);
-            const element = invoiceRef.current;
-            const pdfBlob = await window.html2pdf()
-                // .set(pdfOptions)
-                .from(element)
-                .outputPdf('blob');
-
-            const { data: s3Bucket, success } = await generatePresignUrl(
-                `BookingInvoice-${bookingData.id}.pdf`,
-                token
-            );
-
-            if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-                showAlert('Failed to get upload URL', 'error');
-                return;
-            }
-            showAlert('Preparing to upload invoice...', 'info');
-
-            const uploadResponse = await fetch(s3Bucket.uploadUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/pdf' },
-                body: pdfBlob,
-            });
-
-            if (!uploadResponse.ok) {
-                showAlert('Failed to upload invoice to S3', 'error');
-                throw new Error('Upload to S3 failed');
-            }
-            showAlert('Invoice uploaded successfully', 'success');
-
-            const payload = {
-                branchId: currentBranch.branchId,
-                studioId: studio.studioId,
-                invoiceUrl: s3Bucket.fileUrl,
-                notificationType: 'EMAIL',
-                title: 'Booking Invoice',
-                templateName: 'BOOKING_INVOICE',
-                memberIds: [bookingData?.clientEntry?.clientId],
-            };
-
-            showAlert('Sending email...', 'info');
-            const { success: emailSent, message } = await sendMessageApi({
-                token,
-                data: payload,
-            });
-            if (emailSent) {
-                showAlert(message || 'Mail sent successfully', 'success');
-            } else {
-                showAlert('Failed to send email', 'error');
-            }
-        } catch (error) {
-            console.error(error);
-            showAlert('Something went wrong, please try again later', 'error');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="md">
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
+                    fileName="booking-invoice"
+                    remainingPayload={{
+                        title: 'Booking Invoice',
+                        templateName: 'BOOKING_INVOICE',
+                        memberIds: [bookingData?.clientEntry?.clientId]
+                    }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={
                         <>
                             <div>
-                                <h2 style={{ margin: 0 }}>Booking INVOICE</h2>
                                 <FlexBetween flexDirection="row-reverse">
                                     {studio?.gstNumber && (
                                         <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
@@ -169,16 +114,19 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                     content={
                         <div>
                             {/* Invoice Info */}
-                            <FlexBetween gap={1} flexDirection={"row"}>
+                            <FlexBetween gap={1} my={2}>
                                 <div>
-                                    <strong>Bill To</strong>:
+                                    <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
+                                    <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
+                                    <p style={{ margin: 0 }}>{studio?.email}</p>
                                 </div>
-                                <div>
+                                <div style={{ textAlign: "right" }}>
+                                    <strong>Bill To</strong>:
                                     <div>{bookingData?.clientEntry?.pocName}</div>
                                     <div>{bookingData?.clientEntry?.pocPhone}</div>
                                     <div>{bookingData?.clientEntry?.pocEmail}</div>
                                 </div>
-                                <Box flexGrow={1}></Box>
                             </FlexBetween>
 
                             {/* Booking Table */}
@@ -262,7 +210,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">
                             Download
                         </Button>
-                        <Button onClick={handleSendMail} variant="contained">
+                        <Button onClick={() => pdfViewerRef.current.sendMail()} variant="contained">
                             E-mail
                         </Button>
                         <Button onClick={() => pdfViewerRef.current.printPDF()} variant="contained">

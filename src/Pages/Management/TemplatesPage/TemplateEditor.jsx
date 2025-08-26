@@ -52,7 +52,7 @@ const data = {
 const flattenVariables = (obj, prefix = "") =>
   Object.entries(obj).flatMap(([key, value]) =>
     typeof value === "object"
-      ? flattenVariables(value, `${prefix}${key}.`)
+      ? flattenVariables(value, `${prefix}${key}_`)
       : `${prefix}${key}`
   );
 
