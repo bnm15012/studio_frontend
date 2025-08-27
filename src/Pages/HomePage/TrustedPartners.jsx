@@ -17,6 +17,10 @@ const partners = [
     name: 'Urban Beats',
     image: '/assets/urban_beats.png',
   },
+  {
+    name: 'Nritya Dance Studio',
+    image: '/assets/nritya.jpg',
+  },
 ];
 
 const TrustedPartners = () => {
