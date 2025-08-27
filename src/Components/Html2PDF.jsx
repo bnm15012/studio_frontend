@@ -1,6 +1,12 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Divider, Typography } from "@mui/material";
+import {
+    Box,
+    Card,
+    Divider,
+    Typography,
+    styled
+} from '@mui/material';
 import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
 import FlexEvenly from "./FlexEvenly";
@@ -9,7 +15,99 @@ import { useAlert } from "../utils/Alert";
 import { generatePresignUrl } from "../api/s3.api";
 import { sendMessageApi } from "../Pages/Management/Communication/communication.api";
 
-const HtmlToPdfViewer = forwardRef(({ content, header, fileName = "document", footer, remainingPayload }, ref) => {
+
+const PdfContainer = styled(Card)(() => ({
+    width: '210mm',
+    height: '297mm',
+    overflow: "auto",
+    margin: '0 auto',
+    padding: "24px",
+    backgroundColor: '#fff',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '14px',
+    color: '#333',
+    boxSizing: 'border-box',
+    border: '1px solid hsl(220, 13%, 85%)',
+
+    // Page-break handling for PDF generation
+    '& .page-break': {
+        pageBreakAfter: 'always'
+    },
+
+    '& .pdf-table': {
+        width: '100%',
+        borderCollapse: 'collapse',
+        pageBreakInside: 'auto',
+
+        '& th, & td': {
+            border: '1px solid hsl(220, 13%, 85%)',
+            padding: '8px 12px',
+            textAlign: 'left',
+            verticalAlign: 'top',
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid'
+        },
+
+        '& thead tr': {
+            pageBreakAfter: 'avoid',
+            breakAfter: 'avoid'
+        },
+
+        '& tbody tr': {
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid'
+        }
+    },
+
+    // Prevent text overflow and ensure proper distribution
+    '& .pdf-text': {
+        wordWrap: 'break-word',
+        overflowWrap: 'break-word',
+        hyphens: 'auto'
+    },
+
+    '@media print': {
+        width: '100%',
+        minHeight: 'unset',
+        margin: 0,
+        boxShadow: 'none',
+        border: 'none',
+
+        '& .no-print': {
+            display: 'none !important'
+        },
+
+        '& table': {
+            pageBreakInside: 'auto'
+        },
+
+        '& tr': {
+            pageBreakInside: 'avoid',
+            pageBreakAfter: 'auto'
+        },
+
+        '& td': {
+            pageBreakInside: 'avoid',
+            pageBreakAfter: 'auto'
+        },
+
+        '& thead': {
+            display: 'table-header-group'
+        },
+
+        '& tfoot': {
+            display: 'table-footer-group'
+        }
+    }
+}));
+
+const HtmlToPdfViewer = forwardRef(({
+    content,
+    header,
+    fileName = "document",
+    footer,
+    remainingPayload = {}
+}, ref) => {
     const showAlert = useAlert();
     const contentRef = useRef();
     const token = useSelector((state) => state.auth.token);
@@ -19,10 +117,29 @@ const HtmlToPdfViewer = forwardRef(({ content, header, fileName = "document", fo
 
     const pdfOptions = {
         filename: `${fileName}.pdf`,
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 3, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+        margin: [10, 10, 10, 10],
+        image: {
+            type: "jpeg",
+            quality: 1
+        },
+        html2canvas: {
+            scale: 3,
+            useCORS: true,
+            letterRendering: true,
+            allowTaint: false
+        },
+        jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait",
+            compressPDF: true
+        },
+        pagebreak: {
+            mode: ['avoid-all', 'css', 'legacy'],
+            before: '.page-break-before',
+            after: '.page-break-after',
+            avoid: '.no-page-break'
+        }
     };
 
     const handleDownloadPDF = () => {
@@ -32,26 +149,35 @@ const HtmlToPdfViewer = forwardRef(({ content, header, fileName = "document", fo
     };
 
     const handlePrintPDF = () => {
-        if (contentRef.current) {
-            window.html2pdf()
-                .set(pdfOptions)
-                .from(contentRef.current)
-                .toPdf()
-                .get("pdf")
-                .then((pdf) => {
-                    const blob = pdf.output("blob");
-                    const blobUrl = URL.createObjectURL(blob);
-
-                    const printWindow = window.open(blobUrl, "_blank");
-                    printWindow.onload = function () {
-                        printWindow.focus();
-                        printWindow.print();
-                    };
-                });
+        if (contentRef.current && window.html2pdf) {
+            try {
+                window.html2pdf()
+                    .set(pdfOptions)
+                    .from(contentRef.current)
+                    .toPdf()
+                    .get("pdf")
+                    .then((pdf) => {
+                        const blob = pdf.output("blob");
+                        const blobUrl = URL.createObjectURL(blob);
+                        const printWindow = window.open(blobUrl, "_blank");
+                        if (printWindow) {
+                            printWindow.onload = function () {
+                                printWindow.focus();
+                                printWindow.print();
+                            };
+                            showAlert("Opening print dialog...", "info");
+                        } else {
+                            showAlert("Popup blocked. Please allow popups and try again.", "warning");
+                        }
+                    });
+            } catch (error) {
+                console.error("Print failed:", error);
+                showAlert("Failed to print PDF", "error");
+            }
+        } else {
+            showAlert("PDF library not loaded", "error");
         }
     };
-
-
 
     const handleSendMail = async () => {
         try {
@@ -117,35 +243,16 @@ const HtmlToPdfViewer = forwardRef(({ content, header, fileName = "document", fo
     }));
 
     return (
-        <Box>{loading && <Loading />}
-            <FlexBetween flexDirection={"column"}
-                ref={contentRef}
-                sx={{
-                    width: "210mm",
-                    minHeight: "295mm",
-                    margin: "auto",
-                    padding: "24px",
-                    backgroundColor: "#fff",
-                    fontFamily: "Arial, sans-serif",
-                    fontSize: "14px",
-                    color: "#333",
-                    borderRadius: "8px",
-                    boxSizing: "border-box",
-
-                    // Page-break handling
-                    "@media print": {
-                        ".page-break": {
-                            pageBreakAfter: "always"
-                        },
-                        div: {
-                            pageBreakInside: "avoid"
-                        }
-                    }
-                }}
-            >
-                <Box>
-                    <FlexBetween>
-                        <Box>
+        <>{loading && <Loading />}
+            <PdfContainer>
+                <FlexBetween flexDirection={"column"}
+                    ref={contentRef}
+                    className="pdf-text"
+                    gap={2}
+                >
+                    {/* Header Section */}
+                    <Box className="pdf-page">
+                        <FlexBetween sx={{ mb: 3 }}>
                             <FlexBetween gap={1}>
                                 {studio?.logo && (
                                     <img
@@ -159,29 +266,46 @@ const HtmlToPdfViewer = forwardRef(({ content, header, fileName = "document", fo
                                     {studio?.studioName}
                                 </Typography>
                             </FlexBetween>
-                        </Box>
-                        <Box flexGrow={1} textAlign="right">
-                            {header}
-                        </Box>
-                    </FlexBetween>
-                    <Divider sx={{ my: 2 }} />
-                    {content}
-                </Box>
-                <FlexEvenly>
-                    <Box>
-                        <Typography textAlign={"center"} style={{ marginTop: '5mm', fontSize: '10px', color: '#555' }}>
-                            {footer}
-                            <p>Powered by Book & Manage</p>
-                        </Typography>
+                            <Box sx={{ textAlign: 'right', flexGrow: 1 }}>
+                                {header}
+                            </Box>
+                        </FlexBetween>
+                        <Divider sx={{ my: 2 }} />
                     </Box>
-                </FlexEvenly>
-            </FlexBetween>
-        </Box>
+
+                    {/* Content Section */}
+                    <Box className="pdf-page" sx={{ flexGrow: 1 }}>
+                        {content}
+                    </Box>
+
+                    {/* Footer Section */}
+                    <Box>
+                        <FlexEvenly>
+                            <Box>
+                                <Typography
+                                    textAlign="center"
+                                    sx={{
+                                        marginTop: '5mm',
+                                        fontSize: '10px',
+                                        color: '#555'
+                                    }}
+                                >
+                                    {footer}
+                                    <Typography component="p" sx={{ fontSize: '9px', mt: 1 }}>
+                                        Powered by Book & Manger
+                                    </Typography>
+                                </Typography>
+                            </Box>
+                        </FlexEvenly>
+                    </Box>
+                </FlexBetween>
+            </PdfContainer>
+        </>
     );
-});
+}
+);
 
 HtmlToPdfViewer.displayName = "HtmlToPdfViewer";
-
 HtmlToPdfViewer.propTypes = {
     content: PropTypes.node.isRequired,
     header: PropTypes.node,

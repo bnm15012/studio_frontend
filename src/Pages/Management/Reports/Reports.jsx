@@ -155,23 +155,58 @@ const Reports = () => {
   const renderTable = (title, data, headers) => (
     <Box mt={3}>
       <Typography variant="h6" gutterBottom>{title}</Typography>
-      <table style={styles.table}>
-        <thead>
+      <table
+        style={{
+          ...styles.table,
+          pageBreakInside: "auto",
+          borderCollapse: "collapse",
+          width: "100%",
+        }}
+      >
+        <thead style={{ display: "table-header-group" }}>
           <tr>
             {headers.map((h, i) => (
-              <th key={i} style={{ ...styles.th, textAlign: headers.length - 1 === i ? 'right' : 'left' }}>{h}</th>
+              <th
+                key={i}
+                style={{
+                  ...styles.th,
+                  textAlign: headers.length - 1 === i ? "right" : "left",
+                }}
+              >
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} style={{ backgroundColor: i % 2 === 0 ? '#f9f9f9' : '#fff' }}>
+            <tr
+              key={i}
+              style={{
+                backgroundColor: i % 2 === 0 ? "#f9f9f9" : "#fff",
+                pageBreakInside: "avoid",
+              }}
+            >
               {row.map((cell, j) => (
-                <td key={j} style={{ ...styles.td, textAlign: j === row.length - 1 ? 'right' : 'left' }}>{cell}</td>
+                <td
+                  key={j}
+                  style={{
+                    ...styles.td,
+                    textAlign: j === row.length - 1 ? "right" : "left",
+                  }}
+                >
+                  {cell}
+                </td>
               ))}
             </tr>
           ))}
-          {data.length === 0 && <tr><td colSpan={headers.length} style={styles.td}>No data available!</td></tr>}
+          {data.length === 0 && (
+            <tr>
+              <td colSpan={headers.length} style={styles.td}>
+                No data available!
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </Box>
