@@ -120,7 +120,7 @@ const HtmlToPdfViewer = forwardRef(({
         margin: [10, 10, 10, 10],
         image: {
             type: "jpeg",
-            quality: 1
+            quality: 0.01
         },
         html2canvas: {
             scale: 3,
@@ -236,10 +236,47 @@ const HtmlToPdfViewer = forwardRef(({
             setLoading(false);
         }
     };
+
+    const handleSendWhatsApp = async () => {
+        setLoading(true)
+        try {
+            const element = contentRef.current;
+            const pdfBlob = await window.html2pdf()
+                .set(pdfOptions)
+                .from(element)
+                .outputPdf('blob');
+
+            const payload = {
+                branchId: currentBranch.branchId,
+                content: "Your invoice",
+                sentToAll: false,
+                notificationType: 'WHATSAPP',
+                ...remainingPayload
+            };
+
+            showAlert('Sending message...', 'info');
+            const { success: emailSent, message } = await sendMessageApi({
+                token,
+                data: payload,
+                file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
+            });
+            if (emailSent) {
+                showAlert(message || 'Message sent successfully', 'success');
+            } else {
+                showAlert('Failed to send message', 'error');
+            }
+        } catch {
+            showAlert("Failed to send message")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     useImperativeHandle(ref, () => ({
         downloadPDF: handleDownloadPDF,
         printPDF: handlePrintPDF,
         sendMail: handleSendMail,
+        sendWhatsApp: handleSendWhatsApp
     }));
 
     return (

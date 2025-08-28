@@ -4,8 +4,8 @@ import api from "../../../utils/api";
 const getErrorMessage = (error, defaultMessage) =>
     error.response?.data?.status?.statusMessage || defaultMessage;
 
-const getHeaders = (token) => ({
-    headers: { Authorization: `${token}`, },
+const getHeaders = (token, otherHeader = {}) => ({
+    headers: { Authorization: `${token}`, ...otherHeader },
 });
 
 // TODO: remove this function, not required anymore
@@ -30,12 +30,27 @@ const getHeaders = (token) => ({
 //     }
 // };
 
-export const sendMessageApi = async ({ token, data }) => {
+export const sendMessageApi = async ({ token, data, file = null }) => {
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            value.forEach((item) => formData.append(`${key}[]`, item));
+        } else if (value !== undefined && value !== null) {
+            formData.append(key, value);
+        }
+    });
+
+    // Append file if provided
+    if (file) {
+        formData.append("file", file);
+    }
+
     try {
         const response = await api.post(
-            `/sendMessage`,
-            data,
-            getHeaders(token)
+            `/sendMessage/${data["branchId"]}`,
+            formData,
+            getHeaders(token, { "Content-Type": "multipart/form-data" })
         );
         const { status } = response.data;
         return {
