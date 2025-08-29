@@ -213,7 +213,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         <Button onClick={() => pdfViewerRef.current.sendMail()} variant="outlined">
                             E-mail
                         </Button>
-                        <Button onClick={() => { showAlert("Will be available soon !") }} variant="outlined">
+                        <Button onClick={() => pdfViewerRef.current.sendWhatsApp()} variant="outlined">
                             WhatsApp
                         </Button>
                         <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">
