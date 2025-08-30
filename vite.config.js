@@ -8,4 +8,13 @@ export default defineConfig({
     open: true,
   },
   base: "/",
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
+  },
 });

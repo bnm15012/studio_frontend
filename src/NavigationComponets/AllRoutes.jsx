@@ -1,29 +1,31 @@
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
-import PageNotFound from "../Pages/Error/PageNotFound";
-import HomePage from "../Pages/HomePage/HomePage";
-import DashBoard from "../Pages/DashBoard/DashBoard";
-import Management from "../Pages/Management/Management";
-import ForgotPassword from "../Pages/Auth/ForgotPassword";
-import ProfilePage from "../Pages/ProfilePage/ProfilePage";
-import SignupDialog from "../Pages/Auth/SignupDialog";
-import LoginDialog from "../Pages/Auth/LoginDialog";
-import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
-import AboutUsPage from "../Pages/AboutUs/AboutUsPage";
-import CancellationRefundPolicy from "../Pages/CancellationRefundPolicy/CancellationRefundPolicy";
-import TermsConditionPage from "../Pages/TermsCondition/TermsConditionPage";
-import PrivacyPolicyPage from "../Pages/PrivacyPolicy/PrivacyPolicyPage";
-import Analysis from "../Pages/Analysis/Analysis";
-import ContactUsPage from "../Pages/ContactUs/ContactUs";
-import FormFillPage from "../Pages/FormPage/FormFillPage";
+import { Suspense, lazy } from "react";
+
+const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
+const HomePage = lazy(() => import("../Pages/HomePage/HomePage"));
+const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));
+const Management = lazy(() => import("../Pages/Management/Management"));
+const ForgotPassword = lazy(() => import("../Pages/Auth/ForgotPassword"));
+const ProfilePage = lazy(() => import("../Pages/ProfilePage/ProfilePage"));
+const SignupDialog = lazy(() => import("../Pages/Auth/SignupDialog"));
+const LoginDialog = lazy(() => import("../Pages/Auth/LoginDialog"));
+const SubscriptionPopup = lazy(() => import("../Pages/Auth/SubscriptionPopup"));
+const AboutUsPage = lazy(() => import("../Pages/AboutUs/AboutUsPage"));
+const CancellationRefundPolicy = lazy(() => import("../Pages/CancellationRefundPolicy/CancellationRefundPolicy"));
+const TermsConditionPage = lazy(() => import("../Pages/TermsCondition/TermsConditionPage"));
+const PrivacyPolicyPage = lazy(() => import("../Pages/PrivacyPolicy/PrivacyPolicyPage"));
+const Analysis = lazy(() => import("../Pages/Analysis/Analysis"));
+const ContactUsPage = lazy(() => import("../Pages/ContactUs/ContactUs"));
+const FormFillPage = lazy(() => import("../Pages/FormPage/FormFillPage"));
 
 export const AllRoutes = () => {
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route exact path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/aboutus" element={<AboutUsPage />} />
         <Route path="/contactus" element={<ContactUsPage />} />
@@ -43,11 +45,13 @@ export const AllRoutes = () => {
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+
+      {/* Dialogs/Popups */}
       <ForgotPassword />
       <ProfilePage />
       <LoginDialog />
       <SignupDialog />
       {user && <SubscriptionPopup />}
-    </>
+    </Suspense>
   );
 };
