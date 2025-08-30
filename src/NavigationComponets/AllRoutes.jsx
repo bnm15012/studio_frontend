@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Suspense, lazy } from "react";
+import HomePage from "../Pages/HomePage/HomePage";
+import Loading from "../Components/Loading/Loading";
 
 const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
-const HomePage = lazy(() => import("../Pages/HomePage/HomePage"));
 const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));
 const Management = lazy(() => import("../Pages/Management/Management"));
 const ForgotPassword = lazy(() => import("../Pages/Auth/ForgotPassword"));
@@ -23,7 +24,7 @@ export const AllRoutes = () => {
   const user = useSelector((state) => state.auth.user);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
