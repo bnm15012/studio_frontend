@@ -64,7 +64,8 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-            instructor: { ...instructorData, ...activityData },
+            instructor: instructorData,
+            instructorActivity: activityData,
             studio,
             branch: currentBranch,
             getLocalDateTime

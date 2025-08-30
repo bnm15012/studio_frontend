@@ -289,6 +289,7 @@ const TemplatesPage = () => {
             }
           </Select>
           <TemplateEditor
+            disableVars={currentTemplate?.templateType === "COMMUNICATION"}
             label={"Subject"}
             value={currentTemplate?.templateSubject || ""}
             onChange={(val) =>
@@ -296,6 +297,8 @@ const TemplatesPage = () => {
             }
           />
           <TemplateEditor
+            rows={8}
+            disableVars={currentTemplate?.templateType === "COMMUNICATION"}
             label={"Content"}
             value={currentTemplate?.templateContent || ""}
             onChange={(val) =>

@@ -10,6 +10,8 @@ const data = {
     dob: "Instructor Date of Birth",
     address: "Instructor Address",
     emergencyContactNumber: "Instructor Emergency Contact Number",
+  },
+  instructorActivity: {
     activityName: "Activity Name (Instructor)",
     assignedDate: "Date Assigned",
     startDate: "Activity Start Date",
@@ -22,6 +24,8 @@ const data = {
     dob: "Student Date of Birth",
     address: "Student Address",
     emergencyContactNumber: "Student Emergency Contact Number",
+  },
+  studentActivity: {
     activityName: "Activity Name (Student)",
     registrationDate: "Registration Date",
     membershipStartDate: "Membership Start Date",
@@ -58,7 +62,7 @@ const flattenVariables = (obj, prefix = "") =>
 
 const allVariables = flattenVariables(data);
 
-const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text" }) => {
+const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text", disableVars = false }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filter, setFilter] = useState("");
   const textRef = useRef(null);
@@ -106,8 +110,8 @@ const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text" }) => 
     setShowSuggestions(false);
     setFilter("");
   };
-
-  const filteredVariables = allVariables.filter((v) =>
+  
+  const filteredVariables = allVariables.filter(v => disableVars ? !v.includes("Activity_") : true).filter((v) =>
     v.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -134,7 +138,7 @@ const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text" }) => 
           sx={{
             maxHeight: 200,
             overflow: "auto",
-            width: 250,
+            width: 700,
           }}
         >
           {filteredVariables.map((v) => (
@@ -152,6 +156,7 @@ TemplateEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   rows: PropTypes.number,
   label: PropTypes.string,
+  disableVars: PropTypes.bool,
 };
 
 export default TemplateEditor;
