@@ -4,47 +4,47 @@ import PropTypes from "prop-types";
 
 const data = {
   instructor: {
-    name: "instructor_name",
-    email: "instructor_email",
-    phone: "instructor_phone",
-    dob: "instructor_dob",
-    address: "instructor_address",
-    emergencyContactNumber: "instructor_emergencyContactNumber",
-    activityName: "instructor_activityName",
-    assignedDate: "instructor_assignedDate",
-    startDate: "instructor_startDate",
-    endDate: "instructor_endDate",
+    name: "Instructor Name",
+    email: "Instructor Email",
+    phone: "Instructor Phone",
+    dob: "Instructor Date of Birth",
+    address: "Instructor Address",
+    emergencyContactNumber: "Instructor Emergency Contact Number",
+    activityName: "Activity Name (Instructor)",
+    assignedDate: "Date Assigned",
+    startDate: "Activity Start Date",
+    endDate: "Activity End Date",
   },
   student: {
-    name: "student_name",
-    email: "student_email",
-    phone: "student_phone",
-    dob: "student_dob",
-    address: "student_address",
-    emergencyContactNumber: "student_emergencyContactNumber",
-    activityName: "student_activityName",
-    registrationDate: "student_registrationDate",
-    membershipStartDate: "student_membershipStartDate",
-    membershipEndDate: "student_membershipEndDate",
-    membershipType: "student_membershipType",
-    activityAmount: "student_activityAmount",
-    daysPerWeek: "student_daysPerWeek",
-    batchName: "student_batchName",
-    batchTime: "student_batchTime",
+    name: "Student Name",
+    email: "Student Email",
+    phone: "Student Phone",
+    dob: "Student Date of Birth",
+    address: "Student Address",
+    emergencyContactNumber: "Student Emergency Contact Number",
+    activityName: "Activity Name (Student)",
+    registrationDate: "Registration Date",
+    membershipStartDate: "Membership Start Date",
+    membershipEndDate: "Membership End Date",
+    membershipType: "Membership Type",
+    activityAmount: "Activity Fee Amount",
+    daysPerWeek: "Days per Week",
+    batchName: "Batch Name",
+    batchTime: "Batch Time",
   },
   branch: {
-    name: "branch_name",
-    address: "branch_address",
-    city: "branch_city",
-    state: "branch_state",
-    pincode: "branch_pincode",
-    phone: "branch_phone",
+    name: "Branch Name",
+    address: "Branch Address",
+    city: "Branch City",
+    state: "Branch State",
+    pincode: "Branch Pincode",
+    phone: "Branch Phone",
   },
   studio: {
-    studioName: "studio_name",
-    location: "studio_location",
-    email: "studio_email",
-    contactDetails: "studio_contactDetails",
+    studioName: "Studio Name",
+    location: "Studio Location",
+    email: "Studio Email",
+    contactDetails: "Studio Contact Details",
   },
 };
 
@@ -58,7 +58,7 @@ const flattenVariables = (obj, prefix = "") =>
 
 const allVariables = flattenVariables(data);
 
-const TemplateEditor = ({ value, onChange }) => {
+const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text" }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filter, setFilter] = useState("");
   const textRef = useRef(null);
@@ -115,10 +115,10 @@ const TemplateEditor = ({ value, onChange }) => {
     <Box>
       <TextField
         inputRef={textRef}
-        label="Content"
-        placeholder="Type your template here... use {{variable}} to insert variables"
+        label={label}
+        placeholder={`Type your ${label} here... use {{variable}} to insert variables`}
         multiline
-        rows={8}
+        rows={rows}
         value={value}
         onChange={handleChange}
         fullWidth
@@ -150,6 +150,8 @@ const TemplateEditor = ({ value, onChange }) => {
 TemplateEditor.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  rows: PropTypes.number,
+  label: PropTypes.string,
 };
 
 export default TemplateEditor;

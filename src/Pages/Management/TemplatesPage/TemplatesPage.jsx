@@ -288,16 +288,15 @@ const TemplatesPage = () => {
               ))
             }
           </Select>
-          <TextField
-            label="Subject"
-            rows={8}
+          <TemplateEditor
+            label={"Subject"}
             value={currentTemplate?.templateSubject || ""}
-            onChange={(e) =>
-              setCurrentTemplate({ ...currentTemplate, templateSubject: e.target.value })
+            onChange={(val) =>
+              setCurrentTemplate({ ...currentTemplate, templateSubject: val })
             }
-            fullWidth
           />
           <TemplateEditor
+            label={"Content"}
             value={currentTemplate?.templateContent || ""}
             onChange={(val) =>
               setCurrentTemplate({ ...currentTemplate, templateContent: val })
