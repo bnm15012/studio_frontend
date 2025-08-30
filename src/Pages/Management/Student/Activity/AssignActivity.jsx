@@ -13,7 +13,7 @@ const AssignActivity = ({ studentData, studentId }) => {
         studentData={{
           name: studentData.name,
           email: studentData.email,
-          Phone: studentData.phone,
+          phone: studentData.phone,
         }}
         data={studentData.enrolledActivities}
       />

@@ -210,10 +210,10 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">
                             Download
                         </Button>
-                        <Button onClick={() => pdfViewerRef.current.sendMail()} variant="outlined">
+                        <Button onClick={() => pdfViewerRef.current.sendMail(bookingData?.clientEntry?.pocEmail)} variant="outlined">
                             E-mail
                         </Button>
-                        <Button onClick={() => pdfViewerRef.current.sendWhatsApp()} variant="outlined">
+                        <Button onClick={() => pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone)} variant="outlined">
                             WhatsApp
                         </Button>
                         <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">

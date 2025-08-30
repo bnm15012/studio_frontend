@@ -173,8 +173,8 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
         <FlexBetween width={"100%"} mx={2} gap={2}>
           <FlexBetween gap={1}>
             <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-            <Button onClick={() => pdfViewerRef.current.sendMail()} variant="outlined">E-mail</Button>
-            <Button onClick={() => pdfViewerRef.current.sendWhatsApp()} variant="outlined">WhatsApp</Button>
+            <Button onClick={() => pdfViewerRef.current.sendMail(studentData?.email)} variant="outlined">E-mail</Button>
+            <Button onClick={() => pdfViewerRef.current.sendWhatsApp(studentData?.phone)} variant="outlined">WhatsApp</Button>
             <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">Print</Button>
           </FlexBetween>
           <Button onClick={onClose} variant='outlined' color="primary">Close</Button>

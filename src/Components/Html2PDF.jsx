@@ -5,7 +5,13 @@ import {
     Card,
     Divider,
     Typography,
-    styled
+    styled,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField
 } from '@mui/material';
 import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
@@ -14,7 +20,6 @@ import Loading from "./Loading/Loading";
 import { useAlert } from "../utils/Alert";
 import { generatePresignUrl } from "../api/s3.api";
 import { sendMessageApi } from "../Pages/Management/Communication/communication.api";
-
 
 const PdfContainer = styled(Card)(() => ({
     width: '210mm',
@@ -28,17 +33,11 @@ const PdfContainer = styled(Card)(() => ({
     color: '#333',
     boxSizing: 'border-box',
     border: '1px solid hsl(220, 13%, 85%)',
-
-    // Page-break handling for PDF generation
-    '& .page-break': {
-        pageBreakAfter: 'always'
-    },
-
+    '& .page-break': { pageBreakAfter: 'always' },
     '& .pdf-table': {
         width: '100%',
         borderCollapse: 'collapse',
         pageBreakInside: 'auto',
-
         '& th, & td': {
             border: '1px solid hsl(220, 13%, 85%)',
             padding: '8px 12px',
@@ -47,93 +46,58 @@ const PdfContainer = styled(Card)(() => ({
             pageBreakInside: 'avoid',
             breakInside: 'avoid'
         },
-
-        '& thead tr': {
-            pageBreakAfter: 'avoid',
-            breakAfter: 'avoid'
-        },
-
-        '& tbody tr': {
-            pageBreakInside: 'avoid',
-            breakInside: 'avoid'
-        }
+        '& thead tr': { pageBreakAfter: 'avoid', breakAfter: 'avoid' },
+        '& tbody tr': { pageBreakInside: 'avoid', breakInside: 'avoid' }
     },
-
-    // Prevent text overflow and ensure proper distribution
     '& .pdf-text': {
         wordWrap: 'break-word',
         overflowWrap: 'break-word',
         hyphens: 'auto'
     },
-
     '@media print': {
         width: '100%',
         minHeight: 'unset',
         margin: 0,
         boxShadow: 'none',
         border: 'none',
-
-        '& .no-print': {
-            display: 'none !important'
-        },
-
-        '& table': {
-            pageBreakInside: 'auto'
-        },
-
-        '& tr': {
-            pageBreakInside: 'avoid',
-            pageBreakAfter: 'auto'
-        },
-
-        '& td': {
-            pageBreakInside: 'avoid',
-            pageBreakAfter: 'auto'
-        },
-
-        '& thead': {
-            display: 'table-header-group'
-        },
-
-        '& tfoot': {
-            display: 'table-footer-group'
-        }
+        '& .no-print': { display: 'none !important' },
+        '& table': { pageBreakInside: 'auto' },
+        '& tr': { pageBreakInside: 'avoid', pageBreakAfter: 'auto' },
+        '& td': { pageBreakInside: 'avoid', pageBreakAfter: 'auto' },
+        '& thead': { display: 'table-header-group' },
+        '& tfoot': { display: 'table-footer-group' }
     }
 }));
+
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const indianMobileRegex = /^[6-9]\d{9}$/;
 
 const HtmlToPdfViewer = forwardRef(({
     content,
     header,
     fileName = "document",
     footer,
-    remainingPayload = {}
+    remainingPayload = {},
 }, ref) => {
     const showAlert = useAlert();
     const contentRef = useRef();
     const token = useSelector((state) => state.auth.token);
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState(""); // "email" or "mobile"
+    const [inputValue, setInputValue] = useState("");
+    const [inputError, setInputError] = useState("");
+
+    // PDF options unchanged
     const pdfOptions = {
         filename: `${fileName}.pdf`,
         margin: [10, 10, 10, 10],
-        image: {
-            type: "jpeg",
-            quality: 0.01
-        },
-        html2canvas: {
-            scale: 3,
-            useCORS: true,
-            letterRendering: true,
-            allowTaint: false
-        },
-        jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait",
-            compressPDF: true
-        },
+        image: { type: "jpeg", quality: 0.01 },
+        html2canvas: { scale: 3, useCORS: true, letterRendering: true, allowTaint: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compressPDF: true },
         pagebreak: {
             mode: ['avoid-all', 'css', 'legacy'],
             before: '.page-break-before',
@@ -142,6 +106,40 @@ const HtmlToPdfViewer = forwardRef(({
         }
     };
 
+    // Dialog openers
+    const openDialog = (type, value) => {
+        setDialogType(type);
+        setInputValue(value);
+        setInputError("");
+        setDialogOpen(true);
+    };
+
+    // Validation
+    const validateInput = (type, value) => {
+        if (type === "email") {
+            return emailRegex.test(value) ? "" : "Invalid email address";
+        }
+        if (type === "mobile") {
+            return indianMobileRegex.test(value) ? "" : "Invalid Indian mobile number";
+        }
+        return "";
+    };
+
+    // Dialog confirm handler
+    const handleDialogConfirm = async () => {
+        const error = validateInput(dialogType, inputValue);
+        setInputError(error);
+        if (error) return;
+
+        setDialogOpen(false);
+        if (dialogType === "email") {
+            await sendMailConfirmed(inputValue);
+        } else if (dialogType === "mobile") {
+            await sendWhatsAppConfirmed(inputValue);
+        }
+    };
+
+    // PDF download unchanged
     const handleDownloadPDF = () => {
         if (contentRef.current) {
             window.html2pdf().set(pdfOptions).from(contentRef.current).save();
@@ -179,7 +177,15 @@ const HtmlToPdfViewer = forwardRef(({
         }
     };
 
-    const handleSendMail = async () => {
+    const handleSendMail = (email) => {
+        openDialog("email", email);
+    };
+
+    const handleSendWhatsApp = (mobile) => {
+        openDialog("mobile", mobile);
+    };
+
+    const sendMailConfirmed = async () => {
         try {
             setLoading(true);
             const element = contentRef.current;
@@ -237,8 +243,8 @@ const HtmlToPdfViewer = forwardRef(({
         }
     };
 
-    const handleSendWhatsApp = async () => {
-        setLoading(true)
+    const sendWhatsAppConfirmed = async () => {
+        setLoading(true);
         try {
             const element = contentRef.current;
             const pdfBlob = await window.html2pdf()
@@ -266,11 +272,11 @@ const HtmlToPdfViewer = forwardRef(({
                 showAlert('Failed to send message', 'error');
             }
         } catch {
-            showAlert("Failed to send message")
+            showAlert("Failed to send message");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     useImperativeHandle(ref, () => ({
         downloadPDF: handleDownloadPDF,
@@ -280,14 +286,14 @@ const HtmlToPdfViewer = forwardRef(({
     }));
 
     return (
-        <>{loading && <Loading />}
+        <>
+            {loading && <Loading />}
             <PdfContainer>
                 <FlexBetween flexDirection={"column"}
                     ref={contentRef}
                     className="pdf-text"
                     gap={2}
                 >
-                    {/* Header Section */}
                     <Box className="pdf-page">
                         <FlexBetween sx={{ mb: 3 }}>
                             <FlexBetween gap={1}>
@@ -337,10 +343,42 @@ const HtmlToPdfViewer = forwardRef(({
                     </Box>
                 </FlexBetween>
             </PdfContainer>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+                <DialogTitle>
+                    {dialogType === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label={dialogType === "email" ? "Email Address" : "10 Digit Mobile Number"}
+                        type={dialogType === "email" ? "email" : "tel"}
+                        fullWidth
+                        variant="standard"
+                        value={inputValue}
+                        onChange={e => {
+                            setInputValue(e.target.value);
+                            setInputError(validateInput(dialogType, e.target.value));
+                        }}
+                        error={!!inputError}
+                        helperText={inputError}
+                        sx={inputError ? { '& .MuiInput-input': { color: 'red' } } : {}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+                    <Button
+                        onClick={handleDialogConfirm}
+                        color="primary"
+                        disabled={!!inputError || !inputValue}
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
-}
-);
+});
 
 HtmlToPdfViewer.displayName = "HtmlToPdfViewer";
 HtmlToPdfViewer.propTypes = {
