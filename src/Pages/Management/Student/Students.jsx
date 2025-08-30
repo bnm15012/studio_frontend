@@ -4,7 +4,7 @@ import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import SearchField from "../../../Components/SearchField";
 import { Box, Button, Pagination } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
 import { getAllStudentsAPI } from "./Student.api";
@@ -87,7 +87,7 @@ const Students = () => {
           onClick={() => navigate(`/management/student/NEW`)}
           sx={{ fontWeight: "bold", padding: "1px" }}
         >
-          <Add sx={{ padding: 0, margin: "auto" }} />
+          <AddIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
       </FlexBetween>
 

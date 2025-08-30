@@ -1,4 +1,6 @@
-import { AccessTime, CurrencyRupee, CalendarToday } from '@mui/icons-material'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Chip, Stack, Typography, Card, CardContent } from '@mui/material'
 import PropTypes from 'prop-types'
 import { membershipTypeColors } from './Activities.constants'
@@ -33,7 +35,7 @@ const ActivityBatchCard = ({ batch }) => {
                         />
                     </Stack>
                     <Stack direction="row" spacing={0.5} alignItems="center">
-                        <CurrencyRupee fontSize="small" color="success" />
+                        <CurrencyRupeeIcon fontSize="small" color="success" />
                         <Typography variant="body2" fontWeight="500">
                             {batch.price}
                         </Typography>
@@ -43,14 +45,14 @@ const ActivityBatchCard = ({ batch }) => {
                 <Stack direction="row" spacing={3} mb={1}>
                     {isBatchEnabled && (
                         <Stack direction="row" spacing={0.5} alignItems="center">
-                            <AccessTime fontSize="small" color="action" />
+                            <AccessTimeIcon fontSize="small" color="action" />
                             <Typography variant="body2">
                                 {batch.startTime} - {batch.endTime}
                             </Typography>
                         </Stack>
                     )}
                     <Stack direction="row" spacing={0.5} alignItems="center">
-                        <CalendarToday fontSize="small" color="primary" />
+                        <CalendarTodayIcon fontSize="small" color="primary" />
                         <Typography variant="body2" fontWeight="500">
                             {batch.daysPerWeek} days/week
                         </Typography>

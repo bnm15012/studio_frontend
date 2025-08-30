@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  Edit,
-  Save,
-} from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import {
   Divider,
   IconButton,
@@ -72,7 +70,7 @@ const CommunicationConfigs = ({ studio }) => {
                     setEditProf(!editProf);
                   }}
                 >
-                  {editProf ? <Save /> : <Edit />}
+                  {editProf ? <SaveIcon /> : <EditIcon />}
                 </IconButton>
               </Tooltip>
             </FlexBetween>

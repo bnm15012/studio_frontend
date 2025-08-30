@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import FlexBetween from '../../../Components/FlexBetween';
 import { Box, Button, IconButton, Typography } from '@mui/material';
-import { Add, ArrowBack } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AddIcon from '@mui/icons-material/Add';
 import ManagerUserTable from './ManagerUser/ManagerUserTable';
 import { getAllManagersAPI } from './ManagerUser/manageruser.api';
 import Loading from '../../../Components/Loading/Loading';
@@ -72,7 +73,7 @@ const BranchPage = ({ page, ID }) => {
     <FlexBetweenColumn gap={2} >
       <FlexBetween alignItems={"center"} gap={2}>
         <IconButton onClick={() => navigate(`/management/${page}`)}>
-          <ArrowBack sx={{ color: "black" }} />
+          <ArrowBackIcon sx={{ color: "black" }} />
         </IconButton>
         <Typography variant="h5" fontWeight={"bold"}>
           Branch : {selectedBranch.name}
@@ -83,7 +84,7 @@ const BranchPage = ({ page, ID }) => {
           variant="contained"
           color="primary"
           startIcon={
-            <Add />
+            <AddIcon />
           }
           disabled={newRow != null}
           onClick={() => handleAddNew()}

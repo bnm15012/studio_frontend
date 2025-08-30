@@ -12,7 +12,13 @@ import {
   Box,
   Tooltip,
 } from "@mui/material";
-import { Add, Cancel, Close, Delete, Edit, Receipt, Save } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import SaveIcon from "@mui/icons-material/Save";
 import FlexBetween from "../../../../Components/FlexBetween";
 import ActivityMembershipSelector from "../../Activity/ActivityMembershipSelector";
 import {
@@ -406,13 +412,13 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                           <Button
                             onClick={() => handleSave(index)}
                           >
-                            <Save sx={{ fontSize: "2rem" }} />
+                            <SaveIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
                             sx={{ color: "red" }}
                             onClick={() => handleEdit(null)}
                           >
-                            <Cancel sx={{ fontSize: "2rem" }} />
+                            <CancelIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       ) : (
@@ -421,14 +427,14 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                             disabled={editIndex != null || showAddNewRow}
                             onClick={() => handleEdit(index)}
                           >
-                            <Edit sx={{ fontSize: "2rem" }} />
+                            <EditIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Tooltip title={row.paymentEntry.status !== "COMPLETED" ? "Payment is still pending or it's failed" : "View Invoice"}>
                             <Button
                               disabled={editIndex != null || showAddNewRow || row.paymentEntry.status !== "COMPLETED"}
                               onClick={() => { setShowInvoice(true); setDeleteDialogIndex(index) }}
                             >
-                              <Receipt sx={{ fontSize: "2rem" }} />
+                              <ReceiptIcon sx={{ fontSize: "2rem" }} />
                             </Button>
                           </Tooltip>
                           <Button
@@ -438,7 +444,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                               setDeleteDialogOpen(true);
                             }}
                           >
-                            <Delete sx={{ fontSize: "2rem" }} />
+                            <DeleteIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       )}
@@ -523,7 +529,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       sx={{ color: "red" }}
                       onClick={() => setShowAddNewRow(false)}
                     >
-                      <Close />
+                      <CloseIcon />
                     </Button>
                   </FlexEvenly>
                 </TableCell>
@@ -543,7 +549,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                     }}
                     onClick={() => setShowAddNewRow(true)}
                   >
-                    <Add sx={{ color: "white" }} />
+                    <AddIcon sx={{ color: "white" }} />
                   </IconButton>
                 </TableCell>
               </TableRow>

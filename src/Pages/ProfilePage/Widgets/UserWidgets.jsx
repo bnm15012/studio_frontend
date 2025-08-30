@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import {
-  Class,
-  Email,
-  LocationCity,
-  Phone,
-  Edit,
-  Save,
-} from "@mui/icons-material";
+import ClassIcon from "@mui/icons-material/Class";
+import EmailIcon from "@mui/icons-material/Email";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import PhoneIcon from "@mui/icons-material/Phone";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import {
   CardContent,
   Typography,
@@ -171,7 +169,7 @@ const UserWidgets = ({ admin, studio }) => {
                   },
                 }}
               >
-                {editProf ? <Save onClick={saveProfile} /> : <Edit />}
+                {editProf ? <SaveIcon onClick={saveProfile} /> : <EditIcon />}
               </IconButton>
             </Tooltip>
           </Box>
@@ -184,9 +182,9 @@ const UserWidgets = ({ admin, studio }) => {
                   </Typography>
                   <Divider sx={{ mb: 1 }} />
                   <Box sx={{ display: "grid", gap: 2 }}>
-                    <EditableData showFieldName={false} data={admin} fieldName={"email"} icon={<Email />} setData={setEditedValues} />
+                    <EditableData showFieldName={false} data={admin} fieldName={"email"} icon={<EmailIcon />} setData={setEditedValues} />
                     <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"phone"}
-                      validation={{ pattern: /^\+?[1-9]\d{9}$/ }} icon={<Phone />} setData={setEditedValues} />
+                      validation={{ pattern: /^\+?[1-9]\d{9}$/ }} icon={<PhoneIcon />} setData={setEditedValues} />
                   </Box>
                   <Typography variant="h6" sx={{ mt: 4 }}>
                     Studio Information
@@ -194,8 +192,8 @@ const UserWidgets = ({ admin, studio }) => {
                   <Divider sx={{ mb: 1 }} />
                   <FlexBetween gap={2}>
                     <FlexEvenlyColumn gap={2} sx={{ flexGrow: 1 }}>
-                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"studioName"} icon={<Class />} setData={setEditedValues} />
-                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"location"} icon={<LocationCity />} setData={setEditedValues} />
+                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"studioName"} icon={<ClassIcon />} setData={setEditedValues} />
+                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"location"} icon={<LocationCityIcon />} setData={setEditedValues} />
                       <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"gstNumber"} icon={<Percent />} setData={setEditedValues} placeholder="Enter GST Number"/>
                     </FlexEvenlyColumn>
                   </FlexBetween>

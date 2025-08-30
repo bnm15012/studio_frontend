@@ -6,7 +6,8 @@ import {
   Tooltip,
   Paper,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FlexEvenly from "./FlexEvenly";
 import ImageComponent from "./ImageComponent";
 import { StyledTable, StyledTableCell, StyledTableContainer, StyledTableRow } from "./StyledTableComponents";
@@ -104,7 +105,7 @@ const DataTable = ({
                           },
                         }}
                       >
-                        <Edit />
+                        <EditIcon />
                       </IconButton>
                     </Tooltip>
                   )}
@@ -122,7 +123,7 @@ const DataTable = ({
                           onDelete(row);
                         }}
                       >
-                        <Delete />
+                        <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                   )}

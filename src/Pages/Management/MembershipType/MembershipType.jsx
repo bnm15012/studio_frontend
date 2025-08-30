@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +45,7 @@ const MembershipType = () => {
           onClick={() => handleAddNew()}
           sx={{ fontWeight: "bold", padding: ".8rem" }}
         >
-          <Add sx={{ padding: 0, margin: "auto" }} />
+          <AddIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
       </FlexBetween>
       <Box>

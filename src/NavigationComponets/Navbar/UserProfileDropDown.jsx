@@ -1,7 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Menu, MenuItem, Button, Box } from "@mui/material";
-import { ArrowDropDown, Logout } from "@mui/icons-material";
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
+import Logout from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import FlexBetween from "../../Components/FlexBetween";
 import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";

@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, Typography, useTheme, keyframes } from "@mui/material";
 import PropTypes from "prop-types";
-import { ArrowCircleRight } from "@mui/icons-material";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 
 // Define animations
 const slideUp = keyframes`
@@ -153,7 +153,7 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0, blurVal
         >
           View Details
         </Typography>
-        <ArrowCircleRight
+        <ArrowCircleRightIcon
           className="arrow-icon"
           sx={{
             transition: "transform 0.3s ease",

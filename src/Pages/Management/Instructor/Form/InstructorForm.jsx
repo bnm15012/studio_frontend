@@ -10,12 +10,11 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import EditableData from "../../../../Components/EditableData";
 import ImageComponent from "../../../../Components/ImageComponent";
-import {
-  ArrowBack,
-  Cancel,
-  Delete,
-  Edit,
-} from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CancelIcon from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
 import {
   addInstructorAPI,
   deleteInstructorAPI,
@@ -157,7 +156,7 @@ const InstructorForm = ({ page, ID }) => {
       <FlexBetween backgroundColor={theme.palette.background.paper} sx={{ width: '100%', p: 2, borderRadius: 2, boxShadow: theme.shadows[2] }}>
         <FlexBetween alignItems={"center"} gap={2}>
           <IconButton onClick={() => navigate(`/management/${page}`)}>
-            <ArrowBack sx={{ color: "black" }} />
+            <ArrowBackIcon sx={{ color: "black" }} />
           </IconButton>
           <Typography variant="h5" fontWeight={"bold"}>
             Instructor Info
@@ -171,13 +170,13 @@ const InstructorForm = ({ page, ID }) => {
                 disabled={loading}
                 onClick={() => setDeleteDialogOpen(true)}
               >
-                <Delete sx={{ color: "red" }} />
+                <DeleteIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}
                 onClick={() => setIsEdit(true)}
               >
-                <Edit sx={{ color: "blue" }} />
+                <EditIcon sx={{ color: "blue" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />
@@ -189,7 +188,7 @@ const InstructorForm = ({ page, ID }) => {
                 disabled={loading}
                 onClick={() => { setIsEdit(false); if (ID == "NEW") navigate(`/management/${page}/`); }}
               >
-                <Cancel sx={{ color: "red" }} />
+                <CancelIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}

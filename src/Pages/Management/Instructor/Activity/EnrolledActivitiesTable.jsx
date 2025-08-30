@@ -11,7 +11,13 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
-import { Add, Cancel, Close, Delete, Edit, Feed, Save } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import FeedIcon from "@mui/icons-material/Feed";
+import SaveIcon from "@mui/icons-material/Save";
 import ActivityMembershipSelector from "../../Activity/ActivityMembershipSelector";
 import { useSelector } from "react-redux";
 import { useAlert } from "../../../../utils/Alert";
@@ -318,13 +324,13 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                           <Button
                             onClick={() => handleSave(index)}
                           >
-                            <Save sx={{ fontSize: "2rem" }} />
+                            <SaveIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
                             sx={{ color: "red" }}
                             onClick={() => handleEdit(null)}
                           >
-                            <Cancel sx={{ fontSize: "2rem" }} />
+                            <CancelIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       ) : (
@@ -333,13 +339,13 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                             disabled={editIndex != null || showAddNewRow}
                             onClick={() => handleEdit(index)}
                           >
-                            <Edit sx={{ fontSize: "2rem" }} />
+                            <EditIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
                             disabled={editIndex != null || showAddNewRow}
                             onClick={() => { setGenerateContractDoc(true); setDeleteDialogIndex(index) }}
                           >
-                            <Feed sx={{ fontSize: "2rem" }} />
+                            <FeedIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                           <Button
                             sx={{ color: "red" }}
@@ -348,7 +354,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                               setDeleteDialogOpen(true);
                             }}
                           >
-                            <Delete sx={{ fontSize: "2rem" }} />
+                            <DeleteIcon sx={{ fontSize: "2rem" }} />
                           </Button>
                         </>
                       )}
@@ -422,7 +428,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                       sx={{ background: "red" }}
                       onClick={() => setShowAddNewRow(false)}
                     >
-                      <Close />
+                      <CloseIcon />
                     </Button>
                   </FlexEvenly>
                 </TableCell>
@@ -442,7 +448,7 @@ const EnrolledActivitiesTableInstructor = ({ instructorId, data }) => {
                     }}
                     onClick={() => setShowAddNewRow(true)}
                   >
-                    <Add sx={{ color: "white" }} />
+                    <AddIcon sx={{ color: "white" }} />
                   </IconButton>
                 </TableCell>
               </TableRow>

@@ -3,7 +3,7 @@ import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button, Pagination } from "@mui/material";
 import SearchField from "../../../Components/SearchField";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { getAllExpensesAPI } from "./expenses.api";
@@ -99,7 +99,7 @@ const Expenses = () => {
           onClick={() => handleAddNew()}
           sx={{ fontWeight: "bold", padding: "1px" }}
         >
-          <Add sx={{ padding: 0, margin: "auto" }} />
+          <AddIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
       </FlexBetween>
       <Box>

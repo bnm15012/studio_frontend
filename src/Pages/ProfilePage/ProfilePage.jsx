@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Loading from "../../Components/Loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
 import { Dialog, IconButton, Box, Tabs, Tab, Typography, useTheme } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import FlexBetween from "../../Components/FlexBetween";
 import ChangePassword from "./ChangePassword";
 import SubscriptionTab from "./SubscriptionTab";
@@ -78,7 +78,7 @@ const ProfilePage = () => {
                   tabValue === 3 ? "Settings" : "Communication Configuration"}
           </Typography>
           <IconButton onClick={handleClose} sx={{ color: 'white' }}>
-            <Close />
+            <CloseIcon />
           </IconButton>
         </FlexBetween>
       </Box>

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Button, Dialog, DialogTitle, DialogContent, IconButton, Typography, Stack, Box } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import CloseIcon from '@mui/icons-material/Close';
 import QRCode from "react-qr-code";
 import { QrCodeIcon } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -64,7 +64,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                         onClick={handleClose}
                         sx={{ position: "absolute", right: 8, top: 8 }}
                     >
-                        <Close />
+                        <CloseIcon />
                     </IconButton>
                 </DialogTitle>
 

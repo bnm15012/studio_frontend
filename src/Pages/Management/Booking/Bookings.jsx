@@ -3,7 +3,7 @@ import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button, Pagination, Popover } from "@mui/material";
 import SearchField from "../../../Components/SearchField";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
@@ -107,7 +107,7 @@ const Bookings = () => {
           onClick={handleAddNew}
           disabled={newRow != null}
         >
-          <Add sx={{ padding: 0, margin: "auto" }} />
+          <AddIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
       </FlexBetween>
       <Box>

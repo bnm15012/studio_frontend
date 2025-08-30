@@ -16,12 +16,10 @@ import {
 } from "../Student.api";
 import EditableData from "../../../../Components/EditableData";
 import ImageComponent from "../../../../Components/ImageComponent";
-import {
-  ArrowBack,
-  Cancel,
-  Delete,
-  Edit,
-} from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CancelIcon from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { compareData } from "../../../../utils/globalFuns";
 import DeleteDialog from "../../../../Components/DeleteDialog";
 import AssignActivity from "../Activity/AssignActivity";
@@ -164,7 +162,7 @@ const StudentForm = ({ page, ID }) => {
       <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2, boxShadow: theme.shadows[2] }}>
         <FlexBetween alignItems={"center"} gap={2}>
           <IconButton onClick={() => navigate(`/management/${page}`)}>
-            <ArrowBack sx={{ color: "black" }} />
+            <ArrowBackIcon sx={{ color: "black" }} />
           </IconButton>
           <Typography variant="h5" fontWeight={"bold"}>
             Student Info
@@ -178,13 +176,13 @@ const StudentForm = ({ page, ID }) => {
                 disabled={loading}
                 onClick={() => setDeleteDialogOpen(true)}
               >
-                <Delete sx={{ color: "red" }} />
+                <DeleteIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}
                 onClick={() => setIsEdit(true)}
               >
-                <Edit sx={{ color: "blue" }} />
+                <EditIcon sx={{ color: "blue" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />
@@ -196,7 +194,7 @@ const StudentForm = ({ page, ID }) => {
                 disabled={loading}
                 onClick={() => { setIsEdit(false); if (ID == "NEW") navigate("/management/student/"); }}
               >
-                <Cancel sx={{ color: "red" }} />
+                <CancelIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}

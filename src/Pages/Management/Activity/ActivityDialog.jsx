@@ -15,7 +15,10 @@ import {
     Paper,
     Select,
 } from "@mui/material";
-import { Add, Delete, AccessTime, AttachMoney } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
@@ -173,7 +176,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                 {/* Batches */}
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6"> {isBatchEnabled ? "Batches" : "Membership plans"}</Typography>
-                    <Button variant="outlined" size="small" startIcon={<Add />} onClick={addBatch}>
+                    <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={addBatch}>
                         Add {isBatchEnabled ? "Batch" : "Membership plan"}
                     </Button>
                 </Box>
@@ -192,7 +195,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                         color="error"
                                         onClick={() => removeBatch(batch.batchId)}
                                     >
-                                        <Delete fontSize="small" />
+                                        <DeleteIcon fontSize="small" />
                                     </IconButton>
                                 </FlexBetween>
 
@@ -254,7 +257,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     InputProps={{
-                                                        startAdornment: <AccessTime fontSize="small" />,
+                                                        startAdornment: <AccessTimeIcon fontSize="small" />,
                                                     }}
                                                 />
                                             </Grid>
@@ -268,7 +271,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     InputProps={{
-                                                        startAdornment: <AccessTime fontSize="small" />,
+                                                        startAdornment: <AccessTimeIcon fontSize="small" />,
                                                     }}
                                                 />
                                             </Grid>
@@ -299,7 +302,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             error={batch.price < 0 || isNaN(batch.price)}
                                             inputProps={{ min: 0, step: 0.01 }}
                                             InputProps={{
-                                                startAdornment: <AttachMoney fontSize="small" />,
+                                                startAdornment: <AttachMoneyIcon fontSize="small" />,
                                             }}
                                         />
                                     </Grid>

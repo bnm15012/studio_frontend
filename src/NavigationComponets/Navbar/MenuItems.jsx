@@ -9,10 +9,11 @@ import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
 import { logoutUser } from "../../state/thunks";
-// import { DarkMode, LightMode } from "@mui/icons-material";
 // import { toggleMode } from "../../state/authSlice";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
+// import DarkMode from "@mui/icons-material/DarkMode";
+// import LightMode from "@mui/icons-material/LightMode";
 
 const MenuItems = ({ isNonMobileScreens }) => {
   const dispatch = useDispatch();

@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button, Pagination } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add, Refresh } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
@@ -98,7 +99,7 @@ const Enquiry = () => {
           }}
           sx={{ fontWeight: "bold", padding: ".8rem" }}
         >
-          <Refresh sx={{ padding: 0, margin: "auto" }} />
+          <RefreshIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
         <Button
           variant="contained"
@@ -107,7 +108,7 @@ const Enquiry = () => {
           onClick={() => handleAddNew()}
           sx={{ fontWeight: "bold", padding: ".8rem" }}
         >
-          <Add sx={{ padding: 0, margin: "auto" }} />
+          <AddIcon sx={{ padding: 0, margin: "auto" }} />
         </Button>
       </FlexBetween>
       <Box>

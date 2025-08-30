@@ -9,7 +9,11 @@ import {
   Select,
   FormControl,
 } from "@mui/material";
-import { Delete, Save, Cancel, Edit, Receipt } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
+import EditIcon from "@mui/icons-material/Edit";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import { useAlert } from "../../../utils/Alert";
 import {
   addBookingAPI,
@@ -343,10 +347,10 @@ const BookingsTable = ({
                       sx={{ color: "blue" }}
                       onClick={() => handleSave(index)}
                     >
-                      <Save />
+                      <SaveIcon />
                     </IconButton>
                     <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                      <Cancel />
+                      <CancelIcon />
                     </IconButton>
                   </StyledTableCell>
                 </>
@@ -367,13 +371,13 @@ const BookingsTable = ({
                         sx={{ color: "blue" }}
                         onClick={() => navigate(`/management/bookings/${row.id}`)}
                       >
-                        <Edit />
+                        <EditIcon />
                       </IconButton>
                       <IconButton
                         sx={{ color: "blue" }}
                         onClick={() => setShowInvoice(true)}
                       >
-                        <Receipt />
+                        <ReceiptIcon />
                       </IconButton>
                       {showInvoice && <BookingInvoice open={showInvoice} onClose={() => setShowInvoice(false)} bookingData={row} />}
                       <IconButton
@@ -383,7 +387,7 @@ const BookingsTable = ({
                           setDeleteDialogOpen(true);
                         }}
                       >
-                        <Delete />
+                        <DeleteIcon />
                       </IconButton>
                     </FlexBetween>
                   </StyledTableCell>
@@ -530,10 +534,10 @@ const BookingsTable = ({
                   sx={{ color: "blue" }}
                   onClick={() => handleSave(null)}
                 >
-                  <Save />
+                  <SaveIcon />
                 </IconButton>
                 <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                  <Cancel />
+                  <CancelIcon />
                 </IconButton>
               </StyledTableCell>
             </StyledTableRow>

@@ -11,7 +11,10 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-import { Edit, Groups, Delete, ExpandMore } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import GroupsIcon from "@mui/icons-material/Groups";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
 import { getIcon } from "./Activities.constants";
 import { useState } from "react";
@@ -72,14 +75,14 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
         action={
           <Stack direction="row" spacing={1}>
             <IconButton size="small" onClick={() => onEdit(activity)}>
-              <Edit fontSize="small" />
+              <EditIcon fontSize="small" />
             </IconButton>
             <IconButton
               onClick={() => setOpenDeleteDialog(true)}
               color="error"
               size="small"
             >
-              <Delete fontSize="small" />
+              <DeleteIcon fontSize="small" />
             </IconButton>
           </Stack>
         }
@@ -89,7 +92,7 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
 
       <CardContent>
         <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-          <Groups fontSize="small" color="action" />
+          <GroupsIcon fontSize="small" color="action" />
           <Typography variant="body2" fontWeight={500}>
             {activity.batchEntries.length}{" "}
             {
@@ -118,7 +121,7 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
                 onClick={() => setShowMoreBatches(true)}
                 variant="outlined"
                 size="small"
-                startIcon={<ExpandMore />}
+                startIcon={<ExpandMoreIcon />}
                 fullWidth
                 sx={{ borderRadius: 2 }}
               >

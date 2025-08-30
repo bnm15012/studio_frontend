@@ -9,7 +9,9 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { Edit, Save, Cancel } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { useAlert } from "../../../utils/Alert.jsx";
 import Loading from "../../../Components/Loading/Loading";
 import {
@@ -230,10 +232,10 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                       sx={{ color: "blue" }}
                       onClick={() => handleSave(index)}
                     >
-                      <Save />
+                      <SaveIcon />
                     </IconButton>
                     <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                      <Cancel />
+                      <CancelIcon />
                     </IconButton>
                   </StyledTableCell>
                 </>
@@ -254,7 +256,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                       sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
-                      <Edit />
+                      <EditIcon />
                     </IconButton>
                     {/* <IconButton
                       sx={{ color: "red" }}
@@ -263,7 +265,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                         setDeleteDialogOpen(true);
                       }}
                     >
-                      <Delete />
+                      <DeleteIcon />
                     </IconButton> */}
                   </StyledTableCell>
                 </>
@@ -322,10 +324,10 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
                   sx={{ color: "blue" }}
                   onClick={() => handleSave(null)}
                 >
-                  <Save />
+                  <SaveIcon />
                 </IconButton>
                 <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                  <Cancel />
+                  <CancelIcon />
                 </IconButton>
               </StyledTableCell>
             </StyledTableRow>

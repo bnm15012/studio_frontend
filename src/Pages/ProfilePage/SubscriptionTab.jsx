@@ -1,7 +1,14 @@
 import { useSelector } from "react-redux";
 import { Typography, CardContent, Box, Divider, useTheme, Button } from "@mui/material";
-import { Payment, CalendarToday, EventBusy, EventAvailable, PriceCheck, Assignment, HourglassBottom } from "@mui/icons-material";
-import { CheckCircle, Cancel } from "@mui/icons-material";
+import PaymentIcon from "@mui/icons-material/Payment";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import FlexBetween from "../../Components/FlexBetween";
 import { useEffect, useState } from "react";
 import SubscriptionPopup from "../Auth/SubscriptionPopup";
@@ -41,58 +48,58 @@ const SubscriptionTab = () => {
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: "grid", gap: 0.5 }}>
           <InfoRow
-            icon={Assignment}
+            icon={AssignmentIcon}
             label="Plan Type"
             value={subscriptionPlan.subscriptionPlan}
           />
           <Divider />
 
           <InfoRow
-            icon={EventAvailable}
+            icon={EventAvailableIcon}
             label="Start Date"
             value={new Date(subscriptionPlan.startDate).toLocaleDateString("en-GB")}
           />
           <Divider />
 
           <InfoRow
-            icon={EventBusy}
+            icon={EventBusyIcon}
             label="End Date"
             value={endDate.toLocaleDateString("en-GB")}
           />
           <Divider />
 
           <InfoRow
-            icon={CalendarToday}
+            icon={CalendarTodayIcon}
             label="Status"
             value={subscriptionPlan.status}
-            valueIcon={subscriptionPlan.status === "ACTIVE" ? CheckCircle : Cancel}
+            valueIcon={subscriptionPlan.status === "ACTIVE" ? CheckCircleIcon : CancelIcon}
             color={subscriptionPlan.status === "ACTIVE" ? "success.main" : "error.main"}
           />
           <Divider />
 
           <InfoRow
-            icon={PriceCheck}
+            icon={PriceCheckIcon}
             label="Price"
             value={`Rs ${subscriptionPlan.price.toFixed(2)}`}
           />
           <Divider />
 
           <InfoRow
-            icon={Payment}
+            icon={PaymentIcon}
             label="Order ID"
             value={subscriptionPlan.orderId}
           />
           <Divider />
 
           <InfoRow
-            icon={Payment}
+            icon={PaymentIcon}
             label="Payment ID"
             value={subscriptionPlan.paymentId}
           />
           <Divider />
 
           <InfoRow
-            icon={HourglassBottom}
+            icon={HourglassBottomIcon}
             label="Expires in"
             value={daysRemaining > 0 ? `${daysRemaining} days` : "Expired"}
             color={daysRemaining > 0 ? "warning.main" : "error.main"}

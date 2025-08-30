@@ -8,7 +8,7 @@ import {
   IconButton,
   useTheme,
 } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import { useAlert } from "../utils/Alert";
 import { uploadImageApiCall } from '../utils/uploadImg.api';
@@ -132,7 +132,7 @@ const ImageComponent = ({
                 },
               }}
             >
-              <Edit />
+              <EditIcon />
               <input {...getInputProps()} />
             </IconButton>
           )}

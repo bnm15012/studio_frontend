@@ -6,7 +6,8 @@ import {
 } from "@mui/material";
 import FlexBetween from "../../Components/FlexBetween";
 import ContactForm from "./ContactForm";
-import { Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
 
 const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
     const theme = useTheme();
@@ -19,7 +20,7 @@ const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
                         setOpenContactUsForm(false);
                     }}
                 >
-                    <Close />
+                    <CloseIcon />
                 </IconButton>
             </FlexBetween>
             <Box
@@ -32,6 +33,10 @@ const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
             </Box>
         </Dialog>
     );
+};
+ContactUsDialog.propTypes = {
+    open: PropTypes.bool.isRequired,
+    setOpenContactUsForm: PropTypes.func.isRequired,
 };
 
 export default ContactUsDialog;

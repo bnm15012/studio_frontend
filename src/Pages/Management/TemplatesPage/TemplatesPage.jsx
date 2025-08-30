@@ -15,7 +15,8 @@ import {
   IconButton,
   Typography
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FlexBetween from "../../../Components/FlexBetween";
 import { StyledTable, StyledTableCell, StyledTableContainer, StyledTableRow } from "../../../Components/StyledTableComponents";
 import { useSelector } from "react-redux";
@@ -214,7 +215,7 @@ const TemplatesPage = () => {
                             handleOpen(t);
                           }}
                         >
-                          <Edit />
+                          <EditIcon />
                         </IconButton>
                         <IconButton
                           color="primary"
@@ -234,7 +235,7 @@ const TemplatesPage = () => {
                             setDeleteDialogOpen(true);
                           }}
                         >
-                          <Delete />
+                          <DeleteIcon />
                         </IconButton>
                       </FlexBetween>
                     </StyledTableCell>

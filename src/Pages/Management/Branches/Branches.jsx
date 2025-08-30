@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import { Add } from "@mui/icons-material";
+import AddIcon  from "@mui/icons-material/Add";
 // import Loading from "../../../Components/Loading/Loading";
 // import { useAlert } from "../../../utils/Alert";
 // import { getAllBranchAPI } from "./Branches.api";
@@ -66,7 +66,7 @@ const Branches = () => {
           variant="contained"
           color="primary"
           startIcon={
-            <Add />
+            <AddIcon />
           }
           disabled={newRow != null}
           onClick={() => handleAddNew()}

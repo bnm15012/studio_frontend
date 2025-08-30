@@ -10,13 +10,11 @@ import WidgetsOnPage from "../../Components/WidgetsOnPage";
 import Loading from "../../Components/Loading/Loading";
 import FlexBetween from "../../Components/FlexBetween";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
-import {
-  CardMembershipRounded,
-  Group,
-  LocalActivityRounded,
-  Payment,
-  TrendingUp,
-} from "@mui/icons-material";
+import Group from "@mui/icons-material/Group";
+import CardMembershipRounded from "@mui/icons-material/CardMembershipRounded";
+import LocalActivityRounded from "@mui/icons-material/LocalActivityRounded";
+import Payment from "@mui/icons-material/Payment";
+import TrendingUp from "@mui/icons-material/TrendingUp";
 import SummaryCard from "./SummaryCard";
 import ImageComponent from "../../Components/ImageComponent";
 import { convertUTCToLocal } from "../../utils/DateUtil";

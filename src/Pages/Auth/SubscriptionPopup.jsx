@@ -11,7 +11,7 @@ import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import FlexBetween from "../../Components/FlexBetween";
-import { Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import { convertUTCToLocal } from "../../utils/DateUtil";
 
 const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
@@ -64,7 +64,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
                 onClick={handleClose}
                 sx={{ fontWeight: "bold" }}
               >
-                <Close sx={{ color: "white" }} />
+                <CloseIcon sx={{ color: "white" }} />
               </IconButton>
             </FlexBetween>
           </DialogTitle>

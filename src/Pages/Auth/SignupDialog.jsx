@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import WidgetWrapper from "../../Components/WidgetWrapper";
 import FlexBetween from "../../Components/FlexBetween";
-import { Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
 
@@ -29,7 +29,7 @@ const SignupDialog = () => {
               dispatch(closeLastDialog());
             }}
           >
-            <Close />
+            <CloseIcon />
           </IconButton>
         </FlexBetween>
         <Form pageType="Register" />

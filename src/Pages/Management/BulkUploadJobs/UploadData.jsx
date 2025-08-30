@@ -16,7 +16,8 @@ import {
   MenuItem,
 } from '@mui/material';
 import { Link } from "react-router-dom";
-import { Close, UploadFile } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FileDropZone from '../../../Components/FileDropZone';
 import FlexBetween from '../../../Components/FlexBetween';
 import Papa from 'papaparse';
@@ -99,7 +100,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
   return (
     <>
       <Button variant="contained" onClick={() => setOpenDialog(true)}>
-        <UploadFile />
+        <UploadFileIcon />
       </Button>
       <Dialog open={openDialog} maxWidth="md" fullWidth>
         <DialogTitle>
@@ -108,7 +109,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
               Upload File
             </Typography>
             <IconButton onClick={() => setOpenDialog(false)} sx={{ p: 1 }}>
-              <Close />
+              <CloseIcon />
             </IconButton>
           </FlexBetween>
         </DialogTitle>

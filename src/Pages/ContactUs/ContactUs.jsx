@@ -1,4 +1,3 @@
-import WidgetsOnPage from "../../Components/WidgetsOnPage";
 import ContactForm from "./ContactForm";
 import {
   Box,
@@ -14,15 +13,13 @@ import {
   keyframes,
   useTheme,
 } from "@mui/material";
-import {
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  LocationOn as LocationOnIcon,
-  LinkedIn as LinkedInIcon,
-  Facebook as FacebookIcon,
-  WhatsApp as WhatsAppIcon,
-  ExpandMore as ExpandMoreIcon,
-} from "@mui/icons-material";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
 import Footer from "../../Components/Footer";
 

@@ -5,9 +5,7 @@ import {
   Button,
   Container,
 } from "@mui/material";
-import {
-  Add,
-} from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useAlert } from "../../../utils/Alert";
@@ -180,7 +178,7 @@ const Activities = () => {
           sx={{ fontWeight: "bold", padding: ".8rem" }}
           onClick={handleAddActivity}
         >
-          <Add />
+          <AddIcon />
         </Button>
       </FlexBetween>
       <Container maxWidth="xl" sx={{ py: 4 }}>

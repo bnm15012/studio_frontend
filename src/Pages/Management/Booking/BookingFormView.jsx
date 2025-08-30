@@ -8,12 +8,10 @@ import Loading from "../../../Components/Loading/Loading";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import EditableData from "../../../Components/EditableData";
-import {
-  ArrowBack,
-  Cancel,
-  Delete,
-  Edit,
-} from "@mui/icons-material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CancelIcon from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
 import { addBookingAPI, deleteBookingAPI, updateBookingAPI, getBookingByIdAPI } from "./bookings.api";
@@ -256,7 +254,7 @@ const BookingFormView = ({ page, ID }) => {
       <FlexBetween sx={{ width: '100%', p: 2, backgroundColor: theme.palette.background.paper, borderRadius: 2, boxShadow: theme.shadows[2] }}>
         <FlexBetween alignItems={"center"} gap={2}>
           <IconButton onClick={() => navigate(`/management/${page}`)}>
-            <ArrowBack sx={{ color: "black" }} />
+            <ArrowBackIcon sx={{ color: "black" }} />
           </IconButton>
           <Typography variant="h5" fontWeight={"bold"}>
             Booking Info
@@ -271,14 +269,14 @@ const BookingFormView = ({ page, ID }) => {
                 onClick={() => setDeleteDialogOpen(true)}
                 sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
               >
-                <Delete sx={{ color: "red" }} />
+                <DeleteIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}
                 onClick={() => setIsEdit(true)}
                 sx={{ '&:hover': { backgroundColor: 'rgba(0,0,255,0.1)' } }}
               >
-                <Edit sx={{ color: "blue" }} />
+                <EditIcon sx={{ color: "blue" }} />
               </IconButton>
               <IconButton>
                 <CloudDoneIcon sx={{ color: "green" }} />
@@ -291,7 +289,7 @@ const BookingFormView = ({ page, ID }) => {
                 onClick={() => { setIsEdit(false); if (ID == "NEW") navigate("/management/bookings/"); }}
                 sx={{ '&:hover': { backgroundColor: 'rgba(255,0,0,0.1)' } }}
               >
-                <Cancel sx={{ color: "red" }} />
+                <CancelIcon sx={{ color: "red" }} />
               </IconButton>
               <IconButton
                 disabled={loading}

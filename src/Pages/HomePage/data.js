@@ -1,18 +1,16 @@
-import {
-    CalendarToday as CalendarIcon,
-    CreditCard as CreditCardIcon,
-    People as PeopleIcon,
-    TrendingUp as TrendingUpIcon,
-    Message as MessageIcon,
-    Security as SecurityIcon,
-} from "@mui/icons-material";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import PeopleIcon from "@mui/icons-material/People";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import MessageIcon from "@mui/icons-material/Message";
+import SecurityIcon from "@mui/icons-material/Security";
 
 export const featurePageContent = {
     title: "Everything You Need to Manage Your Studio",
     description: "Our comprehensive studio management platform helps you streamline operations, enhance client experience, and focus on growing your business.",
     featuresGrids: [
         {
-            icon: CalendarIcon,
+            icon: CalendarTodayIcon,
             title: "Smart Scheduling",
             description: "Intuitive calendar system to manage classes, appointments, and events. Allow clients to book online 24/7 and reduce scheduling conflicts.",
             benefits: ["Real-time availability", "Conflict prevention", "Automated reminders", "Mobile booking"]

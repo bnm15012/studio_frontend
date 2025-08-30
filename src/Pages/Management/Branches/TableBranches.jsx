@@ -7,7 +7,9 @@ import {
   TextField,
   Switch,
 } from "@mui/material";
-import { Edit, Save, Cancel } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import GroupIcon from '@mui/icons-material/Group';
 import { useAlert } from "../../../utils/Alert";
 import {
@@ -242,10 +244,10 @@ const TableWithEditAddDelete = ({
                         sx={{ color: "blue" }}
                         onClick={() => handleSave(index)}
                       >
-                        <Save />
+                        <SaveIcon />
                       </IconButton>
                       <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                        <Cancel />
+                        <CancelIcon />
                       </IconButton>
                     </FlexBetween>
                   </StyledTableCell>
@@ -281,7 +283,7 @@ const TableWithEditAddDelete = ({
                       sx={{ color: "blue" }}
                       onClick={() => handleEdit(index)}
                     >
-                      <Edit />
+                      <EditIcon />
                     </IconButton>
                     <IconButton
                       disabled={editingRowIndex !== null || newRow !== null || !row.isActive}
@@ -342,10 +344,10 @@ const TableWithEditAddDelete = ({
                     sx={{ color: "blue" }}
                     onClick={() => handleSave(null)}
                   >
-                    <Save />
+                    <SaveIcon />
                   </IconButton>
                   <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                    <Cancel />
+                    <CancelIcon />
                   </IconButton>
                 </FlexBetween>
               </StyledTableCell>

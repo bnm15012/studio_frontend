@@ -8,7 +8,8 @@ import {
   Drawer,
   useTheme,
 } from "@mui/material";
-import { Menu, Close } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import MenuItems from "./MenuItems";
 import ImageComponent from "../../Components/ImageComponent";
 import FlexBetween from "../../Components/FlexBetween";
@@ -59,7 +60,7 @@ export const Navbar = ({ position = "fixed" }) => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               sx={{ color: 'white' }}
             >
-              <Menu />
+              <MenuIcon />
             </IconButton>
           )}
         </FlexBetween>
@@ -81,7 +82,7 @@ export const Navbar = ({ position = "fixed" }) => {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 sx={{ p: 3, color: 'white' }}
               >
-                <Close />
+                <CloseIcon />
               </IconButton>
             </FlexBetween>
             <MenuItems />
