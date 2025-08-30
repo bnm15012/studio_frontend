@@ -29,7 +29,7 @@ const ServerErrorDialog = () => {
     let isServerUp = true;
 
     while (attempts < 5) {
-      // isServerUp = await checkServerStatus();
+      isServerUp = await checkServerStatus();
       if (isServerUp) {
         break;
       }

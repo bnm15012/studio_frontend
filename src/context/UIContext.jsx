@@ -1,5 +1,5 @@
 import { useMediaQuery } from "@mui/material";
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -29,4 +29,3 @@ UIProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const useUI = () => useContext(UIContext);

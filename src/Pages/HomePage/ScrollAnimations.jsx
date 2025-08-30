@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 const ScrollAnimation = ({ children, className = '', delay = 0 }) =>{
   const ref = useRef();
@@ -37,5 +38,10 @@ const ScrollAnimation = ({ children, className = '', delay = 0 }) =>{
     </Box>
   );
 }
+ScrollAnimation.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  delay: PropTypes.number
+};
 
 export default ScrollAnimation;

@@ -22,7 +22,7 @@ const FormBuilder = ({ form, branchId }) => {
       }
     });
     setFormState(prev => ({ ...initialState, ...prev }));
-  }, [form]);
+  }, [FORM_SIG, form]);
 
 
   const validateField = (key, value, config) => {

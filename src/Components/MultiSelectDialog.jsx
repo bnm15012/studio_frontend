@@ -43,14 +43,14 @@ const MultiSelectDialog = ({
     pageFetched.current.push(page);
 
     setLoading(false);
-  }, [fetchOptions, options.length, valueKey]);
+  }, [fetchOptions, valueKey]);
 
   // Reset and fetch options when dialog opens
   useEffect(() => {
     if (open) {
       fetchMoreOptions(1); // Fetch options when the dialog opens
     }
-  }, [open]); // Trigger effect only when `open` or `data` changes
+  }, [fetchMoreOptions, open]); // Trigger effect only when `open` or `data` changes
 
   // IntersectionObserver to trigger pagination when user scrolls near the bottom
   const observerRef = useRef();
@@ -65,7 +65,7 @@ const MultiSelectDialog = ({
     );
     if (observerRef.current) observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [fetchMoreOptions, open]);
+  }, [fetchMoreOptions, open, options.length]);
 
   // Handle OK button click
   const handleOk = () => {

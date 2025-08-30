@@ -133,7 +133,7 @@ const DashBoard = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, currentBranch.branchId, allActivities?.length, showAlert]);
+  }, [token, currentBranch.branchId, allActivities?.length, isAdmin, showAlert]);
 
   useEffect(() => {
     if (user) loadDashboardData();

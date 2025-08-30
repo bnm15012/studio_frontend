@@ -1,5 +1,4 @@
 import { Typography, Paper, Box, Stack, useTheme, keyframes } from "@mui/material";
-import WidgetsOnPage from "../../Components/WidgetsOnPage";
 import FlexEvenlyColumn from "../../Components/FlexEvenlyColumn";
 import FlexBetween from "../../Components/FlexBetween";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
