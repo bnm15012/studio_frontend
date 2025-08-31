@@ -18,7 +18,6 @@ import { useSelector } from "react-redux";
 import FlexEvenly from "./FlexEvenly";
 import Loading from "./Loading/Loading";
 import { useAlert } from "../utils/Alert";
-import { generatePresignUrl } from "../api/s3.api";
 import { sendMessageApi } from "../Pages/Management/Communication/communication.api";
 
 const PdfContainer = styled(Card)(() => ({
@@ -194,33 +193,10 @@ const HtmlToPdfViewer = forwardRef(({
                 .from(element)
                 .outputPdf('blob');
 
-            const { data: s3Bucket, success } = await generatePresignUrl(
-                `${fileName}.pdf`,
-                token
-            );
-
-            if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-                showAlert('Failed to get upload URL', 'error');
-                return;
-            }
-            showAlert('Preparing to upload invoice...', 'info');
-
-            const uploadResponse = await fetch(s3Bucket.uploadUrl, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/pdf' },
-                body: pdfBlob,
-            });
-
-            if (!uploadResponse.ok) {
-                showAlert('Failed to upload invoice to S3', 'error');
-                throw new Error('Upload to S3 failed');
-            }
-            showAlert('Invoice uploaded successfully', 'success');
-
             const payload = {
                 branchId: currentBranch.branchId,
                 studioId: studio.studioId,
-                invoiceUrl: s3Bucket.fileUrl,
+                content: "Invoice",
                 notificationType: 'EMAIL',
                 ...remainingPayload
             };
@@ -229,7 +205,7 @@ const HtmlToPdfViewer = forwardRef(({
             const { success: emailSent, message } = await sendMessageApi({
                 token,
                 data: payload,
-                // file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
+                file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
             });
             if (emailSent) {
                 showAlert(message || 'Mail sent successfully', 'success');

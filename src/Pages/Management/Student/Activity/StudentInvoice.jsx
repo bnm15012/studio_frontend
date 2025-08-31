@@ -25,7 +25,6 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
           remainingPayload={
             {
               title: "Invoice",
-              templateName: "MEMBERSHIP_INVOICE",
               activityType: activityData?.activityName,
               memberIds: [studentData.studentId],
             }

@@ -1,6 +1,7 @@
 
 import api from '../utils/api';
 
+// not used
 export const sendInvoiceMail = async ({ studioId, invoiceUrl, activityType, memberIds, token }) => {
     const data = {
         studioId,

@@ -87,7 +87,6 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                     fileName="booking-invoice"
                     remainingPayload={{
                         title: 'Booking Invoice',
-                        templateName: 'BOOKING_INVOICE',
                         memberIds: [bookingData?.clientEntry?.clientId]
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
