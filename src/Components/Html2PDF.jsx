@@ -229,6 +229,7 @@ const HtmlToPdfViewer = forwardRef(({
             const { success: emailSent, message } = await sendMessageApi({
                 token,
                 data: payload,
+                // file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
             });
             if (emailSent) {
                 showAlert(message || 'Mail sent successfully', 'success');
@@ -348,6 +349,11 @@ const HtmlToPdfViewer = forwardRef(({
                     {dialogType === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
                 </DialogTitle>
                 <DialogContent>
+                    <Typography color="red">
+                        {dialogType === "email" ? !studio?.passcode && "Email passcode not configured !" :
+                            currentBranch?.whatsAppStatus !== "ACTIVE" && "Please configure WhatsApp Session First"
+                        }
+                    </Typography>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -360,6 +366,7 @@ const HtmlToPdfViewer = forwardRef(({
                             setInputValue(e.target.value);
                             setInputError(validateInput(dialogType, e.target.value));
                         }}
+                        disabled={true}
                         error={!!inputError}
                         helperText={inputError}
                         sx={inputError ? { '& .MuiInput-input': { color: 'red' } } : {}}
@@ -370,7 +377,7 @@ const HtmlToPdfViewer = forwardRef(({
                     <Button
                         onClick={handleDialogConfirm}
                         color="primary"
-                        disabled={!!inputError || !inputValue}
+                        disabled={!!inputError || !inputValue || (dialogType === "email" ? !studio?.passcode : currentBranch?.whatsAppStatus !== "ACTIVE")}
                     >
                         Confirm
                     </Button>

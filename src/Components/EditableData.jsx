@@ -34,7 +34,7 @@ const EditableData = ({
       return;
     }
 
-    if (validation?.required && validation?.pattern && !new RegExp(validation.pattern).test(newValue)) {
+    if (newValue && validation?.pattern && !new RegExp(validation.pattern).test(newValue)) {
       setError(validation.errorMessage || "Invalid value.");
       return;
     }
