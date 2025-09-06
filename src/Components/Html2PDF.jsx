@@ -205,7 +205,7 @@ const HtmlToPdfViewer = forwardRef(({
             const { success: emailSent, message } = await sendMessageApi({
                 token,
                 data: payload,
-                file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
+                file: new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }),
             });
             if (emailSent) {
                 showAlert(message || 'Mail sent successfully', 'success');
@@ -241,7 +241,7 @@ const HtmlToPdfViewer = forwardRef(({
             const { success: emailSent, message } = await sendMessageApi({
                 token,
                 data: payload,
-                file: new File([pdfBlob], "document.pdf", { type: "application/pdf" }),
+                file: new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }),
             });
             if (emailSent) {
                 showAlert(message || 'Message sent successfully', 'success');

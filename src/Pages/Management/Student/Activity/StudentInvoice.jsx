@@ -21,10 +21,11 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
       <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
         <HtmlToPdfViewer
           ref={pdfViewerRef}
-          fileName={"student-invoice"}
+          fileName={`student-invoice-${studentData?.studentId}`}                 
           remainingPayload={
             {
               title: "Invoice",
+              templateName: "MEMBERSHIP_INVOICE",
               activityType: activityData?.activityName,
               memberIds: [studentData.studentId],
             }
