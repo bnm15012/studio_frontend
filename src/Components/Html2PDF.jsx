@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import {
     Box,
@@ -11,7 +11,6 @@ import {
     DialogContent,
     DialogActions,
     Button,
-    TextField
 } from '@mui/material';
 import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
@@ -262,6 +261,10 @@ const HtmlToPdfViewer = forwardRef(({
         sendWhatsApp: handleSendWhatsApp
     }));
 
+    useEffect(() => {
+        setInputError(validateInput(dialogType, inputValue));
+    }, [inputValue, dialogType, dialogOpen]);
+
     return (
         <>
             {loading && <Loading />}
@@ -320,40 +323,42 @@ const HtmlToPdfViewer = forwardRef(({
                     </Box>
                 </FlexBetween>
             </PdfContainer>
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md">
                 <DialogTitle>
                     {dialogType === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
                 </DialogTitle>
                 <DialogContent>
                     <Typography color="red">
-                        {dialogType === "email" ? !studio?.passcode && "Email passcode not configured !" :
-                            currentBranch?.whatsAppStatus !== "ACTIVE" && "Please configure WhatsApp Session First"
-                        }
+                        {dialogType === "email"
+                            ? !studio?.passcode && "Email passcode not configured!"
+                            : currentBranch?.whatsAppStatus !== "ACTIVE" &&
+                            "Please configure WhatsApp Session First"}
                     </Typography>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label={dialogType === "email" ? "Email Address" : "10 Digit Mobile Number"}
-                        type={dialogType === "email" ? "email" : "tel"}
-                        fullWidth
-                        variant="standard"
-                        value={inputValue}
-                        onChange={e => {
-                            setInputValue(e.target.value);
-                            setInputError(validateInput(dialogType, e.target.value));
-                        }}
-                        disabled={true}
-                        error={!!inputError}
-                        helperText={inputError}
-                        sx={inputError ? { '& .MuiInput-input': { color: 'red' } } : {}}
-                    />
+
+                    {/* Display value */}
+                    <Typography sx={{ mt: 2 }}>
+                        {inputValue}
+                    </Typography>
+
+                    {/* Show validation error */}
+                    {inputError && (
+                        <Typography color="red" sx={{ mt: 1 }}>
+                            {inputError}
+                        </Typography>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
                     <Button
                         onClick={handleDialogConfirm}
                         color="primary"
-                        disabled={!!inputError || !inputValue || (dialogType === "email" ? !studio?.passcode : currentBranch?.whatsAppStatus !== "ACTIVE")}
+                        disabled={
+                            !!inputError ||
+                            !inputValue ||
+                            (dialogType === "email"
+                                ? !studio?.passcode
+                                : currentBranch?.whatsAppStatus !== "ACTIVE")
+                        }
                     >
                         Confirm
                     </Button>

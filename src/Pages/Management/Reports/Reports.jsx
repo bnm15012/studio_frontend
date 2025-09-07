@@ -96,9 +96,19 @@ const Reports = () => {
             `₹${entry.amount}`
           ]);
 
+          // const bookingFormatted = report.bookingEntries.map((entry, index) => [
+          //   index + 1,
+          //   entry.purpose,
+          //   entry.notes,
+          //   entry.paymentMode,
+          //   getLocalDateTime(entry.finalPaymentDate),
+          //   `₹${entry.totalAmount}`
+          // ]);
+
           setEiData({
             income: incomeFormatted,
             expenses: expenseFormatted,
+            // bookings: bookingFormatted,
             totalIncome,
             totalExpense
           });
@@ -106,6 +116,7 @@ const Reports = () => {
           setEiData({
             income: [],
             expenses: [],
+            // bookings: [],
             totalIncome: 0,
             totalExpense: 0
           });
@@ -335,6 +346,10 @@ const Reports = () => {
               {eiData?.expenses && renderTable("Expenses", eiData.expenses, [
                 "No.", "Description", "Category", "Date", "Amount"
               ])}
+
+              {/* {eiData?.bookings && renderTable("Expenses", eiData.bookings,
+                ["No.", "Purpose", "Note", "Payment Mode", "Final Payment Date", "Total Amount"]
+              )} */}
 
               {eiData?.pendingPaymentEntries && renderTable("Payment Report", eiData.pendingPaymentEntries, [
                 "No.", "PayeeType", "PayeeName", "Amount", "MODE", "Status", "Date"

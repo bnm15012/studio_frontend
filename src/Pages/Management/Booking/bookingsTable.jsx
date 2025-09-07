@@ -54,6 +54,7 @@ const BookingsTable = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteDialogIndex, setDeleteDialogIndex] = useState(null);
   const [showInvoice, setShowInvoice] = useState(false)
+  const [invoiceData, setInvoiceData] = useState()
 
   useEffect(() => {
     setData(initialData)
@@ -375,11 +376,10 @@ const BookingsTable = ({
                       </IconButton>
                       <IconButton
                         sx={{ color: "blue" }}
-                        onClick={() => setShowInvoice(true)}
+                        onClick={() =>{ setShowInvoice(true); setInvoiceData(row)}}
                       >
                         <ReceiptIcon />
                       </IconButton>
-                      {showInvoice && <BookingInvoice open={showInvoice} onClose={() => setShowInvoice(false)} bookingData={row} />}
                       <IconButton
                         sx={{ color: "red" }}
                         onClick={() => {
@@ -544,6 +544,8 @@ const BookingsTable = ({
           )}
         </TableBody>
       </StyledTable>
+
+      {showInvoice && <BookingInvoice open={showInvoice} onClose={() => setShowInvoice(false)} bookingData={invoiceData} />}
       {
         deleteDialogOpen && (
           <DeleteDialog
