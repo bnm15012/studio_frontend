@@ -334,7 +334,7 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
           )}
           {data.length === 0 && (
             <StyledTableRow>
-              <StyledTableCell colSpan={7}>
+              <StyledTableCell colSpan={12}>
                 <FlexEvenly>
                   No Payments data available. Add by clicking the &quot;+&quot; button!
                 </FlexEvenly>
@@ -343,17 +343,6 @@ const PaymentTable = ({ initialData, token, newRow, setNewRow, branchId, startIn
           )}
         </TableBody>
       </StyledTable>
-      {/* {
-        deleteDialogOpen && (
-          <DeleteDialog
-            open={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
-            onConfirm={handleDelete}
-            displayData={`payment with amount ${data[deleteDialogIndex].amount}`}
-            id={deleteDialogIndex}
-          />
-        )
-      }  */}
     </StyledTableContainer>
   );
 };

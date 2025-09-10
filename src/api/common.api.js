@@ -38,6 +38,7 @@ export const deleteDataAPI = ({ id, token, showAlert, route, setData, setLoading
         await api.delete(`/${route}/delete/${id}`, getHeader(token));
         dispatch(setData(id));
         setLoading(false);
+        showAlert("successfully deleted!")
     } catch (error) {
         console.error(`Error deleting data from ${route}:`, error);
         const message = error?.response?.data?.status?.statusMessage || `Error deleting ${route}`;
@@ -46,14 +47,12 @@ export const deleteDataAPI = ({ id, token, showAlert, route, setData, setLoading
     }
 };
 
-export const getAllDataAPI = ({ rootId, token, showAlert, route, setData, params, setTotalCount, setLoading }) => async (dispatch) => {
+export const getAllDataAPI = ({ rootId, token, showAlert, route, setData, params, setLoading }) => async (dispatch) => {
     try {
         setLoading(true);
         const response = await api.get(`/${route}/getAll/${rootId}`, { ...getHeader(token), params });
         const { data, status } = response.data;
-        dispatch(setData(data));
-        if (setTotalCount)
-            setTotalCount(status.totalCount)
+        dispatch(setData({ data, totalPages: Math.ceil(status.totalCount / (params?.size ?? 1)), page: params?.page }));
         setLoading(false);
     } catch (error) {
         console.error(`Error fetching data from ${route}:`, error);

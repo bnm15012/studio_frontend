@@ -23,7 +23,7 @@ const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const { isMobile, isMembershipTableEnabled, settings, isAdmin } = useUI();
+  const { isMobile, isEnabled, FEATURE_KEYS, settings, isAdmin } = useUI();
 
   const routes = [
     {
@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/type",
       label: "Packages",
-      show: isMembershipTableEnabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE) && isAdmin,
       icon: (
         <TypeSpecimen />
       ),

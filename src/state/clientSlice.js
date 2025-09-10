@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   pages: {}, // { 1: [...], 2: [...] }
-  totalCount: 0,
+  totalPages: 0,
   isLoading: false,
 };
 
@@ -11,9 +11,9 @@ const clientSlice = createSlice({
   initialState,
   reducers: {
     setClientPage: (state, action) => {
-      const { page, clients, totalCount } = action.payload;
-      state.pages[page] = clients;
-      state.totalCount = totalCount;
+      const { page, data, totalPages } = action.payload;
+      state.pages[page] = data;
+      state.totalPages = totalPages;
     },
     clearClientPages: (state) => {
       state.pages = {};

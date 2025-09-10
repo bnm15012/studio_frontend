@@ -8,38 +8,6 @@ const getHeaders = (token) => ({
 });
 
 /**
- * Fetch all expenses with pagination.
- * @param {Object} params - Parameters for API call.
- * @param {number} params.branchId - Studio ID.
- * @param {number} params.page - Page number.
- * @param {number} params.size - Number of items per page.
- * @param {string} params.token - Authorization token.
- */
-export const getAllExpensesAPI = async ({ branchId, page, size, token, searchTerm }) => {
-  try {
-    const response = await api.get(
-      `/expenses/getAll/${branchId}`,
-      {
-        headers: { Authorization: `${token}`, },
-        params: { page: page - 1, size, searchTerm }
-      }
-    );
-    const { data, status } = response.data;
-    return {
-      data,
-      success: true,
-      totalCount: status.totalCount,
-      message: status.statusMessage || "Expenses fetched successfully!",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: getErrorMessage(error, "Failed to fetch expenses!"),
-    };
-  }
-};
-
-/**
  * Add a new expense.
  * @param {Object} params - Parameters for API call.
  * @param {Object} params.expenseData - Expense data to be added.

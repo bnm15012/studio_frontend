@@ -9,7 +9,7 @@ const membershipTypesSlice = createSlice({
   initialState,
   reducers: {
     setMemberShipTypes: (state, action) => {
-      state.data = action.payload || [];
+      state.data = action.payload.data || [];
     },
     addMemberShipTypes: (state, action) => {
       state.data.push(action.payload);

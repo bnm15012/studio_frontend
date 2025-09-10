@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   pages: {}, // { 1: [...], 2: [...] }
-  totalCount: 0,
+  totalPages: 0,
   isLoading: false,
 };
 
@@ -11,9 +11,9 @@ const expenseSlice = createSlice({
   initialState,
   reducers: {
     setExpensePage: (state, action) => {
-      const { page, expenses, totalCount } = action.payload;
-      state.pages[page] = expenses;
-      state.totalCount = totalCount;
+      const { page, data, totalPages } = action.payload;
+      state.pages[page] = data;
+      state.totalPages = totalPages;
     },
     clearExpensePages: (state) => {
       state.pages = {};
@@ -24,13 +24,13 @@ const expenseSlice = createSlice({
         state.pages[page] = [];
       }
       state.pages[page].push(newExpense);
-      state.totalCount += 1;
+      state.totalPages += 1;
     },
     deleteExpense: (state, action) => {
       const { page, expenseId } = action.payload;
       if (state.pages[page]) {
         state.pages[page] = state.pages[page].filter(expense => expense.expenseId !== expenseId);
-        state.totalCount -= 1;
+        state.totalPages -= 1;
       }
     },
     updateExpense: (state, action) => {

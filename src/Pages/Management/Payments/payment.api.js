@@ -62,32 +62,3 @@ export const deletePaymentAPI = async ({ paymentId, token }) => {
     };
   }
 };
-
-export const getAllpaymentsAPI = async ({
-  branchId,
-  token,
-  size = 10,
-  page = 1,
-  searchTerm = "",
-}) => {
-  try {
-    const response = await api.get(`/payments/getAll/${branchId}`, {
-      headers: {
-        Authorization: token,
-      },
-      params: { size, page: page - 1, searchTerm },
-    });
-    const { data, status } = response.data;
-    return {
-      data,
-      success: true,
-      totalCount: status.totalCount,
-      message: status.statusMessage,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.response?.data?.message || "Failed to fetch payments",
-    };
-  }
-};

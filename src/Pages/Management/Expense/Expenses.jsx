@@ -29,7 +29,6 @@ const Expenses = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0)
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const cachedExpenses = useSelector((state) => state.expense);
@@ -37,7 +36,7 @@ const Expenses = () => {
   const [newRow, setNewRow] = useState(null);
 
   const fetchExpenses = useCallback(async (page = 1, searchTerm) => {
-    dispatch(getAllDataAPI({ rootId: currentBranch.branchId, token, showAlert, route: "expenses", setData: setExpensePage, setLoading, params: { page, searchTerm }, setTotalCount }));
+    dispatch(getAllDataAPI({ rootId: currentBranch.branchId, token, showAlert, route: "expenses", setData: setExpensePage, setLoading, params: { page, searchTerm, size } }));
   }, [dispatch, currentBranch.branchId, token, showAlert]);
 
 
@@ -92,7 +91,7 @@ const Expenses = () => {
       <FlexBetween>
         <Box></Box>
         <Pagination
-          count={Math.ceil(totalCount / size)}
+          count={cachedExpenses.totalPages}
           page={page}
           onChange={handlePageChange}
           color="primary"
