@@ -18,7 +18,7 @@ const getHeaders = (token) => ({
 export const getAllClientsAPI = async ({ branchId, page, size, token, searchTerm }) => {
   try {
     const response = await api.get(
-      `/clients/getAllClients/${branchId}/0/0/0/0`,
+      `/clients/getAll/${branchId}`,
       { headers: { Authorization: `${token}`, }, params: { page: page - 1, size, searchTerm } }
     );
     const { data, status } = response.data;

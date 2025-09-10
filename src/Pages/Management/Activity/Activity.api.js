@@ -65,7 +65,7 @@ export const deleteActivityAPI = async ({ activityId, token }) => {
 
 export const getAllActivitiesAPI = async ({ branchId, token, search, page, limit }) => {
   try {
-    const response = await api.get(`/activities/getAllActivities/${branchId}`, {
+    const response = await api.get(`/activities/getAll/${branchId}`, {
       headers: {
         Authorization: `${token}`,
       }, params: { search, page, limit },

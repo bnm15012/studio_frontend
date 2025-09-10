@@ -81,7 +81,7 @@ export const getAllInstructorsAPI = async ({
 }) => {
   try {
     const response = await api.get(
-      `/instructors/getAllInstructors/${branchId}`,
+      `/instructors/getAll/${branchId}`,
       {
         headers: { Authorization: `${token}` },
         params: {

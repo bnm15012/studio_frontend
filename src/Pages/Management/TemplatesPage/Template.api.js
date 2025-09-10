@@ -80,7 +80,7 @@ export const getAllTemplatesAPI = async ({
 }) => {
   try {
     const response = await api.get(
-      `/genericTemplate/getAllTemplates/${studioId}`,
+      `/genericTemplate/getAll/${studioId}`,
       {
         headers: { Authorization: `${token}` },
         params: {

@@ -11,7 +11,7 @@ const getHeaders = (token) => ({
 export const getAllBranchAPI = async ({ studioId, token }) => {
   try {
     const response = await api.get(
-      `/branch/getAllBranchesOfStudio/${studioId}`,
+      `/branch/getAll/${studioId}`,
       getHeaders(token)
     );
     const { data, status } = response.data;

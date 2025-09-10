@@ -18,7 +18,7 @@ const getHeaders = (token) => ({
 export const getAllBookingsAPI = async ({ branchId, page, size, token, searchTerm }) => {
   try {
     const response = await api.get(
-      `/booking/getAllBookings/${branchId}/0/0/0/0`,
+      `/booking/getAll/${branchId}`,
       {
         headers: { Authorization: `${token}`, },
         params: { page: page - 1, size, searchTerm }

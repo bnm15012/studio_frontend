@@ -2,7 +2,7 @@ import api from "../../utils/api";
 
 export const getAllPlans = async () => {
     try {
-        const response = await api.get("/plans/getAllPlans", {
+        const response = await api.get("/plans/getAll", {
             headers: {
                 "Content-Type": "application/json",
             }

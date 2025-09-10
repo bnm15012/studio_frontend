@@ -55,7 +55,7 @@ export const getAllStudentsAPI = async ({
   membershipStatus,
 }) => {
   try {
-    const response = await api.get(`/students/getAllStudents/${branchId}`, {
+    const response = await api.get(`/students/getAll/${branchId}`, {
       headers: {
         Authorization: `${token}`,
       },
