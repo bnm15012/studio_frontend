@@ -33,7 +33,9 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const { isBatchEnabled, isMembershipTableEnabled } = useUI();
+    const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
+    const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE)
+
     const [formData, setFormData] = useState({
         activityId: 0,
         activityType: "ZUMBA",

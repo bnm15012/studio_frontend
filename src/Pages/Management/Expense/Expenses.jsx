@@ -6,11 +6,12 @@ import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
-import { getAllExpensesAPI } from "./expenses.api";
 import { useDispatch, useSelector } from "react-redux";
 import TableWithEditAddDelete from "./TableExpense";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import { setExpensePage } from "../../../state/expenseSlice";
+import { useUI } from "../../../context/UIContext";
+import { getAllDataAPI } from "../../../api/common.api";
 
 const categories = [
   "ELECTRICITY",
@@ -24,51 +25,25 @@ const categories = [
 const size = 7;
 const Expenses = () => {
   const showAlert = useAlert();
+  const { isEnabled, FEATURE_KEYS } = useUI();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [expenses, setExpenses] = useState();
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const cachedExpenses = useSelector((state) => state.expense);
 
-  const fetchExpenses = useCallback(async (page = 1, searchTerm) => {
-    try {
-      if (!searchTerm && cachedExpenses && page in cachedExpenses.pages) {
-        setExpenses(cachedExpenses.pages[page])
-        setTotalPage(cachedExpenses.totalCount)
-        return;
-      }
-      setLoading(true);
-      const { data, success, message, totalCount } = await getAllExpensesAPI({
-        branchId: currentBranch.branchId,
-        page,
-        size,
-        token,
-        searchTerm,
-      });
-
-      if (success) {
-        setExpenses(data);
-        if (!searchTerm)
-          dispatch(setExpensePage({ page, expenses: data, totalCount: Math.ceil(totalCount / size) }))
-        setTotalPage(Math.ceil(totalCount / size));
-      } else {
-        showAlert(message, "error");
-      }
-    } catch (error) {
-      console.error(error);
-      showAlert("Failed to fetch expenses!", "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [currentBranch.branchId, token, dispatch, showAlert]);
   const [newRow, setNewRow] = useState(null);
 
+  const fetchExpenses = useCallback(async (page = 1, searchTerm) => {
+    dispatch(getAllDataAPI({ rootId: currentBranch.branchId, token, showAlert, route: "expenses", setData: setExpensePage, setLoading, params: { page, searchTerm }, setTotalCount }));
+  }, [dispatch, currentBranch.branchId, token, showAlert]);
+
+
   useEffect(() => {
-    !expenses && fetchExpenses(page);
-  }, [page, expenses, loading, fetchExpenses]);
+    isEnabled(FEATURE_KEYS.EXPENSE) && !cachedExpenses.length && fetchExpenses();
+  }, [fetchExpenses, cachedExpenses.length, isEnabled, FEATURE_KEYS.EXPENSE]);
 
   const handlePageChange = async (e, p) => {
     setLoading(true);
@@ -103,23 +78,21 @@ const Expenses = () => {
         </Button>
       </FlexBetween>
       <Box>
-        {expenses && (
-          <TableWithEditAddDelete
-            initialData={(expenses)}
-            categories={categories}
-            branchId={currentBranch.branchId}
-            token={token}
-            startIndex={(parseInt(page) - 1) * size}
-            newRow={newRow}
-            setNewRow={setNewRow}
-            page={page}
-          />
-        )}
+        <TableWithEditAddDelete
+          initialData={(cachedExpenses.pages[page] ?? [])}
+          categories={categories}
+          branchId={currentBranch.branchId}
+          token={token}
+          startIndex={(parseInt(page) - 1) * size}
+          newRow={newRow}
+          setNewRow={setNewRow}
+          page={page}
+        />
       </Box>
       <FlexBetween>
         <Box></Box>
         <Pagination
-          count={totalPage}
+          count={Math.ceil(totalCount / size)}
           page={page}
           onChange={handlePageChange}
           color="primary"

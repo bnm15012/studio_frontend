@@ -2,24 +2,31 @@ import { useMediaQuery } from "@mui/material";
 import { createContext, useContext } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import { useFeatureFlags } from "../hooks/useFeatureFlags";
+import { FEATURE_KEYS } from "./feature_keys";
 
 const UIContext = createContext({
   isMobile: false,
   isBatchEnabled: false,
-  isMembershipTableEnabled: false,
+  isEnabled: () => false,
+  settings: [],
+  isAdmin: false,
+  FEATURE_KEYS: FEATURE_KEYS
 });
+
 export const UIProvider = ({ children }) => {
   const settings = useSelector((state) => state.auth.settings);
+  const user = useSelector((state) => state.auth.user);
   const isMobile = useMediaQuery("(max-width: 700px)");
-  const user = useSelector((state) => state.auth.user)
   const isAdmin = user?.role === "ADMIN";
-  const isBatchEnabled =
-    settings?.find((setting) => setting.navBarName === "BATCH")?.enabled ?? false;
-  const isMembershipTableEnabled =
-    (settings?.find((setting) => setting.navBarName === "MEMBERSHIP_PLAN_TABLE")?.enabled && isAdmin) ?? false;
+
+  const { isEnabled } = useFeatureFlags(settings);
+  const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
   return (
-    <UIContext.Provider value={{ isMobile, isBatchEnabled, isMembershipTableEnabled, settings, isAdmin }}>
+    <UIContext.Provider
+      value={{ isMobile, isBatchEnabled, isEnabled, settings, isAdmin, FEATURE_KEYS }}
+    >
       {children}
     </UIContext.Provider>
   );
