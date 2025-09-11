@@ -14,7 +14,6 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useAlert } from "../../../utils/Alert";
 import {
-  addClientAPI,
   // deleteClientAPI,
   updateClientAPI,
 } from "./client.api";
@@ -28,6 +27,9 @@ import {
 } from "../../../Components/StyledTableComponents";
 import PropTypes from "prop-types";
 import FlexBetween from "../../../Components/FlexBetween";
+import { useDispatch } from "react-redux";
+import { addDataAPI } from "../../../api/common.api";
+import { addClient } from "../../../state/clientSlice";
 
 const TableWithEditAddDelete = ({
   initialData,
@@ -39,6 +41,7 @@ const TableWithEditAddDelete = ({
   startIndex
 }) => {
   const showAlert = useAlert();
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [editingRowIndex, setEditingRowIndex] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -70,21 +73,7 @@ const TableWithEditAddDelete = ({
     try {
       if (newRow !== null) {
         if (!validateRow(newRow)) return;
-        const newClient = { ...newRow, branchId };
-        const {
-          data: addedClient,
-          success,
-          message,
-        } = await addClientAPI({
-          clientData: newClient,
-          token,
-        });
-        if (success) {
-          setData((prev) => [...prev, addedClient]);
-          showAlert(message, "success");
-        } else {
-          showAlert(message, "error");
-        }
+        dispatch(addDataAPI({ newData: { ...newRow, branchId }, showAlert, route: "clients", setData: addClient, setLoading, token }))
         setNewRow(null);
       } else {
         const updatedClient = data[index];
@@ -108,6 +97,7 @@ const TableWithEditAddDelete = ({
         } else {
           showAlert(message, "error");
         }
+        // dispatch(updateDataAPI({ updatedData: updatedClient, token,showAlert, id: updatedClient.clientId, route:"clients", setData:, setLoading}))
         setEditingRowIndex(null);
       }
     } catch (error) {

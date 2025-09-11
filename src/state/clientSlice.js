@@ -15,12 +15,15 @@ const clientSlice = createSlice({
       state.pages[page] = data;
       state.totalPages = totalPages;
     },
+    addClient: (state, action) => {
+      state.pages[1].push(action.payload);
+    },
     clearClientPages: (state) => {
       state.pages = {};
     },
   },
 });
 
-export const { setClientPage, setTotalCount, setClientLoading, clearClientPages } = clientSlice.actions;
+export const { setClientPage, setTotalCount, setClientLoading, addClient, clearClientPages } = clientSlice.actions;
 
 export default clientSlice.reducer;
