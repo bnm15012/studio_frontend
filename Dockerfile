@@ -1,15 +1,16 @@
 # Step 1: Set up the build environment using Node.js
-FROM node:18 AS build
+FROM node:20-alpine AS build
 
 # Set working directory inside the container
 WORKDIR /app
 
 # Step 2: Install dependencies
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 # Step 3: Copy the rest of the application files, including the public folder
 COPY . .
+COPY .env.docker .env
 
 # Step 4: Build the Vite app
 RUN npm run build

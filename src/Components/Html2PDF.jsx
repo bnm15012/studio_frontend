@@ -203,7 +203,7 @@ const HtmlToPdfViewer = forwardRef(({
             showAlert('Sending email...', 'info');
             const { success: emailSent, message } = await sendMessageApi({
                 token,
-                data: payload,
+                payload,
                 file: new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }),
             });
             if (emailSent) {
@@ -231,7 +231,6 @@ const HtmlToPdfViewer = forwardRef(({
             const payload = {
                 branchId: currentBranch.branchId,
                 content: "Your invoice",
-                sentToAll: false,
                 notificationType: 'WHATSAPP',
                 ...remainingPayload
             };
@@ -239,7 +238,7 @@ const HtmlToPdfViewer = forwardRef(({
             showAlert('Sending message...', 'info');
             const { success: emailSent, message } = await sendMessageApi({
                 token,
-                data: payload,
+                payload,
                 file: new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }),
             });
             if (emailSent) {

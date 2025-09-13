@@ -15,18 +15,25 @@ import Loading from "../../../Components/Loading/Loading";
 import { getLocalDateTime } from "../../../utils/DateUtil";
 import ReceipentsListDialog from "./ReceipentsListDialog";
 import FlexBetween from "../../../Components/FlexBetween";
+import PropTypes from "prop-types";
 
 const size = 3;
-const SentSMSHistory = () => {
+const SentSMSHistory = ({ newHistory }) => {
   const showAlert = useAlert()
   const [page, setPage] = useState(1);
   const token = useSelector(state => state.auth.token)
-  const [history, setHistory] = useState()
+  const [history, setHistory] = useState(newHistory)
   const currentBranch = useSelector((state) => state.branch.currentBranch);
   const [loading, setLoading] = useState(false)
   const [totalPage, setTotalPage] = useState(0)
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedMessageId, setSelectedMessageId] = useState(null)
+
+  useEffect(() => {
+    if (newHistory) {
+      setHistory(newHistory);
+    }
+  }, [newHistory]);
 
   const getMessageHistory = useCallback(async (page = 1) => {
     try {
@@ -76,10 +83,10 @@ const SentSMSHistory = () => {
               <StyledTableRow key={index}>
                 <StyledTableCell sx={{ py: 1 }}>{row?.title}</StyledTableCell>
                 <StyledTableCell sx={{ py: 1 }}>{getLocalDateTime(row?.sentDate, "DATETIME")}</StyledTableCell>
-                <StyledTableCell sx={{ py: 1 }}>{row?.sentToAll ? "All" : "Few"}</StyledTableCell>
+                <StyledTableCell sx={{ py: 1 }}>{row?.memberType ? "All" : "Few"}</StyledTableCell>
                 <StyledTableCell sx={{ py: 1 }}>{row?.notificationType}</StyledTableCell>
                 <StyledTableCell sx={{ py: 1 }}>
-                  <IconButton disabled={row?.sentToAll} onClick={() => { setSelectedMessageId(row.id); setOpenDialog(true) }}>
+                  <IconButton disabled={row?.memberType} onClick={() => { setSelectedMessageId(row.id); setOpenDialog(true) }}>
                     <GroupsIcon color="primary" />
                   </IconButton>
                 </StyledTableCell>
@@ -113,6 +120,9 @@ const SentSMSHistory = () => {
 
     </>
   );
+};
+SentSMSHistory.propTypes = {
+  newHistory: PropTypes.array,
 };
 
 export default SentSMSHistory;

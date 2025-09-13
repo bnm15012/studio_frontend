@@ -84,8 +84,7 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
               <TableRow>
                 <TableCell>#</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Phone Number</TableCell>
-                <TableCell>Email</TableCell>
+                <TableCell>Contact</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Reason</TableCell>
               </TableRow>
@@ -95,8 +94,7 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
                 <TableRow key={recipient.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{recipient.name}</TableCell>
-                  <TableCell>{recipient.phoneNumber}</TableCell>
-                  <TableCell>{recipient?.email || "-"}</TableCell>
+                  <TableCell>{recipient?.contact || "-"}</TableCell>
                   <TableCell>{recipient.status}</TableCell>
                   <TableCell>{recipient.reason || "-"}</TableCell>
                 </TableRow>

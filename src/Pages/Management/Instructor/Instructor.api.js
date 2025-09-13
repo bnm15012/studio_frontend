@@ -133,7 +133,7 @@ export const getInstructorByIdAPI = async ({ id, token }) => {
 
 export const getInstructorNamesAPI = async ({ branchId, token, page, size }) => {
   try {
-    const response = await api.get(`/instructors/getAllInstructorsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page - 1}&size=${size}`, {
+    const response = await api.get(`/instructors/getAllInstructorsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page}&size=${size}`, {
       headers: {
         Authorization: `${token}`,
       },

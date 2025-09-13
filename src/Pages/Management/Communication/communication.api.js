@@ -4,8 +4,9 @@ import api from "../../../utils/api";
 const getErrorMessage = (error, defaultMessage) =>
     error.response?.data?.status?.statusMessage || defaultMessage;
 
-const getHeaders = (token, otherHeader = {}) => ({
+const getHeaders = (token, otherHeader = {}, params = {}) => ({
     headers: { Authorization: `${token}`, ...otherHeader },
+    params: params,
 });
 
 // TODO: remove this function, not required anymore
@@ -30,10 +31,10 @@ const getHeaders = (token, otherHeader = {}) => ({
 //     }
 // };
 
-export const sendMessageApi = async ({ token, data, file = null }) => {
+export const sendMessageApi = async ({ token, payload, file = null, page = 1, size = 1 }) => {
     const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(payload).forEach(([key, value]) => {
         if (Array.isArray(value)) {
             value.forEach((item) => formData.append(`${key}[]`, item));
         } else if (value !== undefined && value !== null) {
@@ -48,12 +49,13 @@ export const sendMessageApi = async ({ token, data, file = null }) => {
 
     try {
         const response = await api.post(
-            `/sendMessage/${data["branchId"]}`,
+            `/sendMessage/${payload["branchId"]}`,
             formData,
-            getHeaders(token, { "Content-Type": "multipart/form-data" })
+            getHeaders(token, { "Content-Type": "multipart/form-data" }, { page, size })
         );
-        const { status } = response.data;
+        const { status, data } = response.data;
         return {
+            data, 
             success: true,
             message: status.statusMessage || "Message sent successfully!",
         };
@@ -71,7 +73,7 @@ export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
             `/getMessageHistory/${branchId}`,
             {
                 headers: { Authorization: `${token}`, },
-                params: { page: page - 1, size },
+                params: { page, size },
             }
         );
         const { data, status } = response.data;

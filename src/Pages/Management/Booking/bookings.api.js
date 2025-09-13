@@ -21,7 +21,7 @@ export const getAllBookingsAPI = async ({ branchId, page, size, token, searchTer
       `/booking/getAll/${branchId}`,
       {
         headers: { Authorization: `${token}`, },
-        params: { page: page - 1, size, searchTerm }
+        params: { page, size, searchTerm }
       }
     );
     const { data, status } = response.data;

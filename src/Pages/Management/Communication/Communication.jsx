@@ -60,6 +60,7 @@ const Communication = () => {
   const [templates, setTemplates] = useState([]);
   const [audienceType, setAudienceType] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
+  const [newHistory, setNewHistory] = useState()
 
   const fetchTemplates = useCallback(async () => {
     try {
@@ -156,15 +157,17 @@ const Communication = () => {
         notificationType: selectedTemplate.notificationType,
         title: selectedTemplate.title,
         content: selectedTemplate.content,
-        sentToAll: audienceType === "all",
+        memberType: audienceType === "all" ? "ALL"
+          : audienceType === "allStudents" ? "STUDENT"
+            : audienceType === "allInstructors" ? "INSTRUCTOR" : null,
         memberIds: audienceType === "selectedStudents"
           ? selectedStudents.map((s) => s.studentId)
           : audienceType === "selectedInstructors"
             ? selectedInstructors.map((i) => i.studentId)
-            : null,
+            : [],
       };
 
-      const response = await sendMessageApi({ token, data: payload });
+      const response = await sendMessageApi({ token, payload, page: 1, size: 3 });
 
       if (response.success) {
         showAlert(response.message, "success");
@@ -173,6 +176,7 @@ const Communication = () => {
         setSelectedStudents([]);
         setSelectedInstructors([]);
         setAudienceType("all");
+        setNewHistory(response.data)
       } else {
         showAlert(response.message, "error");
       }
@@ -419,7 +423,7 @@ const Communication = () => {
       <Box sx={{
         mt: 1,
       }}>
-        <SentSMSHistory />
+        <SentSMSHistory newHistory={newHistory} />
       </Box>
 
       {open && (

@@ -2,7 +2,7 @@ import api from "../../../utils/api";
 
 export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday = false }) => {
   try {
-    const response = await api.get(`/students/getAllStudentsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page - 1}&size=${size}&birthday=${birthday ? 1 : 0}`, {
+    const response = await api.get(`/students/getAllStudentsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page}&size=${size}&birthday=${birthday ? 1 : 0}`, {
       headers: {
         Authorization: `${token}`,
       },
