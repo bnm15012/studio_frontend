@@ -50,7 +50,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
 
   return (
     <>
-      <Dialog fullWidth maxWidth="lg" open={open} onClose={handleClose}>
+      <Dialog fullWidth open={open} onClose={handleClose} maxWidth={studio?.amcEnabled ? "sm" : "lg"}>
         <Box sx={{ borderRadius: "5px" }}>
           <DialogTitle
             sx={{
@@ -65,11 +65,9 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
             <FlexBetween>
               {isExpired && (
                 <Box>
-                  {studio?.amcEnabled
-                    ? "Your Annual Maintenance Charge"
-                    : "Subscription"}{" "}
-                  has expired. Please renew to continue enjoying all the great
-                  features and benefits. Don’t miss out!
+                  Your {studio?.amcEnabled
+                    ? "AMC Service has expired. Please renew it !"
+                    : "Subscription has expired. Please renew to continue enjoying all the great features and benefits. Don’t miss out!"}
                 </Box>
               )}
               <IconButton onClick={handleClose} sx={{ fontWeight: "bold" }}>
@@ -78,14 +76,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
             </FlexBetween>
           </DialogTitle>
           <DialogContent>
-            <Box
-              mt={5}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
+            <Box mt={5}>
               <PricingPlanCards buttonText="Subscribe" AMC={studio?.amcEnabled} />
             </Box>
           </DialogContent>

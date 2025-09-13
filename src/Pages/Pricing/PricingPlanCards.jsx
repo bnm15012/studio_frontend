@@ -76,7 +76,12 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
 
 
     return (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr 1fr' }, gap: 4, mb: 8 }}>
+        <Box sx={{
+            display: 'grid', gridTemplateColumns: {
+                xs: 'repeat(auto-fit, minmax(15rem, 1fr))',
+                lg: 'repeat(auto-fit, minmax(15rem, 1fr))',
+            }, gap: 4, mb: 8,
+        }}>
             {isLoading && <Loading />}
             {allPlans && allPlans.map((plan, index) => (
                 <Box key={index}>

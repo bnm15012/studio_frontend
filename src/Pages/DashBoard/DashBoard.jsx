@@ -241,7 +241,9 @@ const DashBoard = () => {
                     }
                   }}
                 >
-                  Note: Your subscription is {daysRemaining === 0 ? "ended" : `about to expire within ${daysRemaining} days`}. Please renew to continue enjoying our services!
+                  Note: Your   {studio?.amcEnabled
+                    ? "AMC Service"
+                    : "Subscription"}{" "} is {daysRemaining === 0 ? "ended" : `about to expire within ${daysRemaining} days`}. Please renew to continue enjoying our services!
                 </Typography>
               </Box>
             }
