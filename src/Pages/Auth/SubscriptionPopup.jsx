@@ -17,22 +17,29 @@ import { convertUTCToLocal } from "../../utils/DateUtil";
 const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(popupOn);
-  const [isExpired, setIsExpired] = useState(false)
+  const [isExpired, setIsExpired] = useState(false);
+
+  const studio = useSelector((state) => state.auth.studio);
   const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
-  const [isSubscriptionPlanEnded, setIsSubscriptionPlanEnded] = useState(false);
+
+  useEffect(() => {
+    setOpen(popupOn);
+  }, [popupOn]);
+
   useEffect(() => {
     const checkSubscription = () => {
       const currentDate = new Date();
-      const endDate = subscriptionPlan ? new Date(convertUTCToLocal(subscriptionPlan.endDate)) : null;
+      const endDate = subscriptionPlan
+        ? new Date(convertUTCToLocal(subscriptionPlan.endDate))
+        : null;
       if (currentDate > endDate) {
-        setOpen(true)
+        setOpen(true);
         setIsExpired(true);
-        setIsSubscriptionPlanEnded(true);
       }
     };
 
     checkSubscription();
-    const timer = setInterval(checkSubscription, 60 * 5000);
+    const timer = setInterval(checkSubscription, 5 * 60 * 1000); // 5 minutes
     return () => clearInterval(timer);
   }, [subscriptionPlan]);
 
@@ -40,30 +47,32 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
     setOpen(false);
     setPopup && setPopup(false);
   };
+
   return (
     <>
       <Dialog fullWidth maxWidth="lg" open={open} onClose={handleClose}>
         <Box sx={{ borderRadius: "5px" }}>
           <DialogTitle
             sx={{
-              background: isExpired ? `linear-gradient(to bottom, #FF0000, #B02600)` : `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+              background: isExpired
+                ? "linear-gradient(to bottom, #FF0000, #B02600)"
+                : `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
               color: "white",
               fontWeight: "bold",
               fontSize: "1.2rem",
             }}
           >
             <FlexBetween>
-              {
-                isExpired &&
+              {isExpired && (
                 <Box>
-                  Your subscription has expired. Please renew to continue enjoying all the great features and benefits. Don&rsquo;t miss out !!
+                  {studio?.amcEnabled
+                    ? "Your Annual Maintenance Charge"
+                    : "Subscription"}{" "}
+                  has expired. Please renew to continue enjoying all the great
+                  features and benefits. Don’t miss out!
                 </Box>
-              }
-              <Box flexGrow={1}></Box>
-              <IconButton
-                onClick={handleClose}
-                sx={{ fontWeight: "bold" }}
-              >
+              )}
+              <IconButton onClick={handleClose} sx={{ fontWeight: "bold" }}>
                 <CloseIcon sx={{ color: "white" }} />
               </IconButton>
             </FlexBetween>
@@ -77,19 +86,27 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
                 alignItems: "center",
               }}
             >
-              <PricingPlanCards buttonText={"Subscribe"} />
+              <PricingPlanCards buttonText="Subscribe" AMC={studio?.amcEnabled} />
             </Box>
           </DialogContent>
         </Box>
       </Dialog>
-      {
-        isSubscriptionPlanEnded &&
-        <Box position={"absolute"} top={0} left={0} zIndex={100} backgroundColor="rgba(255,255,255,0.5)" width="100%" height="100%">
-        </Box>
-      }
+
+      {isExpired && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          zIndex={100}
+          backgroundColor="rgba(255,255,255,0.5)"
+          width="100%"
+          height="100%"
+        />
+      )}
     </>
   );
 };
+
 SubscriptionPopup.propTypes = {
   popupOn: PropTypes.bool,
   setPopup: PropTypes.func,

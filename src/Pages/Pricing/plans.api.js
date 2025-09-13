@@ -1,11 +1,10 @@
 import api from "../../utils/api";
 
-export const getAllPlans = async () => {
+export const getAllPlans = async ({ AMC }) => {
     try {
         const response = await api.get("/plans/getAll", {
-            headers: {
-                "Content-Type": "application/json",
-            }
+            headers: { "Content-Type": "application/json", },
+            params: { AMC },
         });
         return { data: response.data.data, success: true, message: "Plans fetched successfully" };
     } catch (error) {

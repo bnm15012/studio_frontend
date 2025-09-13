@@ -27,7 +27,7 @@ import { openDialog } from '../../state/dialogSlice';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 
-const PricingPlanCards = ({ buttonText = "Get Started" }) => {
+const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
     const dispatch = useDispatch();
     const theme = useTheme()
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -63,13 +63,13 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
 
     const fetchPlans = useCallback(async () => {
         setIsLoading(true);
-        const { data, success } = await getAllPlans();
+        const { data, success } = await getAllPlans({ AMC });
         if (success) {
             setAllPlans(data);
             // dispatch(setPricingPlans({ pricingPlans: data }));
         }
         setIsLoading(false);
-    }, []);
+    }, [AMC]);
     useEffect(() => {
         !allPlans && fetchPlans();
     }, [allPlans, fetchPlans]);
@@ -250,5 +250,6 @@ const PricingPlanCards = ({ buttonText = "Get Started" }) => {
 
 PricingPlanCards.propTypes = {
     buttonText: PropTypes.string,
+    AMC: PropTypes.bool
 };
 export default PricingPlanCards

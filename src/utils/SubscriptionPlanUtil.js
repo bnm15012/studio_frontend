@@ -7,6 +7,7 @@ const subscriptionPlans = {
     QUARTERLY: 90,
     HALF_YEARLY: 180,
     YEARLY: 365,
+    AMC: 365,
 };
 
 const parsePlanDays = (planName) => {

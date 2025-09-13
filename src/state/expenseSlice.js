@@ -19,12 +19,7 @@ const expenseSlice = createSlice({
       state.pages = {};
     },
     addExpense: (state, action) => {
-      const { page, newExpense } = action.payload;
-      if (!state.pages[page]) {
-        state.pages[page] = [];
-      }
-      state.pages[page].push(newExpense);
-      state.totalPages += 1;
+      state.pages[1].push(action.payload);
     },
     deleteExpense: (state, action) => {
       const { page, expenseId } = action.payload;

@@ -166,7 +166,7 @@ const Sidebar = ({ sidebarOn }) => {
         bgcolor={"#283650ff"}
         boxShadow={theme.shadows[10]}
         sx={{
-          zIndex: 999,
+          zIndex: 99,
           overflowY: "auto",
           padding: !isMobile ? "1rem 0.5rem" : "0.5rem",
           transition: "all 0.3s ease-in-out",

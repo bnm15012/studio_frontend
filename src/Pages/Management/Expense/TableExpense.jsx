@@ -91,7 +91,7 @@ const TableWithEditAddDelete = ({
         });
         if (success) {
           setData((prev) => [...prev, addedExpense]);
-          dispatch(addExpense({ page: 1, addedExpense }))
+          dispatch(addExpense(addedExpense))
           showAlert(message, "success");
         } else {
           showAlert(message, "error");

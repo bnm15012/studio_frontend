@@ -52,6 +52,7 @@ const Expenses = () => {
   };
 
   const handleAddNew = () => {
+    setPage(1);
     setNewRow({
       expenseId: null,
       description: "",
