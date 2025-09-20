@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({ 
   plugins: [
     react(),
+    
     // checker({
     //   typescript: true,
     //   eslint: false, // { lintCommand: 'eslint "./src/**/*.{ts,tsx,js,jsx}"' },
