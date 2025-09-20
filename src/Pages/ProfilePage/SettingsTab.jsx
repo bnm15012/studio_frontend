@@ -18,11 +18,11 @@ const SettingsTab = () => {
   const [isChanged, setIsChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleToggle = (index) => {
-    const updatedConfigurations = configurations.map((config, idx) =>
-      idx === index ? { ...config, enabled: !config.enabled } : config
-    );
-    setConfigurations(updatedConfigurations);
+  const handleToggle = (key) => {
+    setConfigurations((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   useEffect(() => {
@@ -36,9 +36,7 @@ const SettingsTab = () => {
       const { success, data, message } = await updateStudio({
         values: {
           studioId: studio.studioId,
-          configuration: {
-            configrationEntryList: configurations
-          }
+          configuration: { configrationEntryList: configurations }, // now send map directly
         },
         dispatch,
         token,
@@ -46,7 +44,7 @@ const SettingsTab = () => {
 
       if (success) {
         dispatch(setSettings({ settings: data.configuration.configrationEntryList }));
-        showAlert("Setting updated !", "success");
+        showAlert("Setting updated!", "success");
       } else {
         showAlert(message, "error");
       }
@@ -60,15 +58,13 @@ const SettingsTab = () => {
   return (
     <Box p={3}>
       <FlexBetween gap={2} flexWrap={"wrap"}>
-        {configurations.map((config, index) => (
-          <FlexBetween width={"43%"} key={index}>
-            <Box my={"auto"}>
-              {config.navBarName}
-            </Box>
+        {Object.keys(configurations).map((key) => (
+          <FlexBetween width={"43%"} key={key}>
+            <Box my={"auto"}>{key}</Box>
             <Box my={"auto"}>
               <Switch
-                checked={config.enabled}
-                onChange={() => handleToggle(index)}
+                checked={configurations[key]}
+                onChange={() => handleToggle(key)}
                 color="primary"
               />
             </Box>

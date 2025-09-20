@@ -1,5 +1,5 @@
 
-import { Box, Typography, Divider, Chip, Button, Stack } from '@mui/material';
+import { Box, Typography, Divider, Chip, Button, Stack, CircularProgress } from '@mui/material';
 import { Error as ErrorIcon, QrCode, WhatsApp } from '@mui/icons-material';
 import { checkWhatsAppConnectionAPI, createWhatsAppCredentialsAPI, logoutWhatsAppConnectionAPI } from './whatsapp.api';
 import Loading from '../../Components/Loading/Loading';
@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAlert } from '../../utils/Alert';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentBranch, updateBranch } from '../../state/branchSlice';
+import FlexBetween from '../../Components/FlexBetween';
 
 const WhatsAppConfiguration = () => {
     const showAlert = useAlert()
@@ -64,21 +65,20 @@ const WhatsAppConfiguration = () => {
                     branchId: currentBranch.branchId,
                     token,
                 });
-
                 if (success) {
                     if (data.webWhatsAppStatus === "ACTIVE") {
                         updateWhatsAppStatus()
                         showAlert("WhatsApp connected!", "success");
                         setPolling(false);
                         clearInterval(interval);
-                    }
-                } else {
-                    attempts += 1;
-                    if (attempts >= 3) {
-                        setPolling(false);
-                        setWebWhastAppQrCode(false);
-                        showAlert("WhatsApp connection attempt timed out.", "warning");
-                        clearInterval(interval);
+                    } else {
+                        attempts += 1;
+                        if (attempts >= 5) {
+                            setPolling(false);
+                            setWebWhastAppQrCode(false);
+                            showAlert("WhatsApp connection attempt timed out.", "warning");
+                            clearInterval(interval);
+                        }
                     }
                 }
             } catch (error) {
@@ -118,21 +118,28 @@ const WhatsAppConfiguration = () => {
             setLoading(false);
         }
     }
-
+    console.log(loading, polling, whatsAppStatus === "ACTIVE", !webWhastAppQrCode)
 
     return (
         <Box>
             {loading && <Loading />}
-            <Typography
-                variant="h6"
-                sx={{
-                    fontWeight: 700,
-                    letterSpacing: '1.5px',
-                    mb: 2,
-                }}
-            >
-                WhatsApp Configuration (Different for Each Branch)
-            </Typography>
+            <FlexBetween>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        fontWeight: 700,
+                        letterSpacing: '1.5px',
+                        mb: 2,
+                    }}
+                >
+                    WhatsApp Configuration (Different for Each Branch)
+                </Typography>
+                {
+                    polling &&
+                    < CircularProgress sx={{ color: "blue" }} />
+                }
+
+            </FlexBetween>
             <Divider />
 
             <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" py={3}>

@@ -99,7 +99,7 @@ const DashBoard = () => {
             label: "Total Payment",
             navigateTo: "/management/payments",
             icon: <CurrencyRupeeIcon sx={{ fontSize: "40px" }} />,
-            blur: !isAdmin,
+            // blur: !isAdmin,
           },
           {
             color: "#795548",

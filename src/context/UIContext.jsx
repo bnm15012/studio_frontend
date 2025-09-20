@@ -9,9 +9,9 @@ const UIContext = createContext({
   isMobile: false,
   isBatchEnabled: false,
   isEnabled: () => false,
-  settings: [],
   isAdmin: false,
-  FEATURE_KEYS: FEATURE_KEYS
+  FEATURE_KEYS: FEATURE_KEYS,
+  DEBUG: false,
 });
 
 export const UIProvider = ({ children }) => {
@@ -19,13 +19,14 @@ export const UIProvider = ({ children }) => {
   const user = useSelector((state) => state.auth.user);
   const isMobile = useMediaQuery("(max-width: 700px)");
   const isAdmin = user?.role === "ADMIN";
+  const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
-  const { isEnabled } = useFeatureFlags(settings);
+  const { isEnabled } = useFeatureFlags(settings, user?.userAccessEntry);
   const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
   return (
     <UIContext.Provider
-      value={{ isMobile, isBatchEnabled, isEnabled, settings, isAdmin, FEATURE_KEYS }}
+      value={{ isMobile, isBatchEnabled, isEnabled, isAdmin, FEATURE_KEYS, DEBUG }}
     >
       {children}
     </UIContext.Provider>

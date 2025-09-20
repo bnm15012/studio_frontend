@@ -1,16 +1,27 @@
 import { useMemo } from "react";
 
-export function useFeatureFlags(settings) {
-  const settingsMap = useMemo(
-    () =>
-      settings?.reduce((acc, { navBarName, enabled }) => {
-        acc[navBarName] = enabled;
+export function useFeatureFlags(settings, userAccessEntry) {
+  const featureFlags = useMemo(() => {
+    const userKeys = userAccessEntry
+      ? Object.keys(userAccessEntry).reduce((acc, k) => {
+        acc[k.toUpperCase()] = userAccessEntry[k];
         return acc;
-      }, {}) || {},
-    [settings]
-  );
+      }, {})
+      : {};
 
-  const isEnabled = (feature) => settingsMap[feature] ?? false;
+    const flags = {};
+    Object.keys(settings).forEach((feature) => {
+      const settingEnabled = settings[feature];
 
-  return { isEnabled, settingsMap };
+      const userLevel = userKeys[feature] ? userKeys[feature] === "FULL" : true;
+
+      flags[feature] = settingEnabled && userLevel;
+    });
+
+    return flags;
+  }, [settings, userAccessEntry]);
+
+  const isEnabled = (feature) => featureFlags[feature] ?? false;
+
+  return { isEnabled };
 }

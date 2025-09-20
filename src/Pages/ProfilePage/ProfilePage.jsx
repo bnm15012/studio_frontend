@@ -10,6 +10,7 @@ import SubscriptionTab from "./SubscriptionTab";
 import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
+import { useUI } from "../../context/UIContext";
 
 const dialogNames = [
   "profileDialog",
@@ -25,7 +26,7 @@ const ProfilePage = () => {
   const studio = useSelector((state) => state.auth.studio);
   const [tabValue, setTabValue] = useState(0);
   const dialog = useSelector(dialogOnTop());
-
+  const { DEBUG } = useUI();
 
   const handleClose = () => {
     dispatch(clearAllDialogs());
@@ -35,14 +36,14 @@ const ProfilePage = () => {
     if (admin?.role === "ADMIN") {
       if ("profileDialog" === dialog) setTabValue(0);
       else if ("subscriptionDialog" === dialog) setTabValue(2);
-      else if ("settingsDialog" === dialog) setTabValue(3);
+      else if ("settingsDialog" === dialog && DEBUG) setTabValue(3);
       else if ("configurationDialog" === dialog) setTabValue(4);
       else setTabValue(1);
     } else {
       if ("configurationDialog" === dialog) setTabValue(4);
       else setTabValue(1);
     }
-  }, [admin, dialog]);
+  }, [admin, dialog, DEBUG]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -75,7 +76,7 @@ const ProfilePage = () => {
             {tabValue === 0 ? "Profile Details" :
               tabValue === 1 ? "Change Password" :
                 tabValue === 2 ? "Subscription Details" :
-                  tabValue === 3 ? "Settings" : "Communication Configuration"}
+                  tabValue === 3 && DEBUG ? "Settings" : "Communication Configuration"}
           </Typography>
           <IconButton onClick={handleClose} sx={{ color: 'white' }}>
             <CloseIcon />
@@ -106,7 +107,7 @@ const ProfilePage = () => {
           <Tab label="Profile" disabled={admin?.role !== "ADMIN"} />
           <Tab label="Security" />
           <Tab label="Subscription" disabled={admin?.role !== "ADMIN"} />
-          <Tab label="Settings" disabled={admin?.role !== "ADMIN"} />
+          <Tab label="Settings" disabled={admin?.role !== "ADMIN"} sx={{ display: DEBUG ? "unset" : "none" }} />
           <Tab label="Configurations" />
         </Tabs>
       </Box>

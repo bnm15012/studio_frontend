@@ -18,7 +18,15 @@ const partners = [
     image: '/assets/urban_beats.png',
   },
   {
-    name: 'Nritya Dance Studio',
+    name: 'Fit Pro Gym',
+    image: '/assets/fit_pro.png',
+  },
+  {
+    name: 'Majesty Dance Studio',
+    image: '/assets/majesty.jpg',
+  },
+  {
+    name: 'Nritya Hop Dance Studio',
     image: '/assets/nritya.jpg',
   },
 ];

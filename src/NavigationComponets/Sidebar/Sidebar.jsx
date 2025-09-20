@@ -23,7 +23,7 @@ const Sidebar = ({ sidebarOn }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const { isMobile, isEnabled, FEATURE_KEYS, settings, isAdmin } = useUI();
+  const { isMobile, isEnabled, FEATURE_KEYS, isAdmin } = useUI();
 
   const routes = [
     {
@@ -37,7 +37,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/bulk_upload",
       label: "Upload Data",
-      show: settings.find((setting) => setting.navBarName === "BULK_UPLOAD")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.BULK_UPLOAD) && isAdmin,
       icon: (
         <Upload />
       ),
@@ -45,7 +45,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/branch",
       label: "Branches",
-      show: settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.BRANCH) && isAdmin,
       icon: (
         <DeviceHubIcon />
       ),
@@ -53,7 +53,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/enquiry",
       label: "Enquiries",
-      show: settings.find((setting) => setting.navBarName === "ENQUIRY")?.enabled,
+      show: isEnabled(FEATURE_KEYS.ENQUIRY),
       icon: (
         <QuestionAnswer />
       ),
@@ -61,7 +61,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/clients",
       label: "Clients",
-      show: settings.find((setting) => setting.navBarName === "CLIENT")?.enabled,
+      show: isEnabled(FEATURE_KEYS.CLIENT),
       icon: (
         <Contacts />
       ),
@@ -69,7 +69,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/bookings",
       label: "Bookings",
-      show: settings.find((setting) => setting.navBarName === "BOOKINGS")?.enabled,
+      show: isEnabled(FEATURE_KEYS.BOOKINGS),
       icon: (
         <EventNote />
       ),
@@ -77,7 +77,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/instructor",
       label: "Instructors",
-      show: settings.find((setting) => setting.navBarName === "INSTRUCTOR")?.enabled,
+      show: isEnabled(FEATURE_KEYS.INSTRUCTOR),
       icon: (
         <SchoolIcon />
       ),
@@ -85,7 +85,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/student",
       label: "Students",
-      show: settings.find((setting) => setting.navBarName === "STUDENT")?.enabled,
+      show: isEnabled(FEATURE_KEYS.STUDENT),
       icon: (
         <GroupIcon />
       ),
@@ -93,7 +93,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/activity",
       label: "Activities",
-      show: settings.find((setting) => setting.navBarName === "ACTIVITY")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.ACTIVITY),
       icon: (
         <EventIcon />
       ),
@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/type",
       label: "Packages",
-      show: isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE) && isAdmin,
+      show: isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE),
       icon: (
         <TypeSpecimen />
       ),
@@ -109,7 +109,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/communication",
       label: "Communication",
-      show: settings.find((setting) => setting.navBarName === "COMMUNICATION")?.enabled,
+      show: isEnabled(FEATURE_KEYS.COMMUNICATION),
       icon: (
         <EmailIcon />
       ),
@@ -117,7 +117,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/payments",
       label: "Payments",
-      show: settings.find((setting) => setting.navBarName === "PAYMENTS")?.enabled,
+      show: isEnabled(FEATURE_KEYS.PAYMENTS),
       icon: (
         <PaymentIcon />
       ),
@@ -125,7 +125,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/expenses",
       label: "Expense",
-      show: settings.find((setting) => setting.navBarName === "EXPENSE")?.enabled,
+      show: isEnabled(FEATURE_KEYS.EXPENSE),
       icon: (
         <CurrencyRupeeIcon />
       ),
@@ -133,7 +133,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/analysis",
       label: "Analysis",
-      show: settings.find((setting) => setting.navBarName === "ANALYSIS")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.ANALYSIS),
       icon: (
         <BarChartIcon />
       ),
@@ -141,7 +141,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/reports",
       label: "Reports",
-      show: settings.find((setting) => setting.navBarName === "REPORTS")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.REPORTS),
       icon: (
         <Assessment />
       ),
@@ -149,7 +149,7 @@ const Sidebar = ({ sidebarOn }) => {
     {
       path: "/management/template",
       label: "Templates",
-      show: settings.find((setting) => setting.navBarName === "TEMPLATES")?.enabled && isAdmin,
+      show: isEnabled(FEATURE_KEYS.TEMPLATES),
       icon: (
         <BookTemplate />
       ),

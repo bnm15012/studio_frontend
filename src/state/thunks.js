@@ -6,6 +6,7 @@ import { clearBookingPages } from "./bookingSlice";
 import { clearBranchState } from "./branchSlice";
 import { clearClientPages } from "./clientSlice";
 import { clearAllDialogs } from "./dialogSlice";
+import { clearEnquiry } from "./enquirySlice";
 import { clearExpensePages } from "./expenseSlice";
 import { clearPaymentPages } from "./paymentSlice";
 
@@ -24,4 +25,5 @@ export const clearAllstate = () => (dispatch) =>{
     dispatch(clearExpensePages())
     dispatch(clearAnalysisState())
     dispatch(clearMemberShipTypes())
+    dispatch(clearEnquiry())
 }

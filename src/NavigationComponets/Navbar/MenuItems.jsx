@@ -12,17 +12,18 @@ import { logoutUser } from "../../state/thunks";
 // import { toggleMode } from "../../state/authSlice";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
+import { useUI } from "../../context/UIContext";
 // import DarkMode from "@mui/icons-material/DarkMode";
 // import LightMode from "@mui/icons-material/LightMode";
 
 const MenuItems = ({ isNonMobileScreens }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isEnabled, FEATURE_KEYS } = useUI();
   const location = useLocation();
   // const mode = useSelector(s => s.auth.mode);
   const isHomePage = location.pathname === "/";
   const user = useSelector((state) => state.auth.user);
-  const settings = useSelector((state) => state.auth.settings);
 
   const handleLogout = async () => {
     dispatch(logoutUser());
@@ -107,7 +108,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
           <>
             <Notification />
             {user.role === "ADMIN" &&
-              settings.find((setting) => setting.navBarName === "BRANCH")?.enabled && (
+              isEnabled(FEATURE_KEYS.BRANCH) && (
                 <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
               )}
             <UserProfileDropdown

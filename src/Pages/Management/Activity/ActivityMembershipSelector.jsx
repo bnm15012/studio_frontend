@@ -155,13 +155,17 @@ const ActivityMembershipSelector = ({
                 fullWidth
                 disabled={!selectedMembership}
               >
-                {availableDaysOptions.map((plan, index) => (
-                  <MenuItem key={index} value={plan.daysPerWeek}>
-                    {plan.daysPerWeek}{" "}
-                    {plan.daysPerWeek > 1 ? "days/week" : "day/week"}
-                    {isBatchEnabled ? "" : `- Rs.${plan.price}/-`}
-                  </MenuItem>
-                ))}
+                {availableDaysOptions.filter(
+                  (b, index, self) => {
+                    if (!isBatchEnabled) return true;
+                    return index === self.findIndex((x) => x.planType === b.planType)
+                  }).map((plan, index) => (
+                    <MenuItem key={index} value={plan.daysPerWeek}>
+                      {plan.daysPerWeek}{" "}
+                      {plan.daysPerWeek > 1 ? "days/week" : "day/week"}
+                      {isBatchEnabled ? "" : `- Rs.${plan.price}/-`}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </TableCell>

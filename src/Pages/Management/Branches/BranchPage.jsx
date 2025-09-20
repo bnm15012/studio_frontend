@@ -53,9 +53,10 @@ const BranchPage = ({ page, ID }) => {
 
   const handleAddNew = () => {
     setNewRow({
-      userName: null,
-      email: null,
-      phone: null,
+      userId: "NEW",
+      userName: "test1",
+      email: "test@mail.com",
+      phone: "1234567890",
       enabled: true,
       role: "MANAGER",
       password: "123456",

@@ -12,7 +12,7 @@ import { useUI } from "../../context/UIContext";
 
 const UserProfileDropdown = ({ user, handleLogout }) => {
   const dispatch = useDispatch();
-  const { isAdmin } = useUI();
+  const { isAdmin, DEBUG } = useUI();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openplansPopUp, setOpenplansPopUp] = useState(false)
   const openMenu = Boolean(anchorEl);
@@ -74,14 +74,17 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
             >
               Plans
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                dispatch(openDialog("settingsDialog"));
-                handleClose();
-              }}
-            >
-              Settings
-            </MenuItem>
+            {
+              DEBUG &&
+              <MenuItem
+                onClick={() => {
+                  dispatch(openDialog("settingsDialog"));
+                  handleClose();
+                }}
+              >
+                Settings
+              </MenuItem>
+            }
           </>
         }
         <MenuItem

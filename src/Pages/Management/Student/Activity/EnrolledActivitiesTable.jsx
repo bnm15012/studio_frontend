@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TextField,
   IconButton,
   Box,
   Tooltip,
@@ -42,6 +41,7 @@ import { clearPaymentPages } from "../../../../state/paymentSlice";
 import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 import { useUI } from "../../../../context/UIContext";
 import { validMembershipTypes } from "../../Activity/Activities.constants";
+import { updatePaymentAPI } from "../../Payments/payment.api";
 
 const PAYMENT_STATUS = [
   { label: "COMPLETED", value: "COMPLETED" },
@@ -68,13 +68,13 @@ const initialNewRowState = {
     payeeType: "STUDENT",
     actualAmount: 0,
     amount: 0,
-    paymentDate: getCurrentDateTimeUTC(),
+    paymentDate: undefined,
     status: PAYMENT_STATUS[0].value,
     paymentType: PAYMENT_TYPE[0].value,
   }
 };
 const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
-  const { isBatchEnabled } = useUI();
+  const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
   const showAlert = useAlert();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -106,7 +106,12 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
 
   const handleInputChange = (index, field, value) => {
     const updatedData = [...tableData];
-    updatedData[index][field] = value;
+    if (field.includes('.')) {
+      const fields = field.split('.');
+      updatedData[index][fields[0]][fields[1]] = value;
+    } else {
+      updatedData[index][field] = value;
+    }
     setTableData(updatedData);
   };
 
@@ -131,6 +136,27 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
       return;
     }
     setLoading(true);
+
+    if (tableData[index].paymentEntry.paymentDate && tableData[index].paymentEntry.status === "PENDING") {
+      const {
+        data: updatedData,
+        success,
+        message,
+      } = await updatePaymentAPI({
+        paymentId: tableData[index].paymentEntry.paymentId,
+        paymentData: { ...tableData[index].paymentEntry, status: "COMPLETED" },
+        token,
+      });
+      if (success) {
+        tableData[index].paymentEntry = updatedData;
+        showAlert("Payment marked as completed", "success");
+      } else {
+        showAlert(message, "error");
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const { success, message } = await editActivityStudentAPI({
         assignedActivityData: tableData[index],
@@ -205,7 +231,9 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
     try {
       newRow["studentId"] = studentId;
       newRow["paymentEntry"] = paymentEntry;
-      newRow["paymentEntry"]["paymentDate"] = newRow['registrationDate'];
+      if (paymentEntry.status === "COMPLETED") {
+        newRow["paymentEntry"]["paymentDate"] = getCurrentDateTimeUTC();
+      }
       newRow["paymentEntry"]["payeeId"] = studentId;
       newRow["paymentEntry"]["branchId"] = currentBranch.branchId;
       const { success, message, data: newRowData } = await assignActivityStudentAPI({
@@ -296,8 +324,14 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
               <TableCell sx={{ fontWeight: 700 }}>
                 Membership End Date
               </TableCell>
+              {
+                isEnabled(FEATURE_KEYS.PAYMENT_DATE) &&
+                <TableCell sx={{ fontWeight: 700, textWrap: "nowrap" }}>
+                  Payment Date
+                </TableCell>
+              }
               <TableCell sx={{ fontWeight: 700 }}>Membership Status</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Action</TableCell>
+              <TableCell sx={{ fontWeight: 700, textAlign: "center" }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -358,8 +392,12 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       <DateTimeField
                         format="DATE"
                         value={row.membershipStartDate}
-                        onChange={(value) =>
-                          handleInputChange(index, "membershipStartDate", value)}
+                        onChange={(value) => {
+                          handleInputChange(index, "membershipStartDate", value)
+                          if (validMembershipTypes.includes(row.membershipType) || !row.membershipStartDate) {
+                            handleInputChange(index, "membershipEndDate", getEndDateBySubscriptionPlan(value, row.membershipType))
+                          }
+                        }}
                       />
                     ) : (
                       getLocalDateTime(row.membershipStartDate)
@@ -371,7 +409,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                         <DateTimeField
                           disabled={validMembershipTypes.includes(row.membershipType) || !row.membershipStartDate}
                           format="DATE"
-                          value={row.membershipEndDate || getEndDateBySubscriptionPlan(row.membershipStartDate, row.membershipType)}
+                          value={row.membershipEndDate}
                           minDateTime={row.membershipStartDate}
                           onChange={(value) =>
                             handleInputChange(index, "membershipEndDate", value)}
@@ -380,6 +418,22 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       )
                     }
                   </TableCell>
+                  {isEnabled(FEATURE_KEYS.PAYMENT_DATE) &&
+                    <TableCell sx={{ color: row.paymentEntry.status === "COMPLETED" ? "" : "red" }}>
+                      {
+                        editIndex === index ? (
+                          <DateTimeField
+                            disabled={row.paymentEntry.status === "COMPLETED"}
+                            format="DATE"
+                            value={row.paymentEntry.paymentDate}
+                            onChange={(value) =>
+                              handleInputChange(index, "paymentEntry.paymentDate", value)}
+                          />) : (
+                          getLocalDateTime(row.paymentEntry.paymentDate)
+                        )
+                      }
+                    </TableCell>
+                  }
                   <TableCell
                     sx={{
                       fontWeight: "bold",
@@ -387,23 +441,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                         row.membershipStatus === "ACTIVE" ? "green" : "red",
                     }}
                   >
-                    {editIndex === index ? (
-                      <TextField
-                        variant="standard"
-                        value={row.membershipStatus}
-                        disabled
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            "membershipStatus",
-                            e.target.value
-                          )
-                        }
-                        fullWidth
-                      />
-                    ) : (
-                      row.membershipStatus
-                    )}
+                    {row.membershipStatus}
                   </TableCell>
                   <TableCell>
                     <FlexBetween gap={1}>
@@ -502,6 +540,18 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                       )}
                   />
                 </TableCell>
+                {isEnabled(FEATURE_KEYS.PAYMENT_DATE) &&
+                  <TableCell sx={{ color: newRow.paymentEntry.status === "COMPLETED" ? "" : "red" }}>
+                    {
+                      <DateTimeField
+                        format="DATE"
+                        value={newRow.paymentEntry.paymentDate}
+                        onChange={(value) =>
+                          handleInputChange(null, "paymentEntry.paymentDate", value)}
+                      />
+                    }
+                  </TableCell>
+                }
                 <TableCell>
                   <Typography variant="body1">
                     {new Date(newRow.membershipStartDate) <= new Date() && new Date(newRow.membershipEndDate) >= new Date() ?
