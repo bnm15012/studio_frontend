@@ -4,7 +4,6 @@ import { Avatar, MenuItem, Select, TextField, Typography, useTheme } from "@mui/
 import PropTypes from 'prop-types';
 import DateTimeField from "./DateTimeField";
 import { getLocalDateTime } from "../utils/DateUtil";
-import AutoCompleteSelectField from "./AutoCompleteSelectField";
 import InfiniteSelectField from "./InfiniteSelectField";
 
 const EditableData = ({
@@ -75,12 +74,7 @@ const EditableData = ({
               </MenuItem>
             ))}
           </Select>
-        ) : inputType === "AUTOCOMPLETE" ?
-          <AutoCompleteSelectField
-            currentValue={data && fieldName in data ? data[fieldName] : ""}
-            onChange={handleChange}
-            getOptions={getOptions}
-          /> : inputType === "INFINITE_SELECT" ?
+        ) : inputType === "INFINITE_SELECT" ?
             <InfiniteSelectField
               keyField={fieldName}
               valueField={valueField}

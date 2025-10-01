@@ -57,28 +57,17 @@ const SettingsTab = () => {
 
   return (
     <Box p={3}>
-      <FlexBetween gap={2} flexWrap={"wrap"}>
+      <Box display="grid" gap={2} gridTemplateColumns={{ xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }} >
         {Object.keys(configurations).map((key) => (
-          <FlexBetween width={"43%"} key={key}>
+          <FlexBetween key={key} sx={{ p: 1, borderRadius: 1, border: "1px solid #e0e0e0" }}>
             <Box my={"auto"}>{key}</Box>
-            <Box my={"auto"}>
-              <Switch
-                checked={configurations[key]}
-                onChange={() => handleToggle(key)}
-                color="primary"
-              />
-            </Box>
+            <Switch checked={configurations[key]} onChange={() => handleToggle(key)} color="primary" />
           </FlexBetween>
         ))}
-      </FlexBetween>
+      </Box>
 
       <Box mt={4}>
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={updateSettings}
-          disabled={!isChanged || isLoading}
-        >
+        <Button fullWidth variant="contained" onClick={updateSettings} disabled={!isChanged || isLoading}     >
           <Typography variant="button" fontWeight={"bold"} color="white">
             {isLoading ? "Saving..." : "Save Settings"}
           </Typography>

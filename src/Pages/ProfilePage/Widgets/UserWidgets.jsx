@@ -5,47 +5,44 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import {
-  CardContent,
-  Typography,
-  Paper,
-  IconButton,
-  Tooltip,
-  Divider,
-} from "@mui/material";
-import { Box, useMediaQuery, useTheme } from "@mui/system";
+import { Typography, Paper, IconButton, Tooltip, Divider, Box } from "@mui/material";
+import { useTheme } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
+import FlexEvenlyColumn from "../../../Components/FlexEvenlyColumn";
 import ImageComponent from "../../../Components/ImageComponent";
-import PropTypes from "prop-types";
 import EditableData from "../../../Components/EditableData";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
 import { useAlert } from "../../../utils/Alert";
-import FlexEvenlyColumn from "../../../Components/FlexEvenlyColumn";
 import { Percent } from "lucide-react";
+import { useUI } from "../../../context/UIContext";
 
 const UserWidgets = ({ admin, studio }) => {
   const theme = useTheme();
+  const { isMobile } = useUI()
   const showAlert = useAlert();
-  const dispatch = useDispatch()
-  const token = useSelector((state) => state.auth.token)
-  const isNonMobileScreens = useMediaQuery("(min-width:700px)");
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
+  const isNonMobile = !isMobile;
+
   const [imageUrl, setImageUrl] = useState(null);
   const [studioLogo, setStudioLogo] = useState(null);
-  const [editProf, setEditProf] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [editedValues, setEditedValues] = useState({
     phone: "",
     studioName: "",
     location: "",
     gstNumber: "",
   });
-  const verifyValuesChangedOrNot = (values) => {
+
+  // Verify if changes were made
+  const verifyChanges = (values) => {
     const userData = {
       phone: values.phone,
       imageUrl: imageUrl,
       userId: admin.userId
     };
-
     const studioData = {
       studioId: studio.studioId,
       studioName: values.studioName,
@@ -54,185 +51,169 @@ const UserWidgets = ({ admin, studio }) => {
       gstNumber: values.gstNumber,
     };
 
-    const isUserDataChanged =
-      values.phone !== admin.phone ||
-      imageUrl !== admin.imageUrl;
-
-    const isStudioDataChanged =
+    const isUserChanged = values.phone !== admin.phone || imageUrl !== admin.imageUrl;
+    const isStudioChanged =
       values.gstNumber !== studio.gstNumber ||
       values.studioName !== studio?.studioName ||
       values.location !== studio?.location ||
       studioLogo !== studio.logo;
 
-    return { studioData: isStudioDataChanged ? studioData : null, userData: isUserDataChanged ? userData : null };
-  }
+    return { studioData: isStudioChanged ? studioData : null, userData: isUserChanged ? userData : null };
+  };
+
   const saveProfile = async () => {
-    const { userData, studioData } = verifyValuesChangedOrNot(editedValues)
-    let show_alert = true;
+    const { userData, studioData } = verifyChanges(editedValues);
+    let alertShown = false;
+
     if (userData) {
-      const response = await updateProfile({
-        values: userData,
-        dispatch,
-        token,
-      });
-      show_alert = false;
-      if (response.success) {
-        showAlert(response.message, "success");
-      } else {
-        showAlert(response.message, "error");
-      }
+      const res = await updateProfile({ values: userData, dispatch, token });
+      alertShown = true;
+      showAlert(res.message, res.success ? "success" : "error");
     }
+
     if (studioData) {
-      const response = await updateStudio({
-        values: studioData,
-        dispatch,
-        token,
-      });
-      show_alert = false;
-      if (response.success) {
-        showAlert(response.message, "success");
-      } else {
-        showAlert(response.message, "error");
-      }
+      const res = await updateStudio({ values: studioData, dispatch, token });
+      alertShown = true;
+      showAlert(res.message, res.success ? "success" : "error");
     }
-    if (show_alert) {
-      showAlert("No changes to save", "info");
-    }
-  }
+
+    if (!alertShown) showAlert("No changes to save", "info");
+  };
+
   useEffect(() => {
-    const updatedValues = {
+    setEditedValues({
       userName: admin.userName || "",
       phone: admin.phone || "",
       studioName: studio?.studioName || "",
       location: studio?.location || "",
       gstNumber: studio?.gstNumber || "",
-    };
-
-    setEditedValues((prev) => {
-      const isSame = Object.keys(updatedValues).every(
-        (key) => updatedValues[key] === prev[key]
-      );
-      return isSame ? prev : updatedValues;
     });
-  }, [admin.userName, admin.phone, studio?.studioName, studio?.location, studio?.gstNumber]);
+    setStudioLogo(studio?.logo || null);
+  }, [admin, studio]);
 
   if (!admin) return null;
 
   return (
-    <FlexBetween>
-      <Box>
-        <Paper
-          elevation={0}
-          sx={{
-            borderRadius: 2,
-            overflow: "hidden",
-            border: `1px solid ${theme.palette.primary.light}`,
-          }}
+    <Paper
+      sx={{
+        p: 3,
+        backgroundColor: theme.palette.background.paper,
+        maxWidth: "100%",
+      }}
+    >
+      {/* Header: User Image and Name */}
+      <FlexBetween>
+        <FlexBetween
+          flexDirection={isNonMobile ? "row" : "column"}
+          alignItems={isNonMobile ? "center" : "flex-start"}
+          sx={{ mb: 3 }}
         >
-          <Box
-            sx={{
-              p: 3,
-              background: `linear-gradient(45deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <ImageComponent
-              dirName="user"
-              size={isNonMobileScreens ? "100px" : "50px"}
-              setImage={setImageUrl}
-              image={admin?.imageUrl}
-              isCircular={true}
-              allowEdit={editProf}
-            />
-            <Box>
-              <Typography variant="h5" fontWeight="500">
-                {admin.userName}
-              </Typography>
-              <Typography variant="body1" sx={{ opacity: 0.8 }}>
-                {admin.role}
-              </Typography>
-            </Box>
-            <Box sx={{ flexGrow: 1 }} />
-            <Tooltip title={editProf ? "Save Profile" : "Edit Profile"}>
-              <IconButton
-                size="medium"
-                onClick={() => { setEditProf(!editProf); }}
-                sx={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  color: "white",
-                  mr: 1,
-                  "&:hover": {
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                  },
-                }}
-              >
-                {editProf ? <SaveIcon onClick={saveProfile} /> : <EditIcon />}
-              </IconButton>
-            </Tooltip>
+          <ImageComponent
+            dirName="user"
+            size={isNonMobile ? "100px" : "80px"}
+            setImage={setImageUrl}
+            image={admin.imageUrl}
+            isCircular
+            allowEdit={editMode}
+          />
+          <Box sx={{ ml: isNonMobile ? 3 : 0, mt: isNonMobile ? 0 : 2 }}>
+            <Typography variant="h5" fontWeight={600}>
+              {admin.userName}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {admin.role}
+            </Typography>
           </Box>
-          <FlexBetween flexWrap={"wrap"}>
-            <CardContent sx={{ width: "100%" }}>
-              <FlexBetween>
-                <Box>
-                  <Typography variant="h6">
-                    Contact Information
-                  </Typography>
-                  <Divider sx={{ mb: 1 }} />
-                  <Box sx={{ display: "grid", gap: 2 }}>
-                    <EditableData showFieldName={false} data={admin} fieldName={"email"} icon={<EmailIcon />} setData={setEditedValues} />
-                    <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"phone"}
-                      validation={{ pattern: /^\+?[1-9]\d{9}$/ }} icon={<PhoneIcon />} setData={setEditedValues} />
-                  </Box>
-                  <Typography variant="h6" sx={{ mt: 4 }}>
-                    Studio Information
-                  </Typography>
-                  <Divider sx={{ mb: 1 }} />
-                  <FlexBetween gap={2}>
-                    <FlexEvenlyColumn gap={2} sx={{ flexGrow: 1 }}>
-                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"studioName"} icon={<ClassIcon />} setData={setEditedValues} />
-                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"location"} icon={<LocationCityIcon />} setData={setEditedValues} />
-                      <EditableData showFieldName={false} data={editedValues} isEdit={editProf} fieldName={"gstNumber"} icon={<Percent />} setData={setEditedValues} placeholder="Enter GST Number"/>
-                    </FlexEvenlyColumn>
-                  </FlexBetween>
-                </Box>
-                <FlexBetween height={"17rem"} flexDirection={"column-reverse"}>
-                  <ImageComponent
-                    dirName="studio"
-                    size={isNonMobileScreens ? "200px" : "50px"}
-                    setImage={setStudioLogo}
-                    image={studio?.logo || "/assets/default_logo.png"}
-                    isCircular={true}
-                    allowEdit={editProf}
-                  />
-                </FlexBetween>
-              </FlexBetween>
-            </CardContent>
-          </FlexBetween>
-        </Paper>
-      </Box>
-    </FlexBetween>
+          <Box sx={{ flexGrow: 1 }} />
+        </FlexBetween>
+        <Box>
+          <Tooltip title={editMode ? "Save Profile" : "Edit Profile"}>
+            <IconButton
+              onClick={() => setEditMode(!editMode)}
+              sx={{
+                backgroundColor: theme.palette.primary.light,
+                color: theme.palette.primary.contrastText,
+                "&:hover": { backgroundColor: theme.palette.primary.main },
+              }}
+            >
+              {editMode ? <SaveIcon onClick={saveProfile} /> : <EditIcon />}
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </FlexBetween>
+
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Content: Contact & Studio Info */}
+      <FlexBetween flexDirection={isNonMobile ? "row" : "column"} gap={3}>
+        <FlexEvenlyColumn gap={2} sx={{ flex: 1 }}>
+          <Typography variant="h6">Contact Information</Typography>
+          <Divider sx={{ mb: 1 }} />
+          <EditableData
+            showFieldName={false}
+            data={admin}
+            fieldName="email"
+            icon={<EmailIcon />}
+            setData={setEditedValues}
+          />
+          <EditableData
+            showFieldName={false}
+            data={editedValues}
+            isEdit={editMode}
+            fieldName="phone"
+            validation={{ pattern: /^\+?[1-9]\d{9}$/ }}
+            icon={<PhoneIcon />}
+            setData={setEditedValues}
+          />
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Studio Information
+          </Typography>
+          <Divider sx={{ mb: 1 }} />
+          <EditableData
+            showFieldName={false}
+            data={editedValues}
+            isEdit={editMode}
+            fieldName="studioName"
+            icon={<ClassIcon />}
+            setData={setEditedValues}
+          />
+          <EditableData
+            showFieldName={false}
+            data={editedValues}
+            isEdit={editMode}
+            fieldName="location"
+            icon={<LocationCityIcon />}
+            setData={setEditedValues}
+          />
+          <EditableData
+            showFieldName={false}
+            data={editedValues}
+            isEdit={editMode}
+            fieldName="gstNumber"
+            icon={<Percent />}
+            setData={setEditedValues}
+            placeholder="Enter GST Number"
+          />
+        </FlexEvenlyColumn>
+
+        <Box sx={{ display: "flex", justifyContent: "center", mt: isNonMobile ? 0 : 3 }}>
+          <ImageComponent
+            dirName="studio"
+            size={isNonMobile ? "200px" : "120px"}
+            setImage={setStudioLogo}
+            image={studio?.logo || "/assets/default_logo.png"}
+            isCircular
+            allowEdit={editMode}
+          />
+        </Box>
+      </FlexBetween>
+    </Paper>
   );
 };
 
 UserWidgets.propTypes = {
-  admin: PropTypes.shape({
-    userId: PropTypes.number.isRequired,
-    userName: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    role: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string,
-  }).isRequired,
-  studio: PropTypes.shape({
-    studioId: PropTypes.number.isRequired,
-    studioName: PropTypes.string.isRequired,
-    gstNumber: PropTypes.string,
-    location: PropTypes.string.isRequired,
-    logo: PropTypes.string,
-  }).isRequired,
+  admin: PropTypes.object.isRequired,
+  studio: PropTypes.object.isRequired,
 };
 
 export default UserWidgets;

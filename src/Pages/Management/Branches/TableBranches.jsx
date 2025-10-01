@@ -172,7 +172,7 @@ const TableWithEditAddDelete = ({
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <StyledTable sx={{ minWidth: 650 }}>
+      <StyledTable  >
         <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
           <StyledTableRow>
             <StyledTableCell sx={{ textWrap: "nowrap", fontWeight: "bold", color: "#1976d2" }}>

@@ -1,12 +1,12 @@
 import ImageComponent from '../../../../Components/ImageComponent'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { DialogContent } from '@mui/material'
 import PropTypes from 'prop-types'
+import StyledDialog from '../../../../Components/New/StyledDialog'
 
 const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => {
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle> Contract</DialogTitle>
+        <StyledDialog closeIcon={true} title={"Contract Document"} open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogContent>
                 <ImageComponent
                     dirName='instructor_contract'
@@ -17,10 +17,7 @@ const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => {
                     allowEdit={isEdit}
                 />
             </DialogContent>
-            <DialogActions>
-                <Button variant='contained' onClick={onClose}>Done</Button>
-            </DialogActions>
-        </Dialog>
+        </StyledDialog>
     )
 }
 

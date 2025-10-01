@@ -53,9 +53,7 @@ export const updateEnquiryAPI = async ({ enquiryData, token }) => {
 export const deleteEnquiryAPI = async ({ enquiryId, token }) => {
     try {
         await api.delete(`/enquiries/delete/${enquiryId}`, {
-            headers: {
-                Authorization: `${token}`,
-            },
+            headers: { Authorization: `${token}` },
         });
         return { success: true, message: "Enquiry deleted successfully!" };
     } catch (error) {

@@ -1,48 +1,32 @@
-import PropTypes from 'prop-types';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-} from "@mui/material";
+import PropTypes from "prop-types";
+import { DialogContentText } from "@mui/material";
+import StyledDialog from "./New/StyledDialog";
 
-const DeleteDialog = ({ open, onClose, onConfirm, displayData, id }) => {
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Confirm Deletion</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Are you sure you want to delete {displayData}?
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {
+const DeleteDialog = ({ open, onClose, onConfirm, displayData, id }) => (
+    <StyledDialog
+        open={open}
+        titleBgColor={"linear-gradient(to bottom, #FF0000, #B02600)"}
+        onClose={onClose}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={() => {
             onConfirm(id);
             onClose();
-          }}
-          sx={{ bgcolor: "red" }}
-          color="primary"
-          variant="contained"
-        >
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+        }}
+    >
+        <DialogContentText sx={{ textAlign: "center" }}>
+            Are you sure you want to delete <strong>{displayData}</strong>?
+        </DialogContentText>
+    </StyledDialog>
+);
 
 DeleteDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  displayData: PropTypes.string.isRequired,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
+    displayData: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default DeleteDialog;

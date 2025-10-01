@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types';
-import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
-import FlexBetween from '../../../../Components/FlexBetween';
 import Loading from '../../../../Components/Loading/Loading';
 import { Typography } from '@mui/material';
 import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
 import { useAlert } from '../../../../utils/Alert';
 import { replacePlaceholders } from '../../../../utils/globalFuns';
 import HtmlToPdfViewer from '../../../../Components/Html2PDF';
+import StyledDialog from '../../../../Components/New/StyledDialog';
+import { PrinterIcon } from 'lucide-react';
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
     const showAlert = useAlert();
@@ -73,7 +71,9 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         : "";
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md">
+        <StyledDialog onConfirm={() => pdfViewerRef.current.downloadPDF()} confirmText='Download' open={open} onClose={onClose} maxWidth="md"
+            actions={[{ key: "print", tip: "Print", onClick: () => pdfViewerRef.current.printPDF(), component: <PrinterIcon /> }]}
+        >
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
@@ -159,16 +159,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                     }
                 />
             </DialogContent>
-            <DialogActions>
-                <FlexBetween width={"100%"} mx={2} gap={2}>
-                    <FlexBetween gap={1}>
-                        <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">Print</Button>
-                    </FlexBetween>
-                    <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
-                </FlexBetween>
-            </DialogActions>
-        </Dialog>
+        </StyledDialog>
     );
 };
 

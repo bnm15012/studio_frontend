@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Typography,
     TextField,
     Button,
@@ -28,13 +24,14 @@ import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
 import { getAllDataAPI } from "../../../api/common.api";
+import StyledDialog from "../../../Components/New/StyledDialog";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
-    const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE)
+    const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE);
 
     const [formData, setFormData] = useState({
         activityId: 0,
@@ -44,16 +41,26 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         batchEntries: [],
     });
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
     const studio = useSelector((state) => state.auth.studio);
     const token = useSelector((state) => state.auth.token);
     const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
-    const membershipTypes = isMembershipTableEnabled ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)] : [];
+    const membershipTypes = isMembershipTableEnabled
+        ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)]
+        : [];
 
     const fetchMembershipTypesData = useCallback(async () => {
-        dispatch(getAllDataAPI({ rootId: studio.studioId, token, showAlert, route: "activity-membership-type", setData: setMemberShipTypes, setLoading }));
+        dispatch(
+            getAllDataAPI({
+                rootId: studio.studioId,
+                token,
+                showAlert,
+                route: "activity-membership-type",
+                setData: setMemberShipTypes,
+                setLoading,
+            }),
+        );
     }, [dispatch, studio.studioId, token, showAlert]);
-
 
     useEffect(() => {
         isMembershipTableEnabled && !cachedMembershipTypes.length && fetchMembershipTypesData();
@@ -100,7 +107,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         setFormData((prev) => ({
             ...prev,
             batchEntries: prev.batchEntries.map((b) =>
-                b.batchId === batchId ? { ...b, ...updates } : b
+                b.batchId === batchId ? { ...b, ...updates } : b,
             ),
         }));
     };
@@ -113,20 +120,23 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         if (!formData.activityType) return false;
         if (formData.batchEntries.length === 0) return false;
 
-        const keys = formData.batchEntries.map((b) =>
-            `${b.name?.trim().toLowerCase()}|${b.planType}|${formData.activityId}|${b.daysPerWeek}`
+        const keys = formData.batchEntries.map(
+            (b) =>
+                `${b.name?.trim().toLowerCase()}|${b.planType}|${formData.activityId}|${b.daysPerWeek}`,
         );
         const hasDuplicates = new Set(keys).size !== keys.length;
         if (hasDuplicates) return false;
 
         for (const batch of formData.batchEntries) {
             if (!batch.planType) return false;
-            if (isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7) return false;
+            if (isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7)
+                return false;
             if (isNaN(batch.price) || batch.price < 0) return false;
 
             if (isBatchEnabled) {
                 if (!batch.name?.trim()) return false;
-                if (!(batch.startTime) || !(batch.endTime) || batch.endTime < batch.startTime) return false;
+                if (!batch.startTime || !batch.endTime || batch.endTime < batch.startTime)
+                    return false;
             }
         }
 
@@ -134,12 +144,17 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     };
 
     return (
-        <Dialog open={open} onClose={() => onOpenChange(false)} fullWidth >
+        <StyledDialog
+            maxWidth="md"
+            onConfirm={handleSave}
+            confirmDisabled={!isFormValid()}
+            confirmText={activity ? "Update Activity" : "Create Activity"}
+            title={activity ? "Edit Activity" : "Create New Activity"}
+            open={open}
+            onClose={() => onOpenChange(false)}
+        >
             {loading && <Loading />}
-            <DialogTitle>
-                {activity ? "Edit Activity" : "Create New Activity"}
-            </DialogTitle>
-            <DialogContent dividers sx={{ maxHeight: "80vh" }}>
+            <Box dividers sx={{ maxHeight: "80vh" }}>
                 <Typography variant="h6" gutterBottom>
                     Activity Details
                 </Typography>
@@ -177,15 +192,25 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
 
                 {/* Batches */}
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Typography variant="h6"> {isBatchEnabled ? "Batches" : "Membership plans"}</Typography>
-                    <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={addBatch}>
+                    <Typography variant="h6">
+                        {" "}
+                        {isBatchEnabled ? "Batches" : "Membership plans"}
+                    </Typography>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={addBatch}
+                    >
                         Add {isBatchEnabled ? "Batch" : "Membership plan"}
                     </Button>
                 </Box>
 
                 {formData.batchEntries.length === 0 ? (
                     <Typography variant="body2" align="center" color="text.secondary" py={4}>
-                        No batches added yet. Click &quot;Add {isBatchEnabled ? "Batch" : "Membership plan"}&quot; to create your first {isBatchEnabled ? "batch" : "membership plan"}.
+                        No batches added yet. Click &quot;Add{" "}
+                        {isBatchEnabled ? "Batch" : "Membership plan"}&quot; to create your first{" "}
+                        {isBatchEnabled ? "batch" : "membership plan"}.
                     </Typography>
                 ) : (
                     <Box display="flex" flexDirection="column" gap={2}>
@@ -202,26 +227,31 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                 </FlexBetween>
 
                                 <Grid container spacing={2}>
-                                    {
-                                        isBatchEnabled &&
+                                    {isBatchEnabled && (
                                         <Grid item xs={12} md={6}>
                                             <TextField
                                                 label="Batch Name"
                                                 placeholder="e.g., Morning Zumba"
                                                 value={batch.name}
-                                                error={!(batch.name?.trim())}
+                                                error={!batch.name?.trim()}
                                                 onChange={(e) =>
-                                                    updateBatch(batch.batchId, { name: e.target.value })
+                                                    updateBatch(batch.batchId, {
+                                                        name: e.target.value,
+                                                    })
                                                 }
                                                 fullWidth
                                             />
                                         </Grid>
-                                    }
+                                    )}
                                     <Grid item xs={12} md={6}>
                                         <Select
                                             label="Plan Type"
                                             value={batch.planType}
-                                            onChange={(e) => updateBatch(batch.batchId, { planType: e.target.value })}
+                                            onChange={(e) =>
+                                                updateBatch(batch.batchId, {
+                                                    planType: e.target.value,
+                                                })
+                                            }
                                             fullWidth
                                             MenuProps={{
                                                 PaperProps: {
@@ -231,9 +261,17 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                 },
                                             }}
                                         >
-                                            {![...membershipTypes, ...validMembershipTypes].includes(batch.planType) && <MenuItem value={batch.planType} key={batch.planType}>
-                                                {batch.planType}
-                                            </MenuItem>}
+                                            {![
+                                                ...membershipTypes,
+                                                ...validMembershipTypes,
+                                            ].includes(batch.planType) && (
+                                                <MenuItem
+                                                    value={batch.planType}
+                                                    key={batch.planType}
+                                                >
+                                                    {batch.planType}
+                                                </MenuItem>
+                                            )}
                                             {membershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
                                                     {type}
@@ -241,25 +279,31 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             ))}
                                             {validMembershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
-                                                    {type} {isMembershipTableEnabled && <i>(default)</i>}
+                                                    {type}{" "}
+                                                    {isMembershipTableEnabled && <i>(default)</i>}
                                                 </MenuItem>
                                             ))}
                                         </Select>
                                     </Grid>
-                                    {
-                                        isBatchEnabled &&
+                                    {isBatchEnabled && (
                                         <>
                                             <Grid item xs={6} md={3}>
                                                 <TextField
                                                     type="time"
                                                     label="Start Time"
                                                     value={batch.startTime}
-                                                    error={!(batch.startTime)}
-                                                    onChange={(e) => updateBatch(batch.batchId, { startTime: e.target.value })}
+                                                    error={!batch.startTime}
+                                                    onChange={(e) =>
+                                                        updateBatch(batch.batchId, {
+                                                            startTime: e.target.value,
+                                                        })
+                                                    }
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     InputProps={{
-                                                        startAdornment: <AccessTimeIcon fontSize="small" />,
+                                                        startAdornment: (
+                                                            <AccessTimeIcon fontSize="small" />
+                                                        ),
                                                     }}
                                                 />
                                             </Grid>
@@ -268,27 +312,42 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     type="time"
                                                     label="End Time"
                                                     value={batch.endTime}
-                                                    error={!(batch.endTime) || batch.endTime < batch.startTime}
-                                                    onChange={(e) => updateBatch(batch.batchId, { endTime: e.target.value })}
+                                                    error={
+                                                        !batch.endTime ||
+                                                        batch.endTime < batch.startTime
+                                                    }
+                                                    onChange={(e) =>
+                                                        updateBatch(batch.batchId, {
+                                                            endTime: e.target.value,
+                                                        })
+                                                    }
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     InputProps={{
-                                                        startAdornment: <AccessTimeIcon fontSize="small" />,
+                                                        startAdornment: (
+                                                            <AccessTimeIcon fontSize="small" />
+                                                        ),
                                                     }}
                                                 />
                                             </Grid>
                                         </>
-                                    }
+                                    )}
                                     <Grid item xs={6} md={3}>
                                         <TextField
                                             type="number"
                                             label="Days/Week"
                                             value={batch.daysPerWeek}
                                             onChange={(e) =>
-                                                updateBatch(batch.batchId, { daysPerWeek: parseInt(e.target.value) })
+                                                updateBatch(batch.batchId, {
+                                                    daysPerWeek: parseInt(e.target.value),
+                                                })
                                             }
                                             fullWidth
-                                            error={isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7}
+                                            error={
+                                                isNaN(batch.daysPerWeek) ||
+                                                batch.daysPerWeek < 0 ||
+                                                batch.daysPerWeek > 7
+                                            }
                                             inputProps={{ min: 0, max: 7 }}
                                         />
                                     </Grid>
@@ -298,13 +357,17 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             label="Price"
                                             value={batch.price}
                                             onChange={(e) =>
-                                                updateBatch(batch.batchId, { price: parseFloat(e.target.value) })
+                                                updateBatch(batch.batchId, {
+                                                    price: parseFloat(e.target.value),
+                                                })
                                             }
                                             fullWidth
                                             error={batch.price < 0 || isNaN(batch.price)}
                                             inputProps={{ min: 0, step: 0.01 }}
                                             InputProps={{
-                                                startAdornment: <AttachMoneyIcon fontSize="small" />,
+                                                startAdornment: (
+                                                    <AttachMoneyIcon fontSize="small" />
+                                                ),
                                             }}
                                         />
                                     </Grid>
@@ -313,14 +376,8 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                         ))}
                     </Box>
                 )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button disabled={!isFormValid()} onClick={handleSave} variant="contained">
-                    {activity ? "Update Activity" : "Create Activity"}
-                </Button>
-            </DialogActions>
-        </Dialog>
+            </Box>
+        </StyledDialog>
     );
 };
 ActivityDialog.propTypes = {

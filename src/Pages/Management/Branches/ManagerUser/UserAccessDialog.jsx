@@ -1,9 +1,4 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Grid,
   Radio,
   RadioGroup,
@@ -14,6 +9,7 @@ import {
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import StyledDialog from "../../../../Components/New/StyledDialog";
 
 const ACCESS_BUTTONS = {
   activity: "Activity",
@@ -56,49 +52,32 @@ const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
   if (!user) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>User Access Settings</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          {Object.keys(ACCESS_BUTTONS).filter(ab => studioLevelAccess.includes(ab.toUpperCase())).map((key) => (
-            <Grid item xs={12} sm={6} key={key}>
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend">{ACCESS_BUTTONS[key]}</FormLabel>
-                <RadioGroup
-                  row
-                  value={accessState[key] || "NONE"}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                >
-                  {ACCESS_RIGHTS.map((right) => (
-                    <FormControlLabel
-                      disabled={!isEdit}
-                      key={right}
-                      value={right}
-                      control={<Radio />}
-                      label={right}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-          ))}
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        {
-          isEdit ? <>
-            <Button Button onClick={onClose} color="error">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </> : <Button onClick={onClose} color="primary">
-            Close
-          </Button>
-        }
-      </DialogActions>
-    </Dialog >
+    <StyledDialog title={"User Access Settings"} cancelText={isEdit ? "Cancel" : "Close"} confirmText="Save" onConfirm={isEdit ? handleSave : null} open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <Grid container spacing={2}>
+        {Object.keys(ACCESS_BUTTONS).filter(ab => studioLevelAccess.includes(ab.toUpperCase())).map((key) => (
+          <Grid item xs={12} sm={6} key={key}>
+            <FormControl component="fieldset" fullWidth>
+              <FormLabel component="legend">{ACCESS_BUTTONS[key]}</FormLabel>
+              <RadioGroup
+                row
+                value={accessState[key] || "NONE"}
+                onChange={(e) => handleChange(key, e.target.value)}
+              >
+                {ACCESS_RIGHTS.map((right) => (
+                  <FormControlLabel
+                    disabled={!isEdit}
+                    key={right}
+                    value={right}
+                    control={<Radio />}
+                    label={right}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+        ))}
+      </Grid>
+    </StyledDialog >
   );
 };
 

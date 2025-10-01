@@ -9,7 +9,6 @@ import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";
 import { openDialog } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";
 
-
 const UserProfileDropdown = ({ user, handleLogout }) => {
   const dispatch = useDispatch();
   const { isAdmin, DEBUG } = useUI();

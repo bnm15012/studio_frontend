@@ -1,10 +1,10 @@
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { Chip, Stack, Typography, Card, CardContent } from '@mui/material'
-import PropTypes from 'prop-types'
-import { membershipTypeColors } from './Activities.constants'
-import { useUI } from '../../../context/UIContext'
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import { Chip, Stack, Typography, Card, CardContent } from "@mui/material";
+import PropTypes from "prop-types";
+import { membershipTypeColors } from "./Activities.constants";
+import { useUI } from "../../../context/UIContext";
 
 const ActivityBatchCard = ({ batch }) => {
     const { isBatchEnabled } = useUI();
@@ -28,7 +28,10 @@ const ActivityBatchCard = ({ batch }) => {
                             size="small"
                             label={batch.planType}
                             sx={{
-                                backgroundColor: membershipTypeColors[(batch.batchId || 1) % membershipTypeColors.length] || "primary.main",
+                                backgroundColor:
+                                    membershipTypeColors[
+                                        (batch.batchId || 1) % membershipTypeColors.length
+                                    ] || "primary.main",
                                 color: "white",
                                 fontWeight: "bold",
                             }}
@@ -60,8 +63,8 @@ const ActivityBatchCard = ({ batch }) => {
                 </Stack>
             </CardContent>
         </Card>
-    )
-}
+    );
+};
 
 ActivityBatchCard.propTypes = {
     batch: PropTypes.shape({
@@ -75,4 +78,4 @@ ActivityBatchCard.propTypes = {
     }).isRequired,
 };
 
-export default ActivityBatchCard
+export default ActivityBatchCard;

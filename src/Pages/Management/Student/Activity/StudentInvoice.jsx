@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useRef } from 'react';
 import { getLocalDateTime } from '../../../../utils/DateUtil';
-import FlexBetween from '../../../../Components/FlexBetween';
 import HtmlToPdfViewer from '../../../../Components/Html2PDF';
 import { useUI } from '../../../../context/UIContext';
+import StyledDialog from '../../../../Components/New/StyledDialog';
+import { MailIcon, PrinterIcon } from 'lucide-react';
+import { WhatsApp } from '@mui/icons-material';
 
 const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -17,11 +16,17 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
   const studio = useSelector((state) => state.auth.studio);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md">
+    <StyledDialog open={open} onClose={onClose} maxWidth="md" confirmText='Download' onConfirm={() => pdfViewerRef.current.downloadPDF()}
+      actions={[
+        { key: "email", tip: "E-mail", onClick: () => pdfViewerRef.current.sendMail(studentData?.email), component: <MailIcon /> },
+        { key: "whatsapp", tip: "WhatsApp", onClick: () => pdfViewerRef.current.sendWhatsApp(studentData?.phone), component: <WhatsApp/>},
+        { key: "print", tip: "Print", onClick: () => pdfViewerRef.current.printPDF(), component: <PrinterIcon/> },
+      ]}
+    >
       <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
         <HtmlToPdfViewer
           ref={pdfViewerRef}
-          fileName={`student-invoice-${studentData?.studentId}`}                 
+          fileName={`student-invoice-${studentData?.studentId}`}
           remainingPayload={
             {
               title: "Invoice",
@@ -168,19 +173,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
           }
         />
       </DialogContent>
-
-      <DialogActions>
-        <FlexBetween width={"100%"} mx={2} gap={2}>
-          <FlexBetween gap={1}>
-            <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">Download</Button>
-            <Button onClick={() => pdfViewerRef.current.sendMail(studentData?.email)} variant="outlined">E-mail</Button>
-            <Button onClick={() => pdfViewerRef.current.sendWhatsApp(studentData?.phone)} variant="outlined">WhatsApp</Button>
-            <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">Print</Button>
-          </FlexBetween>
-          <Button onClick={onClose} variant='outlined' color="primary">Close</Button>
-        </FlexBetween>
-      </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 

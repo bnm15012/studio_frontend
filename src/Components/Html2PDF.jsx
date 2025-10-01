@@ -6,11 +6,6 @@ import {
     Divider,
     Typography,
     styled,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
 } from '@mui/material';
 import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
@@ -18,6 +13,7 @@ import FlexEvenly from "./FlexEvenly";
 import Loading from "./Loading/Loading";
 import { useAlert } from "../utils/Alert";
 import { sendMessageApi } from "../Pages/Management/Communication/communication.api";
+import StyledDialog from "./New/StyledDialog";
 
 const PdfContainer = styled(Card)(() => ({
     width: '210mm',
@@ -322,11 +318,18 @@ const HtmlToPdfViewer = forwardRef(({
                     </Box>
                 </FlexBetween>
             </PdfContainer>
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md">
-                <DialogTitle>
-                    {dialogType === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
-                </DialogTitle>
-                <DialogContent>
+            <StyledDialog
+                title={dialogType === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
+                open={dialogOpen}
+                onConfirm={handleDialogConfirm}
+                confirmDisabled={
+                    !!inputError ||
+                    !inputValue ||
+                    (dialogType === "email"
+                        ? !studio?.passcode
+                        : currentBranch?.whatsAppStatus !== "ACTIVE")}
+                onClose={() => setDialogOpen(false)}>
+                <Box textAlign={"center"}>
                     <Typography color="red">
                         {dialogType === "email"
                             ? !studio?.passcode && "Email passcode not configured!"
@@ -345,24 +348,8 @@ const HtmlToPdfViewer = forwardRef(({
                             {inputError}
                         </Typography>
                     )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                    <Button
-                        onClick={handleDialogConfirm}
-                        color="primary"
-                        disabled={
-                            !!inputError ||
-                            !inputValue ||
-                            (dialogType === "email"
-                                ? !studio?.passcode
-                                : currentBranch?.whatsAppStatus !== "ACTIVE")
-                        }
-                    >
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                </Box>
+            </StyledDialog>
         </>
     );
 });

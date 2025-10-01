@@ -3,25 +3,27 @@ import PropTypes from 'prop-types';
 import { Autocomplete, TextField } from '@mui/material';
 import FlexBetween from './FlexBetween';
 
-const AutoCompleteSelectField = ({ currentValue, onChange, getOptions }) => {
+const AutoCompleteSelectField = ({ currentKey, onChange, getOptions }) => {
   const [options, setOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     const fetchOptions = async () => {
-      if (searchTerm.length >= 3) {
-        const result = await getOptions(searchTerm);
-        setOptions(
-          result.map((option) => ({
-            label: option.groupName,
-            value: option.id,
-          }))
-        );
-      } else {
+      try {
+        let result = [];
+        if (searchTerm.length >= 3) {
+          result = await getOptions(searchTerm, 0, 10);
+        } else if (searchTerm.length === 0) {
+          result = await getOptions("", 0, 5);
+        }
+        setOptions(result)
+      } catch (err) {
+        console.error("Error fetching options", err);
         setOptions([]);
       }
     };
+
     fetchOptions();
   }, [searchTerm, getOptions]);
 
@@ -30,17 +32,15 @@ const AutoCompleteSelectField = ({ currentValue, onChange, getOptions }) => {
       <Autocomplete
         fullWidth
         options={options}
-        getOptionLabel={(option) => option.label}
-        value={
-          options.find((opt) => opt.value === currentValue) || null
-        }
+        getOptionLabel={(option) => option.value || ""}
+        value={options.find((opt) => opt.key === currentKey) || null}
         onChange={(event, newValue) => {
-            onChange(newValue.value)
+          onChange(newValue ? newValue.key : null);
         }}
         inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-          setSearchTerm(newInputValue);
+        onInputChange={(event, newInput) => {
+          setInputValue(newInput);
+          setSearchTerm(newInput);
         }}
         renderInput={(params) => (
           <TextField {...params} variant="standard" />
@@ -51,9 +51,11 @@ const AutoCompleteSelectField = ({ currentValue, onChange, getOptions }) => {
 };
 
 AutoCompleteSelectField.propTypes = {
-  currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  currentKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func.isRequired,
   getOptions: PropTypes.func.isRequired,
+  keyField: PropTypes.string.isRequired,
+  valueField: PropTypes.string.isRequired,
 };
 
 export default AutoCompleteSelectField;

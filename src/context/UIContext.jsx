@@ -17,7 +17,7 @@ const UIContext = createContext({
 export const UIProvider = ({ children }) => {
   const settings = useSelector((state) => state.auth.settings);
   const user = useSelector((state) => state.auth.user);
-  const isMobile = useMediaQuery("(max-width: 700px)");
+  const isMobile = useMediaQuery("(max-width: 1000px)");
   const isAdmin = user?.role === "ADMIN";
   const DEBUG = import.meta.env.VITE_DEBUG === "true";
 

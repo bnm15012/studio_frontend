@@ -1,82 +1,64 @@
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   FormControl,
   Select,
   MenuItem,
-  Button,
   TextField,
   InputLabel,
   Box,
   Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import StyledDialog from '../../../Components/New/StyledDialog';
 
 const PaymentEntryDialog = ({ open, setOpen, onSave, paymentEntry, setPaymentEntry, paymentStatus, paymentType }) => {
   return (
-    <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogTitle sx={{
-        backgroundColor: 'primary.main',
-        color: 'white',
-        fontSize: '1.2rem'
-      }}>
-        Payment Entry
-      </DialogTitle>
+    <StyledDialog onConfirm={onSave} confirmText='Save' title={"Payment Entry"} open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: 2 }}>
+        <Typography fontWeight={"bolder"}>
+          Actual Amount:  {paymentEntry.actualAmount}
+        </Typography>
+        <TextField
+          label="Final Amount"
+          type="number"
+          value={paymentEntry.amount}
+          fullWidth
+          onChange={(e) => setPaymentEntry({ ...paymentEntry, amount: e.target.value })}
+          variant="outlined"
+          InputProps={{
+            startAdornment: <Typography sx={{ mr: 1 }}>₹</Typography>
+          }}
+        />
 
-      <DialogContent sx={{ mt: 2 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: 2 }}>
-          <Typography fontWeight={"bolder"}>
-            Actual Amount:  {paymentEntry.actualAmount}
-          </Typography>
-          <TextField
-            label="Final Amount"
-            type="number"
-            value={paymentEntry.amount}
-            fullWidth
-            onChange={(e) => setPaymentEntry({ ...paymentEntry, amount: e.target.value })}
-            variant="outlined"
-            InputProps={{
-              startAdornment: <Typography sx={{ mr: 1 }}>₹</Typography>
-            }}
-          />
+        <FormControl fullWidth>
+          <InputLabel>Payment Status</InputLabel>
+          <Select
+            value={paymentEntry.status}
+            label="Payment Status"
+            onChange={(e) => setPaymentEntry({ ...paymentEntry, status: e.target.value })}
+          >
+            {paymentStatus?.map((status) => (
+              <MenuItem key={status.value} value={status.value}>
+                {status.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-          <FormControl fullWidth>
-            <InputLabel>Payment Status</InputLabel>
-            <Select
-              value={paymentEntry.status}
-              label="Payment Status"
-              onChange={(e) => setPaymentEntry({ ...paymentEntry, status: e.target.value })}
-            >
-              {paymentStatus?.map((status) => (
-                <MenuItem key={status.value} value={status.value}>
-                  {status.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth>
-            <InputLabel>Payment Type</InputLabel>
-            <Select
-              value={paymentEntry.paymentType}
-              label="Payment Type"
-              onChange={(e) => setPaymentEntry({ ...paymentEntry, paymentType: e.target.value })}
-            >
-              {paymentType?.map((type) => (
-                <MenuItem key={type.value} value={type.value}>
-                  {type.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {/* <FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Payment Type</InputLabel>
+          <Select
+            value={paymentEntry.paymentType}
+            label="Payment Type"
+            onChange={(e) => setPaymentEntry({ ...paymentEntry, paymentType: e.target.value })}
+          >
+            {paymentType?.map((type) => (
+              <MenuItem key={type.value} value={type.value}>
+                {type.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {/* <FormControl>
             <DateTimeField
               format="DATE"
               value={paymentEntry?.paymentDate}
@@ -84,26 +66,8 @@ const PaymentEntryDialog = ({ open, setOpen, onSave, paymentEntry, setPaymentEnt
               textFieldVarient={"outlined"}
             />
           </FormControl> */}
-        </Box>
-      </DialogContent>
-
-      <DialogActions sx={{ p: 2 }}>
-        <Button
-          onClick={() => setOpen(false)}
-          variant="outlined"
-          color="error"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={onSave}
-          variant="contained"
-          color="primary"
-        >
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </StyledDialog>
   )
 }
 PaymentEntryDialog.propTypes = {

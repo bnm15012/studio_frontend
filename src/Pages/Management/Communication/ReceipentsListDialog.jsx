@@ -4,30 +4,22 @@ import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
 import { getMessageRecipientsAPI } from "./communication.api";
 import {
-  Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  Button,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
   CircularProgress,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { StyledTable } from "../../../Components/StyledTableComponents";
+import StyledDialog from "../../../Components/New/StyledDialog";
 
 const ReceipentsListDialog = ({ open, onClose, messageId }) => {
   const showAlert = useAlert();
   const token = useSelector((state) => state.auth.token);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm")); // Makes dialog full screen on small devices
 
   const getMessageHistory = useCallback(async () => {
     try {
@@ -57,21 +49,8 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
   }, [open, getMessageHistory]);
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      fullScreen={fullScreen}
-      maxWidth="md"
-    >
-      <DialogTitle>Message Recipients</DialogTitle>
-      <DialogContent
-        dividers
-        style={{
-          maxHeight: fullScreen ? "100vh" : "60vh",
-          overflowY: "auto",
-        }}
-      >
+    <StyledDialog closeIcon={true} title={"Message Recipients"} open={open} onClose={onClose} fullWidth maxWidth="md">
+      <DialogContent style={{ maxHeight: "60vh", overflowY: "auto" }}>
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
             <CircularProgress />
@@ -103,12 +82,7 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
           </StyledTable>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 

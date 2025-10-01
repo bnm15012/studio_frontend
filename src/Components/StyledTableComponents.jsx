@@ -30,7 +30,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: "8px",
-  overflow: "hidden",
+  overflowX: "auto",
   boxShadow: theme.shadows[7],
 }));
 

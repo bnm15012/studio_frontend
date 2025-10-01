@@ -1,28 +1,29 @@
 import PropTypes from "prop-types";
 import ActivityBatchCard from "./ActivityBatchCard";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { DialogContent } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
+import StyledDialog from "../../../Components/New/StyledDialog"; // adjust path as needed
 
-const ShowMoreBatches = ({ batchEntries, onClose }) => {
-    return <Dialog open={true} fullWidth onClose={onClose} sx={{ maxHeight: '80vh', m:"auto" }}>
-        <DialogTitle>
-            <Typography variant="h6">All Batches</Typography>
-        </DialogTitle>
+const ShowMoreBatches = ({ batchEntries, onClose }) => (
+    <StyledDialog
+        cancelText="Close"
+        open={true}
+        maxWidth="md"
+        onClose={onClose}
+        sx={{ maxHeight: "80vh", m: "auto" }}
+        title={"All Batches"}
+        closeIcon={true}
+    >
         <DialogContent>
             <FlexBetween gap={2} my={2} flexDirection="column">
-                {batchEntries && batchEntries.map((batch) => (
-                    <ActivityBatchCard key={batch.batchId} batch={batch} />
-                ))}
+                {batchEntries &&
+                    batchEntries.map((batch) => (
+                        <ActivityBatchCard key={batch.batchId} batch={batch} />
+                    ))}
             </FlexBetween>
         </DialogContent>
-        <DialogActions>
-            <Button onClick={onClose} color="primary" variant="outlined">
-                Close
-            </Button>
-        </DialogActions>
-    </Dialog>
-}
-
+    </StyledDialog>
+);
 
 ShowMoreBatches.propTypes = {
     batchEntries: PropTypes.arrayOf(
@@ -34,10 +35,9 @@ ShowMoreBatches.propTypes = {
             endTime: PropTypes.string.isRequired,
             price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
             daysPerWeek: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        },
-        ),
+        }),
     ).isRequired,
     onClose: PropTypes.func.isRequired,
 };
 
-export default ShowMoreBatches
+export default ShowMoreBatches;

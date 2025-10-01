@@ -17,23 +17,22 @@ import dialogSlice from './dialogSlice'
 import notificationSlice from './notificationSlice';
 import branchSlice from './branchSlice'
 import activitySlice from './activitySlice'
-import expenseSlice from './expenseSlice'
 import paymentSlice from './paymentSlice'
 import analysisSlice from './analysisSlice'
-import clientSlice from './clientSlice'
 import bookingSlice from './bookingSlice'
 import membershipTypesSlice from './activityMembershipTypeSlice';
 import enquirySlice from './enquirySlice';
+import { clientCruds, expenseCruds } from '../api/all.api';
 
 const rootReducer = combineReducers({
   auth: authSlice,
   activity: activitySlice,
   branch: branchSlice,
-  expense: expenseSlice,
+  clients: clientCruds.reducer,
+  expense: expenseCruds.reducer,
   payment: paymentSlice,
   analysis: analysisSlice,
   dialog: dialogSlice,
-  client: clientSlice,
   booking: bookingSlice,
   notifications: notificationSlice,
   membershipTypes: membershipTypesSlice,

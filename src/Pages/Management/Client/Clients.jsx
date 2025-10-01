@@ -8,8 +8,8 @@ import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import TableWithEditAddDelete from "./CLientTable.jsx";
-import { setClientPage } from "../../../state/clientSlice.js";
-import { getAllDataAPI } from "../../../api/common.api.js";
+import { useAppSelector } from "../../../state/index.js";
+import { clientCruds } from "../../../api/all.api.js";
 
 const clientTypes = [
   "GROUP",
@@ -24,17 +24,17 @@ const Clients = () => {
   const [page, setPage] = useState(1);
   const token = useSelector((state) => state.auth.token);
   const currentBranch = useSelector((state) => state.branch.currentBranch);
-  const cachedClients = useSelector((state) => state.client);
+  const clientState = useAppSelector((state) => state.clients);
   const [newRow, setNewRow] = useState(null);
+  // debugger;
 
   const fetchClients = useCallback(async (page = 1, searchTerm = "") => {
-    dispatch(getAllDataAPI({ rootId: currentBranch.branchId, token, showAlert, route: "clients", setData: setClientPage, setLoading, params: { size, page, searchTerm } }));
-  }, [dispatch, currentBranch.branchId, token, showAlert]);
+    dispatch(clientCruds.getAll(clientState, showAlert, setLoading, token, {page, size, searchTerm}, currentBranch.branchId));
+  }, [dispatch, clientState, showAlert, token, currentBranch.branchId]);
 
   useEffect(() => {
-    !cachedClients.length && fetchClients();
-  }, [cachedClients.length, fetchClients]);
-
+    !clientState.items.length && fetchClients();
+  }, [clientState.items.length, fetchClients]);
 
   const handlePageChange = async (e, p) => {
     setLoading(true);
@@ -45,10 +45,10 @@ const Clients = () => {
 
   const handleAddNew = () => {
     setNewRow({
-      "groupName": "",
-      "pocName": "",
-      "pocPhone": "",
-      "pocEmail": "",
+      "groupName": "test",
+      "pocName": "test",
+      "pocPhone": "test",
+      "pocEmail": "test",
       "clientType": clientTypes[0],
       "notes": "",
       "branchId": currentBranch.branchId
@@ -72,9 +72,8 @@ const Clients = () => {
       </FlexBetween>
       <Box>
         <TableWithEditAddDelete
-          initialData={cachedClients.pages[page] ?? []}
+          initialData={clientState.items ?? []}
           clientTypes={clientTypes}
-          branchId={currentBranch.branchId}
           startIndex={(parseInt(page) - 1) * size}
           token={token}
           newRow={newRow}
@@ -84,7 +83,7 @@ const Clients = () => {
       <FlexBetween>
         <Box></Box>
         <Pagination
-          count={cachedClients.totalPages}
+          count={clientState.totalPages}
           page={page}
           onChange={handlePageChange}
           color="primary"

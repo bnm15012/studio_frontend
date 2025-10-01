@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   Select,
   MenuItem,
@@ -28,6 +24,7 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { Collapse } from '@mui/material';
 import PropTypes from "prop-types";
 import TemplateEditor from "./TemplateEditor";
+import StyledDialog from "../../../Components/New/StyledDialog";
 
 const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);
 
@@ -258,13 +255,17 @@ const TemplatesPage = () => {
       </StyledTableContainer>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={openDialog} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>
-          {isEditMode ? "Edit Template" : "Add Template"}
-        </DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, p: 2 }}>
+      <StyledDialog
+        open={openDialog}
+        onClose={handleClose}
+        title={isEditMode ? "Edit Template" : "Add Template"}
+        confirmText={isEditMode ? "Update" : "Save"}
+        cancelText="Cancel"
+        onConfirm={handleSave}
+        maxWidth="md"
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, p: 2 }}>
           <TextField
-            sx={{ mt: 2 }}
             label="Template Name"
             value={currentTemplate?.templateName || ""}
             onChange={(e) =>
@@ -280,17 +281,15 @@ const TemplatesPage = () => {
             fullWidth
             displayEmpty
           >
-            {
-              [...templateTypes].map((templateType) => (
-                <MenuItem key={templateType} value={templateType}>
-                  {templateType}
-                </MenuItem>
-              ))
-            }
+            {[...templateTypes].map((templateType) => (
+              <MenuItem key={templateType} value={templateType}>
+                {templateType}
+              </MenuItem>
+            ))}
           </Select>
           <TemplateEditor
             disableVars={currentTemplate?.templateType === "COMMUNICATION"}
-            label={"Subject"}
+            label="Subject"
             value={currentTemplate?.templateSubject || ""}
             onChange={(val) =>
               setCurrentTemplate({ ...currentTemplate, templateSubject: val })
@@ -299,22 +298,14 @@ const TemplatesPage = () => {
           <TemplateEditor
             rows={8}
             disableVars={currentTemplate?.templateType === "COMMUNICATION"}
-            label={"Content"}
+            label="Content"
             value={currentTemplate?.templateContent || ""}
             onChange={(val) =>
               setCurrentTemplate({ ...currentTemplate, templateContent: val })
             }
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleSave} variant="contained" color="primary">
-            {isEditMode ? "Update" : "Save"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </Box>
+      </StyledDialog>
       {loading && <Loading />}
       {deleteDialogOpen && <DeleteDialog
         open={deleteDialogOpen}

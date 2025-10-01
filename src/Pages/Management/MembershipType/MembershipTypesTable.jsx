@@ -141,7 +141,7 @@ const MembershipTypesTable = ({
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <StyledTable sx={{ minWidth: 650 }}>
+      <StyledTable>
         <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
           <StyledTableRow>
             <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>

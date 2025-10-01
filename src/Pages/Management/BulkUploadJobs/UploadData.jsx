@@ -2,11 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
-  Dialog,
   DialogContent,
-  DialogTitle,
-  Typography,
-  IconButton,
   DialogActions,
   TableHead,
   TableRow,
@@ -16,13 +12,13 @@ import {
   MenuItem,
 } from '@mui/material';
 import { Link } from "react-router-dom";
-import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FileDropZone from '../../../Components/FileDropZone';
 import FlexBetween from '../../../Components/FlexBetween';
 import Papa from 'papaparse';
 import { TablePagination, Box } from '@mui/material'; // Make sure this is imported
 import { StyledTable } from '../../../Components/StyledTableComponents';
+import StyledDialog from '../../../Components/New/StyledDialog';
 
 
 const validationSchema = {
@@ -102,17 +98,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
       <Button variant="contained" onClick={() => setOpenDialog(true)}>
         <UploadFileIcon />
       </Button>
-      <Dialog open={openDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <FlexBetween>
-            <Typography my="auto" variant="h5">
-              Upload File
-            </Typography>
-            <IconButton onClick={() => setOpenDialog(false)} sx={{ p: 1 }}>
-              <CloseIcon />
-            </IconButton>
-          </FlexBetween>
-        </DialogTitle>
+      <StyledDialog title={"Upload File"} closeIcon={true} open={openDialog} maxWidth="md" fullWidth>
         <DialogContent sx={{ p: 2 }}>
           <FileDropZone
             file={file}
@@ -231,7 +217,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
               </Button>
             </Box></FlexBetween>
         </DialogActions>
-      </Dialog>
+      </StyledDialog>
     </>
   );
 };

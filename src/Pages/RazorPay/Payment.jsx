@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  Dialog,
-  DialogTitle,
   DialogContent,
-  DialogActions,
-  Button,
   Typography,
   Box,
   Divider,
@@ -16,16 +12,17 @@ import PropTypes from "prop-types";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
 import { getCurrentDateTimeUTC, getLocalDateTime } from "../../utils/DateUtil";
+import StyledDialog from "../../Components/New/StyledDialog";
 
 const PaymentDialog = ({ open, onClose, plan }) => {
-  const showAlert = useAlert()
-  const dispatch = useDispatch()
+  const showAlert = useAlert();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const token = useSelector((state) => state.auth.token);
-  const user = useSelector((state) => state.auth.user);
-  const studio = useSelector((state) => state.auth.studio)
-  const currentBranch = useSelector((state) => state.branch.currentBranch);
-  const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan)
+  const token = useSelector(state => state.auth.token);
+  const user = useSelector(state => state.auth.user);
+  const studio = useSelector(state => state.auth.studio);
+  const currentBranch = useSelector(state => state.branch.currentBranch);
+  const subscriptionPlan = useSelector(state => state.auth.subscriptionPlan);
 
   useEffect(() => {
     if (!window.Razorpay) {
@@ -43,7 +40,7 @@ const PaymentDialog = ({ open, onClose, plan }) => {
         token,
         plan: plan.planType,
         branchId: currentBranch.branchId,
-        studioId: studio.studioId
+        studioId: studio.studioId,
       });
 
       if (success) {
@@ -65,10 +62,10 @@ const PaymentDialog = ({ open, onClose, plan }) => {
 
               const paymentResponse = await verifyPayment(token, paymentDetails);
               if (paymentResponse.success) {
-                dispatch(setSubscriptionPlan({ subscriptionPlan: paymentResponse.data }))
+                dispatch(setSubscriptionPlan({ subscriptionPlan: paymentResponse.data }));
                 showAlert(
                   paymentResponse.message || `Payment successful! Payment ID: ${razorpay_payment_id}`,
-                  "success"
+                  "success",
                 );
               }
               onClose();
@@ -100,14 +97,21 @@ const PaymentDialog = ({ open, onClose, plan }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle align="center">
-        <Typography variant="h6" fontWeight="bold">Confirm Payment</Typography>
-      </DialogTitle>
+    <StyledDialog open={open} onClose={onClose} onConfirm={handlePayment} confirmDisabled={loading} confirmText={loading ? "Processing..." : "Pay Now"} maxWidth="sm" fullWidth title="Confirm Payment">
       <Divider />
       <DialogContent sx={{ textAlign: "center", p: 3 }}>
         <Typography variant="body1">
-          You are about to purchase the <strong>{plan.planType}</strong> plan for <strong>Rs. {plan.amount}</strong>.
+          You are about to purchase the
+          {" "}
+          <strong>{plan.planType}</strong>
+          {" "}
+          plan for
+          {" "}
+          <strong>
+            Rs.
+            {plan.amount}
+          </strong>
+          .
         </Typography>
         <Typography variant="body2" color="text.secondary" mt={1}>
           for the duration below.
@@ -125,23 +129,18 @@ const PaymentDialog = ({ open, onClose, plan }) => {
           }}
         >
           <Typography variant="body2">
-            <strong>Start Date:</strong> {subscriptionPlan?.endDate ? getLocalDateTime(subscriptionPlan.endDate) : new Date().toLocaleDateString("en-GB")}
+            <strong>Start Date:</strong>
+            {" "}
+            {subscriptionPlan?.endDate ? getLocalDateTime(subscriptionPlan.endDate) : new Date().toLocaleDateString("en-GB")}
           </Typography>
           <Typography variant="body2">
-            <strong>End Date:</strong> {getLocalDateTime(getEndDateBySubscriptionPlan(subscriptionPlan?.endDate ? subscriptionPlan.endDate : getCurrentDateTimeUTC(), plan.planType))}
+            <strong>End Date:</strong>
+            {" "}
+            {getLocalDateTime(getEndDateBySubscriptionPlan(subscriptionPlan?.endDate ? subscriptionPlan.endDate : getCurrentDateTimeUTC(), plan.planType))}
           </Typography>
         </Box>
       </DialogContent>
-      <Divider />
-      <DialogActions sx={{ p: 2, justifyContent: "center", gap: 2 }}>
-        <Button onClick={onClose} sx={{ color: "red" }} variant="outlined" disabled={loading}>
-          Cancel
-        </Button>
-        <Button onClick={handlePayment} variant="contained" color="primary" disabled={loading}>
-          {loading ? "Processing..." : "Pay Now"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    </StyledDialog>
   );
 };
 
@@ -153,7 +152,7 @@ PaymentDialog.propTypes = {
     name: PropTypes.string.isRequired,
     planType: PropTypes.string.isRequired,
     amount: PropTypes.number.isRequired,
-    days: PropTypes.number.isRequired
+    days: PropTypes.number.isRequired,
   }),
 };
 

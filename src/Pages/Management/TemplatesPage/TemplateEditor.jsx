@@ -138,7 +138,6 @@ const TemplateEditor = ({ value, onChange, rows = 1, label = "Enter Text", disab
           sx={{
             maxHeight: 200,
             overflow: "auto",
-            width: 700,
           }}
         >
           {filteredVariables.map((v) => (

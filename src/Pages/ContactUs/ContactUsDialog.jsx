@@ -1,28 +1,12 @@
-import {
-    Box,
-    IconButton,
-    Dialog,
-    useTheme,
-} from "@mui/material";
-import FlexBetween from "../../Components/FlexBetween";
+import { Box, useTheme } from "@mui/material";
 import ContactForm from "./ContactForm";
-import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import StyledDialog from "../../Components/New/StyledDialog";
 
 const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
     const theme = useTheme();
     return (
-        <Dialog open={open}>
-            <FlexBetween>
-                <Box></Box>
-                <IconButton
-                    onClick={() => {
-                        setOpenContactUsForm(false);
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            </FlexBetween>
+        <StyledDialog onClose={setOpenContactUsForm} closeIcon={true} open={open}>
             <Box
                 sx={{
                     boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
@@ -31,7 +15,7 @@ const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
             >
                 <ContactForm />
             </Box>
-        </Dialog>
+        </StyledDialog>
     );
 };
 ContactUsDialog.propTypes = {

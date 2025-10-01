@@ -23,7 +23,7 @@ const BranchesDropdown = () => {
   };
 
   return (
-    <FormControl variant="standard" sx={{ width: "10rem", mx: "auto" }}>
+    <FormControl variant="standard" sx={{ width: "10rem", m: "auto" }}>
       <Select
         id="branches"
         sx={{

@@ -13,10 +13,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useAlert } from "../../../utils/Alert";
-import {
-  // deleteClientAPI,
-  updateClientAPI,
-} from "./client.api";
 import Loading from "../../../Components/Loading/Loading";
 import FlexEvenly from "../../../Components/FlexEvenly";
 import {
@@ -28,8 +24,7 @@ import {
 import PropTypes from "prop-types";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useDispatch } from "react-redux";
-import { addDataAPI } from "../../../api/common.api";
-import { addClient } from "../../../state/clientSlice";
+import { clientCruds } from "../../../api/all.api";
 
 const TableWithEditAddDelete = ({
   initialData,
@@ -37,7 +32,6 @@ const TableWithEditAddDelete = ({
   clientTypes,
   newRow,
   setNewRow,
-  branchId,
   startIndex
 }) => {
   const showAlert = useAlert();
@@ -73,31 +67,12 @@ const TableWithEditAddDelete = ({
     try {
       if (newRow !== null) {
         if (!validateRow(newRow)) return;
-        dispatch(addDataAPI({ newData: { ...newRow, branchId }, showAlert, route: "clients", setData: addClient, setLoading, token }))
+        dispatch(clientCruds.add(newRow, token, showAlert, setLoading, true))
         setNewRow(null);
       } else {
         const updatedClient = data[index];
         if (!validateRow(updatedClient)) return;
-        const {
-          data: updatedData,
-          success,
-          message,
-        } = await updateClientAPI({
-          clientId: updatedClient.clientId,
-          clientData: updatedClient,
-          token,
-        });
-        if (success) {
-          setData((prev) =>
-            prev.map((client, i) =>
-              i === index ? { ...client, ...updatedData } : client
-            )
-          );
-          showAlert(message, "success");
-        } else {
-          showAlert(message, "error");
-        }
-        // dispatch(updateDataAPI({ updatedData: updatedClient, token,showAlert, id: updatedClient.clientId, route:"clients", setData:, setLoading}))
+        dispatch(clientCruds.update(updatedClient["clientId"], updatedClient, token, showAlert, setLoading))
         setEditingRowIndex(null);
       }
     } catch (error) {
@@ -112,26 +87,6 @@ const TableWithEditAddDelete = ({
     setNewRow(null);
     setEditingRowIndex(null);
   };
-
-  // const handleDelete = async (index) => {
-  //   setLoading(true);
-
-  //   try {
-  //     const clientId = data[index].clientId;
-  //     const { success, message } = await deleteClientAPI({ clientId, token });
-  //     if (success) {
-  //       setData((prev) => prev.filter((_, i) => i !== index));
-  //       showAlert(message, "success");
-  //     } else {
-  //       showAlert(message, "error");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     showAlert("Failed to delete client!", "error");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleChange = (value, index, field) => {
     if (index === null) {
@@ -148,7 +103,7 @@ const TableWithEditAddDelete = ({
   return (
     <StyledTableContainer component={Paper}>
       {loading && <Loading />}
-      <StyledTable sx={{ minWidth: 650 }}>
+      <StyledTable  >
         <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
           <StyledTableRow>
             <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
@@ -383,6 +338,5 @@ TableWithEditAddDelete.propTypes = {
   newRow: PropTypes.object,
   setNewRow: PropTypes.func.isRequired,
   startIndex: PropTypes.number.isRequired,
-  branchId: PropTypes.number.isRequired,
 };
 export default TableWithEditAddDelete;

@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { Button, Dialog, DialogTitle, DialogContent, IconButton, Typography, Stack, Box } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
-import { QrCodeIcon } from "lucide-react";
+import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import { useSelector } from "react-redux";
+import StyledDialog from "./New/StyledDialog";
 
 const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contained" }) => {
     const [open, setOpen] = useState(false);
@@ -56,37 +56,20 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                 <QrCodeIcon />
             </Button>
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    {title}
-                    <IconButton
-                        aria-label="close"
-                        onClick={handleClose}
-                        sx={{ position: "absolute", right: 8, top: 8 }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </DialogTitle>
-
-                <DialogContent>
-                    <div ref={qrRef} style={{ textAlign: "center", padding: "20px", marginTop: "50px" }}>
-                        <Box padding={2} backgroundColor="white">
-                            <QRCode value={qrLink} size={qrSize} />
-                        </Box>
-                        <Typography variant="body2" sx={{ fontSize: "1.2rem", mt: 2 }}>
-                            {qrLink}
-                        </Typography>
-                    </div>
-                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-                        <Button variant="contained" onClick={handleDownloadPDF}>
-                            Download
-                        </Button>
-                        <Button variant="outlined" onClick={handlePrintPDF}>
-                            Print
-                        </Button>
-                    </Stack>
-                </DialogContent>
-            </Dialog>
+            <StyledDialog closeIcon={true} open={open} cancelText="Close" onClose={handleClose} title={title} onConfirm={handleDownloadPDF} confirmText="Download"
+                actions={[
+                    { key: "print", tip: "Print PDF", onClick: handlePrintPDF, component: <PrinterIcon /> }
+                ]}
+            >
+                <div ref={qrRef} style={{ textAlign: "center", padding: "20px", marginTop: "50px" }}>
+                    <Box padding={2} backgroundColor="white">
+                        <QRCode value={qrLink} size={qrSize} />
+                    </Box>
+                    <Typography variant="body2" sx={{ fontSize: "1.2rem", mt: 2 }}>
+                        {qrLink}
+                    </Typography>
+                </div>
+            </StyledDialog>
         </>
     );
 };

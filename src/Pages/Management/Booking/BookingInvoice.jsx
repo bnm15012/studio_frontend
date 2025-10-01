@@ -1,8 +1,5 @@
 import PropTypes from 'prop-types';
-import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import { useAlert } from '../../../utils/Alert';
@@ -13,6 +10,9 @@ import { getAllTemplatesAPI } from '../TemplatesPage/Template.api';
 import { replacePlaceholders } from '../../../utils/globalFuns';
 import { Typography } from '@mui/material';
 import HtmlToPdfViewer from '../../../Components/Html2PDF';
+import StyledDialog from '../../../Components/New/StyledDialog';
+import { MailIcon, PrinterIcon } from 'lucide-react';
+import { WhatsApp } from '@mui/icons-material';
 
 const sectionTitle = {
     marginTop: '10mm',
@@ -79,7 +79,13 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
         : '';
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md">
+        <StyledDialog open={open} onClose={onClose} confirmText='Download' onConfirm={() => pdfViewerRef.current.downloadPDF()} cancelText='Close' maxWidth="md"
+            actions={[
+                { key: "send-mail", tip: "Send Mail", onClick: () => pdfViewerRef.current.downloadPDF(), component: <MailIcon /> },
+                { key: "print", tip: "Print PDF", onClick: () => pdfViewerRef.current.printPDF(), component: <PrinterIcon/> },
+                { key: "whatsapp", tip: "Send WhatsApp", onClick: () => pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone), component: <WhatsApp/> },
+            ]}
+        >
             <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
@@ -204,28 +210,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                             </div>
                         </div>} />
             </DialogContent>
-            <DialogActions>
-                <FlexBetween width={'100%'} mx={2} gap={2}>
-                    <FlexBetween gap={1}>
-                        <Button onClick={() => pdfViewerRef.current.downloadPDF()} variant="contained">
-                            Download
-                        </Button>
-                        <Button onClick={() => pdfViewerRef.current.sendMail(bookingData?.clientEntry?.pocEmail)} variant="outlined">
-                            E-mail
-                        </Button>
-                        <Button onClick={() => pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone)} variant="outlined">
-                            WhatsApp
-                        </Button>
-                        <Button onClick={() => pdfViewerRef.current.printPDF()} variant="outlined">
-                            Print
-                        </Button>
-                    </FlexBetween>
-                    <Button onClick={onClose} variant="outlined" color="primary">
-                        Close
-                    </Button>
-                </FlexBetween>
-            </DialogActions>
-        </Dialog>
+        </StyledDialog>
     );
 };
 

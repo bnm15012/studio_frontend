@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Loading from "../../Components/Loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
-import { Dialog, IconButton, Box, Tabs, Tab, Typography, useTheme } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import FlexBetween from "../../Components/FlexBetween";
+import { Box, Tabs, Tab, useTheme } from "@mui/material";
 import ChangePassword from "./ChangePassword";
 import SubscriptionTab from "./SubscriptionTab";
 import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";
+import StyledDialog from "../../Components/New/StyledDialog";
 
 const dialogNames = [
   "profileDialog",
@@ -26,7 +25,7 @@ const ProfilePage = () => {
   const studio = useSelector((state) => state.auth.studio);
   const [tabValue, setTabValue] = useState(0);
   const dialog = useSelector(dialogOnTop());
-  const { DEBUG } = useUI();
+  const { DEBUG, isMobile } = useUI();
 
   const handleClose = () => {
     dispatch(clearAllDialogs());
@@ -50,60 +49,38 @@ const ProfilePage = () => {
   };
 
   return (
-    <Dialog
+    <StyledDialog
+      closeIcon={true}
+      title={tabValue === 0 ? "Profile Details" :
+        tabValue === 1 ? "Change Password" :
+          tabValue === 2 ? "Subscription Details" :
+            tabValue === 3 && DEBUG ? "Settings" : "Communication Configuration"}
       open={dialogNames.includes(dialog)}
-      maxWidth={"sm"}
-      fullWidth
       onClose={handleClose}
+      maxWidth="md"
       PaperProps={{
         sx: {
           borderRadius: 2,
-          minWidth: "50rem",
           maxHeight: tabValue === 1 ? '500px' : '90vh',
           minHeight: tabValue === 1 ? '400px' : 'auto',
         },
       }}
     >
-      <Box
-        sx={{
-          p: 2.5,
-          background: `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-          color: 'white'
-        }}
-      >
-        <FlexBetween>
-          <Typography variant="h5" fontWeight="500">
-            {tabValue === 0 ? "Profile Details" :
-              tabValue === 1 ? "Change Password" :
-                tabValue === 2 ? "Subscription Details" :
-                  tabValue === 3 && DEBUG ? "Settings" : "Communication Configuration"}
-          </Typography>
-          <IconButton onClick={handleClose} sx={{ color: 'white' }}>
-            <CloseIcon />
-          </IconButton>
-        </FlexBetween>
-      </Box>
-
       <Box sx={{ px: 2.5, py: 1.5 }}>
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
           aria-label="profile tabs"
-          variant="fullWidth"
+          variant={isMobile ? "scrollable" : "fullWidth"}
+          scrollButtons="auto"
           sx={{
-            '& .MuiTab-root': {
-              minHeight: '48px',
-              minWidth: '100px',
-              fontSize: '0.95rem',
-            },
-            '& .Mui-selected': {
-              color: theme.palette.primary.main,
-            },
-            '& .MuiTabs-indicator': {
-              height: 3,
-            },
+            width: '100%',
+            '& .MuiTab-root': { minHeight: 48, fontSize: '0.95rem' },
+            '& .Mui-selected': { color: theme.palette.primary.main },
+            '& .MuiTabs-indicator': { height: 3 },
           }}
         >
+
           <Tab label="Profile" disabled={admin?.role !== "ADMIN"} />
           <Tab label="Security" />
           <Tab label="Subscription" disabled={admin?.role !== "ADMIN"} />
@@ -135,7 +112,7 @@ const ProfilePage = () => {
           <Loading />
         )}
       </Box>
-    </Dialog >
+    </StyledDialog >
   );
 };
 

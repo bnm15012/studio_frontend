@@ -1,5 +1,6 @@
 import api from "../../../utils/api";
 
+
 const getErrorMessage = (error, defaultMessage) =>
   error.response?.data?.status?.statusMessage || defaultMessage;
 
@@ -32,59 +33,6 @@ export const getAllClientsAPI = async ({ branchId, page, size, token, searchTerm
     return {
       success: false,
       message: getErrorMessage(error, "Failed to fetch clients!"),
-    };
-  }
-};
-
-/**
- * Add a new client.
- * @param {Object} params - Parameters for API call.
- * @param {Object} params.clientData - client data to be added.
- * @param {string} params.token - Authorization token.
- */
-export const addClientAPI = async ({ clientData, token }) => {
-  try {
-    const response = await api.post(`/clients/add`, clientData, getHeaders(token));
-    const { data, status } = response.data;
-
-    return {
-      data: data[0],
-      success: true,
-      message: status.statusMessage || "Client added successfully!",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: getErrorMessage(error, "Failed to add client!"),
-    };
-  }
-};
-
-/**
- * Update an client by ID.
- * @param {Object} params - Parameters for API call.
- * @param {number} params.clientId - Client ID to update.
- * @param {Object} params.clientData - Updated client data.
- * @param {string} params.token - Authorization token.
- */
-export const updateClientAPI = async ({ clientId, clientData, token }) => {
-  try {
-    const response = await api.put(
-      `/clients/update/${clientId}`,
-      clientData,
-      getHeaders(token)
-    );
-    const { data, status } = response.data;
-
-    return {
-      data: data[0],
-      success: true,
-      message: status.statusMessage || "Client updated successfully!",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: getErrorMessage(error, "Failed to update client!"),
     };
   }
 };
