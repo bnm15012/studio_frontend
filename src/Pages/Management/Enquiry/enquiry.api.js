@@ -19,9 +19,7 @@ export const addEnquiryAPI = async ({ newData, token }) => {
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage ||
-                "Failed to add Enquiry!",
+            message: error.response?.data?.status?.statusMessage || "Failed to add Enquiry!",
         };
     }
 };
@@ -34,7 +32,7 @@ export const updateEnquiryAPI = async ({ enquiryData, token }) => {
             enquiryData,
             {
                 headers: { Authorization: `${token}` },
-            }
+            },
         );
         const { data, status } = response.data;
         return {
@@ -46,9 +44,7 @@ export const updateEnquiryAPI = async ({ enquiryData, token }) => {
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage ||
-                "Failed to update Enquiry!",
+            message: error.response?.data?.status?.statusMessage || "Failed to update Enquiry!",
         };
     }
 };
@@ -63,9 +59,7 @@ export const deleteEnquiryAPI = async ({ enquiryId, token }) => {
         });
         return { success: true, message: "Enquiry deleted successfully!" };
     } catch (error) {
-        const message =
-            error?.response?.data?.status?.statusMessage ||
-            "Error deleting Enquiry";
+        const message = error?.response?.data?.status?.statusMessage || "Error deleting Enquiry";
         return { success: false, message };
     }
 };
@@ -75,7 +69,7 @@ export const getAllEnquirysAPI = async ({ branchId, token, page, size, searchTer
     try {
         const response = await api.get(`/enquiries/getAll/${branchId}`, {
             headers: { Authorization: `${token}` },
-            params: { page: page - 1, size, searchTerm },
+            params: { page, size, searchTerm },
         });
         const { data, status } = response.data;
         return {
@@ -87,9 +81,7 @@ export const getAllEnquirysAPI = async ({ branchId, token, page, size, searchTer
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage ||
-                "Failed to get all Enquiries!",
+            message: error.response?.data?.status?.statusMessage || "Failed to get all Enquiries!",
         };
     }
 };

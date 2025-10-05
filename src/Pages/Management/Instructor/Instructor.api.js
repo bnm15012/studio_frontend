@@ -86,7 +86,7 @@ export const getAllInstructorsAPI = async ({
         headers: { Authorization: `${token}` },
         params: {
           searchTerm,
-          page: page - 1,
+          page ,
           size,
           membershipStatus,
         },

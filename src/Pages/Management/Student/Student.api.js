@@ -61,7 +61,7 @@ export const getAllStudentsAPI = async ({
       },
       params: {
         size,
-        page: page - 1,
+        page ,
         searchTerm,
         membershipStatus,
       },

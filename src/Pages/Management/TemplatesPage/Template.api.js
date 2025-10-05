@@ -86,7 +86,7 @@ export const getAllTemplatesAPI = async ({
         params: {
           searchTerm,
           templateType,
-          page: page - 1,
+          page ,
           size,
         },
       }
