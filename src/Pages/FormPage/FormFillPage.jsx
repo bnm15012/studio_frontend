@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import FormBuilder from "../../Components/FormBuilder";
 import { addStudentAPI } from "../Management/Student/Student.api";
 import { useEffect } from "react";
-import { addEnquiryAPI } from "../Management/Enquiry/enquiry.api";
+import { addEnquiryAPI } from "../../api/enquiry.api";
 import { getCurrentDateTimeUTC } from "../../utils/DateUtil";
 
 const formData = [

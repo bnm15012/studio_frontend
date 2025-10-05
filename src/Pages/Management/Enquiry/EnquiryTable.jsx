@@ -15,34 +15,37 @@ import {
 } from "../../../Components/StyledTableComponents";
 import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
-import { useDispatch } from "react-redux";
-import { addEnquiryAPI, deleteEnquiryAPI, updateEnquiryAPI } from "./enquiry.api";
-import { addEnquiry, deleteEnquiry, updateEnquiry } from "../../../state/enquirySlice";
+import { useDispatch, useSelector } from "react-redux";
 import DateTimeField from "../../../Components/DateTimeField";
 import { getLocalDateTime } from "../../../utils/DateUtil";
+import { enquiryCruds } from "../../../api/all.api";
+import { useUI } from "../../../context/UIContext";
 
-const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
+const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
     const dispatch = useDispatch();
+    const { isMobile } = useUI();
+    const token = useSelector((state) => state.auth.token);
     const showAlert = useAlert();
     const [data, setData] = useState([]);
-    const [editingRowIndex, setEditingRowIndex] = useState(null);
+    const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteDialogIndex, setDeleteDialogIndex] = useState(null);
+    const [deleteEnquiryId, setDeleteEnquiryId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
 
-    const handleEdit = (index) => {
-        setOriginalRow({ ...data[index] });
-        setEditingRowIndex(index);
+    const handleEdit = (enquiryId) => {
+        const original = data.find((d) => d.enquiryId === enquiryId);
+        setOriginalRow({ ...original });
+        setEditingId(enquiryId);
     };
 
     const handleCancel = () => {
         if (newRow) {
             setNewRow(null);
-        } else if (editingRowIndex !== null && originalRow) {
-            setData((prev) => prev.map((row, i) => (i === editingRowIndex ? originalRow : row)));
+        } else if (editingId && originalRow) {
+            setData((prev) => prev.map((row) => (row.enquiryId === editingId ? originalRow : row)));
         }
-        setEditingRowIndex(null);
+        setEditingId(null);
         setOriginalRow(null);
     };
 
@@ -50,48 +53,19 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
         setData(initialData);
     }, [initialData]);
 
-    const handleSave = async (index) => {
+    const handleSave = async (enquiryId) => {
         setLoading(true);
 
         try {
             if (newRow !== null) {
-                const newEnquiry = { ...newRow, studioId };
-                const {
-                    data: addedEnquiry,
-                    success,
-                    message,
-                } = await addEnquiryAPI({
-                    newData: newEnquiry,
-                    token,
-                });
-                if (success) {
-                    setData((prev) => [...prev, addedEnquiry]);
-                    dispatch(addEnquiry(addedEnquiry));
-                    showAlert(message, "success");
-                } else {
-                    showAlert(message, "error");
-                }
+                dispatch(enquiryCruds.add(newRow, token, showAlert, setLoading, true));
                 setNewRow(null);
             } else {
-                const updatedEnquiry = data[index];
-                const {
-                    data: updatedData,
-                    success,
-                    message,
-                } = await updateEnquiryAPI({
-                    enquiryData: updatedEnquiry,
-                    token,
-                });
-                if (success) {
-                    setData((prev) =>
-                        prev.map((enq, i) => (i === index ? { ...enq, ...updatedData } : enq)),
-                    );
-                    dispatch(updateEnquiry(updatedData));
-                    showAlert(message, "success");
-                } else {
-                    showAlert(message, "error");
-                }
-                setEditingRowIndex(null);
+                const updatedEnquiry = data.find((e) => e.enquiryId === enquiryId);
+                dispatch(
+                    enquiryCruds.update(enquiryId, updatedEnquiry, token, showAlert, setLoading),
+                );
+                setEditingId(null);
             }
         } catch (error) {
             console.error(error);
@@ -101,36 +75,29 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
         }
     };
 
-    const handleDelete = async (index) => {
+    const handleDelete = async (enquiryId) => {
         setLoading(true);
 
         try {
-            const enquiryId = data[index].enquiryId;
-            const { success, message } = await deleteEnquiryAPI({ enquiryId, token });
-            if (success) {
-                setData((prev) => prev.filter((_, i) => i !== index));
-                dispatch(deleteEnquiry(enquiryId));
-                showAlert(message, "success");
-            } else {
-                showAlert(message, "error");
-            }
+            dispatch(enquiryCruds.delete(enquiryId, token, showAlert, setLoading));
         } catch (error) {
             console.error(error);
-            showAlert("Failed to delete enq!", "error");
+            showAlert("Failed to delete enquiry!", "error");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleChange = (value, index, field) => {
-        if (index === null) {
+    const handleChange = (value, enquiryId, field) => {
+        if (enquiryId === null) {
             setNewRow({ ...newRow, [field]: value });
         } else {
             setData((prev) =>
-                prev.map((enq, i) => (i === index ? { ...enq, [field]: value } : enq)),
+                prev.map((enq) => (enq.enquiryId === enquiryId ? { ...enq, [field]: value } : enq)),
             );
         }
     };
+
     return (
         <StyledTableContainer component={Paper}>
             {loading && <Loading />}
@@ -160,7 +127,7 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                 <TableBody>
                     {data.map((row, index) => (
                         <StyledTableRow key={row.enquiryId}>
-                            {editingRowIndex === index ? (
+                            {editingId === row.enquiryId ? (
                                 <>
                                     <StyledTableCell>{index + 1}</StyledTableCell>
                                     {["name", "contact", "enquiryPurpose"].map((field) => (
@@ -169,7 +136,11 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                                                 variant="standard"
                                                 value={row[field]}
                                                 onChange={(e) =>
-                                                    handleChange(e.target.value, index, field)
+                                                    handleChange(
+                                                        e.target.value,
+                                                        row.enquiryId,
+                                                        field,
+                                                    )
                                                 }
                                             />
                                         </StyledTableCell>
@@ -179,14 +150,14 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                                             format="DATE"
                                             value={row.enquiryDate}
                                             onChange={(value) =>
-                                                handleChange(value, index, "enquiryDate")
+                                                handleChange(value, row.enquiryId, "enquiryDate")
                                             }
                                         />
                                     </StyledTableCell>
                                     <StyledTableCell>
                                         <IconButton
                                             sx={{ color: "blue" }}
-                                            onClick={() => handleSave(index)}
+                                            onClick={() => handleSave(row.enquiryId)}
                                         >
                                             <SaveIcon />
                                         </IconButton>
@@ -207,7 +178,7 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                                     <StyledTableCell>
                                         <IconButton
                                             sx={{ color: "blue" }}
-                                            onClick={() => handleEdit(index)}
+                                            onClick={() => handleEdit(row.enquiryId)}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -215,7 +186,7 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                                             sx={{ color: "red" }}
                                             onClick={() => {
                                                 setDeleteDialogOpen(true);
-                                                setDeleteDialogIndex(index);
+                                                setDeleteEnquiryId(row.enquiryId);
                                             }}
                                         >
                                             <DeleteIcon />
@@ -269,9 +240,8 @@ const EnquiryTable = ({ initialData, token, newRow, setNewRow, studioId }) => {
                 <DeleteDialog
                     open={deleteDialogOpen}
                     onClose={() => setDeleteDialogOpen(false)}
-                    onConfirm={handleDelete}
-                    displayData={`enq entry with amount ${data[deleteDialogIndex].name}`}
-                    id={deleteDialogIndex}
+                    onConfirm={() => handleDelete(deleteEnquiryId)}
+                    displayData={`enquiry for ${data.find((d) => d.enquiryId === deleteEnquiryId)?.name}`}
                 />
             )}
         </StyledTableContainer>
@@ -288,9 +258,7 @@ EnquiryTable.propTypes = {
             enquiryPurpose: PropTypes.string.isRequired,
         }),
     ).isRequired,
-    token: PropTypes.string.isRequired,
     newRow: PropTypes.object,
     setNewRow: PropTypes.func.isRequired,
-    studioId: PropTypes.number.isRequired,
 };
 export default EnquiryTable;

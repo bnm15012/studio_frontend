@@ -7,62 +7,51 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEnquirysAPI } from "./enquiry.api";
-import { clearEnquiry, setEnquiries } from "../../../state/enquirySlice.js";
 import EnquiryTable from "./EnquiryTable.jsx";
 import SearchField from "../../../Components/SearchField.jsx";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
 import QrForm from "../../../Components/QrForm.jsx";
+import { useUI } from "../../../context/UIContext.jsx";
+import { enquiryCruds } from "../../../api/all.api.js";
 
 const size = 7;
+const FIELDS = [
+    { name: "name", label: "Name", type: "char" },
+    { name: "contact", label: "Contact", type: "number" },
+    { name: "enquiryPurpose", label: "Purpose", type: "char" },
+    { name: "enquiryDate", label: "Date", type: "date" },
+];
 const Enquiry = () => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
+    const { isEnabled, FEATURE_KEYS } = useUI();
     const [loading, setLoading] = useState(false);
-    const [enquiryData, setEnquiryData] = useState();
     const token = useSelector((state) => state.auth.token);
+    const [searchTerm, setSearchTerm] = useState("");
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const cachedEnquiry = useSelector((state) => state.enquiry.data);
     const [page, setPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(0);
+    const enquiry = useSelector((state) => state.enquiry);
 
-    const fetchEnquiryData = useCallback(
-        async (page = 1, searchTerm) => {
-            try {
-                if (cachedEnquiry.length) {
-                    setEnquiryData(cachedEnquiry);
-                    return;
-                }
-                setLoading(true);
-                const { data, success, message, totalCount } = await getAllEnquirysAPI({
-                    branchId: currentBranch.branchId,
-                    token,
-                    size,
-                    page,
-                    searchTerm,
-                });
-
-                if (success) {
-                    setEnquiryData(data);
-                    setTotalPage(Math.ceil(totalCount / size));
-                    dispatch(setEnquiries(data));
-                } else {
-                    showAlert(message, "error");
-                }
-            } catch (error) {
-                console.error(error);
-                showAlert("Failed to fetch expenses!", "error");
-            } finally {
-                setLoading(false);
-            }
-        },
-        [cachedEnquiry, currentBranch.branchId, token, dispatch, showAlert],
-    );
     const [newRow, setNewRow] = useState(null);
+    const fetchEnquiry = useCallback(
+        async (page = 1) => {
+            dispatch(
+                enquiryCruds.getAll(
+                    enquiry,
+                    showAlert,
+                    setLoading,
+                    token,
+                    { page, searchTerm, size },
+                    currentBranch.branchId,
+                ),
+            );
+        },
+        [dispatch, enquiry, showAlert, token, searchTerm, currentBranch.branchId],
+    );
 
     useEffect(() => {
-        !enquiryData && fetchEnquiryData();
-    }, [enquiryData, loading, fetchEnquiryData]);
+        isEnabled(FEATURE_KEYS.ENQUIRY) && !enquiry.items.length && fetchEnquiry();
+    }, [isEnabled, FEATURE_KEYS.ENQUIRY, enquiry.items.length, fetchEnquiry]);
 
     const handleAddNew = () => {
         setNewRow({
@@ -78,7 +67,7 @@ const Enquiry = () => {
     const handlePageChange = async (e, p) => {
         setLoading(true);
         setPage(p);
-        await fetchEnquiryData(p);
+        await fetchEnquiry(p);
         setLoading(false);
     };
 
@@ -86,15 +75,20 @@ const Enquiry = () => {
         <FlexBetweenColumn>
             {loading && <Loading />}
             <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={(searchTerm) => fetchEnquiryData(1, searchTerm)} />
+                <SearchField
+                    handleSearch={(searchTerm) => {
+                        fetchEnquiry(1);
+                        setSearchTerm(searchTerm);
+                    }}
+                />
                 <QrForm qrSize={480} title="" link={"enquiry-form"} />
                 <Button
                     variant="contained"
                     color="primary"
                     disabled={newRow != null}
                     onClick={() => {
-                        dispatch(clearEnquiry());
-                        fetchEnquiryData(page);
+                        dispatch(enquiryCruds.removeAll());
+                        fetchEnquiry(page);
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -111,20 +105,19 @@ const Enquiry = () => {
                 </Button>
             </FlexBetween>
             <Box>
-                {enquiryData && (
-                    <EnquiryTable
-                        initialData={enquiryData}
-                        branchId={currentBranch.branchId}
-                        token={token}
-                        newRow={newRow}
-                        setNewRow={setNewRow}
-                    />
-                )}
+                <EnquiryTable
+                    initialData={enquiry.items ?? []}
+                    branchId={currentBranch.branchId}
+                    token={token}
+                    newRow={newRow}
+                    fiels={FIELDS}
+                    setNewRow={setNewRow}
+                />
             </Box>
             <FlexBetween>
                 <Box></Box>
                 <Pagination
-                    count={totalPage}
+                    count={enquiry.totalPages || 1}
                     page={page}
                     onChange={handlePageChange}
                     color="primary"
