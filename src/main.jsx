@@ -10,15 +10,15 @@ import "./index.css";
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
-  createRoot(rootElement).render(
-    <StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistStore(store)}>
-          <App />
-        </PersistGate>
-      </Provider>
-    </StrictMode>
-  );
+    createRoot(rootElement).render(
+        <StrictMode>
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistStore(store)}>
+                    <App />
+                </PersistGate>
+            </Provider>
+        </StrictMode>,
+    );
 } else {
-  console.error("Root element not found in the DOM.");
+    console.error("Root element not found in the DOM.");
 }

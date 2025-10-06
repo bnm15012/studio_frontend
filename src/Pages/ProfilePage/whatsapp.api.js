@@ -11,17 +11,15 @@ export const createWhatsAppCredentialsAPI = async ({ branchId, token }) => {
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage || "Failed to create QR code!",
+            message: error.response?.data?.status?.statusMessage || "Failed to create QR code!",
         };
     }
-}
-
+};
 
 export const checkWhatsAppConnectionAPI = async ({ branchId, token }) => {
     try {
         const response = await api.get(`/whatsapp/status/${branchId}`, {
-            headers: { Authorization: `${token}` }
+            headers: { Authorization: `${token}` },
         });
         const { data } = response.data;
         return {
@@ -32,17 +30,15 @@ export const checkWhatsAppConnectionAPI = async ({ branchId, token }) => {
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage || "Failed to create QR code!",
+            message: error.response?.data?.status?.statusMessage || "Failed to create QR code!",
         };
     }
 };
 
-
 export const logoutWhatsAppConnectionAPI = async ({ branchId, token }) => {
     try {
         const response = await api.get(`/whatsapp/logout/${branchId}`, {
-            headers: { Authorization: `${token}` }
+            headers: { Authorization: `${token}` },
         });
         const { data } = response.data;
         return {
@@ -53,8 +49,7 @@ export const logoutWhatsAppConnectionAPI = async ({ branchId, token }) => {
     } catch (error) {
         return {
             success: false,
-            message:
-                error.response?.data?.status?.statusMessage || "Failed to Logout!",
+            message: error.response?.data?.status?.statusMessage || "Failed to Logout!",
         };
     }
 };

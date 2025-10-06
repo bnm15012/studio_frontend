@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 import { store } from "../state";
-import { setToken } from '../state/authSlice';
-import { logoutUser } from '../state/thunks';
+import { setToken } from "../state/authSlice";
+import { logoutUser } from "../state/thunks";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_APP_REST_API,
     headers: {
-        'Content-Type': 'application/json',
-        'User-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
+        "Content-Type": "application/json",
+        "User-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
 });
 
@@ -37,16 +37,16 @@ api.interceptors.response.use(
                             const response = await axios.post(
                                 `${import.meta.env.VITE_APP_REST_API}/password/refreshToken`,
                                 { token: refreshToken, email: email },
-                                { headers: { 'Content-Type': 'application/json' } }
+                                { headers: { "Content-Type": "application/json" } },
                             );
 
                             const newToken = response.data.data[0];
 
-                            store.dispatch(setToken({ token: String(newToken) }))
+                            store.dispatch(setToken({ token: String(newToken) }));
                             console.info("Token updated successfully...");
 
                             // Retry the original request with the new token
-                            originalRequest.headers['Authorization'] = newToken;
+                            originalRequest.headers["Authorization"] = newToken;
 
                             return axios(originalRequest); // Retry the request
                         } catch (refreshError) {
@@ -57,10 +57,10 @@ api.interceptors.response.use(
                                 console.error("Token refresh failed after 5 attempts.");
 
                                 // Remove data from localStorage
-                                store.dispatch(logoutUser())
+                                store.dispatch(logoutUser());
 
                                 // Redirect to home page
-                                window.location.href = '/'; // Redirect to the home page
+                                window.location.href = "/"; // Redirect to the home page
                                 return Promise.reject(refreshError);
                             }
                         }
@@ -72,7 +72,7 @@ api.interceptors.response.use(
         }
 
         return Promise.reject(error);
-    }
+    },
 );
 
 export default api;

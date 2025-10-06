@@ -1,12 +1,12 @@
 // src/store/analysisSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     data: {},
 };
 
 const analysisSlice = createSlice({
-    name: 'analysis',
+    name: "analysis",
     initialState,
     reducers: {
         setAnalysisData(state, action) {
@@ -16,9 +16,6 @@ const analysisSlice = createSlice({
     },
 });
 
-export const {
-    setAnalysisData,
-    clearAnalysisState
-} = analysisSlice.actions;
+export const { setAnalysisData, clearAnalysisState } = analysisSlice.actions;
 
 export default analysisSlice.reducer;

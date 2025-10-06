@@ -1,9 +1,8 @@
 import api from "../../../utils/api";
 
-
 export const createBulkUploadJobAPI = async (jobData, token) => {
     try {
-        const response = await api.post('/jobs/bulk-uploads/process', jobData, {
+        const response = await api.post("/jobs/bulk-uploads/process", jobData, {
             headers: {
                 Authorization: `${token}`,
             },
@@ -12,12 +11,14 @@ export const createBulkUploadJobAPI = async (jobData, token) => {
         return {
             success: true,
             data: data,
-            message: status.statusMessage || 'Started uploading data, will be processed shortly.'
+            message: status.statusMessage || "Started uploading data, will be processed shortly.",
         };
     } catch (error) {
         return {
             success: false,
-            message: error.response ? error.response.data.message : 'Failed to create bulk upload job',
+            message: error.response
+                ? error.response.data.message
+                : "Failed to create bulk upload job",
         };
     }
 };
@@ -28,7 +29,7 @@ export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }) => {
             headers: {
                 Authorization: `${token}`,
             },
-            params: { size, page }
+            params: { size, page },
         });
         const { data, status } = response.data;
         return {
@@ -43,4 +44,4 @@ export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }) => {
             message: error.response?.data?.message || "Failed to fetch bulk upload jobs",
         };
     }
-}
+};

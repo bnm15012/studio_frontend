@@ -12,59 +12,72 @@ import { getAllDataAPI } from "../../../api/common.api";
 
 const size = 7;
 const Payments = () => {
-  const showAlert = useAlert();
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [newRow, setNewRow] = useState(null);
-  const cachedPayments = useSelector((state) => state.payment);
+    const showAlert = useAlert();
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [newRow, setNewRow] = useState(null);
+    const cachedPayments = useSelector((state) => state.payment);
 
-  const token = useSelector((state) => state.auth.token);
-  const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const token = useSelector((state) => state.auth.token);
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
 
-  const fetchPayments = useCallback(async (page = 1, searchTerm = "") => {
-    dispatch(getAllDataAPI({ rootId: currentBranch.branchId, token, showAlert, route: "payments", setData: setPaymentPage, setLoading, params: { size, page, searchTerm } }));
-  }, [dispatch, currentBranch.branchId, token, showAlert]);
+    const fetchPayments = useCallback(
+        async (page = 1, searchTerm = "") => {
+            dispatch(
+                getAllDataAPI({
+                    rootId: currentBranch.branchId,
+                    token,
+                    showAlert,
+                    route: "payments",
+                    setData: setPaymentPage,
+                    setLoading,
+                    params: { size, page, searchTerm },
+                }),
+            );
+        },
+        [dispatch, currentBranch.branchId, token, showAlert],
+    );
 
-  useEffect(() => {
-    !cachedPayments.length && fetchPayments();
-  }, [cachedPayments.length, fetchPayments]);
+    useEffect(() => {
+        !cachedPayments.length && fetchPayments();
+    }, [cachedPayments.length, fetchPayments]);
 
-  const handlePageChange = async (e, p) => {
-    setLoading(true);
-    setPage(p);
-    await fetchPayments(p);
-    setLoading(false);
-  };
+    const handlePageChange = async (e, p) => {
+        setLoading(true);
+        setPage(p);
+        await fetchPayments(p);
+        setLoading(false);
+    };
 
-  return (
-    <FlexBetweenColumn>
-      {loading && <Loading />}
-      <FlexBetween paddingBottom={2} gap={1}>
-        <SearchField handleSearch={(searchTerm) => fetchPayments(1, searchTerm)} />
-      </FlexBetween>
-      <Box>
-        <PaymentTable
-          initialData={cachedPayments.pages[page] ?? []}
-          branchId={currentBranch.branchId}
-          token={token}
-          newRow={newRow}
-          startIndex={(parseInt(page) - 1) * size}
-          setNewRow={setNewRow}
-        />
-      </Box>
-      <FlexBetween>
-        <Box></Box>
-        <Pagination
-          count={cachedPayments.totalPages}
-          page={page}
-          onChange={handlePageChange}
-          color="primary"
-          sx={{ my: 2 }}
-        />
-      </FlexBetween>
-    </FlexBetweenColumn>
-  );
+    return (
+        <FlexBetweenColumn>
+            {loading && <Loading />}
+            <FlexBetween paddingBottom={2} gap={1}>
+                <SearchField handleSearch={(searchTerm) => fetchPayments(1, searchTerm)} />
+            </FlexBetween>
+            <Box>
+                <PaymentTable
+                    initialData={cachedPayments.pages[page] ?? []}
+                    branchId={currentBranch.branchId}
+                    token={token}
+                    newRow={newRow}
+                    startIndex={(parseInt(page) - 1) * size}
+                    setNewRow={setNewRow}
+                />
+            </Box>
+            <FlexBetween>
+                <Box></Box>
+                <Pagination
+                    count={cachedPayments.totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                    sx={{ my: 2 }}
+                />
+            </FlexBetween>
+        </FlexBetweenColumn>
+    );
 };
 
 export default Payments;

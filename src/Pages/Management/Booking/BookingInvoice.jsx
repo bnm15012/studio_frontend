@@ -1,28 +1,28 @@
-import PropTypes from 'prop-types';
-import DialogContent from '@mui/material/DialogContent';
-import { useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
-import { useAlert } from '../../../utils/Alert';
-import Loading from '../../../Components/Loading/Loading';
-import { getLocalDateTime } from '../../../utils/DateUtil';
-import FlexBetween from '../../../Components/FlexBetween';
-import { getAllTemplatesAPI } from '../TemplatesPage/Template.api';
-import { replacePlaceholders } from '../../../utils/globalFuns';
-import { Typography } from '@mui/material';
-import HtmlToPdfViewer from '../../../Components/Html2PDF';
-import StyledDialog from '../../../Components/New/StyledDialog';
-import { MailIcon, PrinterIcon } from 'lucide-react';
-import { WhatsApp } from '@mui/icons-material';
+import PropTypes from "prop-types";
+import DialogContent from "@mui/material/DialogContent";
+import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useAlert } from "../../../utils/Alert";
+import Loading from "../../../Components/Loading/Loading";
+import { getLocalDateTime } from "../../../utils/DateUtil";
+import FlexBetween from "../../../Components/FlexBetween";
+import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
+import { replacePlaceholders } from "../../../utils/globalFuns";
+import { Typography } from "@mui/material";
+import HtmlToPdfViewer from "../../../Components/Html2PDF";
+import StyledDialog from "../../../Components/New/StyledDialog";
+import { MailIcon, PrinterIcon } from "lucide-react";
+import { WhatsApp } from "@mui/icons-material";
 
 const sectionTitle = {
-    marginTop: '10mm',
-    marginBottom: '3mm',
-    paddingBottom: '2mm',
-    fontSize: '14px',
+    marginTop: "10mm",
+    marginBottom: "3mm",
+    paddingBottom: "2mm",
+    fontSize: "14px",
 };
 
-const tableHeaderStyle = { textAlign: 'left', padding: '6px' };
-const tableCellStyle = { padding: '6px' };
+const tableHeaderStyle = { textAlign: "left", padding: "6px" };
+const tableCellStyle = { padding: "6px" };
 
 const BookingInvoice = ({ open, onClose, bookingData }) => {
     const pdfViewerRef = useRef();
@@ -37,21 +37,21 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                setLoading(true)
+                setLoading(true);
                 const res = await getAllTemplatesAPI({
                     studioId: studio.studioId,
                     token,
-                    templateType: 'BOOKING',
+                    templateType: "BOOKING",
                 });
                 if (res.success) {
                     setTemplates(res.data || []);
                 } else {
-                    showAlert(res.message || 'Failed to load templates', 'error');
+                    showAlert(res.message || "Failed to load templates", "error");
                 }
             } catch {
-                showAlert('Error loading templates', 'error');
+                showAlert("Error loading templates", "error");
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         };
         if (open) fetchTemplates();
@@ -60,7 +60,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
             const matchedTemplate = templates.find((t) =>
-                t.templateType?.toLowerCase().includes('booking')
+                t.templateType?.toLowerCase().includes("booking"),
             );
             if (matchedTemplate) {
                 setSelectedTemplateId(matchedTemplate.id);
@@ -72,29 +72,51 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-            studio,
-            branch: currentBranch,
-            getLocalDateTime,
-        })
-        : '';
+              studio,
+              branch: currentBranch,
+              getLocalDateTime,
+          })
+        : "";
 
     return (
-        <StyledDialog open={open} onClose={onClose} confirmText='Download' onConfirm={() => pdfViewerRef.current.downloadPDF()} cancelText='Close' maxWidth="md"
+        <StyledDialog
+            open={open}
+            onClose={onClose}
+            confirmText="Download"
+            onConfirm={() => pdfViewerRef.current.downloadPDF()}
+            cancelText="Close"
+            maxWidth="md"
             actions={[
-                { key: "send-mail", tip: "Send Mail", onClick: () => pdfViewerRef.current.downloadPDF(), component: <MailIcon /> },
-                { key: "print", tip: "Print PDF", onClick: () => pdfViewerRef.current.printPDF(), component: <PrinterIcon/> },
-                { key: "whatsapp", tip: "Send WhatsApp", onClick: () => pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone), component: <WhatsApp/> },
+                {
+                    key: "send-mail",
+                    tip: "Send Mail",
+                    onClick: () => pdfViewerRef.current.downloadPDF(),
+                    component: <MailIcon />,
+                },
+                {
+                    key: "print",
+                    tip: "Print PDF",
+                    onClick: () => pdfViewerRef.current.printPDF(),
+                    component: <PrinterIcon />,
+                },
+                {
+                    key: "whatsapp",
+                    tip: "Send WhatsApp",
+                    onClick: () =>
+                        pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone),
+                    component: <WhatsApp />,
+                },
             ]}
         >
-            <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
+            <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
                     fileName={`booking-invoice-${bookingData?.clientEntry?.clientId}`}
                     remainingPayload={{
-                        title: 'Booking Invoice',
+                        title: "Booking Invoice",
                         templateName: "BOOKING_INVOICE",
-                        clientIds: [bookingData?.clientEntry?.clientId]
+                        clientIds: [bookingData?.clientEntry?.clientId],
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={
@@ -110,7 +132,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                         <strong>Invoice #</strong>: INV-{bookingData?.id}
                                     </div>
                                     <div>
-                                        <strong>Invoice Date</strong>:{' '}
+                                        <strong>Invoice Date</strong>:{" "}
                                         {getLocalDateTime(bookingData?.bookingDate)}
                                     </div>
                                 </div>
@@ -122,8 +144,13 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                             {/* Invoice Info */}
                             <FlexBetween gap={1} my={2}>
                                 <div>
-                                    <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
-                                    <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                                    <p style={{ margin: 0, textWrap: "wrap" }}>
+                                        {currentBranch?.address}
+                                    </p>
+                                    <p style={{ margin: 0 }}>
+                                        {currentBranch?.city}, {currentBranch?.state}{" "}
+                                        {currentBranch?.pincode}
+                                    </p>
                                     <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
                                     <p style={{ margin: 0 }}>{studio?.email}</p>
                                 </div>
@@ -136,10 +163,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                             </FlexBetween>
 
                             {/* Booking Table */}
-                            <table
-                                border={1}
-                                style={{ width: '100%', borderCollapse: 'collapse' }}
-                            >
+                            <table border={1} style={{ width: "100%", borderCollapse: "collapse" }}>
                                 <thead>
                                     <tr>
                                         <th style={tableHeaderStyle}>Purpose</th>
@@ -154,10 +178,10 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     <tr>
                                         <td style={tableCellStyle}>{bookingData?.purpose}</td>
                                         <td style={tableCellStyle}>
-                                            {getLocalDateTime(bookingData?.startTime, 'DATETIME')}
+                                            {getLocalDateTime(bookingData?.startTime, "DATETIME")}
                                         </td>
                                         <td style={tableCellStyle}>
-                                            {getLocalDateTime(bookingData?.endTime, 'DATETIME')}
+                                            {getLocalDateTime(bookingData?.endTime, "DATETIME")}
                                         </td>
                                         <td style={tableCellStyle}>
                                             {bookingData?.totalAmount?.toFixed(2)}
@@ -173,7 +197,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                             </table>
 
                             {/* Payment Status */}
-                            <div style={{ marginTop: '10px' }}>
+                            <div style={{ marginTop: "10px" }}>
                                 <p>
                                     <strong>Payment Status:</strong> {bookingData?.paymentStatus}
                                 </p>
@@ -187,28 +211,30 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     <Typography
                                         variant="body2"
                                         sx={{
-                                            textAlign: 'justify',
-                                            whiteSpace: 'pre-wrap',
+                                            textAlign: "justify",
+                                            whiteSpace: "pre-wrap",
                                         }}
                                         dangerouslySetInnerHTML={{
-                                            __html: preparedDescription.replace(/\n/g, '<br />'),
+                                            __html: preparedDescription.replace(/\n/g, "<br />"),
                                         }}
                                     />
                                 ) : (
                                     <Typography
                                         variant="body2"
                                         sx={{
-                                            color: 'red',
-                                            fontWeight: 'bold',
-                                            textAlign: 'center',
-                                            fontSize: '20px',
+                                            color: "red",
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            fontSize: "20px",
                                         }}
                                     >
                                         No Contract Template Created.
                                     </Typography>
                                 )}
                             </div>
-                        </div>} />
+                        </div>
+                    }
+                />
             </DialogContent>
         </StyledDialog>
     );

@@ -1,11 +1,11 @@
-import { Badge, CircularProgress, IconButton, Menu, MenuItem, useTheme } from '@mui/material';
+import { Badge, CircularProgress, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import { useCallback, useEffect, useState } from 'react';
-import { getStudentNamesOncePerDay } from '../../Pages/Management/Student/Student.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAlert } from '../../utils/Alert';
-import { markAllAsRead, markAsRead, setNotifications } from '../../state/notificationSlice';
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { useCallback, useEffect, useState } from "react";
+import { getStudentNamesOncePerDay } from "../../Pages/Management/Student/Student.api";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "../../utils/Alert";
+import { markAllAsRead, markAsRead, setNotifications } from "../../state/notificationSlice";
 
 const Notification = () => {
     const theme = useTheme();
@@ -27,12 +27,18 @@ const Notification = () => {
     const getBirthDayStudent = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await getStudentNamesOncePerDay({ branchId: currentBranch.branchId, token, page: 1, size: -1, birthday: true });
+            const { data } = await getStudentNamesOncePerDay({
+                branchId: currentBranch.branchId,
+                token,
+                page: 1,
+                size: -1,
+                birthday: true,
+            });
 
-            const birthdayNotifications = data.map(d => ({
+            const birthdayNotifications = data.map((d) => ({
                 id: d.studentId,
                 message: `Todays is ${d.name}'s Birthday!`,
-                read: false
+                read: false,
             }));
 
             dispatch(setNotifications(birthdayNotifications));
@@ -51,20 +57,14 @@ const Notification = () => {
     return (
         <>
             <IconButton onClick={handleClick} sx={{ color: "white" }}>
-                <Badge
-                    badgeContent={unreadCount}
-                    color="error"
-                    overlap="circular"
-                >
-                    {
-                        loading ? (
-                            <CircularProgress size={24} />
-                        ) : unreadCount === 0 ? (
-                            <NotificationsNoneIcon />
-                        ) : (
-                            <NotificationsActiveIcon />
-                        )
-                    }
+                <Badge badgeContent={unreadCount} color="error" overlap="circular">
+                    {loading ? (
+                        <CircularProgress size={24} />
+                    ) : unreadCount === 0 ? (
+                        <NotificationsNoneIcon />
+                    ) : (
+                        <NotificationsActiveIcon />
+                    )}
                 </Badge>
             </IconButton>
 
@@ -80,11 +80,11 @@ const Notification = () => {
                         color: theme.palette.text.primary,
                         maxWidth: 700,
                         maxHeight: 500,
-                        overflowY: "scroll"
+                        overflowY: "scroll",
                     },
                 }}
             >
-                {notifications.filter(m => !m.read).length === 0 ? (
+                {notifications.filter((m) => !m.read).length === 0 ? (
                     <MenuItem disabled>No new notifications</MenuItem>
                 ) : (
                     <>
@@ -93,31 +93,35 @@ const Notification = () => {
                                 dispatch(markAllAsRead());
                                 handleClose();
                             }}
-                            sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}
+                            sx={{ fontWeight: "bold", color: theme.palette.primary.main }}
                         >
                             Mark all as read
                         </MenuItem>
-                        {notifications.map((note, index) => (
-                            !note.read && (
-                                <MenuItem
-                                    key={note.id || index}
-                                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                                >
-                                    <span>{note.message}</span>
-                                    <IconButton
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => dispatch(markAsRead(note.id))}
+                        {notifications.map(
+                            (note, index) =>
+                                !note.read && (
+                                    <MenuItem
+                                        key={note.id || index}
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}
                                     >
-                                        ✅
-                                    </IconButton>
-                                </MenuItem>
-                            )
-                        ))}
+                                        <span>{note.message}</span>
+                                        <IconButton
+                                            size="small"
+                                            color="primary"
+                                            onClick={() => dispatch(markAsRead(note.id))}
+                                        >
+                                            ✅
+                                        </IconButton>
+                                    </MenuItem>
+                                ),
+                        )}
                     </>
                 )}
             </Menu>
-
         </>
     );
 };

@@ -12,31 +12,31 @@ import { loadInitialDataAPI } from "./utils/loadInitialData";
 import { UIProvider } from "./context/UIContext";
 
 const App = () => {
-  const mode = useSelector((state) => state.auth.mode);
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const dispatch = useDispatch();
-  const token = useSelector(state => state.auth.token);
+    const mode = useSelector((state) => state.auth.mode);
+    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+    const dispatch = useDispatch();
+    const token = useSelector((state) => state.auth.token);
 
-  useEffect(() => {
-    clearCacheIfNewDay();
-    if (token) {
-      dispatch(loadInitialDataAPI());
-    }
-  }, [dispatch, token]);
+    useEffect(() => {
+        clearCacheIfNewDay();
+        if (token) {
+            dispatch(loadInitialDataAPI());
+        }
+    }, [dispatch, token]);
 
-  return (
-    <AlertProvider>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <UIProvider>
-            <AllRoutes />
-          </UIProvider>
-          <ServerErrorDialog />
-        </ThemeProvider>
-      </Router>
-    </AlertProvider>
-  );
+    return (
+        <AlertProvider>
+            <Router>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <UIProvider>
+                        <AllRoutes />
+                    </UIProvider>
+                    <ServerErrorDialog />
+                </ThemeProvider>
+            </Router>
+        </AlertProvider>
+    );
 };
 
 export default App;

@@ -20,54 +20,49 @@ import TemplatesPage from "./TemplatesPage/TemplatesPage";
 import MembershipType from "./MembershipType/MembershipType.jsx";
 
 const Management = () => {
-  const { page } = useParams();
-  const { ID } = useParams();
+    const { page } = useParams();
+    const { ID } = useParams();
 
-  const renderComponent = () => {
-    switch (page) {
-      case "clients":
-        return <Clients />;
-      case "bookings":
-        if (ID) return <BookingFormView ID={ID} page={page} />;
-        return <Bookings />;
-      case "student":
-        if (ID) return <StudentForm ID={ID} page={page} />;
-        return <Students />;
-      case "instructor":
-        if (ID) return <InstructorForm ID={ID} page={page} />;
-        return <Instructors />;
-      case "activity":
-        return <Activities />;
-      case "expenses":
-        return <Expenses />;
-      case "payments":
-        return <Payments />;
-      case "reports":
-        return <Reports />;
-      case "enquiry":
-        return <Enquiry />;
-      case "communication":
-        return <Communication />;
-      case "bulk_upload":
-        return <BulkUploadJobs />;
-      case "template":
-        return <TemplatesPage />;
-      case "type":
-        return <MembershipType />;
-      case "branch":
-        if (ID) return <BranchPage ID={ID} page={page} />;
-        return <Branches />;
-      default:
-        return <h1>Not implemented yet !</h1>;
-    }
-  };
+    const renderComponent = () => {
+        switch (page) {
+            case "clients":
+                return <Clients />;
+            case "bookings":
+                if (ID) return <BookingFormView ID={ID} page={page} />;
+                return <Bookings />;
+            case "student":
+                if (ID) return <StudentForm ID={ID} page={page} />;
+                return <Students />;
+            case "instructor":
+                if (ID) return <InstructorForm ID={ID} page={page} />;
+                return <Instructors />;
+            case "activity":
+                return <Activities />;
+            case "expenses":
+                return <Expenses />;
+            case "payments":
+                return <Payments />;
+            case "reports":
+                return <Reports />;
+            case "enquiry":
+                return <Enquiry />;
+            case "communication":
+                return <Communication />;
+            case "bulk_upload":
+                return <BulkUploadJobs />;
+            case "template":
+                return <TemplatesPage />;
+            case "type":
+                return <MembershipType />;
+            case "branch":
+                if (ID) return <BranchPage ID={ID} page={page} />;
+                return <Branches />;
+            default:
+                return <h1>Not implemented yet !</h1>;
+        }
+    };
 
-  return (
-    <WidgetsOnPage
-      isSidebarShouldBeOn={true}
-      components={<>{renderComponent()}</>}
-    />
-  );
+    return <WidgetsOnPage isSidebarShouldBeOn={true} components={<>{renderComponent()}</>} />;
 };
 
 export default Management;

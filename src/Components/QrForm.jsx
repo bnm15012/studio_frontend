@@ -17,7 +17,8 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
 
     const handleDownloadPDF = () => {
         if (!qrRef.current) return;
-        window.html2pdf()
+        window
+            .html2pdf()
             .set({
                 filename: `QRCode-${link}.pdf`,
                 image: { type: "jpeg", quality: 1 },
@@ -30,7 +31,8 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
 
     const handlePrintPDF = () => {
         if (!qrRef.current) return;
-        window.html2pdf()
+        window
+            .html2pdf()
             .set({
                 image: { type: "jpeg", quality: 1 },
                 html2canvas: { scale: 4, useCORS: true },
@@ -56,12 +58,27 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                 <QrCodeIcon />
             </Button>
 
-            <StyledDialog closeIcon={true} open={open} cancelText="Close" onClose={handleClose} title={title} onConfirm={handleDownloadPDF} confirmText="Download"
+            <StyledDialog
+                closeIcon={true}
+                open={open}
+                cancelText="Close"
+                onClose={handleClose}
+                title={title}
+                onConfirm={handleDownloadPDF}
+                confirmText="Download"
                 actions={[
-                    { key: "print", tip: "Print PDF", onClick: handlePrintPDF, component: <PrinterIcon /> }
+                    {
+                        key: "print",
+                        tip: "Print PDF",
+                        onClick: handlePrintPDF,
+                        component: <PrinterIcon />,
+                    },
                 ]}
             >
-                <div ref={qrRef} style={{ textAlign: "center", padding: "20px", marginTop: "50px" }}>
+                <div
+                    ref={qrRef}
+                    style={{ textAlign: "center", padding: "20px", marginTop: "50px" }}
+                >
                     <Box padding={2} backgroundColor="white">
                         <QRCode value={qrLink} size={qrSize} />
                     </Box>

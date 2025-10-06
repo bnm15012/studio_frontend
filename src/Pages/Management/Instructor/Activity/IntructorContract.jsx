@@ -1,16 +1,16 @@
-import PropTypes from 'prop-types';
-import DialogContent from '@mui/material/DialogContent';
-import { useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
-import { getLocalDateTime } from '../../../../utils/DateUtil';
-import Loading from '../../../../Components/Loading/Loading';
-import { Typography } from '@mui/material';
-import { getAllTemplatesAPI } from '../../TemplatesPage/Template.api';
-import { useAlert } from '../../../../utils/Alert';
-import { replacePlaceholders } from '../../../../utils/globalFuns';
-import HtmlToPdfViewer from '../../../../Components/Html2PDF';
-import StyledDialog from '../../../../Components/New/StyledDialog';
-import { PrinterIcon } from 'lucide-react';
+import PropTypes from "prop-types";
+import DialogContent from "@mui/material/DialogContent";
+import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { getLocalDateTime } from "../../../../utils/DateUtil";
+import Loading from "../../../../Components/Loading/Loading";
+import { Typography } from "@mui/material";
+import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
+import { useAlert } from "../../../../utils/Alert";
+import { replacePlaceholders } from "../../../../utils/globalFuns";
+import HtmlToPdfViewer from "../../../../Components/Html2PDF";
+import StyledDialog from "../../../../Components/New/StyledDialog";
+import { PrinterIcon } from "lucide-react";
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
     const showAlert = useAlert();
@@ -26,11 +26,11 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                setLoading(true)
+                setLoading(true);
                 const res = await getAllTemplatesAPI({
                     studioId: studio.studioId,
                     token,
-                    templateType: "INSTRUCTOR_CONTRACT"
+                    templateType: "INSTRUCTOR_CONTRACT",
                 });
                 if (res.success) {
                     setTemplates(res.data || []);
@@ -40,7 +40,7 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
             } catch {
                 showAlert("Error loading templates", "error");
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         };
         fetchTemplates();
@@ -48,8 +48,8 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
-            const matchedTemplate = templates.find(t =>
-                t.templateType?.toLowerCase().includes(activityData.activityName?.toLowerCase())
+            const matchedTemplate = templates.find((t) =>
+                t.templateType?.toLowerCase().includes(activityData.activityName?.toLowerCase()),
             );
 
             if (matchedTemplate) {
@@ -58,23 +58,35 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
         }
     }, [templates, selectedTemplateId, activityData.activityName]);
 
-    const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
+    const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-            instructor: instructorData,
-            instructorActivity: activityData,
-            studio,
-            branch: currentBranch,
-            getLocalDateTime
-        })
+              instructor: instructorData,
+              instructorActivity: activityData,
+              studio,
+              branch: currentBranch,
+              getLocalDateTime,
+          })
         : "";
 
     return (
-        <StyledDialog onConfirm={() => pdfViewerRef.current.downloadPDF()} confirmText='Download' open={open} onClose={onClose} maxWidth="md"
-            actions={[{ key: "print", tip: "Print", onClick: () => pdfViewerRef.current.printPDF(), component: <PrinterIcon /> }]}
+        <StyledDialog
+            onConfirm={() => pdfViewerRef.current.downloadPDF()}
+            confirmText="Download"
+            open={open}
+            onClose={onClose}
+            maxWidth="md"
+            actions={[
+                {
+                    key: "print",
+                    tip: "Print",
+                    onClick: () => pdfViewerRef.current.printPDF(),
+                    component: <PrinterIcon />,
+                },
+            ]}
         >
-            <DialogContent dividers sx={{ display: 'flex', justifyContent: 'center' }}>
+            <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     fileName={`Instructor-Contract-${instructorData.name}.pdf`}
@@ -82,7 +94,10 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                     header={
                         <>
                             <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
-                            <p style={{ margin: 0 }}>{currentBranch?.city}, {currentBranch?.state} {currentBranch?.pincode}</p>
+                            <p style={{ margin: 0 }}>
+                                {currentBranch?.city}, {currentBranch?.state}{" "}
+                                {currentBranch?.pincode}
+                            </p>
                             <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
                             <p style={{ margin: 0 }}>{studio?.email}</p>
                         </>
@@ -91,27 +106,34 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                         <>
                             {/* Personal Details */}
                             <h3>Instructor Personal Details</h3>
-                            <table style={{
-                                width: "100%",
-                                borderCollapse: "collapse",
-                                fontSize: "12px",
-                                marginTop: "10px",
-                            }}>
+                            <table
+                                style={{
+                                    width: "100%",
+                                    borderCollapse: "collapse",
+                                    fontSize: "12px",
+                                    marginTop: "10px",
+                                }}
+                            >
                                 <tbody>
                                     {[
-                                        ['Name', instructorData?.name],
-                                        ['Date of Birth', getLocalDateTime(instructorData?.dob)],
-                                        ['Email', instructorData?.email],
-                                        ['Mobile', instructorData?.phone],
-                                        ['Emergency Contact', instructorData?.emergencyContactNumber],
-                                        ['Address', instructorData?.address],
+                                        ["Name", instructorData?.name],
+                                        ["Date of Birth", getLocalDateTime(instructorData?.dob)],
+                                        ["Email", instructorData?.email],
+                                        ["Mobile", instructorData?.phone],
+                                        [
+                                            "Emergency Contact",
+                                            instructorData?.emergencyContactNumber,
+                                        ],
+                                        ["Address", instructorData?.address],
                                     ].map(([label, value], idx) => (
                                         <tr key={idx}>
-                                            <td style={{
-                                                padding: "6px 10px",
-                                                borderBottom: "1px solid #ddd",
-                                                textAlign: "left"
-                                            }}>
+                                            <td
+                                                style={{
+                                                    padding: "6px 10px",
+                                                    borderBottom: "1px solid #ddd",
+                                                    textAlign: "left",
+                                                }}
+                                            >
                                                 <strong>{label}:</strong> {value || "-"}
                                             </td>
                                         </tr>
@@ -125,16 +147,26 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                                     <>
                                         <Typography
                                             variant="body2"
-                                            sx={{ textAlign: 'justify', whiteSpace: 'pre-wrap' }}
-                                            dangerouslySetInnerHTML={{ __html: preparedDescription.replace(/\n/g, "<br />") }}
+                                            sx={{ textAlign: "justify", whiteSpace: "pre-wrap" }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: preparedDescription.replace(
+                                                    /\n/g,
+                                                    "<br />",
+                                                ),
+                                            }}
                                         />
-
-                                        I confirm that the personal details provided above are true and accurate to the best of my knowledge.
+                                        I confirm that the personal details provided above are true
+                                        and accurate to the best of my knowledge.
                                     </>
                                 ) : (
                                     <Typography
                                         variant="body2"
-                                        sx={{ color: "red", fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}
+                                        sx={{
+                                            color: "red",
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            fontSize: "20px",
+                                        }}
                                     >
                                         No Contract Template Created.
                                     </Typography>
@@ -142,13 +174,19 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                             </div>
 
                             {/* Signature Section */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '5mm' }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginTop: "5mm",
+                                }}
+                            >
                                 <div>
                                     <p>_________________________</p>
                                     <p>Instructor Name & Signature</p>
                                     <p>Date: ____________</p>
                                 </div>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: "right" }}>
                                     <p>_________________________</p>
                                     <p>Authorized Studio Representative</p>
                                     <p>{studio?.studioName}</p>

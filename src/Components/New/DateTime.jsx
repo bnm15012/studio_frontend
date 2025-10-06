@@ -55,7 +55,11 @@ const DateTime = ({
                 variant: textFieldVarient,
                 size: "small",
                 fullWidth: true,
-                placeholder: placeholder ? placeholder : format === "DATE" ? "Select date" : "Select date and time",
+                placeholder: placeholder
+                    ? placeholder
+                    : format === "DATE"
+                      ? "Select date"
+                      : "Select date and time",
                 sx: {
                     borderRadius: 2,
                     "& .MuiOutlinedInput-root": {

@@ -1,29 +1,28 @@
-import api from '../utils/api';
+import api from "../utils/api";
 
 export const generatePresignUrl = async (fileName, token, contentType = "application/pdf") => {
     const data = {
         data: {
             fileName,
             contentType,
-        }
+        },
     };
 
     try {
         const response = await api.post("/generatePresignUrl", data, {
             headers: {
                 Authorization: `${token}`,
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
         });
         return {
             success: true,
             data: response.data.data,
-            message: response.status.statusMessage
+            message: response.status.statusMessage,
         };
     } catch (error) {
         const message =
-            error?.response?.data?.status?.statusMessage ||
-            "Failed to fetch dashboard data";
+            error?.response?.data?.status?.statusMessage || "Failed to fetch dashboard data";
         return { success: false, message };
     }
 };
@@ -51,7 +50,7 @@ export const uploadToS3 = async (file, uploadUrl, token, showAlert) => {
     } catch (err) {
         showAlert("Error uploading file: " + err.message, "error");
         console.error("Error uploading file:", err);
-         // Return a structured error response
-         return false;
+        // Return a structured error response
+        return false;
     }
 };

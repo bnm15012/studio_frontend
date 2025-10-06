@@ -1,33 +1,38 @@
-
-import { Box, Typography, Divider, Chip, Button, Stack, CircularProgress } from '@mui/material';
-import { Error as ErrorIcon, QrCode, WhatsApp } from '@mui/icons-material';
-import { checkWhatsAppConnectionAPI, createWhatsAppCredentialsAPI, logoutWhatsAppConnectionAPI } from './whatsapp.api';
-import Loading from '../../Components/Loading/Loading';
-import { useCallback, useEffect, useState } from 'react';
-import { useAlert } from '../../utils/Alert';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentBranch, updateBranch } from '../../state/branchSlice';
-import FlexBetween from '../../Components/FlexBetween';
+import { Box, Typography, Divider, Chip, Button, Stack, CircularProgress } from "@mui/material";
+import { Error as ErrorIcon, QrCode, WhatsApp } from "@mui/icons-material";
+import {
+    checkWhatsAppConnectionAPI,
+    createWhatsAppCredentialsAPI,
+    logoutWhatsAppConnectionAPI,
+} from "./whatsapp.api";
+import Loading from "../../Components/Loading/Loading";
+import { useCallback, useEffect, useState } from "react";
+import { useAlert } from "../../utils/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentBranch, updateBranch } from "../../state/branchSlice";
+import FlexBetween from "../../Components/FlexBetween";
 
 const WhatsAppConfiguration = () => {
-    const showAlert = useAlert()
+    const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [webWhastAppQrCode, setWebWhastAppQrCode] = useState();
-    const currentBranch = useSelector((state) => state.branch.currentBranch)
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [whatsAppStatus, setWhatsAppStatus] = useState(currentBranch.whatsAppStatus);
     const [polling, setPolling] = useState(false);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
-    const updateWhatsAppStatus = useCallback((status = "ACTIVE") => {
-        setWhatsAppStatus(status);
-        const newCurrentBranch = JSON.parse(JSON.stringify(currentBranch));
-        newCurrentBranch.whatsAppStatus = status;
-        dispatch(setCurrentBranch(newCurrentBranch));
-        dispatch(updateBranch(newCurrentBranch))
-        setWebWhastAppQrCode();
-    }, [currentBranch, dispatch]);
-
+    const updateWhatsAppStatus = useCallback(
+        (status = "ACTIVE") => {
+            setWhatsAppStatus(status);
+            const newCurrentBranch = JSON.parse(JSON.stringify(currentBranch));
+            newCurrentBranch.whatsAppStatus = status;
+            dispatch(setCurrentBranch(newCurrentBranch));
+            dispatch(updateBranch(newCurrentBranch));
+            setWebWhastAppQrCode();
+        },
+        [currentBranch, dispatch],
+    );
 
     const createWhatsAppCredentials = async () => {
         try {
@@ -38,7 +43,7 @@ const WhatsAppConfiguration = () => {
             });
             if (success) {
                 if (data?.[0]?.webWhatsAppStatus === "ACTIVE") {
-                    updateWhatsAppStatus()
+                    updateWhatsAppStatus();
                 } else {
                     setWebWhastAppQrCode(data?.qrCode);
                     setPolling(!!data?.qrCode);
@@ -54,7 +59,6 @@ const WhatsAppConfiguration = () => {
         }
     };
 
-
     useEffect(() => {
         let interval;
         let attempts = 0;
@@ -67,7 +71,7 @@ const WhatsAppConfiguration = () => {
                 });
                 if (success) {
                     if (data.webWhatsAppStatus === "ACTIVE") {
-                        updateWhatsAppStatus()
+                        updateWhatsAppStatus();
                         showAlert("WhatsApp connected!", "success");
                         setPolling(false);
                         clearInterval(interval);
@@ -104,8 +108,7 @@ const WhatsAppConfiguration = () => {
                 token,
             });
             if (success) {
-                if (data.webWhatsAppStatus === "LOGOUT")
-                    updateWhatsAppStatus("LOGOUT");
+                if (data.webWhatsAppStatus === "LOGOUT") updateWhatsAppStatus("LOGOUT");
                 else throw new Error();
                 showAlert("WhatsApp disconnected successfully!", "success");
             } else {
@@ -117,7 +120,7 @@ const WhatsAppConfiguration = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <Box>
@@ -127,40 +130,42 @@ const WhatsAppConfiguration = () => {
                     variant="h6"
                     sx={{
                         fontWeight: 700,
-                        letterSpacing: '1.5px',
+                        letterSpacing: "1.5px",
                         mb: 2,
                     }}
                 >
                     WhatsApp Configuration (Different for Each Branch)
                 </Typography>
-                {
-                    polling &&
-                    < CircularProgress sx={{ color: "blue" }} />
-                }
-
+                {polling && <CircularProgress sx={{ color: "blue" }} />}
             </FlexBetween>
             <Divider />
 
-            <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" py={3}>
+            <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                textAlign="center"
+                py={3}
+            >
                 {whatsAppStatus === "ACTIVE" ? (
                     <Stack spacing={2} alignItems="center">
                         <Chip
-                            icon={<WhatsApp sx={{ filter: 'drop-shadow(0 0 4px #00ff99)' }} />}
+                            icon={<WhatsApp sx={{ filter: "drop-shadow(0 0 4px #00ff99)" }} />}
                             label="WhatsApp Connected!"
                             sx={{
-                                background: 'rgba(0, 255, 153, 0.2)',
-                                fontSize: '1rem',
+                                background: "rgba(0, 255, 153, 0.2)",
+                                fontSize: "1rem",
                                 fontWeight: 500,
                                 px: 3,
                                 py: 1.5,
                                 cursor: "pointer",
-                                borderRadius: '20px',
-                                border: '1px solid rgba(0, 255, 153, 0.5)',
-                                boxShadow: '0 0 10px rgba(0, 255, 153, 0.4)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    background: 'rgba(0, 255, 153, 0.3)',
-                                    boxShadow: '0 0 15px rgba(0, 255, 153, 0.6)',
+                                borderRadius: "20px",
+                                border: "1px solid rgba(0, 255, 153, 0.5)",
+                                boxShadow: "0 0 10px rgba(0, 255, 153, 0.4)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    background: "rgba(0, 255, 153, 0.3)",
+                                    boxShadow: "0 0 15px rgba(0, 255, 153, 0.6)",
                                 },
                             }}
                         />
@@ -168,18 +173,18 @@ const WhatsAppConfiguration = () => {
                             variant="contained"
                             onClick={logoutWhatsApp}
                             sx={{
-                                background: 'linear-gradient(45deg, #ff4d4d, #ff1a1a)',
-                                color: '#fff',
+                                background: "linear-gradient(45deg, #ff4d4d, #ff1a1a)",
+                                color: "#fff",
                                 fontWeight: 600,
                                 px: 4,
                                 py: 1.5,
-                                borderRadius: '20px',
-                                boxShadow: '0 0 10px rgba(255, 77, 77, 0.5)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    background: 'linear-gradient(45deg, #ff6666, #ff3333)',
-                                    boxShadow: '0 0 15px rgba(255, 77, 77, 0.7)',
-                                    transform: 'scale(1.05)',
+                                borderRadius: "20px",
+                                boxShadow: "0 0 10px rgba(255, 77, 77, 0.5)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    background: "linear-gradient(45deg, #ff6666, #ff3333)",
+                                    boxShadow: "0 0 15px rgba(255, 77, 77, 0.7)",
+                                    transform: "scale(1.05)",
                                 },
                             }}
                         >
@@ -190,18 +195,18 @@ const WhatsAppConfiguration = () => {
                     <Stack spacing={2} alignItems="center">
                         <Box
                             sx={{
-                                position: 'relative',
+                                position: "relative",
                                 width: 220,
                                 height: 220,
-                                borderRadius: '12px',
-                                overflow: 'hidden',
-                                border: '2px solidrgb(20, 103, 12)',
-                                boxShadow: '0 0 20px rgba(0, 230, 230, 0.5)',
-                                animation: 'pulse 2s infinite ease-in-out',
-                                '@keyframes pulse': {
-                                    '0%': { boxShadow: '0 0 20px rgba(0, 230, 65, 0.5)' },
-                                    '50%': { boxShadow: '0 0 30px rgba(0, 230, 27, 0.8)' },
-                                    '100%': { boxShadow: '0 0 20px rgba(0, 230, 77, 0.5)' },
+                                borderRadius: "12px",
+                                overflow: "hidden",
+                                border: "2px solidrgb(20, 103, 12)",
+                                boxShadow: "0 0 20px rgba(0, 230, 230, 0.5)",
+                                animation: "pulse 2s infinite ease-in-out",
+                                "@keyframes pulse": {
+                                    "0%": { boxShadow: "0 0 20px rgba(0, 230, 65, 0.5)" },
+                                    "50%": { boxShadow: "0 0 30px rgba(0, 230, 27, 0.8)" },
+                                    "100%": { boxShadow: "0 0 20px rgba(0, 230, 77, 0.5)" },
                                 },
                             }}
                         >
@@ -209,62 +214,70 @@ const WhatsAppConfiguration = () => {
                                 src={webWhastAppQrCode}
                                 alt="WhatsApp QR"
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    backgroundColor: '#fff',
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    backgroundColor: "#fff",
                                 }}
                             />
                         </Box>
                         <Typography
                             variant="body2"
                             sx={{
-                                textShadow: '0 0 5px rgba(255, 255, 255, 0.3)',
-                                maxWidth: '300px',
+                                textShadow: "0 0 5px rgba(255, 255, 255, 0.3)",
+                                maxWidth: "300px",
                             }}
                         >
-                            Scan this QR code with your WhatsApp. Connection may take up to 30 seconds after scanning code successfully.
+                            Scan this QR code with your WhatsApp. Connection may take up to 30
+                            seconds after scanning code successfully.
                         </Typography>
                     </Stack>
                 ) : (
                     <Stack spacing={2} alignItems="center">
                         <Chip
-                            icon={<ErrorIcon sx={{ color: '#ff4d4d !important', filter: 'drop-shadow(0 0 4px #ff4d4d)' }} />}
+                            icon={
+                                <ErrorIcon
+                                    sx={{
+                                        color: "#ff4d4d !important",
+                                        filter: "drop-shadow(0 0 4px #ff4d4d)",
+                                    }}
+                                />
+                            }
                             label={`WhatsApp ${whatsAppStatus === "LOGOUT" ? "logged out" : "not connected"}`}
                             sx={{
-                                background: 'rgba(255, 77, 77, 0.2)',
-                                color: '#ff4d4d',
-                                fontSize: '1rem',
+                                background: "rgba(255, 77, 77, 0.2)",
+                                color: "#ff4d4d",
+                                fontSize: "1rem",
                                 fontWeight: 500,
                                 px: 3,
                                 py: 1.5,
-                                borderRadius: '20px',
-                                border: '1px solid rgba(255, 77, 77, 0.5)',
-                                boxShadow: '0 0 10px rgba(255, 77, 77, 0.4)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    background: 'rgba(255, 77, 77, 0.3)',
-                                    boxShadow: '0 0 15px rgba(255, 77, 77, 0.6)',
+                                borderRadius: "20px",
+                                border: "1px solid rgba(255, 77, 77, 0.5)",
+                                boxShadow: "0 0 10px rgba(255, 77, 77, 0.4)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    background: "rgba(255, 77, 77, 0.3)",
+                                    boxShadow: "0 0 15px rgba(255, 77, 77, 0.6)",
                                 },
                             }}
                         />
                         <Button
                             variant="contained"
-                            startIcon={<QrCode sx={{ filter: 'drop-shadow(0 0 4px #00e6e6)' }} />}
+                            startIcon={<QrCode sx={{ filter: "drop-shadow(0 0 4px #00e6e6)" }} />}
                             onClick={createWhatsAppCredentials}
                             sx={{
-                                background: 'linear-gradient(45deg, #00e6e6, #00b3b3)',
-                                color: '#fff',
+                                background: "linear-gradient(45deg, #00e6e6, #00b3b3)",
+                                color: "#fff",
                                 fontWeight: 600,
                                 px: 4,
                                 py: 1.5,
-                                borderRadius: '20px',
-                                boxShadow: '0 0 10px rgba(0, 230, 230, 0.5)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    background: 'linear-gradient(45deg, #33f6f6, #33c4c4)',
-                                    boxShadow: '0 0 15px rgba(0, 230, 230, 0.7)',
-                                    transform: 'scale(1.05)',
+                                borderRadius: "20px",
+                                boxShadow: "0 0 10px rgba(0, 230, 230, 0.5)",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    background: "linear-gradient(45deg, #33f6f6, #33c4c4)",
+                                    boxShadow: "0 0 15px rgba(0, 230, 230, 0.7)",
+                                    transform: "scale(1.05)",
                                 },
                             }}
                         >

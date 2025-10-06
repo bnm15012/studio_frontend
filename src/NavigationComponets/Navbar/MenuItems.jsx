@@ -1,7 +1,4 @@
-import {
-  Button,
-  styled,
-} from "@mui/material";
+import { Button, styled } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserProfileDropdown from "./UserProfileDropDown";
@@ -12,79 +9,70 @@ import PropTypes from "prop-types";
 import { useUI } from "../../context/UIContext";
 
 const MenuItems = ({ isNonMobileScreens }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
-  const location = useLocation();
-  const isHomePage = location.pathname === "/";
-  const user = useSelector((state) => state.auth.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
+    const user = useSelector((state) => state.auth.user);
 
-  const handleLogout = async () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
+    const handleLogout = async () => {
+        dispatch(logoutUser());
+        navigate("/");
+    };
 
-  const scrollTo = (target) => {
-    const el = document.querySelector(target);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+    const scrollTo = (target) => {
+        const el = document.querySelector(target);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+    };
 
-  const handleNavigation = (path) => {
-    if (path.startsWith("#")) {
-      scrollTo(path);
-    } else {
-      navigate(path);
-    }
-  };
+    const handleNavigation = (path) => {
+        if (path.startsWith("#")) {
+            scrollTo(path);
+        } else {
+            navigate(path);
+        }
+    };
 
-  const NavButton = styled(Button)(() => ({
-    color: "white",
-    textTransform: 'none',
-    fontSize: '1rem',
-    fontWeight: 500,
-    textWrap: "nowrap",
-    width: isNonMobileScreens ? "" : "100%",
-    '&:hover': {
-      transform: 'scale(1.05)',
-      backgroundColor: 'transparent',
-    },
-  }));
+    const NavButton = styled(Button)(() => ({
+        color: "white",
+        textTransform: "none",
+        fontSize: "1rem",
+        fontWeight: 500,
+        textWrap: "nowrap",
+        width: isNonMobileScreens ? "" : "100%",
+        "&:hover": {
+            transform: "scale(1.05)",
+            backgroundColor: "transparent",
+        },
+    }));
 
-  const navButton = (label, path) => (
-    <NavButton
-      key={label}
-      onClick={() => handleNavigation(path)}
-    >
-      {label}
-    </NavButton>
-  );
-  return (!user ? (
-    <>
-      {!isHomePage && navButton("Home", "/")}
-      {navButton("About Us", "/aboutus")}
-      {navButton("Contact Us", "/contactus")}
-      {isHomePage && navButton("Testimonials", "#testimonials")}
-      {isHomePage && navButton("Pricing", "#pricing")}
-    </>
-  ) : (
-    <>
-      <Notification />
-      {isAdmin &&
-        isEnabled(FEATURE_KEYS.BRANCH) && (
-          <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
-        )}
-      <UserProfileDropdown
-        user={user}
-        navigate={navigate}
-        handleLogout={handleLogout}
-      />
-    </>
-  )
-  );
+    const navButton = (label, path) => (
+        <NavButton key={label} onClick={() => handleNavigation(path)}>
+            {label}
+        </NavButton>
+    );
+    return !user ? (
+        <>
+            {!isHomePage && navButton("Home", "/")}
+            {navButton("About Us", "/aboutus")}
+            {navButton("Contact Us", "/contactus")}
+            {isHomePage && navButton("Testimonials", "#testimonials")}
+            {isHomePage && navButton("Pricing", "#pricing")}
+        </>
+    ) : (
+        <>
+            <Notification />
+            {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
+                <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
+            )}
+            <UserProfileDropdown user={user} navigate={navigate} handleLogout={handleLogout} />
+        </>
+    );
 };
 
 MenuItems.propTypes = {
-  isNonMobileScreens: PropTypes.bool,
+    isNonMobileScreens: PropTypes.bool,
 };
 
 export default MenuItems;

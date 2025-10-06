@@ -11,54 +11,63 @@ import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
 import { getAllDataAPI } from "../../../api/common.api";
 
 const MembershipType = () => {
-  const dispatch = useDispatch();
-  const showAlert = useAlert();
-  const [loading, setLoading] = useState(false);
-  const token = useSelector((state) => state.auth.token);
-  const studio = useSelector((state) => state.auth.studio);
-  const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
-  const [newRow, setNewRow] = useState(null);
+    const dispatch = useDispatch();
+    const showAlert = useAlert();
+    const [loading, setLoading] = useState(false);
+    const token = useSelector((state) => state.auth.token);
+    const studio = useSelector((state) => state.auth.studio);
+    const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
+    const [newRow, setNewRow] = useState(null);
 
-  const fetchMembershipTypesData = useCallback(async () => {
-    dispatch(getAllDataAPI({ rootId: studio.studioId, token, showAlert, route: "activity-membership-type", setData: setMemberShipTypes, setLoading }));
-  }, [dispatch, studio.studioId, token, showAlert]);
+    const fetchMembershipTypesData = useCallback(async () => {
+        dispatch(
+            getAllDataAPI({
+                rootId: studio.studioId,
+                token,
+                showAlert,
+                route: "activity-membership-type",
+                setData: setMemberShipTypes,
+                setLoading,
+            }),
+        );
+    }, [dispatch, studio.studioId, token, showAlert]);
 
-  useEffect(() => {
-    !cachedMembershipTypes.length && fetchMembershipTypesData();
-  }, [cachedMembershipTypes.length, fetchMembershipTypesData]);
+    useEffect(() => {
+        !cachedMembershipTypes.length && fetchMembershipTypesData();
+    }, [cachedMembershipTypes.length, fetchMembershipTypesData]);
 
-  function handleAddNew() {
-    setNewRow({
-      activityMembershipTypeId: undefined,
-      activityMembershipType: "",
-    });
-  }
+    function handleAddNew() {
+        setNewRow({
+            activityMembershipTypeId: undefined,
+            activityMembershipType: "",
+        });
+    }
 
-  return (
-    <FlexBetweenColumn>
-      {loading && <Loading />}
-      <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={newRow != null}
-          onClick={() => handleAddNew()}
-          sx={{ fontWeight: "bold", padding: ".8rem" }}
-        >
-          <AddIcon sx={{ padding: 0, margin: "auto" }} />
-        </Button>
-      </FlexBetween>
-      <Box>
-        <MembershipTypesTable
-          initialData={(cachedMembershipTypes)}
-          studioId={studio.studioId}
-          token={token}
-          newRow={newRow}
-          setNewRow={setNewRow}
-        />
-      </Box>
-    </FlexBetweenColumn>
-  );
+    return (
+        <FlexBetweenColumn>
+            {loading && <Loading />}
+            <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={newRow != null}
+                    onClick={() => handleAddNew()}
+                    sx={{ fontWeight: "bold", padding: ".8rem" }}
+                >
+                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
+                </Button>
+            </FlexBetween>
+            <Box>
+                <MembershipTypesTable
+                    initialData={cachedMembershipTypes}
+                    studioId={studio.studioId}
+                    token={token}
+                    newRow={newRow}
+                    setNewRow={setNewRow}
+                />
+            </Box>
+        </FlexBetweenColumn>
+    );
 };
 
 export default MembershipType;

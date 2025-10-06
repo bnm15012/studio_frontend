@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Select, MenuItem, CircularProgress, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from "react";
+import { Select, MenuItem, CircularProgress, Typography } from "@mui/material";
+import PropTypes from "prop-types";
 
 const InfiniteSelectField = ({
     currentValue,
     onChange,
     getOptions,
     valueField = "name",
-    keyField = "id"
+    keyField = "id",
 }) => {
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -23,12 +23,14 @@ const InfiniteSelectField = ({
                 const response = await getOptions(page, size);
                 setOptions((prev) => {
                     const existingIds = new Set(prev.map((opt) => opt[keyField]));
-                    const uniqueNewOptions = response.data.filter((opt) => !existingIds.has(opt[keyField]));
+                    const uniqueNewOptions = response.data.filter(
+                        (opt) => !existingIds.has(opt[keyField]),
+                    );
                     return [...prev, ...uniqueNewOptions];
                 });
                 setTotal(response.total);
             } catch (err) {
-                setError(err.message || 'Failed to fetch options');
+                setError(err.message || "Failed to fetch options");
             } finally {
                 setLoading(false);
             }
@@ -37,7 +39,8 @@ const InfiniteSelectField = ({
     }, [page, size, getOptions, keyField]);
 
     const handleScroll = (event) => {
-        const bottom = event.target.scrollTop + event.target.clientHeight >= event.target.scrollHeight-10;
+        const bottom =
+            event.target.scrollTop + event.target.clientHeight >= event.target.scrollHeight - 10;
         if (bottom && !loading && options.length < total) {
             setPage((prev) => prev + 1);
         }
@@ -53,12 +56,12 @@ const InfiniteSelectField = ({
                 displayEmpty
                 MenuProps={{
                     PaperProps: {
-                        style: { 
-                            maxHeight: 250, 
-                            overflowY: 'auto' // Ensures that the menu is scrollable
+                        style: {
+                            maxHeight: 250,
+                            overflowY: "auto", // Ensures that the menu is scrollable
                         },
-                        onScroll: handleScroll // Attach onScroll handler here
-                    }
+                        onScroll: handleScroll, // Attach onScroll handler here
+                    },
                 }}
             >
                 {options.map((option) => (
@@ -69,7 +72,9 @@ const InfiniteSelectField = ({
                 {loading && (
                     <MenuItem disabled>
                         <CircularProgress size={20} />
-                        <Typography variant="caption" sx={{ ml: 1 }}>Loading...</Typography>
+                        <Typography variant="caption" sx={{ ml: 1 }}>
+                            Loading...
+                        </Typography>
                     </MenuItem>
                 )}
             </Select>
@@ -82,7 +87,7 @@ InfiniteSelectField.propTypes = {
     onChange: PropTypes.func.isRequired,
     getOptions: PropTypes.func.isRequired,
     valueField: PropTypes.string,
-    keyField: PropTypes.string
+    keyField: PropTypes.string,
 };
 
 export default InfiniteSelectField;

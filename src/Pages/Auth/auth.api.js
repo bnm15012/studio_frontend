@@ -5,154 +5,149 @@ import { transformRegisterData } from "./auth.uti";
 import { setBranches, setCurrentBranch } from "../../state/branchSlice";
 
 export const registerApiCall = async (values) => {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_APP_REST_API}/studios/add`,
-      transformRegisterData(values),
-      { headers: { "Content-Type": "application/json" } }
-    );
-    return {
-      success: true,
-      message:
-        response.data.message ||
-        "You will receive an email which contains password! please login with that password!",
-    };
-  } catch (error) {
-    const message = error?.response?.data?.message || "Error while registering";
-    return { success: false, message };
-  }
+    try {
+        const response = await axios.post(
+            `${import.meta.env.VITE_APP_REST_API}/studios/add`,
+            transformRegisterData(values),
+            { headers: { "Content-Type": "application/json" } },
+        );
+        return {
+            success: true,
+            message:
+                response.data.message ||
+                "You will receive an email which contains password! please login with that password!",
+        };
+    } catch (error) {
+        const message = error?.response?.data?.message || "Error while registering";
+        return { success: false, message };
+    }
 };
 
 export const loginApiCall = async ({ values, dispatch, navigate }) => {
-  try {
-    const loggedInResponse = await axios.post(
-      `${import.meta.env.VITE_APP_REST_API}/users/login`,
-      values,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    const authData = loggedInResponse.data.data[0];
-    dispatch(
-      setLogin({
-        user: authData,
-        token: authData.token,
-        studio: authData.studioEntry,
-        settings: authData.studioEntry.configuration.configrationEntryList,
-      })
-    );
-    dispatch(setBranches(authData.studioEntry.branchList))
-    dispatch(setCurrentBranch(authData.studioEntry.branchList.filter(branch => branch.isActive)[0]))
-    dispatch(setSubscriptionPlan({
-      subscriptionPlan: authData.subscriptionEntry,
-    }))
-    navigate(`/dashboard`);
-    return { success: true, message: authData.message || "Login successful!" };
-  } catch (error) {
-    const message =
-      error?.response?.data?.status?.statusMessage || "Error logging in";
-    return { success: false, message };
-  }
-};
-
-export const changePasswordApiCall = async ({
-  email,
-  password,
-  otp,
-  OTPToken,
-}) => {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_APP_REST_API}/password/verify`,
-      JSON.stringify({
-        otpToken: OTPToken,
-        otp,
-        userEntry: { email, password },
-      }),
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    return {
-      success: true,
-      message: response?.data?.message || "Password changed successfully!",
-    };
-  } catch (error) {
-    const message =
-      error?.response?.data?.message || "Failed to change password";
-    return { success: false, message };
-  }
-};
-
-// FIXME - no upgraded 
-export const updateProfile = async ({ values, dispatch, token }) => {
-  try {
-    const savedUserResponse = await api.put(
-      `/users/update/${values["userId"]}`,
-      values,
-      {
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const savedUser = savedUserResponse.data;
-
-    if (savedUser) {
-      dispatch(
-        setLogin({
-          user: savedUser.data[0],
-          token: token.split("Bearer ")[1],
-          studio: savedUser.data[0].studioEntry,
-          settings: savedUser.data[0].studioEntry.configuration.configrationEntryList,
-        })
-      );
-      return { success: true, message: "Profile updated successfully!" };
-    } else {
-      return { success: true, message: savedUser.message || "Profile updated" };
+    try {
+        const loggedInResponse = await axios.post(
+            `${import.meta.env.VITE_APP_REST_API}/users/login`,
+            values,
+            {
+                headers: { "Content-Type": "application/json" },
+            },
+        );
+        const authData = loggedInResponse.data.data[0];
+        dispatch(
+            setLogin({
+                user: authData,
+                token: authData.token,
+                studio: authData.studioEntry,
+                settings: authData.studioEntry.configuration.configrationEntryList,
+            }),
+        );
+        dispatch(setBranches(authData.studioEntry.branchList));
+        dispatch(
+            setCurrentBranch(
+                authData.studioEntry.branchList.filter((branch) => branch.isActive)[0],
+            ),
+        );
+        dispatch(
+            setSubscriptionPlan({
+                subscriptionPlan: authData.subscriptionEntry,
+            }),
+        );
+        navigate(`/dashboard`);
+        return { success: true, message: authData.message || "Login successful!" };
+    } catch (error) {
+        const message = error?.response?.data?.status?.statusMessage || "Error logging in";
+        return { success: false, message };
     }
-  } catch (error) {
-    const message = error?.response?.data?.message || "Error updating profile";
-    return { success: false, message };
-  }
+};
+
+export const changePasswordApiCall = async ({ email, password, otp, OTPToken }) => {
+    try {
+        const response = await axios.post(
+            `${import.meta.env.VITE_APP_REST_API}/password/verify`,
+            JSON.stringify({
+                otpToken: OTPToken,
+                otp,
+                userEntry: { email, password },
+            }),
+            {
+                headers: { "Content-Type": "application/json" },
+            },
+        );
+        return {
+            success: true,
+            message: response?.data?.message || "Password changed successfully!",
+        };
+    } catch (error) {
+        const message = error?.response?.data?.message || "Failed to change password";
+        return { success: false, message };
+    }
+};
+
+// FIXME - no upgraded
+export const updateProfile = async ({ values, dispatch, token }) => {
+    try {
+        const savedUserResponse = await api.put(`/users/update/${values["userId"]}`, values, {
+            headers: {
+                Authorization: `${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        const savedUser = savedUserResponse.data;
+
+        if (savedUser) {
+            dispatch(
+                setLogin({
+                    user: savedUser.data[0],
+                    token: token.split("Bearer ")[1],
+                    studio: savedUser.data[0].studioEntry,
+                    settings: savedUser.data[0].studioEntry.configuration.configrationEntryList,
+                }),
+            );
+            return { success: true, message: "Profile updated successfully!" };
+        } else {
+            return { success: true, message: savedUser.message || "Profile updated" };
+        }
+    } catch (error) {
+        const message = error?.response?.data?.message || "Error updating profile";
+        return { success: false, message };
+    }
 };
 
 export const sendOTPRequest = async (email) => {
-  try {
-    const response = await api.post(`/password/reset?email=${email}`);
-    return {
-      success: true,
-      otpToken:
-        response.data.data[0].otpToken ||
-        "OTP sent successfully to your email!",
-    };
-  } catch (error) {
-    const message =
-      error?.response?.data?.status.statusMessage || "Failed to send OTP";
-    return { success: false, message };
-  }
+    try {
+        const response = await api.post(`/password/reset?email=${email}`);
+        return {
+            success: true,
+            otpToken: response.data.data[0].otpToken || "OTP sent successfully to your email!",
+        };
+    } catch (error) {
+        const message = error?.response?.data?.status.statusMessage || "Failed to send OTP";
+        return { success: false, message };
+    }
 };
 
-
 export const updateStudio = async ({ values, dispatch, token }) => {
-  try {
-    const response = await api.put(`/studios/update/${values["studioId"]}`, values, {
-      headers: {
-        Authorization: `${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const savedStudio = response.data;
-    if (savedStudio) {
-      dispatch(setStudio({ studio: savedStudio.data[0] }));
-      return { success: true, data: savedStudio.data[0], message: "Studio updated successfully!" };
-    } else {
-      return { success: false, message: savedStudio.message || "Studio updated" };
+    try {
+        const response = await api.put(`/studios/update/${values["studioId"]}`, values, {
+            headers: {
+                Authorization: `${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        const savedStudio = response.data;
+        if (savedStudio) {
+            dispatch(setStudio({ studio: savedStudio.data[0] }));
+            return {
+                success: true,
+                data: savedStudio.data[0],
+                message: "Studio updated successfully!",
+            };
+        } else {
+            return { success: false, message: savedStudio.message || "Studio updated" };
+        }
+    } catch (error) {
+        const message = error?.response?.data?.message || "Error updating studio";
+        return { success: false, message };
     }
-  } catch (error) {
-    const message = error?.response?.data?.message || "Error updating studio";
-    return { success: false, message };
-  }
 };

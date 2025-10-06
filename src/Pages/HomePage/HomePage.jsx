@@ -10,28 +10,28 @@ import Footer from "../../Components/Footer";
 import PricingSection from "../Pricing/PricingSection";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.user);
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [navigate, user]);
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.user);
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard");
+        }
+    }, [navigate, user]);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  })
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
-  return (
-    <Box sx={{ minHeight: '100vh' }}>
-      <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <Footer />
-    </Box>
-  );
+    return (
+        <Box sx={{ minHeight: "100vh" }}>
+            <Navbar />
+            <HeroSection />
+            <FeaturesSection />
+            <TestimonialsSection />
+            <PricingSection />
+            <Footer />
+        </Box>
+    );
 };
 
 export default HomePage;

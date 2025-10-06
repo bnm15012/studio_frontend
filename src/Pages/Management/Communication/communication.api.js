@@ -1,6 +1,5 @@
 import api from "../../../utils/api";
 
-
 const getErrorMessage = (error, defaultMessage) =>
     error.response?.data?.status?.statusMessage || defaultMessage;
 
@@ -51,11 +50,11 @@ export const sendMessageApi = async ({ token, payload, file = null, page = 1, si
         const response = await api.post(
             `/sendMessage/${payload["branchId"]}`,
             formData,
-            getHeaders(token, { "Content-Type": "multipart/form-data" }, { page, size })
+            getHeaders(token, { "Content-Type": "multipart/form-data" }, { page, size }),
         );
         const { status, data } = response.data;
         return {
-            data, 
+            data,
             success: true,
             message: status.statusMessage || "Message sent successfully!",
         };
@@ -65,17 +64,14 @@ export const sendMessageApi = async ({ token, payload, file = null, page = 1, si
             message: getErrorMessage(error, "Failed to send message!"),
         };
     }
-}
+};
 
 export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
     try {
-        const response = await api.get(
-            `/getMessageHistory/${branchId}`,
-            {
-                headers: { Authorization: `${token}`, },
-                params: { page, size },
-            }
-        );
+        const response = await api.get(`/getMessageHistory/${branchId}`, {
+            headers: { Authorization: `${token}` },
+            params: { page, size },
+        });
         const { data, status } = response.data;
         return {
             data,
@@ -89,16 +85,13 @@ export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
             message: getErrorMessage(error, "Failed to fetch Templates!"),
         };
     }
-}
+};
 
 export const getMessageRecipientsAPI = async ({ token, messageId }) => {
     try {
-        const response = await api.get(
-            `/getMessageRecipients/${messageId}`,
-            {
-                headers: { Authorization: `${token}`, },
-            }
-        );
+        const response = await api.get(`/getMessageRecipients/${messageId}`, {
+            headers: { Authorization: `${token}` },
+        });
         const { data, status } = response.data;
         return {
             data,
@@ -111,4 +104,4 @@ export const getMessageRecipientsAPI = async ({ token, messageId }) => {
             message: getErrorMessage(error, "Failed to fetch Templates!"),
         };
     }
-}
+};

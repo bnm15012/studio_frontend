@@ -1,19 +1,19 @@
-export const compareData = (obj1, obj2) => {
-  return (JSON.stringify(obj2, Object.keys(obj2).sort()) === JSON.stringify(obj1, Object.keys(obj1).sort()))
-}
+export const compareData = (obj1, obj2) =>
+    JSON.stringify(obj2, Object.keys(obj2).sort()) ===
+    JSON.stringify(obj1, Object.keys(obj1).sort());
 
 export function replacePlaceholders(templateStr, dataMap) {
     if (!templateStr) return "";
     return templateStr.replace(/{{\s*([\w_]+)\s*}}/g, (_, key) => {
         // Support nested keys like instructorData.name
-        const keys = key.split('_');
+        const keys = key.split("_");
         let value = dataMap;
-        for (let k of keys) {
+        for (const k of keys) {
             value = value?.[k];
             if (value === undefined || value === null) return "";
         }
-        if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-            if (typeof dataMap.getLocalDateTime === 'function') {
+        if (typeof value === "string" && !isNaN(Date.parse(value))) {
+            if (typeof dataMap.getLocalDateTime === "function") {
                 return dataMap.getLocalDateTime(value);
             }
         }
