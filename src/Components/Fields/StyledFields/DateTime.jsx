@@ -4,19 +4,21 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { convertUTCToLocal } from "../../utils/DateUtil";
+import { convertUTCToLocal } from "../../../utils/DateUtil";
 import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 const DateTime = ({
-    disabled = false,
     value,
-    onChange,
+    label,
+    setValue,
+    minVal,
+    maxVal,
+    disabled = false,
     format = "DATETIME",
-    minDateTime,
-    textFieldVarient = "standard",
+    variant = "standard",
     placeholder = "Select date and time",
-    customStyle = {},
+    validation,
 }) => {
     const theme = useTheme();
     const [localDateTime, setLocalDateTime] = useState(null);
@@ -33,18 +35,18 @@ const DateTime = ({
         if (date) {
             setLocalDateTime(date);
             const formatted = date.toISOString().slice(0, 19).replace("T", " ");
-            onChange(formatted);
+            setValue(formatted);
         } else {
-            onChange(null);
+            setValue(null);
         }
     };
 
-    const minDate = minDateTime
-        ? new Date(convertUTCToLocal(minDateTime).replace(" ", "T"))
-        : undefined;
+    const minDate = minVal ? new Date(convertUTCToLocal(minVal).replace(" ", "T")) : undefined;
+    const maxDate = maxVal ? new Date(convertUTCToLocal(maxVal).replace(" ", "T")) : undefined;
 
     const commonProps = {
         value: localDateTime,
+        label: label,
         disabled: disabled,
         onChange: handleChange,
         ampm: true,
@@ -52,7 +54,7 @@ const DateTime = ({
         minutesStep: 5,
         slotProps: {
             textField: {
-                variant: textFieldVarient,
+                variant: variant,
                 size: "small",
                 fullWidth: true,
                 placeholder: placeholder
@@ -74,7 +76,6 @@ const DateTime = ({
                             boxShadow: "0 0 0 2px rgba(25, 118, 210, 0.2)",
                         },
                     },
-                    ...customStyle,
                 },
             },
         },
@@ -127,11 +128,12 @@ const DateTime = ({
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {format === "DATE" ? (
-                    <DatePicker {...commonProps} minDate={minDate} />
+                    <DatePicker {...commonProps} minDate={minDate} maxDate={maxDate} />
                 ) : (
                     <DateTimePicker
                         {...commonProps}
                         minDateTime={minDate}
+                        maxDateTime={maxDate}
                         viewRenderers={{
                             hours: renderTimeViewClock,
                             minutes: renderTimeViewClock,
@@ -145,12 +147,13 @@ const DateTime = ({
 
 DateTime.propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    textFieldVarient: PropTypes.string,
+    label: PropTypes.string,
+    setValue: PropTypes.func.isRequired,
+    variant: PropTypes.string,
     format: PropTypes.oneOf(["DATE", "DATETIME"]),
-    minDateTime: PropTypes.string,
+    minVal: PropTypes.string,
+    maxVal: PropTypes.string,
     placeholder: PropTypes.string,
-    customStyle: PropTypes.object,
     disabled: PropTypes.bool,
 };
 

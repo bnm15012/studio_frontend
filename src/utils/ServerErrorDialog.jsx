@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { DialogContent, DialogActions, Button } from "@mui/material";
+import { DialogContent } from "@mui/material";
 import StyledDialog from "../Components/New/StyledDialog";
 
 const ServerErrorDialog = () => {
@@ -31,17 +31,13 @@ const ServerErrorDialog = () => {
         <StyledDialog
             title="Connection Error"
             open={serverDown}
+            cancelText="Okay"
             onClose={() => setServerDown(false)}
         >
             <DialogContent>
                 Internet not connected or the server is down. Please check your connection. or check
                 after some time!
             </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setServerDown(false)} color="primary">
-                    OK
-                </Button>
-            </DialogActions>
         </StyledDialog>
     );
 };

@@ -25,6 +25,7 @@ import { useAlert } from "../../../utils/Alert";
 import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
 import { getAllDataAPI } from "../../../api/common.api";
 import StyledDialog from "../../../Components/New/StyledDialog";
+import Field from "../../../Components/Fields/Field";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
@@ -72,7 +73,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         } else {
             setFormData({
                 activityId: "NEW",
-                activityType: "ZUMBA",
+                activityType: undefined,
                 description: "",
                 branchId: currentBranch.branchId,
                 batchEntries: [],
@@ -160,21 +161,22 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                 </Typography>
                 <Grid container spacing={2} mb={2}>
                     <Grid item xs={12} md={6}>
-                        <TextField
-                            select
+                        <Field
+                            type="SELECT"
                             label="Activity Type"
-                            value={formData.activityType}
-                            onChange={(e) =>
-                                setFormData({ ...formData, activityType: e.target.value })
-                            }
-                            fullWidth
-                        >
-                            {validActivityTypes.map((type) => (
-                                <MenuItem key={type} value={type}>
-                                    {type}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+                            variant={"outlined"}
+                            value={{ key: formData.activityType, value: formData.activityType }}
+                            extraProp={{
+                                getOptions: async (search, page, limit) =>
+                                    validActivityTypes
+                                        .filter((a) =>
+                                            a.toLowerCase().includes(search.toLowerCase()),
+                                        )
+                                        .slice(page * limit, (page + 1) * limit)
+                                        .map((a) => ({ key: a, value: a })),
+                            }}
+                            setValue={(value) => setFormData({ ...formData, activityType: value })}
+                        />
                     </Grid>
                 </Grid>
                 <TextField

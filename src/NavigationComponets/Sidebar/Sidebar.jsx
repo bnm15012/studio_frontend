@@ -273,6 +273,5 @@ const Sidebar = ({ sidebarOpen }) => {
 
 Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
-    setSidebarOpen: PropTypes.func.isRequired,
 };
 export default Sidebar;
