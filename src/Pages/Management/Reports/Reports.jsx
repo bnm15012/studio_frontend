@@ -20,7 +20,7 @@ import { formatDate, getCurrentDateTimeUTC, getLocalDateTime } from "../../../ut
 import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
 import { reportsAPi } from "./reports.api";
-import HtmlToPdfViewer from "../../../Components/Html2PDF";
+import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
 const Reports = () => {
     const pdfViewerRef = useRef();

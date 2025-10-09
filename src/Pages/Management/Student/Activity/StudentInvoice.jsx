@@ -3,11 +3,11 @@ import DialogContent from "@mui/material/DialogContent";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { getLocalDateTime } from "../../../../utils/DateUtil";
-import HtmlToPdfViewer from "../../../../Components/Html2PDF";
 import { useUI } from "../../../../context/UIContext";
 import StyledDialog from "../../../../Components/New/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
+import HtmlToPdfViewer from "../../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
 const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);

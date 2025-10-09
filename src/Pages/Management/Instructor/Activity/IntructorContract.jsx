@@ -8,9 +8,9 @@ import { Typography } from "@mui/material";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
 import { useAlert } from "../../../../utils/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
-import HtmlToPdfViewer from "../../../../Components/Html2PDF";
 import StyledDialog from "../../../../Components/New/StyledDialog";
 import { PrinterIcon } from "lucide-react";
+import HtmlToPdfViewer from "../../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
 const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
     const showAlert = useAlert();

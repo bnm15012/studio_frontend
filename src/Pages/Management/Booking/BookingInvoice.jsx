@@ -9,10 +9,10 @@ import FlexBetween from "../../../Components/FlexBetween";
 import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 import { Typography } from "@mui/material";
-import HtmlToPdfViewer from "../../../Components/Html2PDF";
 import StyledDialog from "../../../Components/New/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
+import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
 const sectionTitle = {
     marginTop: "10mm",
