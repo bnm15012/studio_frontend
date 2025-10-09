@@ -5,7 +5,7 @@ import StyledDialog from "./New/StyledDialog";
 const DeleteDialog = ({ open, onClose, onConfirm, displayData, id }) => (
     <StyledDialog
         open={open}
-        titleBgColor={"linear-gradient(to bottom, #FF0000, #B02600)"}
+        titleBgColor={"error"}
         onClose={onClose}
         title="Confirm Deletion"
         confirmText="Delete"

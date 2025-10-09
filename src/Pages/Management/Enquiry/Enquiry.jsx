@@ -9,23 +9,31 @@ import { useAlert } from "../../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import EnquiryTable from "./EnquiryTable.jsx";
 import SearchField from "../../../Components/SearchField.jsx";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
 import QrForm from "../../../Components/QrForm.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import { enquiryCruds } from "../../../api/all.api.js";
+import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 
 const size = 7;
+
+const FIELD_META = {
+    primary: "enquiryId",
+    root: "branchId",
+};
+
 const FIELDS = [
-    { name: "name", label: "Name", type: "char" },
-    { name: "contact", label: "Contact", type: "number" },
-    { name: "enquiryPurpose", label: "Purpose", type: "char" },
-    { name: "enquiryDate", label: "Date", type: "date" },
+    { name: "enquiryDate", label: "Date", show: true, type: FIELD_TYPES.DATE },
+    { name: "name", label: "Name", show: true },
+    { name: "contact", label: "Contact", show: true, type: FIELD_TYPES.NUMBER },
+    { name: "enquiryPurpose", label: "Purpose", show: true },
 ];
 const Enquiry = () => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const { isEnabled, FEATURE_KEYS } = useUI();
     const [loading, setLoading] = useState(false);
+    const [addNewFunc, setAddNewFunc] = useState(null);
+
     const token = useSelector((state) => state.auth.token);
     const [searchTerm, setSearchTerm] = useState("");
     const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -53,17 +61,6 @@ const Enquiry = () => {
         isEnabled(FEATURE_KEYS.ENQUIRY) && !enquiry.items.length && fetchEnquiry();
     }, [isEnabled, FEATURE_KEYS.ENQUIRY, enquiry.items.length, fetchEnquiry]);
 
-    const handleAddNew = () => {
-        setNewRow({
-            enquiryId: undefined,
-            name: "",
-            contact: "",
-            enquiryPurpose: "",
-            enquiryDate: getCurrentDateTimeUTC(),
-            branchId: currentBranch.branchId,
-        });
-    };
-
     const handlePageChange = async (e, p) => {
         setLoading(true);
         setPage(p);
@@ -81,7 +78,7 @@ const Enquiry = () => {
                         setSearchTerm(searchTerm);
                     }}
                 />
-                <QrForm qrSize={480} title="" link={"enquiry-form"} />
+                <QrForm title="" link={"enquiry-form"} />
                 <Button
                     variant="contained"
                     color="primary"
@@ -98,7 +95,9 @@ const Enquiry = () => {
                     variant="contained"
                     color="primary"
                     disabled={newRow != null}
-                    onClick={() => handleAddNew()}
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
                     <AddIcon sx={{ padding: 0, margin: "auto" }} />
@@ -107,11 +106,10 @@ const Enquiry = () => {
             <Box>
                 <EnquiryTable
                     initialData={enquiry.items ?? []}
-                    branchId={currentBranch.branchId}
-                    token={token}
-                    newRow={newRow}
-                    fiels={FIELDS}
+                    fields={FIELDS}
+                    fieldsMeta={FIELD_META}
                     setNewRow={setNewRow}
+                    onSetAddNewFunc={setAddNewFunc}
                 />
             </Box>
             <FlexBetween>

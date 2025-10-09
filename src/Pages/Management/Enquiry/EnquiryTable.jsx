@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { TableBody, TableHead, Paper, IconButton, TextField } from "@mui/material";
+import { TableBody, TableHead, Paper, IconButton, TablePagination } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
-import FlexEvenly from "../../../Components/FlexEvenly";
 import {
     StyledTable,
     StyledTableCell,
@@ -16,14 +15,13 @@ import {
 import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
-import DateTimeField from "../../../Components/DateTimeField";
-import { getLocalDateTime } from "../../../utils/DateUtil";
 import { enquiryCruds } from "../../../api/all.api";
-import { useUI } from "../../../context/UIContext";
+import Field from "../../../Components/Fields/Field";
+import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
-const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
+const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
     const dispatch = useDispatch();
-    const { isMobile } = useUI();
+    // const { isMobile } = useUI();
     const token = useSelector((state) => state.auth.token);
     const showAlert = useAlert();
     const [data, setData] = useState([]);
@@ -40,9 +38,9 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
     };
 
     const handleCancel = () => {
-        if (newRow) {
-            setNewRow(null);
-        } else if (editingId && originalRow) {
+        if (editingId === "NEW") {
+            setData((prev) => prev.filter((row) => row.enquiryId !== editingId));
+        } else if (originalRow) {
             setData((prev) => prev.map((row) => (row.enquiryId === editingId ? originalRow : row)));
         }
         setEditingId(null);
@@ -57,14 +55,13 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
         setLoading(true);
 
         try {
-            if (newRow !== null) {
-                dispatch(enquiryCruds.add(newRow, token, showAlert, setLoading, true));
-                setNewRow(null);
+            const newEnquiry = data.find((e) => e.enquiryId === enquiryId);
+            if (enquiryId === "NEW") {
+                const { enquiryId, ...withoutId } = newEnquiry;
+                dispatch(enquiryCruds.add(withoutId, token, showAlert, setLoading, true));
+                setData((prev) => prev.filter((row) => row.enquiryId !== enquiryId));
             } else {
-                const updatedEnquiry = data.find((e) => e.enquiryId === enquiryId);
-                dispatch(
-                    enquiryCruds.update(enquiryId, updatedEnquiry, token, showAlert, setLoading),
-                );
+                dispatch(enquiryCruds.update(enquiryId, newEnquiry, token, showAlert, setLoading));
                 setEditingId(null);
             }
         } catch (error) {
@@ -89,15 +86,27 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
     };
 
     const handleChange = (value, enquiryId, field) => {
-        if (enquiryId === null) {
-            setNewRow({ ...newRow, [field]: value });
-        } else {
-            setData((prev) =>
-                prev.map((enq) => (enq.enquiryId === enquiryId ? { ...enq, [field]: value } : enq)),
-            );
-        }
+        setData((prev) =>
+            prev.map((enq) => (enq.enquiryId === enquiryId ? { ...enq, [field]: value } : enq)),
+        );
     };
 
+    const addNewRow = () => {
+        const newRow = {
+            enquiryId: "NEW",
+            name: "",
+            contact: "",
+            enquiryPurpose: "",
+            enquiryDate: getCurrentDateTimeUTC(),
+            branchId: 2,
+        };
+        setData((prev) => [newRow, ...prev]);
+        setEditingId("NEW");
+    };
+
+    useEffect(() => {
+        if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
+    }, [onSetAddNewFunc]);
     return (
         <StyledTableContainer component={Paper}>
             {loading && <Loading />}
@@ -107,78 +116,57 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
                         <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
                             S. No.
                         </StyledTableCell>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            Name
-                        </StyledTableCell>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            Contact
-                        </StyledTableCell>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            Purpose
-                        </StyledTableCell>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            Date
-                        </StyledTableCell>
+                        {fields
+                            .filter((f) => f.show)
+                            .map(({ label }) => (
+                                <StyledTableCell
+                                    key={label}
+                                    sx={{ fontWeight: "bold", color: "#1976d2" }}
+                                >
+                                    {label}
+                                </StyledTableCell>
+                            ))}
                         <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
                             Actions
                         </StyledTableCell>
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, index) => (
-                        <StyledTableRow key={row.enquiryId}>
-                            {editingId === row.enquiryId ? (
-                                <>
-                                    <StyledTableCell>{index + 1}</StyledTableCell>
-                                    {["name", "contact", "enquiryPurpose"].map((field) => (
-                                        <StyledTableCell key={field}>
-                                            <TextField
-                                                variant="standard"
-                                                value={row[field]}
-                                                onChange={(e) =>
-                                                    handleChange(
-                                                        e.target.value,
-                                                        row.enquiryId,
-                                                        field,
-                                                    )
-                                                }
-                                            />
-                                        </StyledTableCell>
-                                    ))}
-                                    <StyledTableCell>
-                                        <DateTimeField
-                                            format="DATE"
-                                            value={row.enquiryDate}
-                                            onChange={(value) =>
-                                                handleChange(value, row.enquiryId, "enquiryDate")
+                    {data.map((row, rowIndex) => (
+                        <StyledTableRow key={rowIndex}>
+                            <StyledTableCell>{rowIndex + 1}</StyledTableCell>
+                            {fields
+                                .filter((f) => f.show !== false)
+                                .map((field) => (
+                                    <StyledTableCell key={field.name}>
+                                        <Field
+                                            isEdit={editingId === row[fieldsMeta.primary]}
+                                            value={row[field.name]}
+                                            setValue={(v) =>
+                                                handleChange(v, row[fieldsMeta.primary], field.name)
                                             }
+                                            type={field.type}
                                         />
                                     </StyledTableCell>
-                                    <StyledTableCell>
+                                ))}
+                            <StyledTableCell>
+                                {editingId === row[fieldsMeta.primary] ? (
+                                    <>
                                         <IconButton
                                             sx={{ color: "blue" }}
-                                            onClick={() => handleSave(row.enquiryId)}
+                                            onClick={() => handleSave(row[fieldsMeta.primary])}
                                         >
                                             <SaveIcon />
                                         </IconButton>
                                         <IconButton sx={{ color: "red" }} onClick={handleCancel}>
                                             <CancelIcon />
                                         </IconButton>
-                                    </StyledTableCell>
-                                </>
-                            ) : (
-                                <>
-                                    <StyledTableCell>{index + 1}</StyledTableCell>
-                                    {["name", "contact", "enquiryPurpose"].map((field) => (
-                                        <StyledTableCell key={field}>{row[field]}</StyledTableCell>
-                                    ))}
-                                    <StyledTableCell>
-                                        {getLocalDateTime(row.enquiryDate)}
-                                    </StyledTableCell>
-                                    <StyledTableCell>
+                                    </>
+                                ) : (
+                                    <>
                                         <IconButton
                                             sx={{ color: "blue" }}
-                                            onClick={() => handleEdit(row.enquiryId)}
+                                            onClick={() => handleEdit(row[fieldsMeta.primary])}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -186,54 +174,16 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
                                             sx={{ color: "red" }}
                                             onClick={() => {
                                                 setDeleteDialogOpen(true);
-                                                setDeleteEnquiryId(row.enquiryId);
+                                                setDeleteEnquiryId(row[fieldsMeta.primary]);
                                             }}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
-                                    </StyledTableCell>
-                                </>
-                            )}
+                                    </>
+                                )}
+                            </StyledTableCell>
                         </StyledTableRow>
                     ))}
-                    {data.length === 0 && (
-                        <StyledTableRow>
-                            <StyledTableCell colSpan={6}>
-                                <FlexEvenly>
-                                    No Enquiry available. Add by clicking the &quot;+&quot; button!
-                                </FlexEvenly>
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    )}
-                    {newRow && (
-                        <StyledTableRow>
-                            <StyledTableCell>NEW</StyledTableCell>
-                            {["name", "contact", "enquiryPurpose"].map((field) => (
-                                <StyledTableCell key={field}>
-                                    <TextField
-                                        variant="standard"
-                                        value={newRow[field]}
-                                        onChange={(e) => handleChange(e.target.value, null, field)}
-                                    />
-                                </StyledTableCell>
-                            ))}
-                            <StyledTableCell>
-                                <DateTimeField
-                                    format="DATE"
-                                    value={newRow.enquiryDate}
-                                    onChange={(value) => handleChange(value, null, "enquiryDate")}
-                                />
-                            </StyledTableCell>
-                            <StyledTableCell>
-                                <IconButton sx={{ color: "blue" }} onClick={() => handleSave(null)}>
-                                    <SaveIcon />
-                                </IconButton>
-                                <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                                    <CancelIcon />
-                                </IconButton>
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    )}
                 </TableBody>
             </StyledTable>
             {deleteDialogOpen && (
@@ -244,6 +194,15 @@ const EnquiryTable = ({ initialData, newRow, setNewRow }) => {
                     displayData={`enquiry for ${data.find((d) => d.enquiryId === deleteEnquiryId)?.name}`}
                 />
             )}
+
+            <TablePagination
+                component="div"
+                count={5}
+                page={1}
+                onPageChange={() => {}}
+                rowsPerPage={5}
+                rowsPerPageOptions={[5]}
+            />
         </StyledTableContainer>
     );
 };
@@ -258,7 +217,11 @@ EnquiryTable.propTypes = {
             enquiryPurpose: PropTypes.string.isRequired,
         }),
     ).isRequired,
-    newRow: PropTypes.object,
-    setNewRow: PropTypes.func.isRequired,
+    fields: PropTypes.array,
+    fieldsMeta: PropTypes.shape({
+        primary: PropTypes.string,
+        root: PropTypes.string,
+    }),
+    onSetAddNewFunc: PropTypes.func,
 };
 export default EnquiryTable;

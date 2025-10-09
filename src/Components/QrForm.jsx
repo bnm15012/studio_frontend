@@ -63,7 +63,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
                 open={open}
                 cancelText="Close"
                 onClose={handleClose}
-                title={title}
+                title={title || "QR code"}
                 onConfirm={handleDownloadPDF}
                 confirmText="Download"
                 actions={[

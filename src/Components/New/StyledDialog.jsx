@@ -18,6 +18,12 @@ import { useUI } from "../../context/UIContext";
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+const TITLE_BGs = (theme) => ({
+    success: `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+    warning: `linear-gradient(to bottom, ${theme.palette.warning.main}, ${theme.palette.warning.dark})`,
+    error: `linear-gradient(to bottom, ${theme.palette.error.main}, ${theme.palette.error.dark})`,
+    info: `linear-gradient(to bottom, ${theme.palette.info.main}, ${theme.palette.info.dark})`,
+});
 
 const StyledDialogBase = styled(Dialog)(({ theme, $ismobile }) => ({
     "& .MuiDialog-paper": $ismobile
@@ -49,11 +55,12 @@ const StyledDialog = ({
     onConfirm,
     confirmDisabled = false,
     actions = [],
-    titleBgColor,
+    titleBgColor = "success",
     ...props
 }) => {
     const { isMobile } = useUI();
     const theme = useTheme();
+    const backgrounds = TITLE_BGs(theme);
     return (
         <StyledDialogBase
             open={open}
@@ -65,13 +72,7 @@ const StyledDialog = ({
             {...props}
         >
             <DialogTitle
-                sx={{
-                    background: titleBgColor
-                        ? titleBgColor
-                        : `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                    color: "white",
-                    textAlign: "center",
-                }}
+                sx={{ background: backgrounds[titleBgColor], color: "white", textAlign: "center" }}
             >
                 {title && <>{title}</>}
                 {closeIcon && (

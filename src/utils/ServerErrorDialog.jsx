@@ -30,8 +30,9 @@ const ServerErrorDialog = () => {
     return (
         <StyledDialog
             title="Connection Error"
+            titleBgColor={"error"}
             open={serverDown}
-            cancelText="Okay"
+            cancelText="Close"
             onClose={() => setServerDown(false)}
         >
             <DialogContent>

@@ -5,6 +5,7 @@ import StyledTextField from "./StyledFields/StyledTextField";
 import FlexBetween from "../FlexBetween";
 import { Typography } from "@mui/material";
 import SelectionField from "./Selection/SelectionField";
+import { getLocalDateTime } from "../../utils/DateUtil";
 
 const Field = ({
     value,
@@ -66,6 +67,9 @@ const Field = ({
 
             case "SELECT":
                 return value.value;
+            case "DATE":
+            case "DATETIME":
+                return getLocalDateTime(value, type);
 
             default:
                 return value;
