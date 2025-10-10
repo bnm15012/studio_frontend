@@ -5,11 +5,11 @@ import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useDispatch, useSelector } from "react-redux";
-import EnquiryTable from "./EnquiryTable.jsx";
 import QrForm from "../../../Components/QrForm.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
+import ListView from "./EnquiryTable.jsx";
 
 const LIMIT = 7;
 
@@ -53,7 +53,6 @@ const Enquiry = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    // disabled={newRow != null}
                     onClick={() => {
                         if (addNewFunc) addNewFunc();
                     }}
@@ -63,7 +62,7 @@ const Enquiry = () => {
                 </Button>
             </FlexBetween>
             <Box>
-                <EnquiryTable
+                <ListView
                     tableName={"enquiry"}
                     tableCruds={enquiryCruds}
                     size={LIMIT}

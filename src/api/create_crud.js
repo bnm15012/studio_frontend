@@ -71,8 +71,10 @@ export function createCrud({ route, idKey = "id", extra = {}, extraReducers }) {
         },
 
         getAll:
-            (state, showAlert, setLoading, token, params, rootId, infinite) => async (dispatch) => {
+            (stateName, showAlert, setLoading, token, params, rootId, infinite) =>
+            async (dispatch, getState) => {
                 try {
+                    const state = getState()[stateName];
                     if (
                         state.currentPage === params?.page &&
                         params?.searchTerm === state.searchTerm

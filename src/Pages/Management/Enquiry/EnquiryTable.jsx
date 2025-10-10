@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Field from "../../../Components/Fields/Field";
 import { usePageSearch } from "../../../hooks/useSearch";
 
-const EnquiryTable = ({
+const ListView = ({
     tableName,
     size,
     rootId,
@@ -26,6 +26,7 @@ const EnquiryTable = ({
     fields,
     fieldsMeta,
     onSetAddNewFunc,
+    fieldToDisplayOnDelete = "name",
 }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
@@ -39,38 +40,40 @@ const EnquiryTable = ({
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteEnquiryId, setDeleteEnquiryId] = useState(null);
+    const [deleteId, setDeleteId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
 
-    const handleEdit = (enquiryId) => {
+    const handleEdit = (id) => {
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
             return;
         }
-        const original = data.find((d) => d.enquiryId === enquiryId);
+        const original = data.find((d) => d[fieldsMeta.primary] === id);
         setOriginalRow({ ...original });
-        setEditingId(enquiryId);
+        setEditingId(id);
     };
 
     const handleCancel = () => {
         if (editingId === "NEW") {
-            setData((prev) => prev.filter((row) => row.enquiryId !== editingId));
+            setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== editingId));
         } else if (originalRow) {
-            setData((prev) => prev.map((row) => (row.enquiryId === editingId ? originalRow : row)));
+            setData((prev) =>
+                prev.map((row) => (row[fieldsMeta.primary] === editingId ? originalRow : row)),
+            );
         }
         setEditingId(null);
         setOriginalRow(null);
     };
 
-    const handleSave = async (enquiryId) => {
+    const handleSave = async (id) => {
         try {
-            const newEnquiry = data.find((e) => e.enquiryId === enquiryId);
-            if (enquiryId === "NEW") {
-                const { enquiryId, ...withoutId } = newEnquiry;
+            const newRow = data.find((e) => e[fieldsMeta.primary] === id);
+            if (id === "NEW") {
+                const { [fieldsMeta.primary]: id, ...withoutId } = newRow;
                 dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
-                setData((prev) => prev.filter((row) => row.enquiryId !== enquiryId));
+                setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
             } else {
-                dispatch(tableCruds.update(enquiryId, newEnquiry, token, showAlert, setLoading));
+                dispatch(tableCruds.update(id, newRow, token, showAlert, setLoading));
             }
         } catch (error) {
             console.error(error);
@@ -80,18 +83,18 @@ const EnquiryTable = ({
         }
     };
 
-    const handleDelete = async (enquiryId) => {
+    const handleDelete = async (id) => {
         try {
-            dispatch(tableCruds.delete(enquiryId, token, showAlert, setLoading));
+            dispatch(tableCruds.delete(id, token, showAlert, setLoading));
         } catch (error) {
             console.error(error);
-            showAlert("Failed to delete enquiry!", "error");
+            showAlert(`Failed to delete ${tableName}!`, "error");
         }
     };
 
-    const handleChange = (value, enquiryId, field) => {
+    const handleChange = (value, id, field) => {
         setData((prev) =>
-            prev.map((enq) => (enq.enquiryId === enquiryId ? { ...enq, [field]: value } : enq)),
+            prev.map((enq) => (enq[fieldsMeta.primary] === id ? { ...enq, [field]: value } : enq)),
         );
     };
 
@@ -100,7 +103,7 @@ const EnquiryTable = ({
             console.log("page fetch", page);
             dispatch(
                 tableCruds.getAll(
-                    tableState,
+                    tableName,
                     showAlert,
                     setLoading,
                     token,
@@ -109,7 +112,7 @@ const EnquiryTable = ({
                 ),
             );
         },
-        [dispatch, tableCruds, tableState, showAlert, token, size, rootId],
+        [dispatch, tableCruds, tableName, showAlert, token, size, rootId],
     );
 
     const handlePageChange = async (e, p) => {
@@ -156,105 +159,114 @@ const EnquiryTable = ({
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
     }, [addNewRow, onSetAddNewFunc]);
     return (
-        <StyledTableContainer component={Paper}>
-            {loading && <Loading />}
-            <StyledTable>
-                <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
-                    <StyledTableRow>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            S. No.
-                        </StyledTableCell>
-                        {fields
-                            .filter((f) => f.show)
-                            .map(({ label }) => (
-                                <StyledTableCell
-                                    key={label}
-                                    sx={{ fontWeight: "bold", color: "#1976d2" }}
-                                >
-                                    {label}
-                                </StyledTableCell>
-                            ))}
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            Actions
-                        </StyledTableCell>
-                    </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row, rowIndex) => (
-                        <StyledTableRow key={rowIndex}>
-                            <StyledTableCell>{rowIndex + 1}</StyledTableCell>
+        <>
+            <StyledTableContainer component={Paper}>
+                {loading && <Loading />}
+                <StyledTable>
+                    <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
+                        <StyledTableRow>
+                            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                                S. No.
+                            </StyledTableCell>
                             {fields
-                                .filter((f) => f.show !== false)
-                                .map((field) => (
-                                    <StyledTableCell key={field.name}>
-                                        <Field
-                                            isEdit={editingId === row[fieldsMeta.primary]}
-                                            value={row[field.name]}
-                                            setValue={(v) =>
-                                                handleChange(v, row[fieldsMeta.primary], field.name)
-                                            }
-                                            type={field.type}
-                                        />
+                                .filter((f) => f.show)
+                                .map(({ label }) => (
+                                    <StyledTableCell
+                                        key={label}
+                                        sx={{ fontWeight: "bold", color: "#1976d2" }}
+                                    >
+                                        {label}
                                     </StyledTableCell>
                                 ))}
-                            <StyledTableCell>
-                                {editingId === row[fieldsMeta.primary] ? (
-                                    <>
-                                        <IconButton
-                                            sx={{ color: "blue" }}
-                                            onClick={() => handleSave(row[fieldsMeta.primary])}
-                                        >
-                                            <SaveIcon />
-                                        </IconButton>
-                                        <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                                            <CancelIcon />
-                                        </IconButton>
-                                    </>
-                                ) : (
-                                    <>
-                                        <IconButton
-                                            sx={{ color: "blue" }}
-                                            onClick={() => handleEdit(row[fieldsMeta.primary])}
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            sx={{ color: "red" }}
-                                            onClick={() => {
-                                                setDeleteDialogOpen(true);
-                                                setDeleteEnquiryId(row[fieldsMeta.primary]);
-                                            }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </>
-                                )}
+                            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                                Actions
                             </StyledTableCell>
                         </StyledTableRow>
-                    ))}
-                </TableBody>
-            </StyledTable>
-            {deleteDialogOpen && deleteEnquiryId && (
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row, rowIndex) => (
+                            <StyledTableRow key={rowIndex}>
+                                <StyledTableCell>{rowIndex + 1}</StyledTableCell>
+                                {fields
+                                    .filter((f) => f.show !== false)
+                                    .map((field) => (
+                                        <StyledTableCell key={field.name}>
+                                            <Field
+                                                isEdit={editingId === row[fieldsMeta.primary]}
+                                                value={row[field.name]}
+                                                setValue={(v) =>
+                                                    handleChange(
+                                                        v,
+                                                        row[fieldsMeta.primary],
+                                                        field.name,
+                                                    )
+                                                }
+                                                type={field.type}
+                                            />
+                                        </StyledTableCell>
+                                    ))}
+                                <StyledTableCell>
+                                    {editingId === row[fieldsMeta.primary] ? (
+                                        <>
+                                            <IconButton
+                                                sx={{ color: "blue" }}
+                                                onClick={() => handleSave(row[fieldsMeta.primary])}
+                                            >
+                                                <SaveIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                sx={{ color: "red" }}
+                                                onClick={handleCancel}
+                                            >
+                                                <CancelIcon />
+                                            </IconButton>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <IconButton
+                                                sx={{ color: "blue" }}
+                                                onClick={() => handleEdit(row[fieldsMeta.primary])}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                sx={{ color: "red" }}
+                                                onClick={() => {
+                                                    setDeleteDialogOpen(true);
+                                                    setDeleteId(row[fieldsMeta.primary]);
+                                                }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </>
+                                    )}
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </StyledTable>
+                <TablePagination
+                    component="div"
+                    count={tableState.totalCount}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={size}
+                    rowsPerPageOptions={[]}
+                />
+            </StyledTableContainer>
+            {deleteDialogOpen && deleteId && (
                 <DeleteDialog
                     open={deleteDialogOpen}
                     onClose={() => setDeleteDialogOpen(false)}
-                    onConfirm={() => handleDelete(deleteEnquiryId)}
-                    displayData={`enquiry for ${data.find((d) => d.enquiryId === deleteEnquiryId)?.name}`}
+                    onConfirm={() => handleDelete(deleteId)}
+                    displayData={`${tableName} for ${data.find((d) => d[fieldsMeta.primary] === deleteId)?.[fieldToDisplayOnDelete]}`}
                 />
             )}
-            <TablePagination
-                component="div"
-                count={tableState.totalCount}
-                page={page}
-                onPageChange={handlePageChange}
-                rowsPerPage={size}
-                rowsPerPageOptions={[]}
-            />
-        </StyledTableContainer>
+        </>
     );
 };
 
-EnquiryTable.propTypes = {
+ListView.propTypes = {
     tableName: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
     rootId: PropTypes.number,
@@ -265,5 +277,6 @@ EnquiryTable.propTypes = {
         root: PropTypes.string,
     }),
     onSetAddNewFunc: PropTypes.func,
+    fieldToDisplayOnDelete: PropTypes.string,
 };
-export default EnquiryTable;
+export default ListView;
