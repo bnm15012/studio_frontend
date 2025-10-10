@@ -20,14 +20,14 @@ const rootReducer = combineReducers({
     activity: activitySlice,
     branch: branchSlice,
     clients: clientCruds.reducer,
-    expense: expenseCruds.reducer,
+    expenses: expenseCruds.reducer,
     payment: paymentSlice,
     analysis: analysisSlice,
     dialog: dialogSlice,
     booking: bookingSlice,
     notifications: notificationSlice,
     membershipTypes: membershipTypesSlice,
-    enquiry: enquiryCruds.reducer,
+    enquiries: enquiryCruds.reducer,
 });
 
 const persistConfig = {

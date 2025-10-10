@@ -30,6 +30,7 @@ const FIELDS = [
     { name: "contact", label: "Contact", show: true, type: FIELD_TYPES.NUMBER },
     { name: "enquiryPurpose", label: "Purpose", show: true },
 ];
+
 const Enquiry = () => {
     const dispatch = useDispatch();
     const [addNewFunc, setAddNewFunc] = useState(null);
@@ -63,10 +64,10 @@ const Enquiry = () => {
             </FlexBetween>
             <Box>
                 <Views
-                    tableName={"enquiry"}
+                    tableName={"enquiries"}
                     tableCruds={enquiryCruds}
                     size={LIMIT}
-                    key={"enquiry"}
+                    key={"enquiries"}
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
