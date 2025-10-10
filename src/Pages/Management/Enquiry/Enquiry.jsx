@@ -33,18 +33,12 @@ const FIELDS = [
 const Enquiry = () => {
     const dispatch = useDispatch();
     const [addNewFunc, setAddNewFunc] = useState(null);
-
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
-                {/* <SearchField
-                    handleSearch={(searchTerm) => {
-                        fetchEnquiry(1);
-                        setSearchTerm(searchTerm);
-                    }}
-                /> */}
+                <Box ml={"auto"}></Box>
                 <QrForm title="" link={"enquiry-form"} />
                 <Button
                     variant="contained"

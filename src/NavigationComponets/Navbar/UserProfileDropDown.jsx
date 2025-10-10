@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuItem, Button, Box } from "@mui/material";
+import { Menu, MenuItem, Button, Typography } from "@mui/material";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import Logout from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
@@ -28,7 +28,9 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
         <FlexBetween height={"100%"} alignItems={"center"}>
             <Button onClick={handleClick}>
                 <FlexBetween color={"whitesmoke"} alignItems={"center"}>
-                    <Box>WELCOME {user.userName}</Box>
+                    <Typography fontWeight={"bolder"} sx={{ textWrap: "nowrap" }}>
+                        WELCOME {user.userName}
+                    </Typography>
                     <ArrowDropDown />
                 </FlexBetween>
             </Button>

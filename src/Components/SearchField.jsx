@@ -1,33 +1,61 @@
 import PropTypes from "prop-types";
 import { TextField, Button, Box } from "@mui/material";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FlexBetween from "./FlexBetween";
+import { SearchIcon } from "lucide-react";
+import { Close } from "@mui/icons-material";
 
 const StyledSearchField = styled(Box)(({ theme }) => ({
     display: "flex",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: theme.spacing(2),
+    justifyContent: "space-between",
+    width: "40rem",
+    height: "2.2rem",
+    margin: "0.5rem 1rem",
+    padding: theme.spacing(0, 2),
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[7],
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.alt,
 }));
+
+const ButtonProps = {
+    height: "2rem",
+    width: "2rem",
+    minWidth: "unset",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    p: 0,
+};
 
 const SearchField = ({ handleSearch, placeHolder = "Search..." }) => {
     const [searchTerm, setSearchTerm] = useState("");
+    useEffect(() => {
+        const handleKey = (e) => {
+            if ((e.ctrlKey && e.key === "k") || e.key === "/") {
+                e.preventDefault();
+                document.getElementById("navbar-search")?.focus();
+            }
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, []);
 
     return (
-        <StyledSearchField flexGrow={1}>
+        <StyledSearchField>
             <TextField
-                label={placeHolder}
+                placeholder={placeHolder}
                 variant="standard"
                 value={searchTerm}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 fullWidth
-                sx={{ marginRight: 2 }}
+                sx={{
+                    "& .MuiInputBase-root": { height: "1.7rem" },
+                    "& .MuiInputBase-input": { padding: 1 },
+                }}
             />
-            <FlexBetween gap={2}>
+            <FlexBetween gap={1} ml={2}>
                 {searchTerm && (
                     <Button
                         variant="contained"
@@ -35,12 +63,17 @@ const SearchField = ({ handleSearch, placeHolder = "Search..." }) => {
                             setSearchTerm("");
                             handleSearch(null);
                         }}
+                        sx={ButtonProps}
                     >
-                        Clear
+                        <Close />
                     </Button>
                 )}
-                <Button variant="contained" onClick={() => handleSearch(searchTerm)}>
-                    Search
+                <Button
+                    variant="contained"
+                    onClick={() => handleSearch(searchTerm)}
+                    sx={ButtonProps}
+                >
+                    <SearchIcon size={18} />
                 </Button>
             </FlexBetween>
         </StyledSearchField>

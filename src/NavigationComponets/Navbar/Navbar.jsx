@@ -16,22 +16,17 @@ import FlexBetween from "../../Components/FlexBetween";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
 import { useSelector } from "react-redux";
+import SearchField from "../../Components/SearchField";
+import { useUI } from "../../context/UIContext";
+import { usePageSearch } from "../../hooks/useSearch";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
+    const { isMobile } = useUI();
     const user = useSelector((state) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    // const [isScrolled, setIsScrolled] = useState(false);
-
-    // useEffect(() => {
-    //   const handleScroll = () => {
-    //     setIsScrolled(window.scrollY > 50);
-    //   };
-
-    //   window.addEventListener("scroll", handleScroll);
-    //   return () => window.removeEventListener("scroll", handleScroll);
-    // }, []);
+    const { triggerSearch } = usePageSearch();
 
     return (
         <FlexBetween zIndex={1000}>
@@ -48,18 +43,20 @@ export const Navbar = ({ position = "fixed" }) => {
             >
                 <FlexBetween px={2} my={"auto"}>
                     {/* Logo */}
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box mr={"auto"} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                         <ImageComponent size={"2.5rem"} image={"/logo.png"} isCircular={false} />
-                        <Typography
-                            fontSize={"1.4rem"}
-                            component="div"
-                            sx={{ textWrap: "nowrap", fontWeight: "bold" }}
-                            color="white"
-                        >
-                            Book & Manage
-                        </Typography>
+                        {!isMobile && (
+                            <Typography
+                                fontSize={"1.4rem"}
+                                component="div"
+                                sx={{ textWrap: "nowrap", fontWeight: "bold" }}
+                                color="white"
+                            >
+                                Book & Manage
+                            </Typography>
+                        )}
                     </Box>
-
+                    {user && <SearchField handleSearch={triggerSearch} />}
                     {isNonMobileScreens && (
                         <FlexBetween gap={3}>
                             <MenuItems isNonMobileScreens={isNonMobileScreens} />
@@ -68,14 +65,12 @@ export const Navbar = ({ position = "fixed" }) => {
 
                     {/* Mobile Menu Button */}
                     {!isNonMobileScreens && !isMenuOpen && (
-                        <Box>
-                            <IconButton
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                sx={{ color: "white" }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </Box>
+                        <IconButton
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            sx={{ color: "white" }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
                     )}
                     {isNonMobileScreens && !user && (
                         <Box

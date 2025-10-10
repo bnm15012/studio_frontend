@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
 import Field from "../../../Components/Fields/Field";
+import { usePageSearch } from "../../../hooks/useSearch";
 
 const EnquiryTable = ({
     tableName,
@@ -27,13 +28,14 @@ const EnquiryTable = ({
     onSetAddNewFunc,
 }) => {
     const dispatch = useDispatch();
+    const showAlert = useAlert();
+    const { subscribe } = usePageSearch();
+
     const token = useSelector((state) => state.auth.token);
     const tableState = useSelector((state) => state[tableName]);
 
     const [page, setPage] = useState(0);
-    const showAlert = useAlert();
     const [data, setData] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -59,11 +61,6 @@ const EnquiryTable = ({
         setEditingId(null);
         setOriginalRow(null);
     };
-
-    useEffect(() => {
-        setSearchTerm(""); // TODO
-        setData(tableState.items ?? []);
-    }, [tableState]);
 
     const handleSave = async (enquiryId) => {
         try {
@@ -99,7 +96,8 @@ const EnquiryTable = ({
     };
 
     const fetchData = useCallback(
-        async (page = 1) => {
+        async (page = 1, searchTerm = "") => {
+            console.log("page fetch", page);
             dispatch(
                 tableCruds.getAll(
                     tableState,
@@ -111,12 +109,8 @@ const EnquiryTable = ({
                 ),
             );
         },
-        [dispatch, tableCruds, tableState, showAlert, token, searchTerm, size, rootId],
+        [dispatch, tableCruds, tableState, showAlert, token, size, rootId],
     );
-
-    useEffect(() => {
-        !tableState.items.length && fetchData();
-    }, [tableState.items.length, fetchData]);
 
     const handlePageChange = async (e, p) => {
         setPage(p);
@@ -139,6 +133,24 @@ const EnquiryTable = ({
         setData((prev) => [newRow, ...prev]);
         setEditingId("NEW");
     }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, rootId, showAlert]);
+
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = subscribe((term) => {
+            console.log("search for ", term);
+            fetchData(page + 1, term);
+        });
+
+        return unsubscribe;
+    }, [fetchData, page, subscribe]);
+
+    useEffect(() => {
+        setData(tableState.items ?? []);
+    }, [tableState]);
 
     useEffect(() => {
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
