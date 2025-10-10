@@ -55,7 +55,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
                         ""
                     )
                 }
-                titleBgColor={isExpired ? "linear-gradient(to bottom, #FF0000, #B02600)" : null}
+                titleBgColor={isExpired ? "error" : "success"}
                 fullWidth
                 open={open}
                 onClose={handleClose}

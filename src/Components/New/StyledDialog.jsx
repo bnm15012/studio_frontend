@@ -141,7 +141,7 @@ StyledDialog.propTypes = {
     children: PropTypes.node,
     confirmText: PropTypes.string,
     cancelText: PropTypes.string,
-    actions: PropTypes.arrayOf(PropTypes.node),
+    actions: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default StyledDialog;

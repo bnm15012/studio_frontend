@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TableBody, TableHead, Paper, IconButton, TablePagination } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
@@ -15,16 +15,25 @@ import {
 import PropTypes from "prop-types";
 import DeleteDialog from "../../../Components/DeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
-import { enquiryCruds } from "../../../api/all.api";
 import Field from "../../../Components/Fields/Field";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
-const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
+const EnquiryTable = ({
+    tableName,
+    size,
+    rootId,
+    tableCruds,
+    fields,
+    fieldsMeta,
+    onSetAddNewFunc,
+}) => {
     const dispatch = useDispatch();
-    // const { isMobile } = useUI();
     const token = useSelector((state) => state.auth.token);
+    const tableState = useSelector((state) => state[tableName]);
+
+    const [page, setPage] = useState(0);
     const showAlert = useAlert();
     const [data, setData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -32,6 +41,10 @@ const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
     const [originalRow, setOriginalRow] = useState(null);
 
     const handleEdit = (enquiryId) => {
+        if (editingId) {
+            showAlert("Can't Add New while edit", "warning");
+            return;
+        }
         const original = data.find((d) => d.enquiryId === enquiryId);
         setOriginalRow({ ...original });
         setEditingId(enquiryId);
@@ -48,40 +61,34 @@ const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
     };
 
     useEffect(() => {
-        setData(initialData);
-    }, [initialData]);
+        setSearchTerm(""); // TODO
+        setData(tableState.items ?? []);
+    }, [tableState]);
 
     const handleSave = async (enquiryId) => {
-        setLoading(true);
-
         try {
             const newEnquiry = data.find((e) => e.enquiryId === enquiryId);
             if (enquiryId === "NEW") {
                 const { enquiryId, ...withoutId } = newEnquiry;
-                dispatch(enquiryCruds.add(withoutId, token, showAlert, setLoading, true));
+                dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
                 setData((prev) => prev.filter((row) => row.enquiryId !== enquiryId));
             } else {
-                dispatch(enquiryCruds.update(enquiryId, newEnquiry, token, showAlert, setLoading));
-                setEditingId(null);
+                dispatch(tableCruds.update(enquiryId, newEnquiry, token, showAlert, setLoading));
             }
         } catch (error) {
             console.error(error);
             showAlert("Operation failed. Please try again!", "error");
         } finally {
-            setLoading(false);
+            setEditingId(null);
         }
     };
 
     const handleDelete = async (enquiryId) => {
-        setLoading(true);
-
         try {
-            dispatch(enquiryCruds.delete(enquiryId, token, showAlert, setLoading));
+            dispatch(tableCruds.delete(enquiryId, token, showAlert, setLoading));
         } catch (error) {
             console.error(error);
             showAlert("Failed to delete enquiry!", "error");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -91,22 +98,51 @@ const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
         );
     };
 
-    const addNewRow = () => {
-        const newRow = {
-            enquiryId: "NEW",
-            name: "",
-            contact: "",
-            enquiryPurpose: "",
-            enquiryDate: getCurrentDateTimeUTC(),
-            branchId: 2,
-        };
+    const fetchData = useCallback(
+        async (page = 1) => {
+            dispatch(
+                tableCruds.getAll(
+                    tableState,
+                    showAlert,
+                    setLoading,
+                    token,
+                    { page, searchTerm, size },
+                    rootId,
+                ),
+            );
+        },
+        [dispatch, tableCruds, tableState, showAlert, token, searchTerm, size, rootId],
+    );
+
+    useEffect(() => {
+        !tableState.items.length && fetchData();
+    }, [tableState.items.length, fetchData]);
+
+    const handlePageChange = async (e, p) => {
+        setPage(p);
+        await fetchData(p + 1);
+    };
+
+    const addNewRow = useCallback(() => {
+        if (editingId) {
+            showAlert("Can't Add New while edit", "warning");
+            return;
+        }
+        const newRow = fields.reduce(
+            (acc, f) => {
+                acc[f.name] = f.defaultValue ?? "";
+                return acc;
+            },
+            { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId },
+        );
+
         setData((prev) => [newRow, ...prev]);
         setEditingId("NEW");
-    };
+    }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, rootId, showAlert]);
 
     useEffect(() => {
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
-    }, [onSetAddNewFunc]);
+    }, [addNewRow, onSetAddNewFunc]);
     return (
         <StyledTableContainer component={Paper}>
             {loading && <Loading />}
@@ -186,7 +222,7 @@ const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
                     ))}
                 </TableBody>
             </StyledTable>
-            {deleteDialogOpen && (
+            {deleteDialogOpen && deleteEnquiryId && (
                 <DeleteDialog
                     open={deleteDialogOpen}
                     onClose={() => setDeleteDialogOpen(false)}
@@ -194,29 +230,23 @@ const EnquiryTable = ({ initialData, fields, fieldsMeta, onSetAddNewFunc }) => {
                     displayData={`enquiry for ${data.find((d) => d.enquiryId === deleteEnquiryId)?.name}`}
                 />
             )}
-
             <TablePagination
                 component="div"
-                count={5}
-                page={1}
-                onPageChange={() => {}}
-                rowsPerPage={5}
-                rowsPerPageOptions={[5]}
+                count={tableState.totalCount}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={size}
+                rowsPerPageOptions={[]}
             />
         </StyledTableContainer>
     );
 };
 
 EnquiryTable.propTypes = {
-    initialData: PropTypes.arrayOf(
-        PropTypes.shape({
-            enquiryId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            name: PropTypes.string.isRequired,
-            contact: PropTypes.string.isRequired,
-            enquiryDate: PropTypes.string.isRequired,
-            enquiryPurpose: PropTypes.string.isRequired,
-        }),
-    ).isRequired,
+    tableName: PropTypes.string.isRequired,
+    size: PropTypes.number.isRequired,
+    rootId: PropTypes.number,
+    tableCruds: PropTypes.any,
     fields: PropTypes.array,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,
