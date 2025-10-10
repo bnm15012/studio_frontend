@@ -9,7 +9,7 @@ import QrForm from "../../../Components/QrForm.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
-import ListView from "./EnquiryTable.jsx";
+import Views from "../../../Components/Views/Views.jsx";
 
 const LIMIT = 7;
 
@@ -62,7 +62,7 @@ const Enquiry = () => {
                 </Button>
             </FlexBetween>
             <Box>
-                <ListView
+                <Views
                     tableName={"enquiry"}
                     tableCruds={enquiryCruds}
                     size={LIMIT}
