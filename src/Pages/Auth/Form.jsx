@@ -51,7 +51,6 @@ const Form = ({ pageType, editProfile = false, user }) => {
             if (isLogin) {
                 const response = await loginApiCall({ values, dispatch, navigate });
                 if (response.success) {
-                    showAlert(response.message, "success");
                     dispatch(closeLastDialog());
                 } else {
                     showAlert(response.message, "error");
