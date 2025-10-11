@@ -9,6 +9,18 @@ const AuthButtons = ({ isNonMobileScreens }) => {
         <Box display="flex" gap={2} width={isNonMobileScreens ? "auto" : "100%"} mt={isNonMobileScreens ? 0 : 2}>
             <Button
                 variant="contained"
+                color="primary" sx={{
+                    m: "0.2rem",
+                    padding: "0 0.5rem !important",
+                    textWrap: "nowrap",
+                }}
+                fullWidth={!isNonMobileScreens}
+                onClick={() => dispatch(openDialog("signupDialog"))}
+            >
+                Register
+            </Button>
+            <Button
+                variant="contained"
                 sx={{
                     color: "white",
                     textWrap: "nowrap",
@@ -20,18 +32,6 @@ const AuthButtons = ({ isNonMobileScreens }) => {
                 onClick={() => dispatch(openDialog("loginDialog"))}
             >
                 Log In
-            </Button>
-            <Button
-                variant="contained"
-                color="primary" sx={{
-                    m: "0.2rem",
-                    padding: "0 0.5rem !important",
-                    textWrap: "nowrap",
-                }}
-                fullWidth={!isNonMobileScreens}
-                onClick={() => dispatch(openDialog("signupDialog"))}
-            >
-                Get Started
             </Button>
         </Box>
     )
