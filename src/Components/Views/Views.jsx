@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { usePageSearch } from "../../hooks/useSearch";
 import ListView from "./ListView";
 
+const VIEWS = ["LIST", "CARD"];
+
 const Views = ({
     tableName,
     size,
@@ -19,6 +21,7 @@ const Views = ({
     fieldsMeta,
     onSetAddNewFunc,
     fieldToDisplayOnDelete = "name",
+    viewChangeHanlder,
 }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
@@ -34,6 +37,7 @@ const Views = ({
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
+    const [currentView, setcurrentView] = useState(0);
 
     const handleEdit = (id) => {
         if (editingId) {
@@ -111,6 +115,12 @@ const Views = ({
         await fetchData(p);
     };
 
+    const toggleView = useCallback(() => {
+        console.log(currentView);
+        setcurrentView((p) => (p + 1) % VIEWS.length);
+        return VIEWS[(currentView + 1) % VIEWS.length];
+    }, [currentView]);
+
     const addNewRow = useCallback(() => {
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
@@ -148,9 +158,11 @@ const Views = ({
 
     useEffect(() => {
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
-    }, [addNewRow, onSetAddNewFunc]);
+        if (viewChangeHanlder) viewChangeHanlder(() => toggleView);
+    }, [addNewRow, onSetAddNewFunc, toggleView, viewChangeHanlder]);
     return (
         <>
+            {currentView}
             <ListView
                 data={data}
                 tableState={tableState}
@@ -189,6 +201,7 @@ Views.propTypes = {
         root: PropTypes.string,
     }),
     onSetAddNewFunc: PropTypes.func,
+    viewChangeHanlder: PropTypes.func,
     fieldToDisplayOnDelete: PropTypes.string,
 };
 export default Views;

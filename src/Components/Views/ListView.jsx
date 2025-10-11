@@ -115,7 +115,7 @@ const ListView = ({
         <TablePagination
             component="div"
             count={tableState.totalCount}
-            page={tableState.currentPage - 1}
+            page={Math.max(0, tableState.currentPage - 1)}
             onPageChange={(e, p) => handlePageChange(p + 1)}
             rowsPerPage={tableState.pageSize}
             rowsPerPageOptions={[]}
