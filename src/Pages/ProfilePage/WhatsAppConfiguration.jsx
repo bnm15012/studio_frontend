@@ -73,7 +73,7 @@ const WhatsAppConfiguration = () => {
                         clearInterval(interval);
                     } else {
                         attempts += 1;
-                        if (attempts >= 5) {
+                        if (attempts >= 7) {
                             setPolling(false);
                             setWebWhastAppQrCode(false);
                             showAlert("WhatsApp connection attempt timed out.", "warning");
@@ -90,7 +90,7 @@ const WhatsAppConfiguration = () => {
         };
 
         if (polling) {
-            interval = setInterval(pollWhatsAppStatus, 10000);
+            interval = setInterval(pollWhatsAppStatus, 15000);
         }
 
         return () => clearInterval(interval);
@@ -118,7 +118,6 @@ const WhatsAppConfiguration = () => {
             setLoading(false);
         }
     }
-    console.log(loading, polling, whatsAppStatus === "ACTIVE", !webWhastAppQrCode)
 
     return (
         <Box>
