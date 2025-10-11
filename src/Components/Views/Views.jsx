@@ -9,8 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { usePageSearch } from "../../hooks/useSearch";
 import ListView from "./ListView";
-
-const VIEWS = ["LIST", "CARD"];
+import CardView from "./CardView";
 
 const Views = ({
     tableName,
@@ -20,8 +19,9 @@ const Views = ({
     fields,
     fieldsMeta,
     onSetAddNewFunc,
+    currentView,
     fieldToDisplayOnDelete = "name",
-    viewChangeHanlder,
+    CardContentComponent,
 }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
@@ -37,7 +37,8 @@ const Views = ({
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
-    const [currentView, setcurrentView] = useState(0);
+
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handleEdit = (id) => {
         if (editingId) {
@@ -98,28 +99,22 @@ const Views = ({
         async (page = 1, searchTerm = "") => {
             dispatch(
                 tableCruds.getAll(
-                    tableName,
                     showAlert,
                     setLoading,
                     token,
                     { page, searchTerm, size },
                     rootId,
+                    currentView !== "LIST",
                 ),
             );
         },
-        [dispatch, tableCruds, tableName, showAlert, token, size, rootId],
+        [dispatch, tableCruds, showAlert, token, size, rootId, currentView],
     );
 
     const handlePageChange = async (p) => {
         setPage(p);
-        await fetchData(p);
+        await fetchData(p, searchTerm);
     };
-
-    const toggleView = useCallback(() => {
-        console.log(currentView);
-        setcurrentView((p) => (p + 1) % VIEWS.length);
-        return VIEWS[(currentView + 1) % VIEWS.length];
-    }, [currentView]);
 
     const addNewRow = useCallback(() => {
         if (editingId) {
@@ -146,7 +141,8 @@ const Views = ({
     useEffect(() => {
         const unsubscribe = subscribe((term) => {
             console.log("search for ", term);
-            fetchData(page, term);
+            fetchData(1, term);
+            setSearchTerm(term);
         });
 
         return unsubscribe;
@@ -158,25 +154,35 @@ const Views = ({
 
     useEffect(() => {
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
-        if (viewChangeHanlder) viewChangeHanlder(() => toggleView);
-    }, [addNewRow, onSetAddNewFunc, toggleView, viewChangeHanlder]);
+    }, [addNewRow, onSetAddNewFunc]);
+
+    const commonProps = {
+        data,
+        tableState,
+        fields,
+        editingId,
+        fieldsMeta,
+        handleChange,
+        handleSave,
+        handleCancel,
+        handleEdit,
+        setDeleteDialogOpen,
+        setDeleteId,
+        handlePageChange,
+    };
     return (
         <>
-            {currentView}
-            <ListView
-                data={data}
-                tableState={tableState}
-                fields={fields}
-                editingId={editingId}
-                fieldsMeta={fieldsMeta}
-                handleChange={handleChange}
-                handleSave={handleSave}
-                handleCancel={handleCancel}
-                handleEdit={handleEdit}
-                setDeleteDialogOpen={setDeleteDialogOpen}
-                setDeleteId={setDeleteId}
-                handlePageChange={handlePageChange}
-            />
+            {currentView === "CARD" ? (
+                <CardView
+                    {...commonProps}
+                    CardContentComponent={CardContentComponent}
+                    handleLoadMore={() => {
+                        handlePageChange(tableState.currentPage + 1);
+                    }}
+                />
+            ) : (
+                <ListView {...commonProps} />
+            )}
             {loading && <Loading />}
             {deleteDialogOpen && deleteId && (
                 <DeleteDialog
@@ -201,7 +207,8 @@ Views.propTypes = {
         root: PropTypes.string,
     }),
     onSetAddNewFunc: PropTypes.func,
-    viewChangeHanlder: PropTypes.func,
     fieldToDisplayOnDelete: PropTypes.string,
+    currentView: PropTypes.string,
+    CardContentComponent: PropTypes.node,
 };
 export default Views;

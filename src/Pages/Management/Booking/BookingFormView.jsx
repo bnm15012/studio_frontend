@@ -25,7 +25,7 @@ import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { getAllClientsAPI } from "../Client/client.api";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
 import { clearBookingPages } from "../../../state/bookingSlice";
-import { clearPaymentPages } from "../../../state/paymentSlice";
+
 const paymentTypes = [
     { value: "CASH", label: "Cash" },
     { value: "UPI", label: "UPI" },
@@ -195,7 +195,7 @@ const BookingFormView = ({ page, ID }) => {
                     showAlert(message, "success");
                     setIsEdit(false);
                     dispatch(clearBookingPages());
-                    dispatch(clearPaymentPages());
+                    // dispatch(clearPaymentPages());
                     navigate(`/management/bookings`);
                 } else {
                     showAlert(message, "error");

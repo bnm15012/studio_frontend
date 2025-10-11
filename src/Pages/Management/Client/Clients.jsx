@@ -28,7 +28,6 @@ const Clients = () => {
         async (page = 1, searchTerm = "") => {
             dispatch(
                 clientCruds.getAll(
-                    clientState,
                     showAlert,
                     setLoading,
                     token,
@@ -37,7 +36,7 @@ const Clients = () => {
                 ),
             );
         },
-        [dispatch, clientState, showAlert, token, currentBranch.branchId],
+        [dispatch, showAlert, token, currentBranch.branchId],
     );
 
     useEffect(() => {

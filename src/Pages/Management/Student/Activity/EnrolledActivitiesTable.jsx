@@ -25,7 +25,7 @@ import {
     deleteStudentActivityAPI,
     editActivityStudentAPI,
 } from "../Student.api";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useAlert } from "../../../../utils/Alert";
 import FlexEvenly from "../../../../Components/FlexEvenly";
 import Loading from "../../../../Components/Loading/Loading";
@@ -37,7 +37,7 @@ import { getEndDateBySubscriptionPlan } from "../../../../utils/SubscriptionPlan
 import PaymentEntryDialog from "../../Payments/PaymentEntryDialog";
 import DeleteDialog from "../../../../Components/DeleteDialog";
 import StudentInvoice from "./StudentInvoice";
-import { clearPaymentPages } from "../../../../state/paymentSlice";
+// import { clearPaymentPages } from "../../../../state/paymentSlice";
 import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 import { useUI } from "../../../../context/UIContext";
 import { validMembershipTypes } from "../../Activity/Activities.constants";
@@ -75,7 +75,7 @@ const initialNewRowState = {
 const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const showAlert = useAlert();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const token = useSelector((state) => state.auth.token);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [tableData, setTableData] = useState(data || []);
@@ -256,7 +256,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
             if (success) {
                 setTableData((prev) => [...prev, newRowData]);
                 setNewRow(initialNewRowState);
-                dispatch(clearPaymentPages());
+                // dispatch(clearPaymentPages());
                 setShowAddNewRow(false);
                 showAlert(message, "success");
             } else {

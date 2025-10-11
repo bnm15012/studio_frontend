@@ -10,6 +10,8 @@ import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
+import { useUI } from "../../../context/UIContext.jsx";
+import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
 
 const LIMIT = 7;
 
@@ -17,6 +19,8 @@ const FIELD_META = {
     primary: "enquiryId",
     root: "branchId",
 };
+
+const VIEWS = ["LIST", "CARD"];
 
 const FIELDS = [
     {
@@ -33,6 +37,7 @@ const FIELDS = [
 
 const Enquiry = () => {
     const dispatch = useDispatch();
+    const { isMobile } = useUI();
     const [addNewFunc, setAddNewFunc] = useState(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
@@ -70,8 +75,10 @@ const Enquiry = () => {
                     key={"enquiries"}
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
+                    currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}
                     onSetAddNewFunc={setAddNewFunc}
+                    CardContentComponent={EnquiryCardComponent}
                 />
             </Box>
         </FlexBetweenColumn>

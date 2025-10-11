@@ -9,11 +9,10 @@ import dialogSlice from "./dialogSlice";
 import notificationSlice from "./notificationSlice";
 import branchSlice from "./branchSlice";
 import activitySlice from "./activitySlice";
-import paymentSlice from "./paymentSlice";
 import analysisSlice from "./analysisSlice";
 import bookingSlice from "./bookingSlice";
 import membershipTypesSlice from "./activityMembershipTypeSlice";
-import { clientCruds, enquiryCruds, expenseCruds } from "../api/all.api";
+import { clientCruds, enquiryCruds, expenseCruds, paymentCruds } from "../api/all.api";
 
 const rootReducer = combineReducers({
     auth: authSlice,
@@ -21,7 +20,7 @@ const rootReducer = combineReducers({
     branch: branchSlice,
     clients: clientCruds.reducer,
     expenses: expenseCruds.reducer,
-    payment: paymentSlice,
+    payments: paymentCruds.reducer,
     analysis: analysisSlice,
     dialog: dialogSlice,
     booking: bookingSlice,

@@ -11,11 +11,12 @@ const StyledTextField = ({
     disabled = "false",
 }) => (
     <TextField
+        fullWidth
         value={value}
         variant={variant}
         onChange={(e) => setValue(e.target.value)}
         type={type}
-        multiline
+        multiline={rows != 1}
         rows={rows}
         placeholder={placeholder}
         disabled={disabled}

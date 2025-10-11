@@ -71,7 +71,7 @@ export function createCrud({ route, idKey = "id", extra = {}, extraReducers }) {
         },
 
         getAll:
-            (stateName, showAlert, setLoading, token, params, rootId, infinite) =>
+            (showAlert, setLoading, token, params, rootId, infinite) =>
             async (dispatch, getState) => {
                 try {
                     const state = getState()[route];
@@ -90,7 +90,7 @@ export function createCrud({ route, idKey = "id", extra = {}, extraReducers }) {
                         params,
                     });
 
-                    if (infinite) {
+                    if (infinite && params?.searchTerm === state.searchTerm) {
                         dispatch(actions.appendItems(data));
                     } else {
                         dispatch(actions.setItems(data));

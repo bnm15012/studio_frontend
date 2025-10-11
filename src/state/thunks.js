@@ -1,4 +1,4 @@
-import { clientCruds, enquiryCruds, expenseCruds } from "../api/all.api";
+import { clientCruds, enquiryCruds, expenseCruds, paymentCruds } from "../api/all.api";
 import { clearMemberShipTypes } from "./activityMembershipTypeSlice";
 import { clearActivities } from "./activitySlice";
 import { clearAnalysisState } from "./analysisSlice";
@@ -6,7 +6,6 @@ import { clearAuthState } from "./authSlice";
 import { clearBookingPages } from "./bookingSlice";
 import { clearBranchState } from "./branchSlice";
 import { clearAllDialogs } from "./dialogSlice";
-import { clearPaymentPages } from "./paymentSlice";
 
 export const logoutUser = () => (dispatch) => {
     dispatch(clearAuthState());
@@ -19,7 +18,7 @@ export const clearAllstate = () => (dispatch) => {
     dispatch(clientCruds.removeAll());
     dispatch(clearBookingPages());
     dispatch(clearActivities());
-    dispatch(clearPaymentPages());
+    dispatch(paymentCruds.removeAll());
     dispatch(expenseCruds.removeAll());
     dispatch(clearAnalysisState());
     dispatch(clearMemberShipTypes());

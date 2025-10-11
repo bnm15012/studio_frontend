@@ -48,7 +48,7 @@ export default function SelectionField({ label, value, disabled, setValue, getOp
     };
     return (
         <Autocomplete
-            sx={{ width: 300 }}
+            fullWidth
             open={open}
             disabled={disabled}
             onOpen={handleOpen}

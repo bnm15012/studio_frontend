@@ -8,7 +8,8 @@ import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
-import { List } from "lucide-react";
+import { useUI } from "../../../context/UIContext";
+import ExpenseCardContent from "./ExpenseCardView";
 
 const categories = [
     "ELECTRICITY",
@@ -25,6 +26,8 @@ const FIELD_META = {
     primary: "expenseId",
     root: "branchId",
 };
+
+const VIEWS = ["LIST", "CARD"];
 
 const FIELDS = [
     { show: true, name: "description", label: "Description" },
@@ -52,24 +55,14 @@ const FIELDS = [
     { show: true, name: "amount", label: "Amount", type: FIELD_TYPES.NUMBER },
 ];
 const Expenses = () => {
+    const { isMobile } = useUI();
     const [addNewFunc, setAddNewFunc] = useState(null);
-    const [switchViewFunc, setSwitchViewFunc] = useState(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
                 <Box ml={"auto"}></Box>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        if (switchViewFunc) switchViewFunc();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <List sx={{ padding: 0, margin: "auto" }} />
-                </Button>{" "}
                 <Button
                     variant="contained"
                     color="primary"
@@ -91,8 +84,9 @@ const Expenses = () => {
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     onSetAddNewFunc={setAddNewFunc}
-                    viewChangeHanlder={setSwitchViewFunc}
+                    currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="amount"
+                    CardContentComponent={ExpenseCardContent}
                 />
             </Box>
         </FlexBetweenColumn>

@@ -2,8 +2,6 @@ import PropTypes from "prop-types";
 import StyledSwitch from "./StyledFields/StyledSwitch";
 import DateTime from "./StyledFields/DateTime";
 import StyledTextField from "./StyledFields/StyledTextField";
-import FlexBetween from "../FlexBetween";
-import { Typography } from "@mui/material";
 import SelectionField from "./Selection/SelectionField";
 import { getLocalDateTime } from "../../utils/DateUtil";
 
@@ -77,16 +75,7 @@ const Field = ({
     };
 
     if (!isEdit) {
-        return (
-            <FlexBetween>
-                {label && (
-                    <Typography variant="body1" color="textSecondary">
-                        {label}:{" "}
-                    </Typography>
-                )}
-                <Typography variant="body1">{getValue()}</Typography>
-            </FlexBetween>
-        );
+        return getValue();
     }
 
     return renderInputField();
