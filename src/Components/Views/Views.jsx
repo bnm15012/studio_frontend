@@ -27,7 +27,7 @@ const Views = ({
     const token = useSelector((state) => state.auth.token);
     const tableState = useSelector((state) => state[tableName]);
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [data, setData] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -92,7 +92,6 @@ const Views = ({
 
     const fetchData = useCallback(
         async (page = 1, searchTerm = "") => {
-            console.log("page fetch", page);
             dispatch(
                 tableCruds.getAll(
                     tableName,
@@ -107,9 +106,9 @@ const Views = ({
         [dispatch, tableCruds, tableName, showAlert, token, size, rootId],
     );
 
-    const handlePageChange = async (e, p) => {
+    const handlePageChange = async (p) => {
         setPage(p);
-        await fetchData(p + 1);
+        await fetchData(p);
     };
 
     const addNewRow = useCallback(() => {
@@ -137,7 +136,7 @@ const Views = ({
     useEffect(() => {
         const unsubscribe = subscribe((term) => {
             console.log("search for ", term);
-            fetchData(page + 1, term);
+            fetchData(page, term);
         });
 
         return unsubscribe;

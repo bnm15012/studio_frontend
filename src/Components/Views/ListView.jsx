@@ -51,18 +51,27 @@ const ListView = ({
             <TableBody>
                 {data.map((row, rowIndex) => (
                     <StyledTableRow key={rowIndex}>
-                        <StyledTableCell>{rowIndex + 1}</StyledTableCell>
+                        <StyledTableCell>
+                            {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +
+                                rowIndex +
+                                1}
+                        </StyledTableCell>
                         {fields
                             .filter((f) => f.show !== false)
                             .map((field) => (
                                 <StyledTableCell key={field.name}>
                                     <Field
                                         isEdit={editingId === row[fieldsMeta.primary]}
-                                        value={row[field.name]}
+                                        value={
+                                            field?.getValue
+                                                ? field.getValue(row[field.name])
+                                                : row[field.name]
+                                        }
                                         setValue={(v) =>
                                             handleChange(v, row[fieldsMeta.primary], field.name)
                                         }
                                         type={field.type}
+                                        extraProp={field.extraProp}
                                     />
                                 </StyledTableCell>
                             ))}
@@ -106,8 +115,8 @@ const ListView = ({
         <TablePagination
             component="div"
             count={tableState.totalCount}
-            page={tableState.currentPage}
-            onPageChange={handlePageChange}
+            page={tableState.currentPage - 1}
+            onPageChange={(e, p) => handlePageChange(p + 1)}
             rowsPerPage={tableState.pageSize}
             rowsPerPageOptions={[]}
         />
