@@ -4,6 +4,7 @@ import DateTime from "./StyledFields/DateTime";
 import StyledTextField from "./StyledFields/StyledTextField";
 import SelectionField from "./Selection/SelectionField";
 import { getLocalDateTime } from "../../utils/DateUtil";
+import TemplateEditor from "../../Pages/Management/TemplatesPage/TemplateEditor";
 
 const Field = ({
     value,
@@ -12,13 +13,11 @@ const Field = ({
     placeholder = "",
     label = "",
     type = "text",
-    disabled = false,
-    variant = "standard",
     validation = {},
     extraProp = {},
 }) => {
-    const { min, max, rows, getOptions } = extraProp;
-    const commonProps = { value, setValue, disabled, label, validation, variant };
+    const { min, max, rows, getOptions, readOnly, variant } = extraProp;
+    const commonProps = { value, setValue, label, readOnly, validation, variant };
 
     const renderInputField = () => {
         const placeholderText = placeholder || label;
@@ -32,7 +31,6 @@ const Field = ({
                     minVal={min}
                     maxVal={max}
                     format="DATE"
-                    textFieldVarient={variant}
                     placeholder={placeholderText}
                 />
             ),
@@ -42,6 +40,15 @@ const Field = ({
                     minVal={min}
                     maxVal={max}
                     format="DATETIME"
+                    placeholder={placeholderText}
+                />
+            ),
+            EDITOR: (
+                <TemplateEditor
+                    {...commonProps}
+                    minVal={min}
+                    maxVal={max}
+                    rows={rows}
                     placeholder={placeholderText}
                 />
             ),

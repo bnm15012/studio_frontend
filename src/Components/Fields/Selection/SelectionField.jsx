@@ -4,7 +4,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import PropTypes from "prop-types";
 import { Fragment, useCallback, useEffect, useState } from "react";
 
-export default function SelectionField({ label, value, disabled, setValue, getOptions, variant }) {
+export default function SelectionField({
+    label,
+    value,
+    readOnly,
+    setValue,
+    getOptions,
+    variant = "standard",
+}) {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -50,7 +57,7 @@ export default function SelectionField({ label, value, disabled, setValue, getOp
         <Autocomplete
             fullWidth
             open={open}
-            disabled={disabled}
+            disabled={readOnly}
             onOpen={handleOpen}
             onClose={handleClose}
             value={value && value.key ? value : null}
@@ -94,7 +101,7 @@ export default function SelectionField({ label, value, disabled, setValue, getOp
 SelectionField.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     setValue: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
     getOptions: PropTypes.func.isRequired,
     variant: PropTypes.string,
     label: PropTypes.string,

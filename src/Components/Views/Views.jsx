@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { usePageSearch } from "../../hooks/useSearch";
 import ListView from "./ListView";
+import { DialogForm } from "./FormView";
 import CardView from "./CardView";
+import StyledDialog from "../New/StyledDialog";
+import { Typography, Box, Paper } from "@mui/material";
 
 const Views = ({
     tableName,
@@ -22,6 +25,9 @@ const Views = ({
     currentView,
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
+    edit = true,
+    del = true,
+    dialogEdit = true,
 }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
@@ -39,6 +45,18 @@ const Views = ({
     const [originalRow, setOriginalRow] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [viewDialogOpen, setViewDialogOpen] = useState(false);
+    const [viewRow, setViewROw] = useState(null);
+    const handleViewOpen = (template) => {
+        setViewROw(template);
+        setViewDialogOpen(true);
+    };
+
+    const handleViewClose = () => {
+        setViewROw(null);
+        setViewDialogOpen(false);
+    };
 
     const handleEdit = (id) => {
         if (editingId) {
@@ -163,12 +181,15 @@ const Views = ({
         editingId,
         fieldsMeta,
         handleChange,
+        handleViewOpen,
         handleSave,
         handleCancel,
         handleEdit,
         setDeleteDialogOpen,
         setDeleteId,
         handlePageChange,
+        edit,
+        del,
     };
     return (
         <>
@@ -181,9 +202,47 @@ const Views = ({
                     }}
                 />
             ) : (
-                <ListView {...commonProps} />
+                <ListView {...commonProps} editingId={dialogEdit ? false : editingId} />
             )}
             {loading && <Loading />}
+            {(dialogEdit || currentView === "CARD") && editingId && (
+                <DialogForm
+                    setClose={handleCancel}
+                    {...commonProps}
+                    data={data.find((d) => d[fieldsMeta.primary] === editingId)}
+                />
+            )}
+            {viewDialogOpen && (
+                <StyledDialog
+                    open={viewDialogOpen}
+                    onClose={handleViewClose}
+                    closeIcon={true}
+                    title="View"
+                    maxWidth="md"
+                >
+                    {viewRow && (
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+                            {fields.map((field) => (
+                                <Typography key={field.name} variant="subtitle1">
+                                    <strong>{field.label}:</strong>
+                                    <Paper
+                                        variant="outlined"
+                                        sx={{
+                                            p: 1,
+                                            maxHeight: "20rem",
+                                            overflowY: "auto",
+                                            whiteSpace: "pre-wrap",
+                                            background: "#fafafa",
+                                        }}
+                                    >
+                                        {viewRow[field.name]}
+                                    </Paper>
+                                </Typography>
+                            ))}
+                        </Box>
+                    )}
+                </StyledDialog>
+            )}
             {deleteDialogOpen && deleteId && (
                 <DeleteDialog
                     open={deleteDialogOpen}
@@ -210,5 +269,8 @@ Views.propTypes = {
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     CardContentComponent: PropTypes.node,
+    edit: PropTypes.bool,
+    del: PropTypes.bool,
+    dialogEdit: PropTypes.bool,
 };
 export default Views;

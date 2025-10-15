@@ -1,4 +1,3 @@
-import { FieldLabel } from "../New/StyledField";
 import Field from "../Fields/Field";
 import FlexBetween from "../FlexBetween";
 import { Button } from "@mui/material";
@@ -13,8 +12,8 @@ const FormView = ({ data, fields, fieldsMeta, handleChange, handleSave, handleCa
         <>
             {visibleFields.map((field) => (
                 <FlexBetween key={field.name}>
-                    <FieldLabel>{field.label}</FieldLabel>
                     <Field
+                        label={field.label}
                         value={
                             field?.getValue ? field.getValue(data[field.name]) : data[field.name]
                         }

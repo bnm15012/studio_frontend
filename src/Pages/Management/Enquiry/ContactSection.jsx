@@ -29,6 +29,7 @@ const ContactSection = ({ contact }) => {
         <Box display="flex" alignItems="center" gap={2}>
             <Avatar
                 sx={{
+                    cursor: "pointer",
                     bgcolor: theme.palette.secondary.main + "20",
                     color: theme.palette.secondary.main,
                     height: 40,

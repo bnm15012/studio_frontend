@@ -78,6 +78,7 @@ const Enquiry = () => {
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}
                     onSetAddNewFunc={setAddNewFunc}
+                    dialogEdit={false}
                     CardContentComponent={EnquiryCardComponent}
                 />
             </Box>

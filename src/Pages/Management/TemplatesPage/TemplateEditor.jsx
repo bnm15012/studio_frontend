@@ -62,7 +62,7 @@ const allVariables = flattenVariables(data);
 
 const TemplateEditor = ({
     value,
-    onChange,
+    setValue,
     rows = 1,
     label = "Enter Text",
     disableVars = false,
@@ -73,7 +73,7 @@ const TemplateEditor = ({
 
     const handleChange = (e) => {
         const newValue = e.target.value;
-        onChange(newValue);
+        setValue(newValue);
 
         const cursorPos = e.target.selectionStart;
         const beforeCursor = newValue.slice(0, cursorPos);
@@ -102,7 +102,7 @@ const TemplateEditor = ({
         const newBefore = before.replace(/{{[\w.]*$/, `{{${variable}}}`);
         const newValue = newBefore + after;
 
-        onChange(newValue);
+        setValue(newValue);
 
         // Move cursor after inserted variable
         setTimeout(() => {
@@ -120,7 +120,7 @@ const TemplateEditor = ({
         .filter((v) => v.toLowerCase().includes(filter.toLowerCase()));
 
     return (
-        <Box>
+        <Box width={"100%"}>
             <TextField
                 inputRef={textRef}
                 label={label}
@@ -156,7 +156,7 @@ const TemplateEditor = ({
 };
 TemplateEditor.propTypes = {
     value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
+    setValue: PropTypes.func.isRequired,
     rows: PropTypes.number,
     label: PropTypes.string,
     disableVars: PropTypes.bool,

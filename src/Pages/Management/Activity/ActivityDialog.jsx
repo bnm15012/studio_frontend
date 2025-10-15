@@ -164,9 +164,9 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                         <Field
                             type="SELECT"
                             label="Activity Type"
-                            variant={"outlined"}
                             value={{ key: formData.activityType, value: formData.activityType }}
                             extraProp={{
+                                variant: "outlined",
                                 getOptions: async (search, page, limit) =>
                                     validActivityTypes
                                         .filter((a) =>

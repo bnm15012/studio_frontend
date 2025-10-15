@@ -9,7 +9,6 @@ import {
     StyledCardContent,
 } from "../New/StyledCard";
 import FlexBetween from "../FlexBetween";
-import { DialogForm } from "./FormView";
 import { Delete, Edit } from "@mui/icons-material";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
@@ -38,15 +37,16 @@ const CardView = (props) => {
     const {
         fields,
         data,
-        editingId,
         fieldsMeta,
         handleEdit,
-        handleCancel,
+        handleViewOpen,
         setDeleteDialogOpen,
         setDeleteId,
         tableState,
         handleLoadMore,
         CardContentComponent,
+        edit,
+        del,
     } = props;
     const hasMore = data.length < tableState.totalCount;
     const visibleFields = fields.filter((f) => f.show !== false);
@@ -63,7 +63,7 @@ const CardView = (props) => {
                             {" "}
                             <StyledCardContent sx={{ flexGrow: "1" }}>
                                 {CardContentComponent ? (
-                                    <CardContentComponent row={row} />
+                                    <CardContentComponent row={row} {...{ handleViewOpen }} />
                                 ) : (
                                     <>
                                         {visibleFields.map((field) => (
@@ -84,6 +84,7 @@ const CardView = (props) => {
                                             <Button
                                                 size="small"
                                                 fullWidth
+                                                disabled={!edit}
                                                 onClick={() => {
                                                     handleEdit(rowId);
                                                 }}
@@ -100,6 +101,7 @@ const CardView = (props) => {
                                             <Button
                                                 size="small"
                                                 fullWidth
+                                                disabled={!del}
                                                 onClick={() => {
                                                     setDeleteDialogOpen(true);
                                                     setDeleteId(rowId);
@@ -122,13 +124,6 @@ const CardView = (props) => {
                     );
                 })}
             </StyledCardContainer>
-            {editingId && (
-                <DialogForm
-                    setClose={handleCancel}
-                    {...props}
-                    data={data.find((d) => d[fieldsMeta.primary] === editingId)}
-                />
-            )}
             {hasMore && (
                 <LoadMoreContainer>
                     <LoadMoreButton onClick={handleLoadMore} variant="contained">
@@ -157,6 +152,9 @@ CardView.propTypes = {
     setDeleteId: PropTypes.func,
     handleLoadMore: PropTypes.func,
     CardContentComponent: PropTypes.node,
+    handleViewOpen: PropTypes.func,
+    edit: PropTypes.bool,
+    del: PropTypes.bool,
 };
 
 export default CardView;

@@ -4,4 +4,5 @@ export const FIELD_TYPES = {
     DATE: "DATE",
     DATETIME: "DATETIME",
     NUMBER: "number",
+    EDITOR: "EDITOR",
 };

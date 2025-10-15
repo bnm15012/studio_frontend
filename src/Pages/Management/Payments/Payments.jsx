@@ -18,7 +18,7 @@ const FIELD_META = { primary: "paymentId", root: "branchId" };
 const VIEWS = ["LIST", "CARD"];
 
 const FIELDS = [
-    { show: true, name: "payeeType", label: "Payee Type" },
+    { show: true, name: "payeeType", label: "Payee Type", extraProp: { readOnly: true } },
     {
         show: true,
         name: "status",
@@ -52,7 +52,13 @@ const FIELDS = [
                     .map((a) => ({ key: a, value: a })),
         },
     },
-    { show: true, name: "amount", label: "Amount", type: FIELD_TYPES.NUMBER },
+    {
+        show: true,
+        name: "amount",
+        label: "Amount",
+        type: FIELD_TYPES.NUMBER,
+        extraProp: { readOnly: true },
+    },
 ];
 const Expenses = () => {
     const { isMobile } = useUI();
@@ -62,6 +68,9 @@ const Expenses = () => {
         <FlexBetweenColumn>
             <Box>
                 <Views
+                    dialogEdit={false}
+                    edit={true}
+                    del={false}
                     tableName={"payments"}
                     tableCruds={paymentCruds}
                     size={LIMIT}

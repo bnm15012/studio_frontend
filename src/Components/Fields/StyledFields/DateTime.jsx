@@ -14,11 +14,11 @@ const DateTime = ({
     setValue,
     minVal,
     maxVal,
-    disabled = false,
+    readOnly = false,
     format = "DATETIME",
     variant = "standard",
     placeholder = "Select date and time",
-    validation,
+    // validation,
 }) => {
     const theme = useTheme();
     const [localDateTime, setLocalDateTime] = useState(null);
@@ -47,7 +47,7 @@ const DateTime = ({
     const commonProps = {
         value: localDateTime,
         label: label,
-        disabled: disabled,
+        disabled: readOnly,
         onChange: handleChange,
         ampm: true,
         format: format === "DATE" ? "dd/MM/yyyy" : "dd/MM/yyyy, hh:mm a",
@@ -154,7 +154,7 @@ DateTime.propTypes = {
     minVal: PropTypes.string,
     maxVal: PropTypes.string,
     placeholder: PropTypes.string,
-    disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
 };
 
 export default DateTime;

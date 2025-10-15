@@ -2,7 +2,7 @@ import { Switch, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import FlexBetween from "../../FlexBetween";
 
-const StyledSwitch = ({ label, disabled, value, setValue }) => (
+const StyledSwitch = ({ label, readOnly, value, setValue }) => (
     <FlexBetween>
         {label && (
             <Typography variant="body1" color="textSecondary">
@@ -10,7 +10,7 @@ const StyledSwitch = ({ label, disabled, value, setValue }) => (
             </Typography>
         )}
         <Switch
-            disabled={disabled}
+            disabled={readOnly}
             checked={value}
             onChange={(e) => {
                 setValue(e.target.checked);
@@ -21,7 +21,7 @@ const StyledSwitch = ({ label, disabled, value, setValue }) => (
 );
 
 StyledSwitch.propTypes = {
-    disabled: PropTypes.bool,
+    readOnly: PropTypes.bool,
     label: PropTypes.string,
     value: PropTypes.bool.isRequired,
     setValue: PropTypes.func.isRequired,

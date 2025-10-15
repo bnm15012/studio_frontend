@@ -12,7 +12,13 @@ import activitySlice from "./activitySlice";
 import analysisSlice from "./analysisSlice";
 import bookingSlice from "./bookingSlice";
 import membershipTypesSlice from "./activityMembershipTypeSlice";
-import { clientCruds, enquiryCruds, expenseCruds, paymentCruds } from "../api/all.api";
+import {
+    clientCruds,
+    enquiryCruds,
+    expenseCruds,
+    genericTemplateCruds,
+    paymentCruds,
+} from "../api/all.api";
 
 const rootReducer = combineReducers({
     auth: authSlice,
@@ -27,6 +33,7 @@ const rootReducer = combineReducers({
     notifications: notificationSlice,
     membershipTypes: membershipTypesSlice,
     enquiries: enquiryCruds.reducer,
+    genericTemplate: genericTemplateCruds.reducer,
 });
 
 const persistConfig = {

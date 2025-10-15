@@ -1,4 +1,4 @@
-import { TableBody, TableHead, Paper, IconButton, TablePagination } from "@mui/material";
+import { TableBody, TableHead, Paper, IconButton, TablePagination, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -17,6 +17,8 @@ const ListView = ({
     data,
     editingId,
     fieldsMeta,
+    edit,
+    del,
     handleChange,
     handleSave,
     handleCancel,
@@ -25,6 +27,7 @@ const ListView = ({
     setDeleteId,
     tableState,
     handlePageChange,
+    handleViewOpen,
 }) => (
     <StyledTableContainer component={Paper}>
         <StyledTable>
@@ -34,7 +37,7 @@ const ListView = ({
                         S. No.
                     </StyledTableCell>
                     {fields
-                        .filter((f) => f.show)
+                        .filter((f) => f.show || f.view)
                         .map(({ label }) => (
                             <StyledTableCell
                                 key={label}
@@ -57,22 +60,36 @@ const ListView = ({
                                 1}
                         </StyledTableCell>
                         {fields
-                            .filter((f) => f.show !== false)
+                            .filter((f) => f.show || f.view)
                             .map((field) => (
                                 <StyledTableCell key={field.name}>
-                                    <Field
-                                        isEdit={editingId === row[fieldsMeta.primary]}
-                                        value={
-                                            field?.getValue
-                                                ? field.getValue(row[field.name])
-                                                : row[field.name]
-                                        }
-                                        setValue={(v) =>
-                                            handleChange(v, row[fieldsMeta.primary], field.name)
-                                        }
-                                        type={field.type}
-                                        extraProp={field.extraProp}
-                                    />
+                                    {field.view ? (
+                                        <Button
+                                            size="small"
+                                            variant="text"
+                                            color="primary"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleViewOpen(row);
+                                            }}
+                                        >
+                                            View
+                                        </Button>
+                                    ) : (
+                                        <Field
+                                            isEdit={editingId === row[fieldsMeta.primary]}
+                                            value={
+                                                field?.getValue
+                                                    ? field.getValue(row[field.name])
+                                                    : row[field.name]
+                                            }
+                                            setValue={(v) =>
+                                                handleChange(v, row[fieldsMeta.primary], field.name)
+                                            }
+                                            type={field.type}
+                                            extraProp={field.extraProp}
+                                        />
+                                    )}
                                 </StyledTableCell>
                             ))}
                         <StyledTableCell>
@@ -91,12 +108,14 @@ const ListView = ({
                             ) : (
                                 <>
                                     <IconButton
+                                        disabled={!edit}
                                         sx={{ color: "blue" }}
                                         onClick={() => handleEdit(row[fieldsMeta.primary])}
                                     >
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton
+                                        disabled={!del}
                                         sx={{ color: "red" }}
                                         onClick={() => {
                                             setDeleteDialogOpen(true);
@@ -139,6 +158,9 @@ ListView.propTypes = {
     setDeleteDialogOpen: PropTypes.func,
     setDeleteId: PropTypes.func,
     handlePageChange: PropTypes.func,
+    edit: PropTypes.bool,
+    del: PropTypes.bool,
+    handleViewOpen: PropTypes.func,
 };
 
 export default ListView;

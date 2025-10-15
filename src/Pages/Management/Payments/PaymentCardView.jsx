@@ -2,11 +2,11 @@ import { CardContent, Box, Typography, Chip, Divider, useTheme } from "@mui/mate
 import { styled } from "@mui/material/styles";
 import { CalendarMonth, Paid, CreditCard } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { format } from "date-fns";
+import { getLocalDateTime } from "../../../utils/DateUtil";
 
 const HeaderGradient = styled(Box)(({ theme }) => ({
     display: "flex",
-    padding: theme.spacing(2, 3),
+    padding: theme.spacing(1),
     justifyContent: "space-between",
     alignItems: "center",
 }));
@@ -27,8 +27,6 @@ const PaymentCard = ({ row }) => {
                 return "default";
         }
     };
-
-    const formattedDate = paymentDate ? format(new Date(paymentDate), "dd MMM yyyy") : "—";
 
     return (
         <>
@@ -97,7 +95,7 @@ const PaymentCard = ({ row }) => {
                             Payment Date
                         </Typography>
                         <Typography variant="body1" fontWeight={500}>
-                            {formattedDate}
+                            {getLocalDateTime(paymentDate, "DATETIME")}
                         </Typography>
                     </Box>
                 </Box>
