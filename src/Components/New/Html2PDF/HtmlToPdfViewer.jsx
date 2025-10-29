@@ -1,34 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Card, Divider, Typography, styled } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import Loading from "../../Loading/Loading";
 import FlexBetween from "../../FlexBetween";
 import FlexEvenly from "../../FlexEvenly";
 import { usePdfActions } from "./usePdfActions";
 import { useSelector } from "react-redux";
-
-const PdfContainer = styled(Card)(() => ({
-    width: "210mm",
-    height: "297mm",
-    overflow: "auto",
-    margin: "0 auto",
-    padding: "24px",
-    backgroundColor: "#fff",
-    fontFamily: "Arial, sans-serif",
-    fontSize: "14px",
-    color: "#333",
-    boxSizing: "border-box",
-    border: "1px solid hsl(220, 13%, 85%)",
-    "& .pdf-text": { wordWrap: "break-word", overflowWrap: "break-word", hyphens: "auto" },
-    "@media print": {
-        width: "100%",
-        minHeight: "unset",
-        margin: 0,
-        boxShadow: "none",
-        border: "none",
-    },
-}));
+import PDFPreviewGenerator from "./PDFPreviewGenerator";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const indianMobileRegex = /^[6-9]\d{9}$/;
@@ -96,7 +75,7 @@ const HtmlToPdfViewer = forwardRef(
         return (
             <>
                 {loading && <Loading />}
-                <PdfContainer>
+                <PDFPreviewGenerator>
                     <FlexBetween
                         flexDirection={"column"}
                         ref={contentRef}
@@ -149,7 +128,7 @@ const HtmlToPdfViewer = forwardRef(
                             </FlexEvenly>
                         </Box>
                     </FlexBetween>
-                </PdfContainer>
+                </PDFPreviewGenerator>
 
                 <ConfirmationDialog
                     type={dialogType}

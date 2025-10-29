@@ -21,10 +21,12 @@ import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
 import { reportsAPi } from "./reports.api";
 import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
+import { useUI } from "../../../context/UIContext";
 
 const Reports = () => {
     const pdfViewerRef = useRef();
     const theme = useTheme();
+    const { isMobile } = useUI();
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -234,12 +236,13 @@ const Reports = () => {
     useEffect(() => {}, [paymentStatus, reportType]);
 
     return (
-        <FlexBetween flexWrap="wrap" gap={2}>
+        <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
             {/* Left Controls */}
             <Box
                 p={2}
                 sx={{
-                    minWidth: "30rem",
+                    height: "fit-content",
+                    minWidth: isMobile ? "1rem" : "25rem",
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: "8px",
                     boxShadow: theme.shadows[7],
@@ -320,14 +323,12 @@ const Reports = () => {
 
             {/* Report Display */}
             <Box
-                flexGrow={1}
-                height="85vh"
                 sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    overflowY: "auto",
-                    padding: 2,
-                    borderRadius: "8px",
                     boxShadow: theme.shadows[7],
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: "8px",
+                    flexGrow: 1,
+                    p: 1,
                 }}
             >
                 {loading && <Loading />}

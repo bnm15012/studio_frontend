@@ -1,4 +1,3 @@
-// src/components/ConfirmationDialog.js
 import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import StyledDialog from "../StyledDialog";
