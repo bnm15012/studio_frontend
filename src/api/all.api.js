@@ -9,3 +9,5 @@ export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" 
 export const paymentCruds = createCrud({ route: "payments", idKey: "paymentId" });
 
 export const genericTemplateCruds = createCrud({ route: "genericTemplate" });
+
+export const msgHistoryCruds = createCrud({ route: "genericTemplate" });

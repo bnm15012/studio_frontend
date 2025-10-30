@@ -3,19 +3,12 @@ import PropTypes from "prop-types";
 import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
 import { getMessageRecipientsAPI } from "./communication.api";
-import {
-    DialogContent,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    CircularProgress,
-    Typography,
-} from "@mui/material";
-import { StyledTable } from "../../../Components/StyledTableComponents";
+import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
 import StyledDialog from "../../../Components/New/StyledDialog";
+import { User } from "lucide-react";
+import { Close, Done } from "@mui/icons-material";
 
-const ReceipentsListDialog = ({ open, onClose, messageId }) => {
+const ReceipentsListDialog = ({ onClose, messageId }) => {
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
     const [history, setHistory] = useState([]);
@@ -43,19 +36,16 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
     }, [showAlert, messageId, token]);
 
     useEffect(() => {
-        if (open) {
-            getMessageHistory();
-        }
-    }, [open, getMessageHistory]);
+        getMessageHistory();
+    }, [getMessageHistory]);
 
     return (
         <StyledDialog
             closeIcon={true}
             title={"Message Recipients"}
-            open={open}
+            open={true}
             onClose={onClose}
             fullWidth
-            maxWidth="md"
         >
             <DialogContent style={{ maxHeight: "60vh", overflowY: "auto" }}>
                 {loading ? (
@@ -65,28 +55,51 @@ const ReceipentsListDialog = ({ open, onClose, messageId }) => {
                 ) : history.length === 0 ? (
                     <Typography>No recipients found.</Typography>
                 ) : (
-                    <StyledTable stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Contact</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Reason</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {history.map((recipient, index) => (
-                                <TableRow key={recipient.id}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{recipient.name}</TableCell>
-                                    <TableCell>{recipient?.contact || "-"}</TableCell>
-                                    <TableCell>{recipient.status}</TableCell>
-                                    <TableCell>{recipient.reason || "-"}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </StyledTable>
+                    <>
+                        {history.map((recipient) => (
+                            <Box
+                                key={recipient.id}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    p: 1.5,
+                                    mb: 1,
+                                    borderRadius: 2,
+                                    bgcolor: "action.hover",
+                                    transition: "background-color 0.2s",
+                                    "&:hover": { bgcolor: "action.selected" },
+                                }}
+                            >
+                                <Avatar
+                                    sx={{
+                                        width: 40,
+                                        height: 40,
+                                        bgcolor: "primary.light",
+                                        color: "primary.main",
+                                    }}
+                                >
+                                    <User size={20} />
+                                </Avatar>
+
+                                <Box sx={{ flex: 1, minWidth: 0 }}>
+                                    <Typography variant="subtitle2" noWrap>
+                                        {recipient.name}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" noWrap>
+                                        {recipient?.contact}
+                                    </Typography>
+                                </Box>
+                                {recipient.status === "SENT" ? (
+                                    <Done sx={{ color: "green", my: "auto", mr: 1 }} />
+                                ) : recipient.status === "PENDING" ? (
+                                    <CircularProgress />
+                                ) : (
+                                    <Close sx={{ color: "green", my: "auto", mr: 1 }} />
+                                )}
+                            </Box>
+                        ))}
+                    </>
                 )}
             </DialogContent>
         </StyledDialog>

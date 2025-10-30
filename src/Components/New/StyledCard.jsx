@@ -12,6 +12,7 @@ export const StyledCardContainer = styled(Box)(({ theme }) => ({
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     position: "relative",
     display: "flex",
+    height: "100%",
     flexDirection: "column",
     background: "linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%)",
 }));

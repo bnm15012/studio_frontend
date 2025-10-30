@@ -25,6 +25,7 @@ import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
 import { sendMessageApi } from "./communication.api";
 import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
+import { useUI } from "../../../context/UIContext";
 
 const MAIL_TYPE = ["WHATSAPP", "EMAIL"];
 
@@ -46,8 +47,9 @@ const initialTemplate = {
 };
 
 const Communication = () => {
-    const token = useSelector((state) => state.auth.token);
     const theme = useTheme();
+    const { isMobile } = useUI();
+    const token = useSelector((state) => state.auth.token);
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const showAlert = useAlert();
@@ -104,7 +106,6 @@ const Communication = () => {
 
     const getAllStudentNames = async (page, size) => {
         try {
-            setLoading(true);
             const { data, totalCount } = await getStudentNamesAPI({
                 token,
                 branchId: currentBranch.branchId,
@@ -116,13 +117,10 @@ const Communication = () => {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
-        } finally {
-            setLoading(false);
         }
     };
     const getAllInstructorNames = async (page, size) => {
         try {
-            setLoading(true);
             const { data, totalCount } = await getInstructorNamesAPI({
                 token,
                 branchId: currentBranch.branchId,
@@ -134,8 +132,6 @@ const Communication = () => {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -205,11 +201,11 @@ const Communication = () => {
     return (
         <FlexBetweenColumn sx={{ width: "100%" }}>
             {loading && <Loading />}
-            <FlexBetween gap={1} width={"100%"}>
+            <FlexBetween flexDirection={isMobile ? "column" : "row"} gap={1} width={"100%"}>
                 {/* Left Panel */}
                 <FlexBetweenColumn
+                    width={"100%"}
                     sx={{
-                        width: "70%",
                         p: 2,
                         gap: 1,
                         backgroundColor: theme.palette.background.paper,
@@ -239,7 +235,7 @@ const Communication = () => {
                         />
                     </Box>
 
-                    <FlexBetween gap={2} width="100%">
+                    <FlexBetween gap={2} width="100%" flexWrap={isMobile ? "wrap" : "nowrap"}>
                         <FormControl fullWidth>
                             <Typography variant="h6" fontWeight="bold">
                                 Mail Type
@@ -432,20 +428,32 @@ const Communication = () => {
                 </FlexBetweenColumn>
 
                 {/* Right Panel */}
-                <FlexBetweenColumn width="30%">
+                <FlexBetweenColumn width={isMobile ? "100%" : "50rem"} gap={1}>
                     <Box
                         sx={{
+                            height: "100%",
                             p: 2,
                             backgroundColor: theme.palette.background.paper,
                             boxShadow: theme.shadows[7],
                             borderRadius: "8px",
                         }}
                     >
-                        <Typography variant="h5" fontWeight="bold">
-                            Preview
-                        </Typography>
+                        <FlexBetween py={1}>
+                            <Typography variant="h5" fontWeight="bold">
+                                Preview
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                color="primary"
+                                onClick={sendMail}
+                                sx={{ p: 0.5 }}
+                            >
+                                Send
+                            </Button>
+                        </FlexBetween>
                         <Divider sx={{ mb: 1 }} />
-                        <Box sx={{ overflowY: "auto", height: "40vh" }}>
+                        <Box sx={{ overflowY: "auto", height: "45vh" }}>
                             {selectedTemplate.title || selectedTemplate.content ? (
                                 <>
                                     <Typography variant="subtitle1" fontWeight="bold">
@@ -467,21 +475,9 @@ const Communication = () => {
                             )}
                         </Box>
                     </Box>
-                    <FlexBetween flexDirection="row-reverse" py={2}>
-                        <Button variant="contained" color="primary" onClick={sendMail}>
-                            Send
-                        </Button>
-                    </FlexBetween>
                 </FlexBetweenColumn>
             </FlexBetween>
-            <Box
-                sx={{
-                    mt: 1,
-                }}
-            >
-                <SentSMSHistory newHistory={newHistory} />
-            </Box>
-
+            <SentSMSHistory newHistory={newHistory} />
             {open && (
                 <MultiSelectDialog
                     open={open}

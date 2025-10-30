@@ -1,15 +1,7 @@
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    Button,
-    ListItemText,
-    Checkbox,
-    MenuItem,
-} from "@mui/material";
+import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
 import { useEffect, useState, useRef, useCallback } from "react";
-import Loading from "./Loading/Loading";
 import PropTypes from "prop-types";
+import StyledDialog from "./New/StyledDialog";
 
 const MultiSelectDialog = ({
     open,
@@ -83,7 +75,14 @@ const MultiSelectDialog = ({
     };
 
     return (
-        <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+        <StyledDialog
+            onConfirm={handleOk}
+            confirmText="OK"
+            open={open}
+            onClose={handleCancel}
+            maxWidth="sm"
+            fullWidth
+        >
             <DialogContent dividers style={{ maxHeight: "400px", overflow: "auto" }}>
                 {options.map((option, index) => (
                     <MenuItem
@@ -113,17 +112,11 @@ const MultiSelectDialog = ({
                     </MenuItem>
                 ))}
                 <div ref={observerRef} style={{ height: 40, textAlign: "center" }}>
-                    {loading && <Loading />}
+                    {loading && <CircularProgress />}
                     {options.length == totalRecords && <>No more record to show</>}
                 </div>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCancel}>Cancel</Button>
-                <Button onClick={handleOk} variant="contained" disabled={loading}>
-                    OK
-                </Button>
-            </DialogActions>
-        </Dialog>
+        </StyledDialog>
     );
 };
 MultiSelectDialog.propTypes = {

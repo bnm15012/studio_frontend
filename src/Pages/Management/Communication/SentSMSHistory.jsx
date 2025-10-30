@@ -1,25 +1,21 @@
-import { IconButton, Pagination, TableBody, TableHead } from "@mui/material";
-import {
-    StyledTable,
-    StyledTableCell,
-    StyledTableContainer,
-    StyledTableRow,
-} from "../../../Components/StyledTableComponents";
-import GroupsIcon from "@mui/icons-material/Groups";
+import { Pagination } from "@mui/material";
 
 import { useAlert } from "../../../utils/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
 import { useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
-import { getLocalDateTime } from "../../../utils/DateUtil";
-import ReceipentsListDialog from "./ReceipentsListDialog";
 import FlexBetween from "../../../Components/FlexBetween";
+import { useUI } from "../../../context/UIContext";
 import PropTypes from "prop-types";
+import HistoryMessageTable from "./HistoryMessageTable";
+import MessageHistoryCard from "./MessageHistoryCard";
+import ReceipentsListDialog from "./ReceipentsListDialog";
 
-const size = 3;
 const SentSMSHistory = ({ newHistory }) => {
     const showAlert = useAlert();
+    const { isMobile } = useUI();
+    const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
     const token = useSelector((state) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
@@ -27,7 +23,6 @@ const SentSMSHistory = ({ newHistory }) => {
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
-    const [selectedMessageId, setSelectedMessageId] = useState(null);
 
     useEffect(() => {
         if (newHistory) {
@@ -59,7 +54,7 @@ const SentSMSHistory = ({ newHistory }) => {
                 setLoading(false);
             }
         },
-        [showAlert, currentBranch.branchId, token],
+        [token, currentBranch.branchId, size, showAlert],
     );
     const handlePageChange = async (e, p) => {
         setLoading(true);
@@ -73,56 +68,13 @@ const SentSMSHistory = ({ newHistory }) => {
     }, [page, currentBranch.branchId, history, getMessageHistory]);
 
     return (
-        <>
+        <FlexBetween flexDirection={"column"} mt={2}>
             {loading && <Loading />}
-            <StyledTableContainer>
-                <StyledTable>
-                    <TableHead>
-                        <StyledTableRow>
-                            <StyledTableCell sx={{ py: 1.5 }}>Title</StyledTableCell>
-                            <StyledTableCell sx={{ py: 1.5 }}>Sent Date</StyledTableCell>
-                            <StyledTableCell sx={{ py: 1.5 }}>Recipients</StyledTableCell>
-                            <StyledTableCell sx={{ py: 1.5 }}>NotificationType</StyledTableCell>
-                            <StyledTableCell sx={{ py: 1.5 }}>Action</StyledTableCell>
-                        </StyledTableRow>
-                    </TableHead>
-                    <TableBody>
-                        {history &&
-                            history.map((row, index) => (
-                                <StyledTableRow key={index}>
-                                    <StyledTableCell sx={{ py: 1 }}>{row?.title}</StyledTableCell>
-                                    <StyledTableCell sx={{ py: 1 }}>
-                                        {getLocalDateTime(row?.sentDate, "DATETIME")}
-                                    </StyledTableCell>
-                                    <StyledTableCell sx={{ py: 1 }}>
-                                        {row?.memberType ? "All" : "Few"}
-                                    </StyledTableCell>
-                                    <StyledTableCell sx={{ py: 1 }}>
-                                        {row?.notificationType}
-                                    </StyledTableCell>
-                                    <StyledTableCell sx={{ py: 1 }}>
-                                        <IconButton
-                                            disabled={row?.memberType}
-                                            onClick={() => {
-                                                setSelectedMessageId(row.id);
-                                                setOpenDialog(true);
-                                            }}
-                                        >
-                                            <GroupsIcon color="primary" />
-                                        </IconButton>
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            ))}
-                        {history && history.length === 0 && (
-                            <StyledTableRow>
-                                <StyledTableCell colSpan={5} align="center">
-                                    No Communication History available!
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        )}
-                    </TableBody>
-                </StyledTable>
-            </StyledTableContainer>
+            {isMobile ? (
+                <MessageHistoryCard onViewRecipients={setOpenDialog} history={history} />
+            ) : (
+                <HistoryMessageTable showRecepients={setOpenDialog} history={history} />
+            )}
             <FlexBetween p={2} flexDirection={"row-reverse"}>
                 <Pagination
                     count={totalPage}
@@ -133,13 +85,9 @@ const SentSMSHistory = ({ newHistory }) => {
                 />
             </FlexBetween>
             {openDialog && (
-                <ReceipentsListDialog
-                    open={openDialog}
-                    messageId={selectedMessageId}
-                    onClose={() => setOpenDialog(false)}
-                />
+                <ReceipentsListDialog messageId={openDialog} onClose={() => setOpenDialog(false)} />
             )}
-        </>
+        </FlexBetween>
     );
 };
 SentSMSHistory.propTypes = {
