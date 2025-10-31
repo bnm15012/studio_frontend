@@ -7,7 +7,6 @@ import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
-// import PaymentCard from "./PaymentCardView.jsx";
 
 const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 8;
@@ -19,6 +18,15 @@ const VIEWS = ["LIST", "CARD"];
 
 const FIELDS = [
     { show: true, name: "payeeType", label: "Payee Type", extraProp: { readOnly: true } },
+    // TODO: need to change for client too.
+    {
+        show: true,
+        name: "studentEntry",
+        label: "Payee Name",
+        type: FIELD_TYPES.SELECT,
+        getValue: (value) => ({ key: value?.studentId, value: value?.name || "-" }),
+        extraProp: { readOnly: true },
+    },
     {
         show: true,
         name: "status",
@@ -64,13 +72,19 @@ const Expenses = () => {
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
+    const isActionDisabled = (row, action) => {
+        if (action === "edit") {
+            return row.status === "COMPLETED";
+        }
+        return true;
+    };
+
     return (
         <FlexBetweenColumn>
             <Box>
                 <Views
                     dialogEdit={false}
-                    edit={true}
-                    del={false}
+                    isActionDisabled={isActionDisabled}
                     tableName={"payments"}
                     tableCruds={paymentCruds}
                     size={LIMIT}

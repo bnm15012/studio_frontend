@@ -3,6 +3,8 @@ import { styled } from "@mui/material/styles";
 import { CalendarMonth, Paid, CreditCard } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { getLocalDateTime } from "../../../utils/DateUtil";
+import { User2 } from "lucide-react";
+import FlexBetween from "../../../Components/FlexBetween";
 
 const HeaderGradient = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -13,7 +15,17 @@ const HeaderGradient = styled(Box)(({ theme }) => ({
 
 const PaymentCard = ({ row }) => {
     const theme = useTheme();
-    const { payeeType, status, paymentDate, paymentType, amount } = row;
+    const { payeeType, status, paymentDate, paymentType, amount, studentEntry, clientEntry } = row;
+
+    const commonSX = {
+        height: 40,
+        width: 40,
+        borderRadius: "50%",
+        background: theme.palette.primary.main + "15",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    };
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
@@ -50,19 +62,23 @@ const PaymentCard = ({ row }) => {
             </HeaderGradient>
 
             <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {/* Payee Name */}
+                <Box display="flex" alignItems="center" gap={2}>
+                    <Box sx={commonSX}>
+                        <User2 sx={{ color: theme.palette.primary.main }} />
+                    </Box>
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Payee Name
+                        </Typography>
+                        <Typography variant="body1" fontWeight={500}>
+                            {studentEntry?.name || clientEntry?.groupName || "N/A"}
+                        </Typography>
+                    </Box>
+                </Box>
                 {/* Payment Type */}
                 <Box display="flex" alignItems="center" gap={2}>
-                    <Box
-                        sx={{
-                            height: 40,
-                            width: 40,
-                            borderRadius: "50%",
-                            background: theme.palette.primary.main + "15",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
+                    <Box sx={commonSX}>
                         <CreditCard sx={{ color: theme.palette.primary.main }} />
                     </Box>
                     <Box>
@@ -77,17 +93,7 @@ const PaymentCard = ({ row }) => {
 
                 {/* Payment Date */}
                 <Box display="flex" alignItems="center" gap={2}>
-                    <Box
-                        sx={{
-                            height: 40,
-                            width: 40,
-                            borderRadius: "50%",
-                            background: theme.palette.info.main + "15",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
+                    <Box sx={commonSX}>
                         <CalendarMonth sx={{ color: theme.palette.info.main }} />
                     </Box>
                     <Box>
@@ -103,13 +109,10 @@ const PaymentCard = ({ row }) => {
                 <Divider sx={{ my: 1 }} />
 
                 {/* Amount */}
-                <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
+                <FlexBetween
                     sx={{
                         backgroundColor: theme.palette.action.hover,
-                        p: 1.5,
+                        p: 1,
                         borderRadius: 2,
                     }}
                 >
@@ -122,7 +125,7 @@ const PaymentCard = ({ row }) => {
                     <Typography variant="h6" fontWeight={700} color="text.primary">
                         ₹{Number(amount).toLocaleString()}
                     </Typography>
-                </Box>
+                </FlexBetween>
             </CardContent>
         </>
     );
@@ -135,6 +138,12 @@ PaymentCard.propTypes = {
         paymentDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
         paymentType: PropTypes.string,
         amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        studentEntry: PropTypes.shape({
+            name: PropTypes.string,
+        }),
+        clientEntry: PropTypes.shape({
+            groupName: PropTypes.string,
+        }),
     }).isRequired,
 };
 

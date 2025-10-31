@@ -17,8 +17,7 @@ const ListView = ({
     data,
     editingId,
     fieldsMeta,
-    edit,
-    del,
+    isActionDisabled,
     handleChange,
     handleSave,
     handleCancel,
@@ -108,14 +107,14 @@ const ListView = ({
                             ) : (
                                 <>
                                     <IconButton
-                                        disabled={!edit}
+                                        disabled={isActionDisabled(row, "edit")}
                                         sx={{ color: "blue" }}
                                         onClick={() => handleEdit(row[fieldsMeta.primary])}
                                     >
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton
-                                        disabled={!del}
+                                        disabled={isActionDisabled(row, "delete")}
                                         sx={{ color: "red" }}
                                         onClick={() => {
                                             setDeleteDialogOpen(true);
@@ -158,8 +157,7 @@ ListView.propTypes = {
     setDeleteDialogOpen: PropTypes.func,
     setDeleteId: PropTypes.func,
     handlePageChange: PropTypes.func,
-    edit: PropTypes.bool,
-    del: PropTypes.bool,
+    isActionDisabled: PropTypes.func,
     handleViewOpen: PropTypes.func,
 };
 

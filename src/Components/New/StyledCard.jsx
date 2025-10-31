@@ -1,12 +1,12 @@
 import { Card, CardContent, CardActions, Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
 export const StyledCardContainer = styled(Box)(({ theme }) => ({
     display: "grid",
     gap: theme.spacing(3),
-    gridTemplateColumns: "repeat(auto-fill, minmax(225px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(20rem, 1fr))",
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
@@ -48,19 +48,23 @@ const StyledCardBase = styled(MotionCard)(({ theme }) => ({
     position: "relative",
 }));
 
-export const StyledMotionCard = ({ children, elevation = 3, ...props }) => (
-    <StyledCardBase
-        elevation={elevation}
-        whileHover={{
-            y: -5,
-            boxShadow: "0px 8px 24px rgba(0,0,0,0.1)",
-        }}
-        transition={{ duration: 0.3 }}
-        {...props}
-    >
-        {children}
-    </StyledCardBase>
-);
+export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
+    const theme = useTheme();
+    return (
+        <StyledCardBase
+            elevation={elevation}
+            whileHover={{
+                y: -5,
+                boxShadow: theme.shadows[10],
+            }}
+            sx={{ boxShadow: theme.shadows[7] }}
+            transition={{ duration: 0.3 }}
+            {...props}
+        >
+            {children}
+        </StyledCardBase>
+    );
+};
 
 StyledMotionCard.propTypes = {
     children: PropTypes.node.isRequired,

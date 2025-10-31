@@ -17,7 +17,16 @@ const Field = ({
     extraProp = {},
 }) => {
     const { min, max, rows, getOptions, readOnly, variant } = extraProp;
-    const commonProps = { value, setValue, label, readOnly, validation, variant };
+    const commonProps = {
+        value,
+        minVal: min,
+        maxVal: max,
+        setValue,
+        label,
+        readOnly,
+        validation,
+        variant,
+    };
 
     const renderInputField = () => {
         const placeholderText = placeholder || label;
@@ -25,33 +34,9 @@ const Field = ({
         const fieldMap = {
             SELECT: <SelectionField {...commonProps} getOptions={getOptions} />,
             BOOL: <StyledSwitch {...commonProps} />,
-            DATE: (
-                <DateTime
-                    {...commonProps}
-                    minVal={min}
-                    maxVal={max}
-                    format="DATE"
-                    placeholder={placeholderText}
-                />
-            ),
-            DATETIME: (
-                <DateTime
-                    {...commonProps}
-                    minVal={min}
-                    maxVal={max}
-                    format="DATETIME"
-                    placeholder={placeholderText}
-                />
-            ),
-            EDITOR: (
-                <TemplateEditor
-                    {...commonProps}
-                    minVal={min}
-                    maxVal={max}
-                    rows={rows}
-                    placeholder={placeholderText}
-                />
-            ),
+            DATE: <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />,
+            DATETIME: <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />,
+            EDITOR: <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />,
             DEFAULT: (
                 <StyledTextField
                     {...commonProps}
@@ -69,13 +54,11 @@ const Field = ({
         switch (type) {
             case "BOOL":
                 return value ? "Yes" : "No";
-
             case "SELECT":
                 return value.value;
             case "DATE":
             case "DATETIME":
                 return getLocalDateTime(value, type);
-
             default:
                 return value;
         }

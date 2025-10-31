@@ -25,8 +25,7 @@ const Views = ({
     currentView,
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
-    edit = true,
-    del = true,
+    isActionDisabled = () => false,
     dialogEdit = true,
 }) => {
     const dispatch = useDispatch();
@@ -47,14 +46,14 @@ const Views = ({
     const [searchTerm, setSearchTerm] = useState("");
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
-    const [viewRow, setViewROw] = useState(null);
-    const handleViewOpen = (template) => {
-        setViewROw(template);
+    const [viewRow, setViewRow] = useState(null);
+    const handleViewOpen = (row) => {
+        setViewRow(row);
         setViewDialogOpen(true);
     };
 
     const handleViewClose = () => {
-        setViewROw(null);
+        setViewRow(null);
         setViewDialogOpen(false);
     };
 
@@ -188,8 +187,7 @@ const Views = ({
         setDeleteDialogOpen,
         setDeleteId,
         handlePageChange,
-        edit,
-        del,
+        isActionDisabled,
     };
     return (
         <>
@@ -269,8 +267,7 @@ Views.propTypes = {
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     CardContentComponent: PropTypes.node,
-    edit: PropTypes.bool,
-    del: PropTypes.bool,
+    isActionDisabled: PropTypes.func,
     dialogEdit: PropTypes.bool,
 };
 export default Views;

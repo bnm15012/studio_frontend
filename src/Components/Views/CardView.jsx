@@ -45,8 +45,7 @@ const CardView = (props) => {
         tableState,
         handleLoadMore,
         CardContentComponent,
-        edit,
-        del,
+        isActionDisabled,
     } = props;
     const hasMore = data.length < tableState.totalCount;
     const visibleFields = fields.filter((f) => f.show !== false);
@@ -84,7 +83,7 @@ const CardView = (props) => {
                                             <Button
                                                 size="small"
                                                 fullWidth
-                                                disabled={!edit}
+                                                disabled={isActionDisabled(row, "edit")}
                                                 onClick={() => {
                                                     handleEdit(rowId);
                                                 }}
@@ -101,7 +100,7 @@ const CardView = (props) => {
                                             <Button
                                                 size="small"
                                                 fullWidth
-                                                disabled={!del}
+                                                disabled={isActionDisabled(row, "delete")}
                                                 onClick={() => {
                                                     setDeleteDialogOpen(true);
                                                     setDeleteId(rowId);
@@ -153,8 +152,7 @@ CardView.propTypes = {
     handleLoadMore: PropTypes.func,
     CardContentComponent: PropTypes.node,
     handleViewOpen: PropTypes.func,
-    edit: PropTypes.bool,
-    del: PropTypes.bool,
+    isActionDisabled: PropTypes.func,
 };
 
 export default CardView;
