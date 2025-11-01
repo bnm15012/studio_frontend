@@ -64,7 +64,7 @@ const Clients = () => {
     return (
         <FlexBetweenColumn>
             {loading && <Loading />}
-            <FlexBetween paddingBottom={2} gap={1}>
+            <FlexBetween paddingBottom={2} height={"4rem"} gap={1}>
                 <SearchField handleSearch={(searchTerm) => fetchClients(1, searchTerm)} />
                 <Button
                     variant="contained"

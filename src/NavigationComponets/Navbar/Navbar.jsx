@@ -16,9 +16,7 @@ import FlexBetween from "../../Components/FlexBetween";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
 import { useSelector } from "react-redux";
-import SearchField from "../../Components/SearchField";
 import { useUI } from "../../context/UIContext";
-import { usePageSearch } from "../../hooks/useSearch";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
@@ -26,7 +24,6 @@ export const Navbar = ({ position = "fixed" }) => {
     const user = useSelector((state) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { triggerSearch } = usePageSearch();
 
     return (
         <FlexBetween zIndex={1000}>
@@ -56,7 +53,6 @@ export const Navbar = ({ position = "fixed" }) => {
                             </Typography>
                         )}
                     </Box>
-                    {user && <SearchField handleSearch={triggerSearch} />}
                     {isNonMobileScreens && (
                         <FlexBetween gap={3}>
                             <MenuItems isNonMobileScreens={isNonMobileScreens} />

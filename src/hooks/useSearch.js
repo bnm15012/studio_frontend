@@ -5,6 +5,7 @@ const subscribers = new Set();
 
 export const usePageSearch = () => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [filter, setFilter] = useState({});
 
     const subscribe = useCallback((handler) => {
         subscribers.add(handler);
@@ -14,10 +15,11 @@ export const usePageSearch = () => {
         };
     }, []);
 
-    const triggerSearch = (term) => {
+    const triggerSearch = (term, filter) => {
         setSearchTerm(term);
-        subscribers.forEach((handler) => handler(term));
+        setFilter(filter);
+        subscribers.forEach((handler) => handler(term, filter));
     };
 
-    return { searchTerm, subscribe, triggerSearch };
+    return { filter, searchTerm, subscribe, triggerSearch };
 };

@@ -85,7 +85,8 @@ export function createCrud({
                     const state = getState()[route];
                     if (
                         state.currentPage === params?.page &&
-                        params?.searchTerm === state.searchTerm
+                        params?.searchTerm === state.searchTerm &&
+                        JSON.stringify(params) === JSON.stringify(state.filterKeys)
                     )
                         return;
                     if (!params?.page && state.items.length) return;
@@ -109,6 +110,7 @@ export function createCrud({
                             currentPage: params?.page,
                             pageSize: params?.size,
                             searchTerm: params?.searchTerm,
+                            filterKeys: params,
                             totalCount: status.totalCount,
                         }),
                     );

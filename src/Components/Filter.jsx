@@ -1,32 +1,51 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Menu, MenuItem, Checkbox, FormControlLabel, Box, Divider } from "@mui/material";
+import {
+    Button,
+    Menu,
+    FormControlLabel,
+    Box,
+    Divider,
+    Radio,
+    RadioGroup,
+    Typography,
+} from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
-const Filter = ({ checkboxes = [], onChange }) => {
+const Filter = ({ filterOptions = [], onChange }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [selected, setSelected] = useState({});
     const [tempSelected, setTempSelected] = useState({});
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
-        setTempSelected(selected); // sync temp state with current state
+        setTempSelected(selected);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const handleCheckboxChange = (key) => (event) => {
+    const handleRadioChange = (key) => (event) => {
         setTempSelected((prev) => ({
             ...prev,
-            [key]: event.target.checked,
+            [key]: event.target.value,
         }));
     };
 
     const handleApply = () => {
         setSelected(tempSelected);
-        onChange(Object.fromEntries(Object.entries(tempSelected).filter(([, value]) => value)));
+        const activeFilters = Object.fromEntries(
+            Object.entries(tempSelected).filter(([, value]) => value),
+        );
+        onChange?.(activeFilters);
+        handleClose();
+    };
+
+    const handleClear = () => {
+        setSelected({});
+        setTempSelected({});
+        onChange?.({});
         handleClose();
     };
 
@@ -42,24 +61,41 @@ const Filter = ({ checkboxes = [], onChange }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {checkboxes.map((item) => (
-                    <MenuItem key={item.key} disableRipple>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={!!tempSelected[item.key]}
-                                    onChange={handleCheckboxChange(item.key)}
-                                />
-                            }
-                            label={item.label}
-                        />
-                    </MenuItem>
-                ))}
-                <Divider />
-                <Box display="flex" justifyContent="flex-end" px={2} py={1}>
-                    <Button variant="contained" fullWidth onClick={handleApply}>
-                        Apply
-                    </Button>
+                <Box px={2} py={1} minWidth={200}>
+                    {filterOptions.map(({ name, key, values }) => (
+                        <Box key={key} mb={2}>
+                            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                                {name}
+                            </Typography>
+                            <RadioGroup
+                                value={tempSelected[key] || ""}
+                                onChange={handleRadioChange(key)}
+                            >
+                                {values.map((value) => (
+                                    <FormControlLabel
+                                        key={value}
+                                        value={value}
+                                        control={<Radio />}
+                                        label={value}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </Box>
+                    ))}
+                    <Divider />
+                    <Box display="flex" justifyContent="space-between" mt={1} gap={1}>
+                        <Button
+                            variant="outlined"
+                            sx={{ color: "red" }}
+                            fullWidth
+                            onClick={handleClear}
+                        >
+                            Clear
+                        </Button>
+                        <Button variant="contained" color="primary" fullWidth onClick={handleApply}>
+                            Apply
+                        </Button>
+                    </Box>
                 </Box>
             </Menu>
         </>
@@ -67,10 +103,11 @@ const Filter = ({ checkboxes = [], onChange }) => {
 };
 
 Filter.propTypes = {
-    checkboxes: PropTypes.arrayOf(
+    filterOptions: PropTypes.arrayOf(
         PropTypes.shape({
+            name: PropTypes.string.isRequired,
             key: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
+            values: PropTypes.arrayOf(PropTypes.string).isRequired,
         }),
     ),
     onChange: PropTypes.func,

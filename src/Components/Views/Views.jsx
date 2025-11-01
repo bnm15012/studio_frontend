@@ -45,6 +45,7 @@ const Views = ({
     const [originalRow, setOriginalRow] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [filterKeys, setFilterKeys] = useState({});
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
@@ -134,13 +135,13 @@ const Views = ({
     };
 
     const fetchData = useCallback(
-        async (page = 1, searchTerm = "") => {
+        async (page = 1, searchTerm = "", filterKeys = {}) => {
             dispatch(
                 tableCruds.getAll(
                     showAlert,
                     setLoading,
                     token,
-                    { page, searchTerm, size },
+                    { page, searchTerm, size, ...filterKeys },
                     rootId,
                     currentView !== "LIST",
                 ),
@@ -151,7 +152,7 @@ const Views = ({
 
     const handlePageChange = async (p) => {
         setPage(p);
-        await fetchData(p, searchTerm);
+        await fetchData(p, searchTerm, filterKeys);
     };
 
     const addNewRow = useCallback(() => {
@@ -177,10 +178,10 @@ const Views = ({
     }, []);
 
     useEffect(() => {
-        const unsubscribe = subscribe((term) => {
-            console.log("search for ", term);
-            fetchData(1, term);
+        const unsubscribe = subscribe((term, filterKeys) => {
+            fetchData(1, term, filterKeys);
             setSearchTerm(term);
+            setFilterKeys(filterKeys);
         });
 
         return unsubscribe;

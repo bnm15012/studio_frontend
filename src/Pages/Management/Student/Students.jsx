@@ -26,7 +26,7 @@ const Students = () => {
     const [totalPage, setTotalPage] = useState(0);
 
     const fetchStudents = useCallback(
-        async (page = 1, searchTerm, membershipStatus) => {
+        async (page = 1, searchTerm, filter) => {
             setLoading(true);
             const { data, success, totalCount } = await getAllStudentsAPI({
                 branchId: currentBranch.branchId,
@@ -34,7 +34,7 @@ const Students = () => {
                 page,
                 size,
                 searchTerm,
-                membershipStatus,
+                ...filter,
             });
             if (success) {
                 setData(data);
@@ -68,9 +68,7 @@ const Students = () => {
     };
 
     const onApplyFIlter = (x) => {
-        Object.keys(x).length > 0
-            ? fetchStudents(page, null, Object.keys(x).length == 1 ? Object.keys(x)[0] : null)
-            : fetchStudents(page);
+        Object.keys(x).length > 0 ? fetchStudents(page, null, x) : fetchStudents(page);
     };
     return (
         <FlexBetweenColumn sx={{ overflow: "auto" }}>
@@ -79,9 +77,8 @@ const Students = () => {
                 <QrForm title="" link={"student-form"} />
                 <Filter
                     onChange={onApplyFIlter}
-                    checkboxes={[
-                        { key: "ACTIVE", label: "Active" },
-                        { key: "INACTIVE", label: "Inactive" },
+                    filterOptions={[
+                        { name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] },
                     ]}
                 />
                 <Button

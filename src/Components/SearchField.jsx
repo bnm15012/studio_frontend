@@ -5,17 +5,18 @@ import { useEffect, useState } from "react";
 import FlexBetween from "./FlexBetween";
 import { SearchIcon } from "lucide-react";
 import { Close } from "@mui/icons-material";
+import Filter from "./Filter";
 
 const StyledSearchField = styled(Box)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "40rem",
-    height: "2.2rem",
-    margin: "0.5rem 1rem",
+    width: "100%",
+    height: "100%",
+    margin: 0,
     padding: theme.spacing(0, 2),
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.alt,
+    backgroundColor: theme.palette.background.paper,
 }));
 
 const ButtonProps = {
@@ -28,8 +29,10 @@ const ButtonProps = {
     p: 0,
 };
 
-const SearchField = ({ handleSearch, placeHolder = "Search..." }) => {
+const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search..." }) => {
     const [searchTerm, setSearchTerm] = useState("");
+    const [filterKeys, setFilterKeys] = useState({});
+
     useEffect(() => {
         const handleKey = (e) => {
             if ((e.ctrlKey && e.key === "k") || e.key === "/") {
@@ -42,47 +45,59 @@ const SearchField = ({ handleSearch, placeHolder = "Search..." }) => {
     }, []);
 
     return (
-        <StyledSearchField>
-            <TextField
-                placeholder={placeHolder}
-                variant="standard"
-                value={searchTerm}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                fullWidth
-                sx={{
-                    "& .MuiInputBase-root": { height: "1.7rem" },
-                    "& .MuiInputBase-input": { padding: 1 },
-                }}
-            />
-            <FlexBetween gap={1} ml={2}>
-                {searchTerm && (
+        <>
+            <StyledSearchField>
+                <TextField
+                    placeholder={placeHolder}
+                    variant="standard"
+                    value={searchTerm}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm, filterKeys)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    fullWidth
+                    sx={{
+                        "& .MuiInputBase-root": { height: "1.7rem" },
+                        "& .MuiInputBase-input": { padding: 1 },
+                    }}
+                />
+                <FlexBetween gap={1} ml={2}>
+                    {searchTerm && (
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                setSearchTerm("");
+                                handleSearch(null, filterKeys);
+                            }}
+                            sx={ButtonProps}
+                        >
+                            <Close />
+                        </Button>
+                    )}
                     <Button
                         variant="contained"
-                        onClick={() => {
-                            setSearchTerm("");
-                            handleSearch(null);
-                        }}
+                        onClick={() => handleSearch(searchTerm, filterKeys)}
                         sx={ButtonProps}
                     >
-                        <Close />
+                        <SearchIcon size={18} />
                     </Button>
-                )}
-                <Button
-                    variant="contained"
-                    onClick={() => handleSearch(searchTerm)}
-                    sx={ButtonProps}
-                >
-                    <SearchIcon size={18} />
-                </Button>
-            </FlexBetween>
-        </StyledSearchField>
+                </FlexBetween>
+            </StyledSearchField>
+            {filterOptions.length > 0 && (
+                <Filter
+                    filterOptions={filterOptions}
+                    onChange={(o) => {
+                        setFilterKeys(o);
+                        handleSearch(searchTerm, o);
+                    }}
+                />
+            )}
+        </>
     );
 };
 
 SearchField.propTypes = {
     placeHolder: PropTypes.string,
     handleSearch: PropTypes.func.isRequired,
+    filterOptions: PropTypes.array,
 };
 
 export default SearchField;

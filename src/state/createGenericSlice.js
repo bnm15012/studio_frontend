@@ -4,6 +4,7 @@ export function createGenericSlice(options) {
     const initialState = {
         items: [],
         searchTerm: "",
+        filterKeys: {},
         totalCount: 0,
         totalPages: 0,
         currentPage: 0,
@@ -22,6 +23,7 @@ export function createGenericSlice(options) {
                 state.totalCount = action.payload.totalCount;
                 state.currentPage = action.payload.currentPage;
                 state.searchTerm = action.payload.searchTerm || "";
+                state.filterKeys = action.payload.filterKeys || {};
                 state.pageSize = action.payload.pageSize;
                 state.totalPages = Math.ceil(
                     action.payload.totalCount / (action.payload.pageSize ?? 1),

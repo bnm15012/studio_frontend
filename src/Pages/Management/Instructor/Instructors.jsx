@@ -9,6 +9,8 @@ import { instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
 import { OpenInNew } from "@mui/icons-material";
+import { usePageSearch } from "../../../hooks/useSearch";
+import SearchField from "../../../Components/SearchField";
 
 const size = 7;
 const FIELDS = [
@@ -50,10 +52,13 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD", "FORM"];
 
+const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
+
 const Instructors = () => {
     const navigate = useNavigate();
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const { triggerSearch } = usePageSearch();
 
     const onClickOnRow = (row) => {
         navigate(`/management/instructor/${row.instructorId}`);
@@ -62,7 +67,7 @@ const Instructors = () => {
     return (
         <FlexBetweenColumn sx={{ overflow: "auto" }}>
             <FlexBetween paddingBottom={2} gap={1}>
-                <Box ml={"auto"}></Box>
+                <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
                 <Button
                     variant="contained"
                     color="primary"
