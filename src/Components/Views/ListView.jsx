@@ -1,8 +1,6 @@
 import { TableBody, TableHead, Paper, IconButton, TablePagination, Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import EditIcon from "@mui/icons-material/Edit";
 
 import {
     StyledTable,
@@ -17,13 +15,10 @@ const ListView = ({
     data,
     editingId,
     fieldsMeta,
-    isActionDisabled,
+    actions,
     handleChange,
     handleSave,
     handleCancel,
-    handleEdit,
-    setDeleteDialogOpen,
-    setDeleteId,
     tableState,
     handlePageChange,
     handleViewOpen,
@@ -91,6 +86,7 @@ const ListView = ({
                                     )}
                                 </StyledTableCell>
                             ))}
+
                         <StyledTableCell>
                             {editingId === row[fieldsMeta.primary] ? (
                                 <>
@@ -106,23 +102,20 @@ const ListView = ({
                                 </>
                             ) : (
                                 <>
-                                    <IconButton
-                                        disabled={isActionDisabled(row, "edit")}
-                                        sx={{ color: "blue" }}
-                                        onClick={() => handleEdit(row[fieldsMeta.primary])}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        disabled={isActionDisabled(row, "delete")}
-                                        sx={{ color: "red" }}
-                                        onClick={() => {
-                                            setDeleteDialogOpen(true);
-                                            setDeleteId(row[fieldsMeta.primary]);
-                                        }}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    {actions.map(({ name, enabled, onClick, icon, sx }) => (
+                                        <IconButton
+                                            disabled={
+                                                typeof enabled === "function"
+                                                    ? !enabled(row)
+                                                    : !enabled
+                                            }
+                                            key={name}
+                                            sx={sx}
+                                            onClick={() => onClick(row)}
+                                        >
+                                            {icon || name}
+                                        </IconButton>
+                                    ))}
                                 </>
                             )}
                         </StyledTableCell>
@@ -153,12 +146,18 @@ ListView.propTypes = {
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
     handleCancel: PropTypes.func,
-    handleEdit: PropTypes.func,
-    setDeleteDialogOpen: PropTypes.func,
-    setDeleteId: PropTypes.func,
     handlePageChange: PropTypes.func,
     isActionDisabled: PropTypes.func,
     handleViewOpen: PropTypes.func,
+    actions: PropTypes.arrayOf(
+        PropTypes.shape({
+            name: PropTypes.string,
+            onClick: PropTypes.func,
+            icon: PropTypes.element,
+            sx: PropTypes.object,
+            enabled: PropTypes.bool,
+        }),
+    ),
 };
 
 export default ListView;

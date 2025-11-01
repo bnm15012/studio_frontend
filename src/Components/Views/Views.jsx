@@ -13,6 +13,7 @@ import { DialogForm } from "./FormView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
 import { Typography, Box, Paper } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 
 const Views = ({
     tableName,
@@ -25,7 +26,7 @@ const Views = ({
     currentView,
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
-    isActionDisabled = () => false,
+    actions = [],
     dialogEdit = true,
 }) => {
     const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const Views = ({
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
+
     const handleViewOpen = (row) => {
         setViewRow(row);
         setViewDialogOpen(true);
@@ -57,14 +59,14 @@ const Views = ({
         setViewDialogOpen(false);
     };
 
-    const handleEdit = (id) => {
+    const handleEdit = (row) => {
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
             return;
         }
-        const original = data.find((d) => d[fieldsMeta.primary] === id);
+        const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
         setOriginalRow({ ...original });
-        setEditingId(id);
+        setEditingId(row[fieldsMeta.primary]);
     };
 
     const handleCancel = () => {
@@ -97,12 +99,16 @@ const Views = ({
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (row) => {
+        setDeleteDialogOpen(true);
         try {
-            dispatch(tableCruds.delete(id, token, showAlert, setLoading));
+            dispatch(tableCruds.delete(row[fieldsMeta.primary], token, showAlert, setLoading));
         } catch (error) {
             console.error(error);
             showAlert(`Failed to delete ${tableName}!`, "error");
+        } finally {
+            setDeleteDialogOpen(false);
+            setDeleteId(null);
         }
     };
 
@@ -173,21 +179,42 @@ const Views = ({
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
     }, [addNewRow, onSetAddNewFunc]);
 
+    const defaultActions = [
+        {
+            name: "edit",
+            enabled: true,
+            onClick: handleEdit,
+            icon: <Edit />,
+            sx: { color: "blue" },
+        },
+        {
+            name: "delete",
+            enabled: true,
+            onClick: handleDelete,
+            icon: <Delete />,
+            sx: { color: "red" },
+        },
+    ];
+
+    const mergedActions = [
+        ...defaultActions.map((def) => {
+            const override = actions.find((a) => a.name === def.name);
+            return override ? { ...def, ...override } : def;
+        }),
+        ...actions.filter((a) => !defaultActions.some((def) => def.name === a.name)),
+    ];
     const commonProps = {
         data,
         tableState,
         fields,
         editingId,
         fieldsMeta,
+        actions: mergedActions,
         handleChange,
         handleViewOpen,
         handleSave,
         handleCancel,
-        handleEdit,
-        setDeleteDialogOpen,
-        setDeleteId,
         handlePageChange,
-        isActionDisabled,
     };
     return (
         <>
@@ -267,7 +294,7 @@ Views.propTypes = {
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     CardContentComponent: PropTypes.node,
-    isActionDisabled: PropTypes.func,
+    actions: PropTypes.arrayOf(Object),
     dialogEdit: PropTypes.bool,
 };
 export default Views;

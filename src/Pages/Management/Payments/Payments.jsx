@@ -72,19 +72,15 @@ const Expenses = () => {
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
-    const isActionDisabled = (row, action) => {
-        if (action === "edit") {
-            return row.status === "COMPLETED";
-        }
-        return true;
-    };
-
     return (
         <FlexBetweenColumn>
             <Box>
                 <Views
                     dialogEdit={false}
-                    isActionDisabled={isActionDisabled}
+                    actions={[
+                        { name: "delete", enabled: false },
+                        { name: "edit", enabled: (row) => row.status !== "COMPLETED" },
+                    ]}
                     tableName={"payments"}
                     tableCruds={paymentCruds}
                     size={LIMIT}

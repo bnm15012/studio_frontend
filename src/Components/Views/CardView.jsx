@@ -1,4 +1,4 @@
-import { Button, Box, useTheme } from "@mui/material";
+import { Button, Box, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import { FieldContainer, FieldLabel } from "../New/StyledField";
@@ -8,8 +8,7 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "../New/StyledCard";
-import FlexBetween from "../FlexBetween";
-import { Delete, Edit } from "@mui/icons-material";
+import FlexEvenly from "../FlexEvenly";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -38,18 +37,14 @@ const CardView = (props) => {
         fields,
         data,
         fieldsMeta,
-        handleEdit,
+        actions,
         handleViewOpen,
-        setDeleteDialogOpen,
-        setDeleteId,
         tableState,
         handleLoadMore,
         CardContentComponent,
-        isActionDisabled,
     } = props;
     const hasMore = data.length < tableState.totalCount;
     const visibleFields = fields.filter((f) => f.show !== false);
-    const { palette } = useTheme();
 
     return (
         <Box>
@@ -77,47 +72,22 @@ const CardView = (props) => {
                                 )}
                             </StyledCardContent>
                             <StyledCardActions>
-                                <FlexBetween width={"100%"} gap={2}>
-                                    {
-                                        <>
-                                            <Button
-                                                size="small"
-                                                fullWidth
-                                                disabled={isActionDisabled(row, "edit")}
-                                                onClick={() => {
-                                                    handleEdit(rowId);
-                                                }}
-                                                sx={{
-                                                    color: "primary",
-                                                    "&:hover": {
-                                                        color: "white",
-                                                        background: palette.primary.main,
-                                                    },
-                                                }}
-                                            >
-                                                <Edit />
-                                            </Button>
-                                            <Button
-                                                size="small"
-                                                fullWidth
-                                                disabled={isActionDisabled(row, "delete")}
-                                                onClick={() => {
-                                                    setDeleteDialogOpen(true);
-                                                    setDeleteId(rowId);
-                                                }}
-                                                sx={{
-                                                    color: "#f87171",
-                                                    "&:hover": {
-                                                        color: "white",
-                                                        background: "rgba(242, 38, 38)",
-                                                    },
-                                                }}
-                                            >
-                                                <Delete />
-                                            </Button>
-                                        </>
-                                    }{" "}
-                                </FlexBetween>
+                                <FlexEvenly width={"100%"} gap={2}>
+                                    {actions.map(({ name, enabled, onClick, icon, sx }) => (
+                                        <IconButton
+                                            disabled={
+                                                typeof enabled === "function"
+                                                    ? !enabled(row)
+                                                    : !enabled
+                                            }
+                                            key={name}
+                                            sx={sx}
+                                            onClick={() => onClick(row)}
+                                        >
+                                            {icon || name}
+                                        </IconButton>
+                                    ))}
+                                </FlexEvenly>
                             </StyledCardActions>
                         </StyledMotionCard>
                     );
@@ -143,16 +113,18 @@ CardView.propTypes = {
         primary: PropTypes.string,
         root: PropTypes.string,
     }),
-    handleChange: PropTypes.func,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
-    handleEdit: PropTypes.func,
-    setDeleteDialogOpen: PropTypes.func,
-    setDeleteId: PropTypes.func,
     handleLoadMore: PropTypes.func,
     CardContentComponent: PropTypes.node,
     handleViewOpen: PropTypes.func,
-    isActionDisabled: PropTypes.func,
+    actions: PropTypes.arrayOf(
+        PropTypes.shape({
+            name: PropTypes.string,
+            onClick: PropTypes.func,
+            icon: PropTypes.element,
+            sx: PropTypes.object,
+            enabled: PropTypes.bool,
+        }),
+    ),
 };
 
 export default CardView;
