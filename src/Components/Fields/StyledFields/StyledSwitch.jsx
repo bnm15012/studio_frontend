@@ -5,7 +5,7 @@ import FlexBetween from "../../FlexBetween";
 const StyledSwitch = ({ label, readOnly, value, setValue }) => (
     <FlexBetween>
         {label && (
-            <Typography variant="body1" color="textSecondary">
+            <Typography variant="body1" my={"auto"} color="textSecondary">
                 {label}:
             </Typography>
         )}

@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { Box, Typography, IconButton, Tooltip, Avatar } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Typography, IconButton, Tooltip } from "@mui/material";
 import { Phone, Copy } from "lucide-react";
 import PropTypes from "prop-types";
 
 // Main Component
 const ContactSection = ({ contact }) => {
-    const theme = useTheme();
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -27,18 +25,18 @@ const ContactSection = ({ contact }) => {
 
     return (
         <Box display="flex" alignItems="center" gap={2}>
-            <Avatar
+            <Box
                 sx={{
-                    cursor: "pointer",
-                    bgcolor: theme.palette.secondary.main + "20",
-                    color: theme.palette.secondary.main,
-                    height: 40,
-                    width: 40,
+                    p: 1,
+                    borderRadius: 1,
+                    backgroundColor: "action.hover",
+                    display: "flex",
+                    alignItems: "center",
                 }}
             >
                 <Phone onClick={handleCall} size={18} />
-            </Avatar>
-            <Box flexGrow={1}>
+            </Box>
+            <Box flexGrow={1} onClick={handleCall} sx={{ cursor: "pointer" }}>
                 <Typography variant="body2" fontWeight={500}>
                     {contact}
                 </Typography>

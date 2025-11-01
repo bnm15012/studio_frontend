@@ -1,71 +1,91 @@
-import { Box, Typography, Avatar, useTheme } from "@mui/material";
-import { Calendar, User, FileText } from "lucide-react";
+import { Box, Typography, Avatar, Divider, useTheme } from "@mui/material";
+import { Calendar, FileText } from "lucide-react";
 import PropTypes from "prop-types";
 import { convertUTCToLocal } from "../../../utils/DateUtil";
 import ContactSection from "./ContactSection";
+import { StyledCardContent } from "../../../Components/New/StyledCard";
 
 const EnquiryCard = ({ row }) => {
-    const { enquiryDate, name, contact, enquiryPurpose } = row;
     const theme = useTheme();
+    const { enquiryDate, name, contact, enquiryPurpose } = row;
 
     return (
-        <Box px={1}>
-            <Box py={2} display="flex" justifyContent="space-between" alignItems="center">
-                <Box display="flex" alignItems="center" gap={1.2} color="text.secondary">
-                    <Calendar size={16} />
-                    <Typography variant="body2" fontWeight={500}>
-                        {convertUTCToLocal(enquiryDate)}
-                    </Typography>
-                </Box>
-            </Box>
+        <>
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 5,
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.info.light})`,
+                }}
+            />
 
-            <Box display="flex" flexDirection="column" gap={2}>
-                <Box display="flex" alignItems="center" gap={2}>
-                    <Avatar
+            <StyledCardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <Avatar
+                            sx={{
+                                bgcolor: theme.palette.primary.main,
+                                color: "white",
+                                width: 48,
+                                height: 48,
+                                fontWeight: 600,
+                                fontSize: "1.1rem",
+                            }}
+                        >
+                            {name.charAt(0).toUpperCase()}
+                        </Avatar>
+
+                        <Box>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: 600,
+                                    color: theme.palette.text.primary,
+                                }}
+                            >
+                                {name}
+                            </Typography>
+                            <Box display="flex" alignItems="center" gap={0.5}>
+                                <Calendar size={14} color={theme.palette.text.secondary} />
+                                <Typography variant="caption" color="text.secondary">
+                                    {convertUTCToLocal(enquiryDate)}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Box display="flex" alignItems="flex-start" gap={2} mb={2}>
+                    <Box
                         sx={{
-                            bgcolor: theme.palette.primary.main + "20",
-                            color: theme.palette.primary.main,
-                            height: 40,
-                            width: 40,
+                            p: 1,
+                            borderRadius: 1,
+                            backgroundColor: theme.palette.action.hover,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        <User size={18} />
-                    </Avatar>
+                        <FileText size={18} color={theme.palette.primary.main} />
+                    </Box>
                     <Box>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                            {name}
+                        <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+                            Purpose
+                        </Typography>
+                        <Typography variant="body2" color="text.primary">
+                            {enquiryPurpose}
                         </Typography>
                     </Box>
                 </Box>
 
                 <ContactSection contact={contact} />
-
-                <Box display="flex" alignItems="flex-start" gap={2}>
-                    <Avatar
-                        sx={{
-                            bgcolor: theme.palette.info.main + "20",
-                            color: theme.palette.info.main,
-                            height: 40,
-                            width: 40,
-                        }}
-                    >
-                        <FileText size={18} />
-                    </Avatar>
-                    <Box flex={1}>
-                        <Typography
-                            variant="body2"
-                            fontWeight={500}
-                            sx={{
-                                color: "text.primary",
-                                lineHeight: 1.6,
-                            }}
-                        >
-                            {enquiryPurpose}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Box>
-        </Box>
+            </StyledCardContent>
+        </>
     );
 };
 

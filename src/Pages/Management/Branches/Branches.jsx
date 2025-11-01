@@ -43,6 +43,7 @@ const Branches = () => {
             <FlexBetween paddingBottom={2} gap={1}>
                 <Box ml={"auto"}></Box>
                 <Button
+                    startIcon={<AddIcon />}
                     variant="contained"
                     color="primary"
                     onClick={() => {
@@ -50,7 +51,7 @@ const Branches = () => {
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
+                    Add new Branch
                 </Button>
             </FlexBetween>
             <Box>

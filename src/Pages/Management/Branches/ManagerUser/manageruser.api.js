@@ -9,7 +9,7 @@ const getHeaders = (token) => ({
 
 export const getAllManagersAPI = async ({ branchId, token }) => {
     try {
-        const response = await api.get(`/users/getUsersByBranchId/${branchId}`, getHeaders(token));
+        const response = await api.get(`/users/getAll/${branchId}`, getHeaders(token));
         const { data, status } = response.data;
         return {
             data,
@@ -26,7 +26,7 @@ export const getAllManagersAPI = async ({ branchId, token }) => {
 
 export const addManagerAPI = async ({ managerData, token }) => {
     try {
-        const response = await api.post(`/users/register`, managerData, getHeaders(token));
+        const response = await api.post(`/users/add`, managerData, getHeaders(token));
         const { data, status } = response.data;
 
         return {
