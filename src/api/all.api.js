@@ -10,4 +10,19 @@ export const paymentCruds = createCrud({ route: "payments", idKey: "paymentId" }
 
 export const genericTemplateCruds = createCrud({ route: "genericTemplate" });
 
-export const msgHistoryCruds = createCrud({ route: "genericTemplate" });
+export const branchCruds = createCrud({
+    route: "branch",
+    idKey: "branchId",
+    extraState: {
+        currentBranch: null,
+        selectedBranch: null,
+    },
+    extraReducers: {
+        setCurrentBranch(state, action) {
+            state.currentBranch = action.payload;
+        },
+        setSelectedBranch(state, action) {
+            state.selectedBranch = action.payload;
+        },
+    },
+});

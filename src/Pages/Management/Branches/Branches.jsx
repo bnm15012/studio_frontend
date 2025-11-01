@@ -1,88 +1,88 @@
 import { useState } from "react";
+import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
-// import Loading from "../../../Components/Loading/Loading";
-// import { useAlert } from "../../../utils/Alert";
-// import { getAllBranchAPI } from "./Branches.api";
-import { useSelector } from "react-redux";
-import TableWithEditAddDelete from "./TableBranches";
+import { useDispatch, useSelector } from "react-redux";
+import { branchCruds } from "../../../api/all.api";
+import Views from "../../../Components/Views/Views";
+import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import { useUI } from "../../../context/UIContext";
+import BranchCardView from "./BranchCardView";
+import GroupIcon from "@mui/icons-material/Group";
+import { useNavigate } from "react-router-dom";
+
+const LIMIT = 7;
+
+const FIELD_META = {
+    primary: "branchId",
+    root: "studioId",
+};
+
+const VIEWS = ["LIST", "CARD"];
+
+const FIELDS = [
+    { show: true, name: "name", label: "Name" },
+    { show: true, name: "address", label: "Address" },
+    { show: true, name: "city", label: "City" },
+    { show: true, name: "state", label: "State" },
+    { show: true, name: "pincode", label: "Pincode" },
+    { show: true, name: "phone", label: "Phone" },
+    { show: true, name: "isActive", label: "Active", type: FIELD_TYPES.BOOL },
+];
 
 const Branches = () => {
-    // const showAlert = useAlert();
-    // const [loading, setLoading] = useState(false);
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const { isMobile } = useUI();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [addNewFunc, setAddNewFunc] = useState(null);
     const studio = useSelector((state) => state.auth.studio);
-    const branches = useSelector((state) => state.branch.branches);
-    // const [branches, setBranches] = useState();
-
-    // const fetchBranches = useCallback(async (page = 1) => {
-    //   setLoading(true);
-    //   try {
-    //     const { data, success, message } = await getAllBranchAPI({
-    //       studioId: studio.studioId,
-    //       page,
-    //       token,
-    //     });
-
-    //     if (success) {
-    //       setBranches(data);
-    //     } else {
-    //       showAlert(message, "error");
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     showAlert("Failed to fetch branches!", "error");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // }, [studio.studioId, token, showAlert]);
-    const [newRow, setNewRow] = useState(null);
-
-    // useEffect(() => {
-    //   !branches && fetchBranches();
-    // }, [branches, currentBranch.branchId, fetchBranches]);
-
-    const handleAddNew = () => {
-        setNewRow({
-            name: null,
-            address: null,
-            city: null,
-            state: null,
-            pincode: null,
-            phone: null,
-            studioId: studio.studioId,
-            isActive: true,
-        });
-    };
 
     return (
-        <Box>
-            {/* {loading && <Loading />} */}
-            <FlexBetween paddingBottom={2} flexDirection={"row-reverse"} gap={1}>
+        <FlexBetweenColumn>
+            <FlexBetween paddingBottom={2} gap={1}>
+                <Box ml={"auto"}></Box>
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<AddIcon />}
-                    disabled={newRow != null}
-                    onClick={() => handleAddNew()}
-                    sx={{ fontWeight: "bold", padding: 2 }}
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
+                    sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
-                    Add new Branch
+                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
                 </Button>
             </FlexBetween>
-            {branches && (
-                <TableWithEditAddDelete
-                    initialData={branches}
-                    currentBranch={currentBranch}
-                    token={token}
-                    newRow={newRow}
-                    setNewRow={setNewRow}
-                    studioId={studio.studioId}
+            <Box>
+                <Views
+                    tableName={"branch"}
+                    tableCruds={branchCruds}
+                    actions={[
+                        { name: "delete", enabled: false },
+                        {
+                            name: "users",
+                            icon: <GroupIcon />,
+                            enabled: true,
+                            sx: { color: "blue" },
+                            onClick: (row) => {
+                                dispatch(branchCruds.actions.setSelectedBranch(row));
+                                navigate(`/management/branch/${row.branchId}`);
+                            },
+                        },
+                    ]}
+                    size={LIMIT}
+                    key={"branch"}
+                    fields={FIELDS}
+                    rootId={studio.studioId}
+                    fieldsMeta={FIELD_META}
+                    onSetAddNewFunc={setAddNewFunc}
+                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    fieldToDisplayOnDelete="amount"
+                    CardContentComponent={BranchCardView}
+                    dialogEdit={false}
                 />
-            )}
-        </Box>
+            </Box>
+        </FlexBetweenColumn>
     );
 };
 

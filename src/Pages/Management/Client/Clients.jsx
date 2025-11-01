@@ -22,7 +22,6 @@ const Clients = () => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const clientState = useAppSelector((state) => state.clients);
     const [newRow, setNewRow] = useState(null);
-    // debugger;
 
     const fetchClients = useCallback(
         async (page = 1, searchTerm = "") => {

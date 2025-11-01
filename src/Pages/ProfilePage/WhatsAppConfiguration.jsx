@@ -9,7 +9,7 @@ import Loading from "../../Components/Loading/Loading";
 import { useCallback, useEffect, useState } from "react";
 import { useAlert } from "../../utils/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentBranch, updateBranch } from "../../state/branchSlice";
+import { branchCruds } from "../../api/all.api";
 import FlexBetween from "../../Components/FlexBetween";
 
 const WhatsAppConfiguration = () => {
@@ -27,8 +27,8 @@ const WhatsAppConfiguration = () => {
             setWhatsAppStatus(status);
             const newCurrentBranch = JSON.parse(JSON.stringify(currentBranch));
             newCurrentBranch.whatsAppStatus = status;
-            dispatch(setCurrentBranch(newCurrentBranch));
-            dispatch(updateBranch(newCurrentBranch));
+            dispatch(branchCruds.actions.setCurrentBranch(newCurrentBranch));
+            dispatch(branchCruds.actions.updateItem(newCurrentBranch));
             setWebWhastAppQrCode();
         },
         [currentBranch, dispatch],

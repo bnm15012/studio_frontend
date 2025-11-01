@@ -1,16 +1,24 @@
 import { createGenericSlice } from "../state/createGenericSlice";
 import api from "../utils/api";
 
-export function createCrud({ route, idKey = "id", extra = {}, extraReducers }) {
+export function createCrud({
+    route,
+    idKey = "id",
+    extraCruds = {},
+    extraState = {},
+    extraReducers = {},
+}) {
     const getHeader = (token) => ({ headers: { Authorization: token } });
 
     const { actions, getInitialState, reducer } = createGenericSlice({
         name: route,
         idKey,
+        extraState,
         extraReducers,
     });
 
     const baseCrud = {
+        actions: actions,
         initialState: getInitialState(),
         reducer,
         removeAll: actions.clearData,
@@ -115,5 +123,5 @@ export function createCrud({ route, idKey = "id", extra = {}, extraReducers }) {
             },
     };
 
-    return { ...baseCrud, ...extra };
+    return { ...baseCrud, ...extraCruds };
 }

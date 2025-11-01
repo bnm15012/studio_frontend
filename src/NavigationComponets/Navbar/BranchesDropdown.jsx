@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { FormControl, Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { setCurrentBranch } from "../../state/branchSlice";
+import { branchCruds } from "../../api/all.api";
 import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
 
@@ -15,7 +15,7 @@ const BranchesDropdown = () => {
         const selectedBranchId = event.target.value;
         const selectedBranch = branches.find((branch) => branch.branchId === selectedBranchId);
         if (selectedBranch) {
-            dispatch(setCurrentBranch(selectedBranch));
+            dispatch(branchCruds.setSelectedBranch(selectedBranch));
             dispatch(clearAllstate());
             dispatch(loadInitialDataAPI());
             navigate(`/dashboard`);

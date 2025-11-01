@@ -8,7 +8,7 @@ export function createGenericSlice(options) {
         totalPages: 0,
         currentPage: 0,
         pageSize: 0,
-        ...options.initialState,
+        ...options.extraState,
     };
 
     const slice = createSlice({
@@ -71,8 +71,8 @@ export function createGenericSlice(options) {
                     state[key] = initialState[key];
                 });
             },
+            ...options.extraReducers,
         },
-        extraReducers: options.extraReducers,
     });
 
     return {

@@ -2,7 +2,7 @@ import { setLogin, setStudio, setSubscriptionPlan } from "../../state/authSlice"
 import api from "../../utils/api";
 import axios from "axios";
 import { transformRegisterData } from "./auth.uti";
-import { setBranches, setCurrentBranch } from "../../state/branchSlice";
+import { branchCruds } from "../../api/all.api";
 
 export const registerApiCall = async (values) => {
     try {
@@ -41,9 +41,9 @@ export const loginApiCall = async ({ values, dispatch, navigate }) => {
                 settings: authData.studioEntry.configuration.configrationEntryList,
             }),
         );
-        dispatch(setBranches(authData.studioEntry.branchList));
+        dispatch(branchCruds.actions.setItems(authData.studioEntry.branchList));
         dispatch(
-            setCurrentBranch(
+            branchCruds.actions.setSelectedBranch(
                 authData.studioEntry.branchList.filter((branch) => branch.isActive)[0],
             ),
         );
