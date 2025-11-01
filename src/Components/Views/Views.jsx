@@ -9,11 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { usePageSearch } from "../../hooks/useSearch";
 import ListView from "./ListView";
-import { DialogForm } from "./FormView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
 import { Typography, Box, Paper } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
+import DialogForm from "./DialogForm";
 
 const Views = ({
     tableName,
