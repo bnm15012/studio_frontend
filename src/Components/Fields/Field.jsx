@@ -5,6 +5,7 @@ import StyledTextField from "./StyledFields/StyledTextField";
 import SelectionField from "./Selection/SelectionField";
 import { getLocalDateTime } from "../../utils/DateUtil";
 import TemplateEditor from "../../Pages/Management/TemplatesPage/TemplateEditor";
+import ImageComponent from "../ImageComponent";
 
 const Field = ({
     value,
@@ -16,7 +17,7 @@ const Field = ({
     validation = {},
     extraProp = {},
 }) => {
-    const { min, max, rows, getOptions, readOnly, variant } = extraProp;
+    const { min, max, rows, getOptions, readOnly } = extraProp;
     const commonProps = {
         value,
         minVal: min,
@@ -25,7 +26,7 @@ const Field = ({
         label,
         readOnly,
         validation,
-        variant,
+        ...extraProp,
     };
 
     const renderInputField = () => {
@@ -37,6 +38,7 @@ const Field = ({
             DATE: <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />,
             DATETIME: <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />,
             EDITOR: <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />,
+            IMAGE: <ImageComponent {...commonProps} />,
             DEFAULT: (
                 <StyledTextField
                     {...commonProps}
@@ -59,6 +61,8 @@ const Field = ({
             case "DATE":
             case "DATETIME":
                 return getLocalDateTime(value, type);
+            case "IMAGE":
+                return <ImageComponent {...commonProps} />;
             default:
                 return value;
         }

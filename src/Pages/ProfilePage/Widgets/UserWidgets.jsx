@@ -113,8 +113,8 @@ const UserWidgets = ({ admin, studio }) => {
                     <ImageComponent
                         dirName="user"
                         size={isNonMobile ? "100px" : "80px"}
-                        setImage={setImageUrl}
-                        image={admin.imageUrl}
+                        setValue={setImageUrl}
+                        value={admin.imageUrl}
                         isCircular
                         allowEdit={editMode}
                     />
@@ -202,8 +202,8 @@ const UserWidgets = ({ admin, studio }) => {
                     <ImageComponent
                         dirName="studio"
                         size={isNonMobile ? "200px" : "120px"}
-                        setImage={setStudioLogo}
-                        image={studio?.logo || "/assets/default_logo.png"}
+                        setValue={setStudioLogo}
+                        value={studio?.logo || "/assets/default_logo.png"}
                         isCircular
                         allowEdit={editMode}
                     />

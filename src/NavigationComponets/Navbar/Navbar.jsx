@@ -44,7 +44,7 @@ export const Navbar = ({ position = "fixed" }) => {
                 <FlexBetween px={2} my={"auto"}>
                     {/* Logo */}
                     <Box mr={"auto"} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        <ImageComponent size={"2.5rem"} image={"/logo.png"} isCircular={false} />
+                        <ImageComponent size={"2.5rem"} value={"/logo.png"} isCircular={false} />
                         {!isMobile && (
                             <Typography
                                 fontSize={"1.4rem"}

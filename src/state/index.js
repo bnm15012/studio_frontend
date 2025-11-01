@@ -17,12 +17,14 @@ import {
     enquiryCruds,
     expenseCruds,
     genericTemplateCruds,
+    instructorsCruds,
     paymentCruds,
 } from "../api/all.api";
 
 const rootReducer = combineReducers({
     auth: authSlice,
     activity: activitySlice,
+    instructors: instructorsCruds.reducer,
     branch: branchCruds.reducer,
     clients: clientCruds.reducer,
     expenses: expenseCruds.reducer,

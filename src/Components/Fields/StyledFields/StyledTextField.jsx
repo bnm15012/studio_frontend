@@ -10,6 +10,7 @@ const StyledTextField = ({
     type = "text",
     variant = "standard",
     readOnly = false,
+    sx,
 }) => (
     <TextField
         fullWidth
@@ -22,6 +23,7 @@ const StyledTextField = ({
         rows={rows}
         placeholder={placeholder}
         disabled={readOnly}
+        sx={sx}
     />
 );
 
@@ -34,6 +36,7 @@ StyledTextField.propTypes = {
     variant: PropTypes.string,
     placeholder: PropTypes.string,
     readOnly: PropTypes.bool,
+    sx: PropTypes.object,
 };
 
 export default StyledTextField;

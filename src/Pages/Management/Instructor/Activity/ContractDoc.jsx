@@ -16,8 +16,8 @@ const ContractDoc = ({ open, onClose, image, isEdit, setImage }) => (
             <ImageComponent
                 dirName="instructor_contract"
                 size="30rem 100%"
-                setImage={setImage}
-                image={image || "/assets/paper_2.jpg"}
+                setValue={setImage}
+                value={image || "/assets/paper_2.jpg"}
                 isCircular={false}
                 allowEdit={isEdit}
             />

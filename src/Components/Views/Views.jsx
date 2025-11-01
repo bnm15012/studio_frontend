@@ -100,7 +100,6 @@ const Views = ({
     };
 
     const handleDelete = async (row) => {
-        setDeleteDialogOpen(true);
         try {
             dispatch(tableCruds.delete(row[fieldsMeta.primary], token, showAlert, setLoading));
         } catch (error) {
@@ -112,9 +111,25 @@ const Views = ({
         }
     };
 
-    const handleChange = (value, id, field) => {
+    const handleChange = (value, id, fieldPath) => {
         setData((prev) =>
-            prev.map((enq) => (enq[fieldsMeta.primary] === id ? { ...enq, [field]: value } : enq)),
+            prev.map((item) => {
+                if (item[fieldsMeta.primary] !== id) return item;
+
+                const updatedItem = { ...item };
+
+                if (fieldPath.includes(".")) {
+                    const [parent, child] = fieldPath.split(".");
+                    updatedItem[parent] = {
+                        ...updatedItem[parent],
+                        [child]: value,
+                    };
+                } else {
+                    updatedItem[fieldPath] = value;
+                }
+
+                return updatedItem;
+            }),
         );
     };
 
@@ -179,6 +194,11 @@ const Views = ({
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
     }, [addNewRow, onSetAddNewFunc]);
 
+    const handleDeleteClick = (row) => {
+        setDeleteId(row[fieldsMeta.primary]);
+        setDeleteDialogOpen(true);
+    };
+
     const defaultActions = [
         {
             name: "edit",
@@ -190,7 +210,7 @@ const Views = ({
         {
             name: "delete",
             enabled: true,
-            onClick: handleDelete,
+            onClick: handleDeleteClick,
             icon: <Delete />,
             sx: { color: "red" },
         },

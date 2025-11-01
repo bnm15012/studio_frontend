@@ -2,6 +2,8 @@ import { createCrud } from "./create_crud";
 
 export const usersCruds = createCrud({ route: "users", idKey: "userId" });
 
+export const instructorsCruds = createCrud({ route: "instructors", idKey: "instructorId" });
+
 export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
 
 export const expenseCruds = createCrud({ route: "expenses", idKey: "expenseId" });

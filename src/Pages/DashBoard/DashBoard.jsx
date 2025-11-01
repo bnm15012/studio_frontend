@@ -166,7 +166,7 @@ const DashBoard = () => {
                             >
                                 <ImageComponent
                                     size={"10rem"}
-                                    image={studio?.logo || "/assets/default_logo.png"}
+                                    value={studio?.logo || "/assets/default_logo.png"}
                                     isCircular={true}
                                 />
                                 <Typography

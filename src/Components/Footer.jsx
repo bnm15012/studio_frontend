@@ -88,7 +88,7 @@ const Footer = () => {
                             >
                                 <ImageComponent
                                     size={"48px"}
-                                    image={"/logo.png"}
+                                    value={"/logo.png"}
                                     isCircular={false}
                                     sx={{ flexShrink: 0 }}
                                 />

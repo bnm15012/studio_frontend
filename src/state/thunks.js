@@ -1,4 +1,11 @@
-import { branchCruds, clientCruds, enquiryCruds, expenseCruds, paymentCruds } from "../api/all.api";
+import {
+    branchCruds,
+    clientCruds,
+    enquiryCruds,
+    expenseCruds,
+    instructorsCruds,
+    paymentCruds,
+} from "../api/all.api";
 import { clearMemberShipTypes } from "./activityMembershipTypeSlice";
 import { clearActivities } from "./activitySlice";
 import { clearAnalysisState } from "./analysisSlice";
@@ -21,5 +28,6 @@ export const clearAllstate = () => (dispatch) => {
     dispatch(expenseCruds.removeAll());
     dispatch(clearAnalysisState());
     dispatch(clearMemberShipTypes());
+    dispatch(instructorsCruds.removeAll());
     dispatch(enquiryCruds.removeAll());
 };

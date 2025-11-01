@@ -8,8 +8,8 @@ import { useAlert } from "../utils/Alert";
 import { uploadImageApiCall } from "../utils/uploadImg.api";
 
 const ImageComponent = ({
-    image,
-    setImage,
+    value,
+    setValue,
     size = "200px",
     isCircular = true,
     allowEdit = false,
@@ -19,7 +19,7 @@ const ImageComponent = ({
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
 
-    const [previewUrl, setPreviewUrl] = useState(image || "/assets/defaultUserPic.png");
+    const [previewUrl, setPreviewUrl] = useState(value || "/assets/defaultUserPic.png");
     const [uploading, setUploading] = useState(false);
 
     const handleDrop = async (acceptedFiles) => {
@@ -35,16 +35,16 @@ const ImageComponent = ({
 
                 if (result.success) {
                     showAlert(result.message, "success");
-                    setImage(result.data.data[0]);
+                    setValue(result.data.data[0]);
                     setPreviewUrl(result.data.data[0]);
                 } else {
                     showAlert(result.message, "error");
-                    setPreviewUrl(image || "/assets/defaultUserPic.png");
+                    setPreviewUrl(value || "/assets/defaultUserPic.png");
                 }
             } catch (error) {
                 console.error(error);
                 showAlert("An error occurred during image upload.", "error");
-                setPreviewUrl(image || "/assets/defaultUserPic.png");
+                setPreviewUrl(value || "/assets/defaultUserPic.png");
             }
 
             setUploading(false);
@@ -133,8 +133,8 @@ const ImageComponent = ({
 };
 
 ImageComponent.propTypes = {
-    image: PropTypes.string,
-    setImage: PropTypes.func,
+    value: PropTypes.string,
+    setValue: PropTypes.func,
     size: PropTypes.string,
     isCircular: PropTypes.bool,
     allowEdit: PropTypes.bool,

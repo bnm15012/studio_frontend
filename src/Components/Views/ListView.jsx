@@ -10,6 +10,7 @@ import {
 } from "../StyledTableComponents";
 import Field from "../Fields/Field";
 import PropTypes from "prop-types";
+import { getNestedValue } from "../../utils/objectHelpers";
 const ListView = ({
     fields,
     data,
@@ -74,12 +75,18 @@ const ListView = ({
                                             isEdit={editingId === row[fieldsMeta.primary]}
                                             value={
                                                 field?.getValue
-                                                    ? field.getValue(row[field.name])
-                                                    : row[field.name]
+                                                    ? field.getValue(
+                                                          getNestedValue(row, field.name),
+                                                      )
+                                                    : getNestedValue(row, field.name)
                                             }
-                                            setValue={(v) =>
-                                                handleChange(v, row[fieldsMeta.primary], field.name)
-                                            }
+                                            setValue={(v) => {
+                                                handleChange(
+                                                    v,
+                                                    row[fieldsMeta.primary],
+                                                    field.name,
+                                                );
+                                            }}
                                             type={field.type}
                                             extraProp={field.extraProp}
                                         />
