@@ -102,20 +102,22 @@ const ListView = ({
                                 </>
                             ) : (
                                 <>
-                                    {actions.map(({ name, enabled, onClick, icon, sx }) => (
-                                        <IconButton
-                                            disabled={
-                                                typeof enabled === "function"
-                                                    ? !enabled(row)
-                                                    : !enabled
-                                            }
-                                            key={name}
-                                            sx={sx}
-                                            onClick={() => onClick(row)}
-                                        >
-                                            {icon || name}
-                                        </IconButton>
-                                    ))}
+                                    {actions
+                                        .filter((a) => !a.hide)
+                                        .map(({ name, enabled, onClick, icon, sx }) => (
+                                            <IconButton
+                                                disabled={
+                                                    typeof enabled === "function"
+                                                        ? !enabled(row)
+                                                        : !enabled
+                                                }
+                                                key={name}
+                                                sx={sx}
+                                                onClick={() => onClick(row)}
+                                            >
+                                                {icon || name}
+                                            </IconButton>
+                                        ))}
                                 </>
                             )}
                         </StyledTableCell>

@@ -73,20 +73,22 @@ const CardView = (props) => {
                             </StyledCardContent>
                             <StyledCardActions>
                                 <FlexEvenly width={"100%"} gap={2}>
-                                    {actions.map(({ name, enabled, onClick, icon, sx }) => (
-                                        <IconButton
-                                            disabled={
-                                                typeof enabled === "function"
-                                                    ? !enabled(row)
-                                                    : !enabled
-                                            }
-                                            key={name}
-                                            sx={sx}
-                                            onClick={() => onClick(row)}
-                                        >
-                                            {icon || name}
-                                        </IconButton>
-                                    ))}
+                                    {actions
+                                        .filter((f) => !f.hide)
+                                        .map(({ name, enabled, onClick, icon, sx }) => (
+                                            <IconButton
+                                                disabled={
+                                                    typeof enabled === "function"
+                                                        ? !enabled(row)
+                                                        : !enabled
+                                                }
+                                                key={name}
+                                                sx={sx}
+                                                onClick={() => onClick(row)}
+                                            >
+                                                {icon || name}
+                                            </IconButton>
+                                        ))}
                                 </FlexEvenly>
                             </StyledCardActions>
                         </StyledMotionCard>

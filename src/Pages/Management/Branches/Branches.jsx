@@ -59,7 +59,7 @@ const Branches = () => {
                     tableName={"branch"}
                     tableCruds={branchCruds}
                     actions={[
-                        { name: "delete", enabled: false },
+                        { name: "delete", hide: true, enabled: false },
                         {
                             name: "users",
                             icon: <GroupIcon />,

@@ -78,7 +78,7 @@ const Expenses = () => {
                 <Views
                     dialogEdit={false}
                     actions={[
-                        { name: "delete", enabled: false },
+                        { name: "delete", enabled: false, hide: true },
                         { name: "edit", enabled: (row) => row.status !== "COMPLETED" },
                     ]}
                     tableName={"payments"}
