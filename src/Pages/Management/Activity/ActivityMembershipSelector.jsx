@@ -158,7 +158,7 @@ const ActivityMembershipSelector = ({
                 {availableDaysOptions.filter(
                   (b, index, self) => {
                     if (!isBatchEnabled) return true;
-                    return index === self.findIndex((x) => x.planType === b.planType)
+                    return index === self.findIndex((x) => x.daysPerWeek === b.daysPerWeek)
                   }).map((plan, index) => (
                     <MenuItem key={index} value={plan.daysPerWeek}>
                       {plan.daysPerWeek}{" "}
