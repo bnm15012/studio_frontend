@@ -33,7 +33,7 @@ const Management = () => {
             case "student":
                 if (ID) return <StudentForm ID={ID} page={page} />;
                 return <Students />;
-            case "instructor":
+            case "instructors":
                 if (ID) return <InstructorForm ID={ID} page={page} />;
                 return <Instructors />;
             case "activity":

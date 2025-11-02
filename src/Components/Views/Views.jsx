@@ -12,8 +12,10 @@ import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
 import { Typography, Box, Paper } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 import DialogForm from "./DialogForm";
+import FormView from "./FormView";
+import { useNavigate } from "react-router-dom";
 
 const Views = ({
     tableName,
@@ -27,10 +29,11 @@ const Views = ({
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
     actions = [],
-    dialogEdit = true,
+    editMode = "INLINE",
 }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
+    const navigate = useNavigate();
     const { subscribe } = usePageSearch();
 
     const token = useSelector((state) => state.auth.token);
@@ -64,6 +67,9 @@ const Views = ({
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
             return;
+        }
+        if (editMode === "FORM") {
+            return openFormView(row);
         }
         const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
         setOriginalRow({ ...original });
@@ -200,6 +206,10 @@ const Views = ({
         setDeleteDialogOpen(true);
     };
 
+    const openFormView = (row) => {
+        navigate(`/management/instructors/${row.instructorId}`);
+    };
+
     const defaultActions = [
         {
             name: "edit",
@@ -215,6 +225,14 @@ const Views = ({
             icon: <Delete />,
             sx: { color: "red" },
         },
+        {
+            name: "form",
+            enabled: true,
+            hide: editMode !== "FORM",
+            onClick: openFormView,
+            icon: <OpenInNew />,
+            sx: { color: "blue" },
+        },
     ];
 
     const mergedActions = [
@@ -226,6 +244,7 @@ const Views = ({
     ];
     const commonProps = {
         data,
+        tableName,
         tableState,
         fields,
         editingId,
@@ -239,7 +258,9 @@ const Views = ({
     };
     return (
         <>
-            {currentView === "CARD" ? (
+            {currentView === "FORM" ? (
+                <FormView {...commonProps} />
+            ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}
                     CardContentComponent={CardContentComponent}
@@ -248,16 +269,18 @@ const Views = ({
                     }}
                 />
             ) : (
-                <ListView {...commonProps} editingId={dialogEdit ? false : editingId} />
+                <ListView {...commonProps} editingId={editMode === "INLINE" ? editingId : false} />
             )}
             {loading && <Loading />}
-            {(dialogEdit || currentView === "CARD") && editingId && (
-                <DialogForm
-                    setClose={handleCancel}
-                    {...commonProps}
-                    data={data.find((d) => d[fieldsMeta.primary] === editingId)}
-                />
-            )}
+            {editMode !== "FORM" &&
+                (editMode === "DIALOG" || currentView === "CARD") &&
+                editingId && (
+                    <DialogForm
+                        setClose={handleCancel}
+                        {...commonProps}
+                        data={data.find((d) => d[fieldsMeta.primary] === editingId)}
+                    />
+                )}
             {viewDialogOpen && (
                 <StyledDialog
                     open={viewDialogOpen}
@@ -316,6 +339,6 @@ Views.propTypes = {
     currentView: PropTypes.string,
     CardContentComponent: PropTypes.node,
     actions: PropTypes.arrayOf(Object),
-    dialogEdit: PropTypes.bool,
+    editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),
 };
 export default Views;

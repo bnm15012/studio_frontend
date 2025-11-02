@@ -87,7 +87,6 @@ const Expenses = () => {
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="amount"
                     CardContentComponent={ExpenseCardContent}
-                    dialogEdit={false}
                 />
             </Box>
         </FlexBetweenColumn>

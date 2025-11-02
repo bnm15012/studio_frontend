@@ -79,7 +79,7 @@ const DashBoard = () => {
                         color: "#4CAF50",
                         value: tmp.totalInstructors,
                         label: "Total Instructors",
-                        navigateTo: "/management/instructor",
+                        navigateTo: "/management/instructors",
                         icon: <SchoolIcon sx={{ fontSize: "40px" }} />,
                     },
                     {

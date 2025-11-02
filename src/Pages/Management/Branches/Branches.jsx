@@ -80,7 +80,6 @@ const Branches = () => {
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="amount"
                     CardContentComponent={BranchCardView}
-                    dialogEdit={false}
                 />
             </Box>
         </FlexBetweenColumn>

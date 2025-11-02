@@ -97,10 +97,10 @@ const InstructorForm = ({ page, ID }) => {
                 if (success) {
                     showAlert(message, "success");
                     setIsEdit(false);
-                    navigate(`/management/instructor/${data.instructorId}`);
+                    navigate(`/management/instructors/${data.instructorId}`);
                 } else {
                     showAlert(message, "error");
-                    navigate(`/management/instructor`);
+                    navigate(`/management/instructors`);
                 }
             } else {
                 const { success, message } = await updateInstructorAPI({
@@ -130,7 +130,7 @@ const InstructorForm = ({ page, ID }) => {
                 token,
             });
             if (success) {
-                navigate(`/management/instructor`);
+                navigate(`/management/instructors`);
                 showAlert(message, "success");
             } else {
                 showAlert(message, "error");

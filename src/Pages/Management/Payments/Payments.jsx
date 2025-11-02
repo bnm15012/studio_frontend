@@ -76,7 +76,6 @@ const Expenses = () => {
         <FlexBetweenColumn>
             <Box>
                 <Views
-                    dialogEdit={false}
                     actions={[
                         { name: "delete", enabled: false, hide: true },
                         { name: "edit", enabled: (row) => row.status !== "COMPLETED" },

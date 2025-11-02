@@ -82,6 +82,7 @@ const TemplatesPage = () => {
                 onSetAddNewFunc={setAddNewFunc}
                 fields={FIELDS}
                 CardContentComponent={TemplateCard}
+                editMode={"DIALOG"}
             />
         </Box>
     );

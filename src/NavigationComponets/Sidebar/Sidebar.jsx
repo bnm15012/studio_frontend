@@ -74,7 +74,7 @@ const Sidebar = ({ sidebarOpen }) => {
             icon: <EventNote />,
         },
         {
-            path: "/management/instructor",
+            path: "/management/instructors",
             label: "Instructors",
             show: isEnabled(FEATURE_KEYS.INSTRUCTOR),
             showOnBottomBar: isEnabled(FEATURE_KEYS.INSTRUCTOR),

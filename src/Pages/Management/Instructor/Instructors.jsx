@@ -8,7 +8,6 @@ import Views from "../../../Components/Views/Views";
 import { instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
-import { OpenInNew } from "@mui/icons-material";
 import { usePageSearch } from "../../../hooks/useSearch";
 import SearchField from "../../../Components/SearchField";
 
@@ -60,10 +59,6 @@ const Instructors = () => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { triggerSearch } = usePageSearch();
 
-    const onClickOnRow = (row) => {
-        navigate(`/management/instructor/${row.instructorId}`);
-    };
-
     return (
         <FlexBetweenColumn sx={{ overflow: "auto" }}>
             <FlexBetween paddingBottom={2} gap={1}>
@@ -72,7 +67,7 @@ const Instructors = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        navigate("/management/instructor/NEW");
+                        navigate("/management/instructors/NEW");
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -82,16 +77,6 @@ const Instructors = () => {
             <Views
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
-                actions={[
-                    { name: "edit", hide: true },
-                    {
-                        name: "view",
-                        icon: <OpenInNew />,
-                        sx: { color: "blue" },
-                        enabled: true,
-                        onClick: onClickOnRow,
-                    },
-                ]}
                 size={size}
                 key={"expenses"}
                 fields={FIELDS}
@@ -100,7 +85,7 @@ const Instructors = () => {
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"
                 CardContentComponent={InstructorCard}
-                dialogEdit={false}
+                editMode={"FORM"}
             />
         </FlexBetweenColumn>
     );
