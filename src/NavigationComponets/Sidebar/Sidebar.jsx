@@ -220,7 +220,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     >
                         {routes
                             .filter((r) => r.showOnBottomBar)
-                            .slice(0, 3)
+                            .slice(0, 1)
                             .filter((r) => r.show)
                             .map((route) => (
                                 <SidebarItem
@@ -233,7 +233,7 @@ const Sidebar = ({ sidebarOpen }) => {
                             ))}
                         <SidebarItem
                             isSelected={open}
-                            route={{ icon: <GridView />, label: "Apps" }}
+                            route={{ icon: <GridView /> }}
                             onClick={() => setOpen(!open)}
                             isNonMobileScreens={false}
                         />
