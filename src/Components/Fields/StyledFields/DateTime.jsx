@@ -49,7 +49,7 @@ const DateTime = ({
         label: label,
         disabled: readOnly,
         onChange: handleChange,
-        ampm: true,
+        ampm: "true",
         format: format === "DATE" ? "dd/MM/yyyy" : "dd/MM/yyyy, hh:mm a",
         minutesStep: 5,
         slotProps: {

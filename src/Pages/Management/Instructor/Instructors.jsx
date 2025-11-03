@@ -10,6 +10,7 @@ import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
 import { usePageSearch } from "../../../hooks/useSearch";
 import SearchField from "../../../Components/SearchField";
+import PropTypes from "prop-types";
 
 const size = 7;
 const FIELDS = [
@@ -27,7 +28,7 @@ const FIELDS = [
         show: true,
         name: "instructorStatus",
         label: "Status",
-        type: "STATUS",
+        // type: "STATUS",
         getValue: (value) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
                 {value}
@@ -53,7 +54,7 @@ const VIEWS = ["LIST", "CARD", "FORM"];
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
-const Instructors = () => {
+const Instructors = ({ ID }) => {
     const navigate = useNavigate();
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -61,20 +62,23 @@ const Instructors = () => {
 
     return (
         <FlexBetweenColumn sx={{ overflow: "auto" }}>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        navigate("/management/instructors/NEW");
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
+            {!ID && (
+                <FlexBetween paddingBottom={2} gap={1}>
+                    <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            navigate("/management/instructors/NEW");
+                        }}
+                        sx={{ fontWeight: "bold", padding: ".8rem" }}
+                    >
+                        <AddIcon sx={{ padding: 0, margin: "auto" }} />
+                    </Button>
+                </FlexBetween>
+            )}
             <Views
+                formKey={ID}
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
                 size={size}
@@ -89,6 +93,11 @@ const Instructors = () => {
             />
         </FlexBetweenColumn>
     );
+};
+
+Instructors.propTypes = {
+    page: PropTypes.string.isRequired,
+    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default Instructors;

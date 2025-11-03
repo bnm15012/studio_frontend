@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export function createGenericSlice(options) {
     const initialState = {
         items: [],
+        recordById: {},
         searchTerm: "",
         filterKeys: {},
         totalCount: 0,
@@ -67,6 +68,10 @@ export function createGenericSlice(options) {
                         (item) => item[options.idKey] !== action.payload,
                     );
                 }
+            },
+            setRecord(state, action) {
+                const record = action.payload;
+                state.recordById[record[options.idKey]] = record;
             },
             clearData(state) {
                 Object.keys(initialState).forEach((key) => {

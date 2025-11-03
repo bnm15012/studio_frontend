@@ -18,6 +18,7 @@ import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 
 const Views = ({
+    formKey,
     tableName,
     size,
     rootId,
@@ -67,9 +68,6 @@ const Views = ({
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
             return;
-        }
-        if (editMode === "FORM") {
-            return openFormView(row);
         }
         const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
         setOriginalRow({ ...original });
@@ -149,11 +147,18 @@ const Views = ({
                     token,
                     { page, searchTerm, size, ...filterKeys },
                     rootId,
-                    currentView !== "LIST",
+                    currentView === "CARD",
                 ),
             );
         },
         [dispatch, tableCruds, showAlert, token, size, rootId, currentView],
+    );
+
+    const fetchOneData = useCallback(
+        async (formKey) => {
+            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading));
+        },
+        [dispatch, tableCruds, showAlert, token],
     );
 
     const handlePageChange = async (p) => {
@@ -182,6 +187,10 @@ const Views = ({
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        formKey && fetchOneData(formKey);
+    }, [fetchOneData, formKey]);
 
     useEffect(() => {
         const unsubscribe = subscribe((term, filterKeys) => {
@@ -213,22 +222,22 @@ const Views = ({
     const defaultActions = [
         {
             name: "edit",
-            enabled: true,
+            enabled: !loading,
             onClick: handleEdit,
             icon: <Edit />,
             sx: { color: "blue" },
         },
         {
             name: "delete",
-            enabled: true,
+            enabled: !loading,
             onClick: handleDeleteClick,
             icon: <Delete />,
             sx: { color: "red" },
         },
         {
             name: "form",
-            enabled: true,
-            hide: editMode !== "FORM",
+            enabled: !loading,
+            hide: editMode !== "FORM" || formKey,
             onClick: openFormView,
             icon: <OpenInNew />,
             sx: { color: "blue" },
@@ -242,6 +251,7 @@ const Views = ({
         }),
         ...actions.filter((a) => !defaultActions.some((def) => def.name === a.name)),
     ];
+
     const commonProps = {
         data,
         tableName,
@@ -256,10 +266,18 @@ const Views = ({
         handleCancel,
         handlePageChange,
     };
+    console.log(editingId);
+    
+
     return (
         <>
-            {currentView === "FORM" ? (
-                <FormView {...commonProps} />
+            {formKey ? (
+                <FormView
+                    {...commonProps}
+                    formKey={formKey}
+                    loading={loading}
+                    data={tableState.recordById[formKey] || {}}
+                />
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}
@@ -325,6 +343,7 @@ const Views = ({
 };
 
 Views.propTypes = {
+    formKey: PropTypes.oneOfType(["NEW", PropTypes.number]),
     tableName: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
     rootId: PropTypes.number,

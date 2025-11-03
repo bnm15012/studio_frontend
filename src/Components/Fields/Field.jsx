@@ -24,7 +24,6 @@ const Field = ({
         maxVal: max,
         setValue,
         label,
-        readOnly,
         validation,
         ...extraProp,
     };
@@ -68,15 +67,15 @@ const Field = ({
         }
     };
 
-    if (!isEdit) {
-        return getValue();
+    if (isEdit && (readOnly === false || readOnly == null)) {
+        return renderInputField();
     }
 
-    return renderInputField();
+    return getValue();
 };
 
 Field.propTypes = {
-    value: PropTypes.any.isRequired,
+    value: PropTypes.any,
     setValue: PropTypes.func.isRequired,
     validation: PropTypes.shape({
         isRequired: PropTypes.bool,

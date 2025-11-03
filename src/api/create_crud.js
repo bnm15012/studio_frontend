@@ -123,6 +123,37 @@ export function createCrud({
                     setLoading(false);
                 }
             },
+
+        getById:
+            (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
+            async (dispatch, getState) => {
+                try {
+                    const state = getState()[route];
+                    const cached = state.recordById[id];
+
+                    if (cached && !forceRefresh) {
+                        return cached;
+                    }
+
+                    setLoading(true);
+                    const {
+                        data: { data },
+                    } = await api.get(`/${route}/get/${id}`, getHeader(token));
+
+                    const record = data[0];
+                    dispatch(actions.setRecord(record));
+                    return record;
+                } catch (err) {
+                    showAlert(
+                        err?.response?.data?.status?.statusMessage ||
+                            `Failed to fetch ${route} by ID`,
+                        "error",
+                    );
+                    return null;
+                } finally {
+                    setLoading(false);
+                }
+            },
     };
 
     return { ...baseCrud, ...extraCruds };
