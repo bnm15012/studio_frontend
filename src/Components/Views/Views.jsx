@@ -53,6 +53,7 @@ const Views = ({
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
+    const [record, setRecord] = useState({});
 
     const handleViewOpen = (row) => {
         setViewRow(row);
@@ -75,12 +76,16 @@ const Views = ({
     };
 
     const handleCancel = () => {
-        if (editingId === "NEW") {
-            setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== editingId));
-        } else if (originalRow) {
-            setData((prev) =>
-                prev.map((row) => (row[fieldsMeta.primary] === editingId ? originalRow : row)),
-            );
+        if (formKey) {
+            setRecord(originalRow);
+        } else {
+            if (editingId === "NEW") {
+                setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== editingId));
+            } else if (originalRow) {
+                setData((prev) =>
+                    prev.map((row) => (row[fieldsMeta.primary] === editingId ? originalRow : row)),
+                );
+            }
         }
         setEditingId(null);
         setOriginalRow(null);
@@ -88,7 +93,7 @@ const Views = ({
 
     const handleSave = async (id) => {
         try {
-            const newRow = data.find((e) => e[fieldsMeta.primary] === id);
+            const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
             if (id === "NEW") {
                 const { [fieldsMeta.primary]: id, ...withoutId } = newRow;
                 dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
@@ -115,27 +120,31 @@ const Views = ({
             setDeleteId(null);
         }
     };
-
+    console.log(tableState.recordById[formKey]?.name);
     const handleChange = (value, id, fieldPath) => {
-        setData((prev) =>
-            prev.map((item) => {
-                if (item[fieldsMeta.primary] !== id) return item;
+        const updateField = (obj) => {
+            const updatedItem = { ...obj };
 
-                const updatedItem = { ...item };
+            const pathParts = fieldPath.split(".");
+            let current = updatedItem;
 
-                if (fieldPath.includes(".")) {
-                    const [parent, child] = fieldPath.split(".");
-                    updatedItem[parent] = {
-                        ...updatedItem[parent],
-                        [child]: value,
-                    };
-                } else {
-                    updatedItem[fieldPath] = value;
-                }
+            for (let i = 0; i < pathParts.length - 1; i++) {
+                const key = pathParts[i];
+                current[key] = { ...current[key] };
+                current = current[key];
+            }
 
-                return updatedItem;
-            }),
-        );
+            current[pathParts[pathParts.length - 1]] = value;
+            return updatedItem;
+        };
+
+        if (formKey) {
+            setRecord((prev) => updateField(prev));
+        } else {
+            setData((prev) =>
+                prev.map((item) => (item[fieldsMeta.primary] === id ? updateField(item) : item)),
+            );
+        }
     };
 
     const fetchData = useCallback(
@@ -203,8 +212,9 @@ const Views = ({
     }, [fetchData, page, subscribe]);
 
     useEffect(() => {
+        setRecord(tableState.recordById[formKey] || {});
         setData(tableState.items ?? []);
-    }, [tableState]);
+    }, [formKey, tableState]);
 
     useEffect(() => {
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
@@ -266,18 +276,11 @@ const Views = ({
         handleCancel,
         handlePageChange,
     };
-    console.log(editingId);
-    
 
     return (
         <>
             {formKey ? (
-                <FormView
-                    {...commonProps}
-                    formKey={formKey}
-                    loading={loading}
-                    data={tableState.recordById[formKey] || {}}
-                />
+                <FormView {...commonProps} formKey={formKey} loading={loading} data={record} />
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}

@@ -23,18 +23,25 @@ export function createCrud({
         reducer,
         removeAll: actions.clearData,
 
-        add: (newData, token, showAlert, setLoading, prepend) => async (dispatch) => {
+        add: (newData, token, showAlert, setLoading, prepend) => async (dispatch, getState) => {
             try {
                 setLoading(true);
+                const state = getState()[route];
                 const {
                     data: { data },
                 } = await api.post(`/${route}/add`, newData, getHeader(token));
+
+                if (state.recordById["NEW"]) {
+                    dispatch(actions.setRecord(data[0]));
+                }
+
                 if (prepend) {
                     dispatch(actions.prependItem(data[0]));
                 } else {
                     dispatch(actions.addItem(data[0]));
                 }
             } catch (err) {
+                console.error(err);
                 showAlert(
                     err?.response?.data?.status?.statusMessage || `Failed to add ${route}`,
                     "error",
@@ -44,16 +51,21 @@ export function createCrud({
             }
         },
 
-        update: (id, updatedData, token, showAlert, setLoading) => async (dispatch) => {
+        update: (id, updatedData, token, showAlert, setLoading) => async (dispatch, getState) => {
             try {
                 setLoading(true);
+                const state = getState()[route];
                 const { data } = await api.put(
                     `/${route}/update/${id}`,
                     updatedData,
                     getHeader(token),
                 );
+                if (state.recordById[id]) {
+                    dispatch(actions.setRecord(data.data[0]));
+                }
                 dispatch(actions.updateItem(data.data[0]));
             } catch (err) {
+                console.error(err);
                 showAlert(
                     err?.response?.data?.status?.statusMessage || `Failed to update ${route}`,
                     "error",
@@ -69,6 +81,7 @@ export function createCrud({
                 await api.delete(`/${route}/delete/${id}`, getHeader(token));
                 dispatch(actions.removeItem(id));
             } catch (err) {
+                console.error(err);
                 showAlert(
                     err?.response?.data?.status?.statusMessage || `Failed to delete ${route}`,
                     "error",
@@ -115,6 +128,7 @@ export function createCrud({
                         }),
                     );
                 } catch (err) {
+                    console.error(err);
                     showAlert(
                         err?.response?.data?.status?.statusMessage || `Failed to fetch ${route}`,
                         "error",
@@ -144,6 +158,7 @@ export function createCrud({
                     dispatch(actions.setRecord(record));
                     return record;
                 } catch (err) {
+                    console.error(err);
                     showAlert(
                         err?.response?.data?.status?.statusMessage ||
                             `Failed to fetch ${route} by ID`,

@@ -37,7 +37,7 @@ const Field = ({
             DATE: <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />,
             DATETIME: <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />,
             EDITOR: <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />,
-            IMAGE: <ImageComponent {...commonProps} />,
+            IMAGE: <ImageComponent allowEdit={isEdit} {...commonProps} />,
             DEFAULT: (
                 <StyledTextField
                     {...commonProps}
@@ -61,9 +61,9 @@ const Field = ({
             case "DATETIME":
                 return getLocalDateTime(value, type);
             case "IMAGE":
-                return <ImageComponent {...commonProps} />;
+                return renderInputField();
             default:
-                return value;
+                return value || "N/A";
         }
     };
 

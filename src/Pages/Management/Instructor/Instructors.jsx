@@ -14,18 +14,27 @@ import PropTypes from "prop-types";
 
 const size = 7;
 const FIELDS = [
-    { show: true, name: "imageUrl", label: "Image", type: "IMAGE", extraProp: { size: "30px" } },
-    { show: true, name: "name", label: "Name" },
-    { show: true, name: "email", label: "Email" },
-    { show: true, name: "phone", label: "Phone" },
     {
         show: true,
+        section: "Personal Details",
+        name: "imageUrl",
+        label: "Image",
+        type: "IMAGE",
+        extraProp: { size: "30px" },
+    },
+    { show: true, section: "Personal Details", name: "name", label: "Name" },
+    { show: true, section: "Personal Details", name: "email", label: "Email" },
+    { show: true, section: "Personal Details", name: "phone", label: "Phone" },
+    {
+        show: true,
+        section: "Personal Details",
         name: "dob",
         label: "Date of Birth",
         type: "DATE",
     },
     {
         show: true,
+        section: "Personal Details",
         name: "instructorStatus",
         label: "Status",
         // type: "STATUS",
@@ -36,13 +45,39 @@ const FIELDS = [
         ),
         extraProp: { readOnly: true },
     },
-    { show: false, name: "address", label: "Address" },
-    { show: false, name: "emergencyContactNumber", label: "Emergency Contact Number" },
-    { show: false, name: "bankAccountDetails.accountNumber", label: "Account Number" },
-    { show: false, name: "bankAccountDetails.bankName", label: "Bank Name" },
-    { show: false, name: "bankAccountDetails.branchName", label: "Branch Name" },
-    { show: false, name: "bankAccountDetails.ifscCode", label: "IFSE CODE" },
-    { show: false, name: "bankAccountDetails.upiId", label: "UPI" },
+    { show: false, section: "Personal Details", name: "address", label: "Address" },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "emergencyContactNumber",
+        label: "Emergency Contact Number",
+    },
+    {
+        show: false,
+        section: "Bank Details",
+        name: "bankAccountDetails.accountNumber",
+        label: "Account Number",
+    },
+    {
+        show: false,
+        section: "Bank Details",
+        name: "bankAccountDetails.bankName",
+        label: "Bank Name",
+    },
+    {
+        show: false,
+        section: "Bank Details",
+        name: "bankAccountDetails.branchName",
+        label: "Branch Name",
+    },
+    {
+        show: false,
+        section: "Bank Details",
+        name: "bankAccountDetails.ifscCode",
+        label: "IFSE CODE",
+    },
+    { show: false, section: "Bank Details", name: "bankAccountDetails.upiId", label: "UPI" },
+    { show: false, name: "assignments", label: "contracts", type: "VIEW" },
 ];
 
 const FIELD_META = {
@@ -82,7 +117,7 @@ const Instructors = ({ ID }) => {
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
                 size={size}
-                key={"expenses"}
+                key={"instructors"}
                 fields={FIELDS}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}

@@ -1,19 +1,18 @@
 import { useTheme } from "@emotion/react";
-import React, { useState } from "react";
 import FlexBetween from "../FlexBetween";
-import { IconButton, Typography, Box, CircularProgress } from "@mui/material";
+import { IconButton, Typography, Box, CircularProgress, Divider } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import { CloudUpload } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { CloudUploadIcon } from "lucide-react";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
 import FlexBetweenColumn from "../FlexBetweenColumn";
 import Loading from "../Loading/Loading";
 import { getNestedValue } from "../../utils/objectHelpers";
+import { FieldLabel, FieldValue } from "../New/StyledField";
+import { useUI } from "../../context/UIContext";
 
 const FormView = (props) => {
     const {
@@ -23,27 +22,39 @@ const FormView = (props) => {
         loading,
         tableName,
         editingId,
-        fieldsMeta,
-        actions,
         handleChange,
         handleSave,
         handleCancel,
+        actions,
     } = props;
+
     const navigate = useNavigate();
+    const { isMobile } = useUI();
     const theme = useTheme();
-    console.log(editingId);
+
+    const normalFields = fields.filter((f) => !["IMAGE", "VIEW"].includes(f.type));
+    const imageField = fields.find((f) => f.type === "IMAGE");
+    // const viewFields = fields.find((f) => f.type === "VIEW");
+
+    const groupedFields = normalFields.reduce((acc, field) => {
+        const section = field.section || "General";
+        if (!acc[section]) acc[section] = [];
+        acc[section].push(field);
+        return acc;
+    }, {});
 
     return (
         <>
+            {/* 🔹 Header */}
             <FlexBetween
                 backgroundColor={theme.palette.background.paper}
                 sx={{ width: "100%", p: 2, borderRadius: 2, boxShadow: theme.shadows[2] }}
             >
-                <FlexBetween alignItems={"center"} gap={2}>
+                <FlexBetween alignItems="center" gap={2}>
                     <IconButton onClick={() => navigate(`/management/${tableName}`)}>
                         <ArrowBackIcon sx={{ color: "black" }} />
                     </IconButton>
-                    <Typography variant="h5" fontWeight={"bold"}>
+                    <Typography variant="h5" fontWeight="bold">
                         {tableName} Info
                     </Typography>
                 </FlexBetween>
@@ -52,15 +63,15 @@ const FormView = (props) => {
                     {!editingId ? (
                         <FlexBetween gap={2}>
                             {actions
-                                .filter((a) => !a.hide)
+                                ?.filter((a) => !a.hide)
                                 .map(({ name, enabled, onClick, icon, sx }) => (
                                     <IconButton
+                                        key={name}
                                         disabled={
                                             typeof enabled === "function"
                                                 ? !enabled(data)
                                                 : !enabled
                                         }
-                                        key={name}
                                         sx={sx}
                                         onClick={() => onClick(data)}
                                     >
@@ -69,7 +80,7 @@ const FormView = (props) => {
                                 ))}
                             <IconButton>
                                 {loading ? (
-                                    <CircularProgress />
+                                    <CircularProgress size={24} />
                                 ) : (
                                     <CloudDoneIcon sx={{ color: "green" }} />
                                 )}
@@ -81,76 +92,139 @@ const FormView = (props) => {
                                 disabled={loading}
                                 onClick={() => {
                                     handleCancel();
-                                    if (formKey == "NEW") navigate(`/management/${tableName}/`);
+                                    if (formKey === "NEW") navigate(`/management/${tableName}/`);
                                 }}
                             >
                                 <CancelIcon sx={{ color: "red" }} />
                             </IconButton>
                             <IconButton disabled={loading} onClick={() => handleSave(formKey)}>
-                                <CloudUploadIcon sx={{ color: "green" }} />
+                                <CloudUpload sx={{ color: "green" }} />
                             </IconButton>
                         </FlexBetween>
                     )}
                 </Box>
             </FlexBetween>
+
+            {/* 🔄 Content */}
             {!data && <Loading />}
             {data && (
-                <FlexBetweenColumn
-                    my={1}
-                    p={2}
-                    gap={2}
+                <FlexBetween
+                    flexDirection={isMobile ? "column" : "row"}
+                    my={2}
+                    p={3}
                     backgroundColor={theme.palette.background.paper}
                     sx={{
                         boxShadow: theme.shadows[7],
+                        borderRadius: 2,
+                        alignItems: "flex-start",
                     }}
                 >
-                    {fields.map((field) => (
-                        <FlexBetween key={field.name}>
+                    {/* 🖼️ Image Section */}
+                    {imageField && (
+                        <Box
+                            p={2}
+                            width={isMobile ? "100%" : "220px"}
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
                             <Field
-                                label={field.label}
+                                label={imageField.label}
                                 isEdit={editingId}
-                                value={
-                                    field?.getValue
-                                        ? field.getValue(getNestedValue(data, field.name))
-                                        : getNestedValue(data, field.name)
-                                }
-                                setValue={(v) => handleChange(v, formKey, field.name)}
-                                type={field.type}
-                                extraProp={field.extraProp}
+                                value={getNestedValue(data, imageField.name)}
+                                setValue={(v) => handleChange(v, formKey, imageField.name)}
+                                type={imageField.type}
+                                extraProp={{
+                                    ...imageField.extraProp,
+                                    size: "160px",
+                                    isCircular: true,
+                                }}
                             />
-                        </FlexBetween>
-                    ))}
-                </FlexBetweenColumn>
+                        </Box>
+                    )}
+
+                    <Box flexGrow={1} width="100%" ml={isMobile ? 0 : 3}>
+                        {Object.entries(groupedFields).map(
+                            ([sectionName, fieldsInSection], idx) => (
+                                <Box
+                                    key={sectionName}
+                                    mb={4}
+                                    p={2}
+                                    borderRadius={2}
+                                    backgroundColor={theme.palette.background.default}
+                                    boxShadow={theme.shadows[1]}
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight="bold"
+                                        color={theme.palette.text.primary}
+                                    >
+                                        {sectionName}
+                                    </Typography>
+                                    <Divider sx={{ mb: 0 }} />
+
+                                    <FlexBetweenColumn
+                                        sx={{
+                                            columnGap: 3,
+                                            display: "grid",
+                                            gridTemplateColumns:
+                                                "repeat(auto-fill, minmax(22rem, 1fr))",
+                                        }}
+                                    >
+                                        {fieldsInSection.map((field) => (
+                                            <FlexBetween key={field.name} gap={2}>
+                                                <FieldLabel>{field.label}</FieldLabel>
+                                                <FieldValue>
+                                                    <Field
+                                                        isEdit={editingId}
+                                                        value={
+                                                            field?.getValue
+                                                                ? field.getValue(
+                                                                      getNestedValue(
+                                                                          data,
+                                                                          field.name,
+                                                                      ),
+                                                                  )
+                                                                : getNestedValue(data, field.name)
+                                                        }
+                                                        setValue={(v) =>
+                                                            handleChange(v, formKey, field.name)
+                                                        }
+                                                        type={field.type}
+                                                        extraProp={field.extraProp}
+                                                    />
+                                                </FieldValue>
+                                            </FlexBetween>
+                                        ))}
+                                    </FlexBetweenColumn>
+                                </Box>
+                            ),
+                        )}
+                    </Box>
+                </FlexBetween>
             )}
         </>
     );
 };
 
 FormView.propTypes = {
-    formKey: PropTypes.oneOfType(["NEW", PropTypes.number]),
+    formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     data: PropTypes.object,
-    tableState: PropTypes.object,
     fields: PropTypes.array,
-    editingId: PropTypes.number,
-    fieldsMeta: PropTypes.shape({
-        primary: PropTypes.string,
-        root: PropTypes.string,
-    }),
+    editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableName: PropTypes.string,
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
     handleCancel: PropTypes.func,
-    handlePageChange: PropTypes.func,
     loading: PropTypes.bool,
-    isActionDisabled: PropTypes.func,
-    handleViewOpen: PropTypes.func,
     actions: PropTypes.arrayOf(
         PropTypes.shape({
             name: PropTypes.string,
             onClick: PropTypes.func,
             icon: PropTypes.element,
             sx: PropTypes.object,
-            enabled: PropTypes.bool,
+            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+            hide: PropTypes.bool,
         }),
     ),
 };

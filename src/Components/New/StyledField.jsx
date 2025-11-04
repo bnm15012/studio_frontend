@@ -9,15 +9,19 @@ export const FieldContainer = styled(Box)({
 
 export const FieldLabel = styled(Typography)(({ theme }) => ({
     margin: theme.spacing("auto", 0),
-    fontWeight: 500,
-    minWidth: "40%",
+    height: "3rem",
+    fontWeight: "bolder",
+    textWrap: "nowrap",
+    lineHeight: "3rem",
     textTransform: "uppercase",
     letterSpacing: "0.5px",
 }));
 
-export const FieldValue = styled(Typography)({
-    fontSize: "0.95rem",
+export const FieldValue = styled(Typography)(({ theme }) => ({
+    margin: theme.spacing("auto", 0),
     fontWeight: 500,
-    color: "#fff",
+    lineHeight: "3rem",
+    width: "100%",
+    height: "3rem",
     wordBreak: "break-word",
-});
+}));
