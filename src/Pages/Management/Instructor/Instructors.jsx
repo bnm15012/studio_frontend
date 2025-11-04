@@ -5,7 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Views from "../../../Components/Views/Views";
-import { instructorsCruds } from "../../../api/all.api";
+import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
 import { usePageSearch } from "../../../hooks/useSearch";
@@ -77,7 +77,14 @@ const FIELDS = [
         label: "IFSE CODE",
     },
     { show: false, section: "Bank Details", name: "bankAccountDetails.upiId", label: "UPI" },
-    { show: false, name: "assignments", label: "contracts", type: "VIEW" },
+    // {
+    //     show: false,
+    //     name: "assignments",
+    //     label: "Contracts",
+    //     type: "VIEW",
+    //     cruds: instructorsAssignmentsCruds,
+    //     tableName: "instructorActivities",
+    // },
 ];
 
 const FIELD_META = {

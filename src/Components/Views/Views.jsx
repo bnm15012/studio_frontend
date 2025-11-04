@@ -120,7 +120,7 @@ const Views = ({
             setDeleteId(null);
         }
     };
-    console.log(tableState.recordById[formKey]?.name);
+
     const handleChange = (value, id, fieldPath) => {
         const updateField = (obj) => {
             const updatedItem = { ...obj };
@@ -212,7 +212,7 @@ const Views = ({
     }, [fetchData, page, subscribe]);
 
     useEffect(() => {
-        setRecord(tableState.recordById[formKey] || {});
+        formKey && setRecord(tableState.recordById[formKey] || {});
         setData(tableState.items ?? []);
     }, [formKey, tableState]);
 
@@ -346,7 +346,7 @@ const Views = ({
 };
 
 Views.propTypes = {
-    formKey: PropTypes.oneOfType(["NEW", PropTypes.number]),
+    formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableName: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
     rootId: PropTypes.number,
