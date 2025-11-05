@@ -280,7 +280,13 @@ const Views = ({
     return (
         <>
             {formKey ? (
-                <FormView {...commonProps} formKey={formKey} loading={loading} data={record} />
+                <FormView
+                    {...commonProps}
+                    formKey={formKey}
+                    loading={loading}
+                    data={record}
+                    currentView={currentView}
+                />
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}

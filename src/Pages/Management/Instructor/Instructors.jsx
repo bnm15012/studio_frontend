@@ -13,6 +13,14 @@ import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 
 const size = 7;
+
+const FIELD_META = {
+    primary: "instructorId",
+    root: "branchId",
+};
+
+const VIEWS = ["LIST", "CARD", "FORM"];
+
 const FIELDS = [
     {
         show: true,
@@ -37,7 +45,6 @@ const FIELDS = [
         section: "Personal Details",
         name: "instructorStatus",
         label: "Status",
-        // type: "STATUS",
         getValue: (value) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
                 {value}
@@ -77,22 +84,50 @@ const FIELDS = [
         label: "IFSE CODE",
     },
     { show: false, section: "Bank Details", name: "bankAccountDetails.upiId", label: "UPI" },
-    // {
-    //     show: false,
-    //     name: "assignments",
-    //     label: "Contracts",
-    //     type: "VIEW",
-    //     cruds: instructorsAssignmentsCruds,
-    //     tableName: "instructorActivities",
-    // },
+    {
+        show: false,
+        name: "assignments",
+        label: "Contracts",
+        type: "VIEW",
+
+        viewProps: {
+            tableCruds: instructorsAssignmentsCruds,
+            tableName: "instructorActivities",
+            size: 1,
+            fields: [
+                { show: true, name: "activityName", label: "Activity" },
+                { show: true, name: "startDate", label: "Start Date" },
+                { show: true, name: "endDate", label: "End Date" },
+                {
+                    show: true,
+                    name: "membershipStatus",
+                    label: "Membership Status",
+                    getValue: (value) => (
+                        <Box
+                            sx={{
+                                color: value === "ACTIVE" ? "green" : "red",
+                                fontWeight: "bolder",
+                            }}
+                        >
+                            {value}
+                        </Box>
+                    ),
+                },
+                {
+                    show: true,
+                    name: "assignedDate",
+                    label: "Assigned Date",
+                    extraProp: { readOnly: true },
+                },
+            ],
+            fieldsMeta: {
+                primary: "assignmentId",
+                root: "instructorId",
+            },
+            fieldToDisplayOnDelete: "activityName",
+        },
+    },
 ];
-
-const FIELD_META = {
-    primary: "instructorId",
-    root: "branchId",
-};
-
-const VIEWS = ["LIST", "CARD", "FORM"];
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
@@ -103,7 +138,7 @@ const Instructors = ({ ID }) => {
     const { triggerSearch } = usePageSearch();
 
     return (
-        <FlexBetweenColumn sx={{ overflow: "auto" }}>
+        <FlexBetweenColumn>
             {!ID && (
                 <FlexBetween paddingBottom={2} gap={1}>
                     <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />

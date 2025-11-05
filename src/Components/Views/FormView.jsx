@@ -13,6 +13,7 @@ import Loading from "../Loading/Loading";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel, FieldValue } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
+import Views from "./Views";
 
 const FormView = (props) => {
     const {
@@ -25,6 +26,7 @@ const FormView = (props) => {
         handleChange,
         handleSave,
         handleCancel,
+        currentView,
         actions,
     } = props;
 
@@ -34,7 +36,7 @@ const FormView = (props) => {
 
     const normalFields = fields.filter((f) => !["IMAGE", "VIEW"].includes(f.type));
     const imageField = fields.find((f) => f.type === "IMAGE");
-    // const viewFields = fields.find((f) => f.type === "VIEW");
+    const viewFields = fields.filter((f) => f.type === "VIEW");
 
     const groupedFields = normalFields.reduce((acc, field) => {
         const section = field.section || "General";
@@ -104,8 +106,6 @@ const FormView = (props) => {
                     )}
                 </Box>
             </FlexBetween>
-
-            {/* 🔄 Content */}
             {!data && <Loading />}
             {data && (
                 <FlexBetween
@@ -203,6 +203,13 @@ const FormView = (props) => {
                     </Box>
                 </FlexBetween>
             )}
+            {viewFields?.length > 0 &&
+                viewFields.map((view) => (
+                    <>
+                        <>{view.label}</>
+                        <Views {...view.viewProps} rootId={formKey} currentView={currentView} />
+                    </>
+                ))}
         </>
     );
 };
@@ -213,6 +220,7 @@ FormView.propTypes = {
     fields: PropTypes.array,
     editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableName: PropTypes.string,
+    currentView: PropTypes.string,
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
     handleCancel: PropTypes.func,

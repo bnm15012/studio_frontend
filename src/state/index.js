@@ -17,6 +17,7 @@ import {
     enquiryCruds,
     expenseCruds,
     genericTemplateCruds,
+    instructorsAssignmentsCruds,
     instructorsCruds,
     paymentCruds,
 } from "../api/all.api";
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
     auth: authSlice,
     activity: activitySlice,
     instructors: instructorsCruds.reducer,
+    instructorActivities: instructorsAssignmentsCruds.reducer,
     branch: branchCruds.reducer,
     clients: clientCruds.reducer,
     expenses: expenseCruds.reducer,
