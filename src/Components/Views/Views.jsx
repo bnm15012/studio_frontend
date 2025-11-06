@@ -22,6 +22,7 @@ const Views = ({
     tableName,
     size,
     rootId,
+    showAddButton,
     tableCruds,
     fields,
     fieldsMeta,
@@ -275,6 +276,7 @@ const Views = ({
         handleSave,
         handleCancel,
         handlePageChange,
+        addNewRow: showAddButton ? addNewRow : undefined,
     };
 
     return (
@@ -365,6 +367,7 @@ Views.propTypes = {
     onSetAddNewFunc: PropTypes.func,
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
+    showAddButton: PropTypes.bool,
     CardContentComponent: PropTypes.node,
     actions: PropTypes.arrayOf(Object),
     editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export function createGenericSlice(options) {
     const initialState = {
+        rootId: 0,
         items: [],
         recordById: {},
         searchTerm: "",

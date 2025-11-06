@@ -11,6 +11,8 @@ import {
 import Field from "../Fields/Field";
 import PropTypes from "prop-types";
 import { getNestedValue } from "../../utils/objectHelpers";
+import { Add } from "@mui/icons-material";
+import FlexEvenly from "../FlexEvenly";
 const ListView = ({
     fields,
     data,
@@ -22,6 +24,7 @@ const ListView = ({
     handleCancel,
     tableState,
     handlePageChange,
+    addNewRow,
     handleViewOpen,
 }) => (
     <StyledTableContainer component={Paper}>
@@ -133,6 +136,28 @@ const ListView = ({
                         </StyledTableCell>
                     </StyledTableRow>
                 ))}
+                {addNewRow && (
+                    <StyledTableRow>
+                        <StyledTableCell colSpan={20}>
+                            <FlexEvenly>
+                                <IconButton
+                                    disabled={editingId}
+                                    sx={{
+                                        color: "whitesmoke",
+                                        backgroundColor: "blue",
+                                        ":hover": {
+                                            backgroundColor: "darkblue",
+                                            color: "white",
+                                        },
+                                    }}
+                                    onClick={addNewRow}
+                                >
+                                    <Add />
+                                </IconButton>
+                            </FlexEvenly>
+                        </StyledTableCell>
+                    </StyledTableRow>
+                )}
             </TableBody>
         </StyledTable>
         <TablePagination
@@ -157,9 +182,9 @@ ListView.propTypes = {
     }),
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
+    addNewRow: PropTypes.func,
     handleCancel: PropTypes.func,
     handlePageChange: PropTypes.func,
-    isActionDisabled: PropTypes.func,
     handleViewOpen: PropTypes.func,
     actions: PropTypes.arrayOf(
         PropTypes.shape({

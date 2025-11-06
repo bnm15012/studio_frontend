@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useState } from "react";
+import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
 const size = 7;
 
@@ -126,7 +127,7 @@ const Instructors = ({ ID }) => {
                     label: "Activity",
                     type: "SELECT",
                     getValue: (value) => ({ value, key: value }),
-                    editable: (row) => row.InstructorId === "NEW",
+                    editable: (row) => row.assignmentId === "NEW",
                     extraProp: {
                         getOptions: async (search, page, limit) =>
                             allActivities
@@ -143,6 +144,7 @@ const Instructors = ({ ID }) => {
                     label: "Assigned Date",
                     type: "DATE",
                     extraProp: { readOnly: true },
+                    defaultValue: getCurrentDateTimeUTC(),
                 },
                 { show: true, name: "startDate", label: "Start Date", type: "DATE" },
                 { show: true, name: "endDate", label: "End Date", type: "DATE" },
@@ -157,6 +159,7 @@ const Instructors = ({ ID }) => {
                     show: true,
                     name: "membershipStatus",
                     label: "Membership Status",
+                    defaultValue: "INACTIVE",
                     getValue: (value) => (
                         <Box
                             sx={{

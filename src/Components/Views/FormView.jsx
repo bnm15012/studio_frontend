@@ -207,7 +207,12 @@ const FormView = (props) => {
                 viewFields.map((view) => (
                     <>
                         <>{view.label}</>
-                        <Views {...view.viewProps} rootId={formKey} currentView={currentView} />
+                        <Views
+                            {...view.viewProps}
+                            rootId={formKey}
+                            currentView={currentView}
+                            showAddButton={true}
+                        />
                     </>
                 ))}
         </>
