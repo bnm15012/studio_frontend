@@ -43,7 +43,7 @@ export const loginApiCall = async ({ values, dispatch, navigate }) => {
         );
         dispatch(branchCruds.actions.setItems(authData.studioEntry.branchList));
         dispatch(
-            branchCruds.actions.setSelectedBranch(
+            branchCruds.actions.setCurrentBranch(
                 authData.studioEntry.branchList.filter((branch) => branch.isActive)[0],
             ),
         );

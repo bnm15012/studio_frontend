@@ -72,7 +72,10 @@ const ListView = ({
                                         </Button>
                                     ) : (
                                         <Field
-                                            isEdit={editingId === row[fieldsMeta.primary]}
+                                            isEdit={
+                                                editingId === row[fieldsMeta.primary] &&
+                                                (field?.editable ? field.editable(row) : true)
+                                            }
                                             value={
                                                 field?.getValue
                                                     ? field.getValue(

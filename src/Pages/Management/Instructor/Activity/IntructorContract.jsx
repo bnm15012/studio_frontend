@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "../../../../utils/DateUtil";
 import Loading from "../../../../Components/Loading/Loading";
@@ -12,7 +12,8 @@ import StyledDialog from "../../../../Components/New/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer from "../../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
-const InstructorContract = ({ open, onClose, instructorData, activityData }) => {
+const InstructorContract = ({ open, onClose, activityData }) => {
+    const dispatch = useDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef();
     const [templates, setTemplates] = useState([]);
@@ -20,6 +21,9 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const token = useSelector((state) => state.auth.token);
+    const [instructorData, setInstructorData] = useState({});
+
+    const tableState = useSelector((state) => state["instructors"]);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
@@ -43,8 +47,13 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
                 setLoading(false);
             }
         };
+
         fetchTemplates();
-    }, [showAlert, studio.studioId, token]);
+    }, [dispatch, showAlert, studio.studioId, token]);
+
+    useEffect(() => {
+        instructorData && setInstructorData(tableState.recordById[activityData.instructorId] || {});
+    }, [activityData.instructorId, instructorData, tableState.recordById]);
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
@@ -204,27 +213,12 @@ const InstructorContract = ({ open, onClose, instructorData, activityData }) => 
 InstructorContract.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    instructorData: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        phone: PropTypes.string.isRequired,
-        dob: PropTypes.string.isRequired,
-        imageUrl: PropTypes.string,
-        emergencyContactNumber: PropTypes.string,
-        address: PropTypes.string,
-        bankAccountDetails: PropTypes.shape({
-            accountNumber: PropTypes.string,
-            bankName: PropTypes.string,
-            branchName: PropTypes.string,
-            ifscCode: PropTypes.string,
-            upiId: PropTypes.string,
-        }),
-    }).isRequired,
     activityData: PropTypes.shape({
         activityName: PropTypes.string.isRequired,
         assignedDate: PropTypes.string.isRequired,
         startDate: PropTypes.string.isRequired,
         endDate: PropTypes.string,
+        instructorId: PropTypes.number.isRequired,
     }).isRequired,
 };
 

@@ -6,6 +6,7 @@ import SelectionField from "./Selection/SelectionField";
 import { getLocalDateTime } from "../../utils/DateUtil";
 import TemplateEditor from "../../Pages/Management/TemplatesPage/TemplateEditor";
 import ImageComponent from "../ImageComponent";
+import ImageDialog from "../Views/ImageDialog";
 
 const Field = ({
     value,
@@ -37,6 +38,14 @@ const Field = ({
             DATE: <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />,
             DATETIME: <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />,
             EDITOR: <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />,
+            IMAGE_DIALOG: (
+                <ImageDialog
+                    image={value}
+                    setImage={setValue}
+                    isEdit={true}
+                    defaultImage={extraProp?.defaultImage}
+                />
+            ),
             IMAGE: <ImageComponent allowEdit={isEdit} {...commonProps} />,
             DEFAULT: (
                 <StyledTextField
@@ -62,6 +71,8 @@ const Field = ({
                 return getLocalDateTime(value, type);
             case "IMAGE":
                 return renderInputField();
+            case "IMAGE_DIALOG":
+                return <ImageDialog image={value} setImage={setValue} isEdit={false} />;
             default:
                 return value || "N/A";
         }

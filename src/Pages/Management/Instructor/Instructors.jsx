@@ -11,6 +11,9 @@ import { useUI } from "../../../context/UIContext";
 import { usePageSearch } from "../../../hooks/useSearch";
 import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
+import FeedIcon from "@mui/icons-material/Feed";
+import InstructorContract from "./Activity/IntructorContract";
+import { useState } from "react";
 
 const size = 7;
 
@@ -18,8 +21,6 @@ const FIELD_META = {
     primary: "instructorId",
     root: "branchId",
 };
-
-const VIEWS = ["LIST", "CARD", "FORM"];
 
 const FIELDS = [
     {
@@ -84,7 +85,20 @@ const FIELDS = [
         label: "IFSE CODE",
     },
     { show: false, section: "Bank Details", name: "bankAccountDetails.upiId", label: "UPI" },
-    {
+];
+const VIEWS = ["LIST", "CARD", "FORM"];
+
+const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
+
+const Instructors = ({ ID }) => {
+    const navigate = useNavigate();
+    const { isMobile } = useUI();
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const { triggerSearch } = usePageSearch();
+    const [generateContractDoc, setGenerateContractDoc] = useState(false);
+    const allActivities = useSelector((state) => state.activity.activities);
+
+    const ASSIGNMENT_FIELD = {
         show: false,
         name: "assignments",
         label: "Contracts",
@@ -93,11 +107,52 @@ const FIELDS = [
         viewProps: {
             tableCruds: instructorsAssignmentsCruds,
             tableName: "instructorActivities",
-            size: 1,
+            size: 2,
+            actions: [
+                {
+                    name: "Document",
+                    icon: <FeedIcon />,
+                    enabled: true,
+                    sx: { color: "blue" },
+                    onClick: (row) => {
+                        setGenerateContractDoc(row);
+                    },
+                },
+            ],
             fields: [
-                { show: true, name: "activityName", label: "Activity" },
-                { show: true, name: "startDate", label: "Start Date" },
-                { show: true, name: "endDate", label: "End Date" },
+                {
+                    show: true,
+                    name: "activityName",
+                    label: "Activity",
+                    type: "SELECT",
+                    getValue: (value) => ({ value, key: value }),
+                    editable: (row) => row.InstructorId === "NEW",
+                    extraProp: {
+                        getOptions: async (search, page, limit) =>
+                            allActivities
+                                .filter((a) =>
+                                    a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                )
+                                .slice(page * limit, (page + 1) * limit)
+                                .map((a) => ({ key: a.activityType, value: a.activityType })),
+                    },
+                },
+                {
+                    show: true,
+                    name: "assignedDate",
+                    label: "Assigned Date",
+                    type: "DATE",
+                    extraProp: { readOnly: true },
+                },
+                { show: true, name: "startDate", label: "Start Date", type: "DATE" },
+                { show: true, name: "endDate", label: "End Date", type: "DATE" },
+                {
+                    show: true,
+                    name: "contractDocument",
+                    label: "Contract Document",
+                    type: "IMAGE_DIALOG",
+                    extraProp: { defaultImage: "/assets/paper_2.jpg" },
+                },
                 {
                     show: true,
                     name: "membershipStatus",
@@ -112,11 +167,6 @@ const FIELDS = [
                             {value}
                         </Box>
                     ),
-                },
-                {
-                    show: true,
-                    name: "assignedDate",
-                    label: "Assigned Date",
                     extraProp: { readOnly: true },
                 },
             ],
@@ -126,17 +176,7 @@ const FIELDS = [
             },
             fieldToDisplayOnDelete: "activityName",
         },
-    },
-];
-
-const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
-
-const Instructors = ({ ID }) => {
-    const navigate = useNavigate();
-    const { isMobile } = useUI();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const { triggerSearch } = usePageSearch();
-
+    };
     return (
         <FlexBetweenColumn>
             {!ID && (
@@ -160,7 +200,7 @@ const Instructors = ({ ID }) => {
                 tableCruds={instructorsCruds}
                 size={size}
                 key={"instructors"}
-                fields={FIELDS}
+                fields={[...FIELDS, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
@@ -168,6 +208,14 @@ const Instructors = ({ ID }) => {
                 CardContentComponent={InstructorCard}
                 editMode={"FORM"}
             />
+            {generateContractDoc && (
+                <InstructorContract
+                    open={true}
+                    tableCruds={instructorsCruds}
+                    onClose={() => setGenerateContractDoc(false)}
+                    activityData={generateContractDoc}
+                />
+            )}
         </FlexBetweenColumn>
     );
 };
