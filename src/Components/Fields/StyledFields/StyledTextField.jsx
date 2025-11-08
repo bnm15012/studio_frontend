@@ -28,7 +28,7 @@ const StyledTextField = ({
 );
 
 StyledTextField.propTypes = {
-    value: PropTypes.any.isRequired,
+    value: PropTypes.any,
     label: PropTypes.string,
     setValue: PropTypes.func.isRequired,
     rows: PropTypes.number,

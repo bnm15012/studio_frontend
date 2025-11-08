@@ -25,19 +25,7 @@ const TITLE_BGs = (theme) => ({
     info: `linear-gradient(to bottom, ${theme.palette.info.main}, ${theme.palette.info.dark})`,
 });
 
-const StyledDialogBase = styled(Dialog)(({ theme, $ismobile }) => ({
-    "& .MuiDialog-paper": $ismobile
-        ? {
-              position: "fixed",
-              bottom: 0,
-              margin: 0,
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
-              width: "100%",
-              backgroundColor: theme.palette.background.paper,
-              boxShadow: theme.shadows[8],
-          }
-        : {},
+const StyledDialogBase = styled(Dialog)(({ theme }) => ({
     "& .MuiBackdrop-root": {
         backdropFilter: "blur(4px)",
         backgroundColor: "rgba(0,0,0,0.3)",
@@ -66,7 +54,20 @@ const StyledDialog = ({
             open={open}
             onClose={onClose}
             slots={{ transition: isMobile ? Transition : undefined }}
-            $ismobile={isMobile}
+            sx={{
+                "& .MuiDialog-paper": isMobile
+                    ? {
+                          position: "fixed",
+                          bottom: 0,
+                          margin: 0,
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
+                          width: "100%",
+                          backgroundColor: theme.palette.background.paper,
+                          boxShadow: theme.shadows[8],
+                      }
+                    : {},
+            }}
             fullWidth
             maxWidth="xs"
             {...props}

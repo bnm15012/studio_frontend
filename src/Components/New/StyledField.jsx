@@ -17,7 +17,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
     letterSpacing: "0.5px",
 }));
 
-export const FieldValue = styled(Typography)(({ theme }) => ({
+export const FieldValue = styled(Box)(({ theme }) => ({
     margin: theme.spacing("auto", 0),
     fontWeight: 500,
     lineHeight: "3rem",

@@ -32,32 +32,42 @@ const Field = ({
     const renderInputField = () => {
         const placeholderText = placeholder || label;
 
-        const fieldMap = {
-            SELECT: <SelectionField {...commonProps} getOptions={getOptions} />,
-            BOOL: <StyledSwitch {...commonProps} />,
-            DATE: <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />,
-            DATETIME: <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />,
-            EDITOR: <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />,
-            IMAGE_DIALOG: (
-                <ImageDialog
-                    image={value}
-                    setImage={setValue}
-                    isEdit={true}
-                    defaultImage={extraProp?.defaultImage}
-                />
-            ),
-            IMAGE: <ImageComponent allowEdit={isEdit} {...commonProps} />,
-            DEFAULT: (
-                <StyledTextField
-                    {...commonProps}
-                    rows={rows}
-                    placeholder={placeholderText}
-                    type={type}
-                />
-            ),
-        };
-
-        return fieldMap[type] || fieldMap.DEFAULT;
+        switch (type) {
+            case "SELECT":
+                return <SelectionField {...commonProps} getOptions={getOptions} />;
+            case "BOOL":
+                return <StyledSwitch {...commonProps} />;
+            case "DATE":
+                return <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />;
+            case "DATETIME":
+                return (
+                    <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />
+                );
+            case "EDITOR":
+                return (
+                    <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />
+                );
+            case "IMAGE_DIALOG":
+                return (
+                    <ImageDialog
+                        image={value}
+                        setImage={setValue}
+                        isEdit={true}
+                        defaultImage={extraProp?.defaultImage}
+                    />
+                );
+            case "IMAGE":
+                return <ImageComponent allowEdit={isEdit} {...commonProps} />;
+            default:
+                return (
+                    <StyledTextField
+                        {...commonProps}
+                        rows={rows}
+                        placeholder={placeholderText}
+                        type={type}
+                    />
+                );
+        }
     };
 
     const getValue = () => {

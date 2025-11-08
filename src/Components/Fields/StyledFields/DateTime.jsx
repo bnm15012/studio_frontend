@@ -51,7 +51,7 @@ const DateTime = ({
         onChange: handleChange,
         ampm: "true",
         format: format === "DATE" ? "dd/MM/yyyy" : "dd/MM/yyyy, hh:mm a",
-        minutesStep: 5,
+        minutesstep: 5,
         slotProps: {
             textField: {
                 variant: variant,

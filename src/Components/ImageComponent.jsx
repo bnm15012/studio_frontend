@@ -74,13 +74,14 @@ const ImageComponent = ({
                     sx={{
                         borderRadius: isCircular ? "50%" : "0",
                         overflow: "hidden",
-                        border: allowEdit ? `2px dashed ${theme.palette.primary.main}` : "none",
+                        border: allowEdit ? `4px dashed ${theme.palette.primary.main}` : "none",
                         cursor: allowEdit ? "pointer" : "default",
                         "&:hover": allowEdit
-                            ? { borderColor: theme.palette.primary.dark }
+                            ? { borderColor: theme.palette.secondary.main }
                             : undefined,
                     }}
                 >
+                    <input {...getInputProps()} />
                     {uploading && (
                         <Box
                             position="absolute"
@@ -116,14 +117,13 @@ const ImageComponent = ({
                         <IconButton
                             sx={{
                                 position: "absolute",
-                                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                                backgroundColor: "rgba(255, 255, 255, 0.8)",
                                 "&:hover": {
                                     backgroundColor: "rgba(255, 255, 255, 0.8)",
                                 },
                             }}
                         >
                             <EditIcon />
-                            <input {...getInputProps()} />
                         </IconButton>
                     )}
                 </Box>

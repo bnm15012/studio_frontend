@@ -110,13 +110,12 @@ CardView.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     tableState: PropTypes.object,
     fields: PropTypes.array,
-    editingId: PropTypes.number,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,
         root: PropTypes.string,
     }),
     handleLoadMore: PropTypes.func,
-    CardContentComponent: PropTypes.node,
+    CardContentComponent: PropTypes.elementType,
     handleViewOpen: PropTypes.func,
     actions: PropTypes.arrayOf(
         PropTypes.shape({

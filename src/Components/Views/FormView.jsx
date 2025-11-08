@@ -130,7 +130,7 @@ const FormView = (props) => {
                         >
                             <Field
                                 label={imageField.label}
-                                isEdit={editingId}
+                                isEdit={!!editingId}
                                 value={getNestedValue(data, imageField.name)}
                                 setValue={(v) => handleChange(v, formKey, imageField.name)}
                                 type={imageField.type}
@@ -176,7 +176,7 @@ const FormView = (props) => {
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 <FieldValue>
                                                     <Field
-                                                        isEdit={editingId}
+                                                        isEdit={!!editingId}
                                                         value={
                                                             field?.getValue
                                                                 ? field.getValue(
@@ -206,7 +206,7 @@ const FormView = (props) => {
             {editingId !== "NEW" &&
                 viewFields?.length > 0 &&
                 viewFields.map((view) => (
-                    <>
+                    <Box key={view.label}>
                         <>{view.label}</>
                         <Views
                             key={view.label}
@@ -215,7 +215,7 @@ const FormView = (props) => {
                             currentView={currentView}
                             showAddButton={true}
                         />
-                    </>
+                    </Box>
                 ))}
         </>
     );
@@ -225,7 +225,7 @@ FormView.propTypes = {
     formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     data: PropTypes.object,
     fields: PropTypes.array,
-    editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    editingId: PropTypes.any,
     tableName: PropTypes.string,
     currentView: PropTypes.string,
     handleChange: PropTypes.func,

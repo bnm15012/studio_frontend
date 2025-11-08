@@ -36,7 +36,7 @@ export const CardBadge = styled(Box)(({ theme }) => ({
     backdropFilter: "blur(10px)",
 }));
 
-const MotionCard = motion(Card);
+const MotionCard = motion.create(Card);
 
 const StyledCardBase = styled(MotionCard)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 2,

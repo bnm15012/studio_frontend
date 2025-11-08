@@ -99,7 +99,10 @@ export default function SelectionField({
 }
 
 SelectionField.propTypes = {
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    value: PropTypes.shape({
+        key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        value: PropTypes.string,
+    }),
     setValue: PropTypes.func.isRequired,
     readOnly: PropTypes.bool,
     getOptions: PropTypes.func.isRequired,

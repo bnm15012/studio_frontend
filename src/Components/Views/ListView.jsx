@@ -51,7 +51,7 @@ const ListView = ({
             </TableHead>
             <TableBody>
                 {data.map((row, rowIndex) => (
-                    <StyledTableRow key={rowIndex}>
+                    <StyledTableRow key={row[fieldsMeta.primary]}>
                         <StyledTableCell>
                             {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +
                                 rowIndex +
@@ -119,12 +119,12 @@ const ListView = ({
                                         .filter((a) => !a.hide)
                                         .map(({ name, enabled, onClick, icon, sx }) => (
                                             <IconButton
+                                                key={name}
                                                 disabled={
                                                     typeof enabled === "function"
                                                         ? !enabled(row)
                                                         : !enabled
                                                 }
-                                                key={name}
                                                 sx={sx}
                                                 onClick={() => onClick(row)}
                                             >
@@ -175,7 +175,7 @@ ListView.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     tableState: PropTypes.object,
     fields: PropTypes.array,
-    editingId: PropTypes.number,
+    editingId: PropTypes.any,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,
         root: PropTypes.string,

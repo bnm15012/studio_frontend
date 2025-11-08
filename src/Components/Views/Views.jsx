@@ -111,9 +111,9 @@ const Views = ({
         }
     };
 
-    const handleDelete = async (row) => {
+    const handleDelete = async (id) => {
         try {
-            dispatch(tableCruds.delete(row[fieldsMeta.primary], token, showAlert, setLoading));
+            dispatch(tableCruds.delete(id, token, showAlert, setLoading));
         } catch (error) {
             console.error(error);
             showAlert(`Failed to delete ${tableName}!`, "error");
@@ -345,6 +345,7 @@ const Views = ({
                     open={deleteDialogOpen}
                     onClose={() => setDeleteDialogOpen(false)}
                     onConfirm={() => handleDelete(deleteId)}
+                    id={deleteId}
                     displayData={`${tableName} for ${data.find((d) => d[fieldsMeta.primary] === deleteId)?.[fieldToDisplayOnDelete]}`}
                 />
             )}

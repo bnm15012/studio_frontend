@@ -228,7 +228,7 @@ const Instructors = ({ ID }) => {
 };
 
 Instructors.propTypes = {
-    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Instructors;

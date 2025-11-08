@@ -149,7 +149,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
             onClose={() => onOpenChange(false)}
         >
             {loading && <Loading />}
-            <Box dividers sx={{ maxHeight: "80vh" }}>
+            <Box sx={{ maxHeight: "80vh" }}>
                 <Typography variant="h6" gutterBottom>
                     Activity Details
                 </Typography>
