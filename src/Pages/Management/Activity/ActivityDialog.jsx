@@ -34,13 +34,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE);
 
-    const [formData, setFormData] = useState({
-        activityId: 0,
-        activityType: "ZUMBA",
-        description: "",
-        branchId: currentBranch.branchId,
-        batchEntries: [],
-    });
+    const [formData, setFormData] = useState({});
 
     const [loading, setLoading] = useState(false);
     const studio = useSelector((state) => state.auth.studio);
@@ -72,8 +66,8 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
             setFormData(activity);
         } else {
             setFormData({
-                activityId: "NEW",
-                activityType: undefined,
+                activityId: 0,
+                activityType: "ZUMBA",
                 description: "",
                 branchId: currentBranch.branchId,
                 batchEntries: [],
@@ -208,7 +202,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                     </Button>
                 </Box>
 
-                {formData.batchEntries.length === 0 ? (
+                {formData.batchEntries?.length === 0 ? (
                     <Typography variant="body2" align="center" color="text.secondary" py={4}>
                         No batches added yet. Click &quot;Add{" "}
                         {isBatchEnabled ? "Batch" : "Membership plan"}&quot; to create your first{" "}
@@ -216,7 +210,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                     </Typography>
                 ) : (
                     <Box display="flex" flexDirection="column" gap={2}>
-                        {formData.batchEntries.map((batch) => (
+                        {formData.batchEntries?.map((batch) => (
                             <Paper key={batch.batchId} variant="outlined" sx={{ p: 2 }}>
                                 <FlexBetween flexDirection={"row-reverse"} mb={2}>
                                     <IconButton

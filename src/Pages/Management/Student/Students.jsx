@@ -71,6 +71,8 @@ const Students = ({ ID }) => {
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
 
+    const [selectedActivity, setSelectedActivity] = useState();
+
     const ASSIGNMENT_FIELD = {
         show: false,
         name: "assignments",
@@ -88,7 +90,11 @@ const Students = ({ ID }) => {
                     name: "activityName",
                     label: "Activity",
                     type: "SELECT",
-                    getValue: (value) => ({ value, key: value }),
+                    getValue: (value) =>
+                        // if (editingId) {
+                        // setSelectedActivity(allActivities.find((a) => a.activityType === value));
+                        // }
+                        ({ value, key: value }),
                     editable: (row) => row.assignmentId === "NEW",
                     extraProp: {
                         getOptions: async (search, page, limit) =>
@@ -100,9 +106,24 @@ const Students = ({ ID }) => {
                                 .map((a) => ({ key: a.activityType, value: a.activityType })),
                     },
                 },
-                { show: true, name: "membershipType", label: "Membership Type" },
-                { show: true, name: "activityAmount", label: "Amount" },
+                {
+                    show: true,
+                    name: "membershipType",
+                    label: "Membership Type",
+                    type: "SELECT",
+                    getValue: (value) => ({ value, key: value }),
+                    extraProp: {
+                        getOptions: async (search, page, limit) =>
+                            selectedActivity.batchEntries
+                                .filter((b) =>
+                                    b.planType.toLowerCase().includes(search.toLowerCase()),
+                                )
+                                .slice(page * limit, (page + 1) * limit)
+                                .map((a) => ({ key: a.planType, value: a.planType })),
+                    },
+                },
                 { show: true, name: "daysPerWeek", label: "Days Per week" },
+                { show: true, name: "activityAmount", label: "Amount" },
                 { show: true, name: "batchName", label: "Batch Name" },
                 { show: true, name: "batchTime", label: "Batch Time" },
                 {

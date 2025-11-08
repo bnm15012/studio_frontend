@@ -41,7 +41,7 @@ const SidebarItem = ({ route, isSelected, onClick, isNonMobileScreens }) => {
 
 SidebarItem.propTypes = {
     route: PropTypes.shape({
-        label: PropTypes.string.isRequired,
+        label: PropTypes.string,
         icon: PropTypes.element.isRequired,
     }).isRequired,
     isSelected: PropTypes.bool.isRequired,
