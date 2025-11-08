@@ -81,7 +81,7 @@ const Sidebar = ({ sidebarOpen }) => {
             icon: <SchoolIcon />,
         },
         {
-            path: "/management/student",
+            path: "/management/students",
             label: "Students",
             show: isEnabled(FEATURE_KEYS.STUDENT),
             showOnBottomBar: isEnabled(FEATURE_KEYS.STUDENT),

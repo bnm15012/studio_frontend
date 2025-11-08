@@ -5,7 +5,6 @@ import Bookings from "./Booking/Bookings";
 import Students from "./Student/Students";
 import Instructors from "./Instructor/Instructors";
 import Activities from "./Activity/Activities";
-import StudentForm from "./Student/Form/StudentForm";
 import Expenses from "./Expense/Expenses";
 import Payments from "./Payments/Payments";
 import Reports from "./Reports/Reports";
@@ -29,8 +28,8 @@ const Management = () => {
             case "bookings":
                 if (ID) return <BookingFormView ID={ID} page={page} />;
                 return <Bookings />;
-            case "student":
-                if (ID) return <StudentForm ID={ID} page={page} />;
+            case "students":
+                if (ID) return <Students ID={ID} />;
                 return <Students />;
             case "instructors":
                 if (ID) return <Instructors ID={ID} />;

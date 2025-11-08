@@ -33,8 +33,8 @@ const FIELDS = [
         extraProp: { size: "30px" },
     },
     { show: true, section: "Personal Details", name: "name", label: "Name" },
-    { show: true, section: "Personal Details", name: "email", label: "Email" },
-    { show: true, section: "Personal Details", name: "phone", label: "Phone" },
+    { show: true, section: "Contact Details", name: "email", label: "Email" },
+    { show: true, section: "Contact Details", name: "phone", label: "Phone" },
     {
         show: true,
         section: "Personal Details",
@@ -54,10 +54,10 @@ const FIELDS = [
         ),
         extraProp: { readOnly: true },
     },
-    { show: false, section: "Personal Details", name: "address", label: "Address" },
+    { show: false, section: "Contact Details", name: "address", label: "Address" },
     {
         show: false,
-        section: "Personal Details",
+        section: "Contact Details",
         name: "emergencyContactNumber",
         label: "Emergency Contact Number",
     },

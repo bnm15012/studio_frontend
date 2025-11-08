@@ -9,6 +9,13 @@ export const instructorsAssignmentsCruds = createCrud({
     idKey: "assignmentId",
 });
 
+export const studentsCruds = createCrud({ route: "students", idKey: "studentId" });
+
+export const studentsAssignmentsCruds = createCrud({
+    route: "studentActivities",
+    idKey: "studentId",
+});
+
 export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
 
 export const expenseCruds = createCrud({ route: "expenses", idKey: "expenseId" });

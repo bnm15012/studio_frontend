@@ -20,6 +20,8 @@ import {
     instructorsAssignmentsCruds,
     instructorsCruds,
     paymentCruds,
+    studentsAssignmentsCruds,
+    studentsCruds,
 } from "../api/all.api";
 
 const rootReducer = combineReducers({
@@ -27,6 +29,8 @@ const rootReducer = combineReducers({
     activity: activitySlice,
     instructors: instructorsCruds.reducer,
     instructorActivities: instructorsAssignmentsCruds.reducer,
+    students: studentsCruds.reducer,
+    studentActivities: studentsAssignmentsCruds.reducer,
     branch: branchCruds.reducer,
     clients: clientCruds.reducer,
     expenses: expenseCruds.reducer,

@@ -1,121 +1,186 @@
-import { useState, useEffect, useCallback } from "react";
-import DataTable from "../../../Components/TableMui";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import SearchField from "../../../Components/SearchField";
-import { Box, Button, Pagination } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
-import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
-import { getAllStudentsAPI } from "./Student.api";
-import Loading from "../../../Components/Loading/Loading";
 import { useNavigate } from "react-router-dom";
-import Filter from "../../../Components/Filter";
-import QrForm from "../../../Components/QrForm";
+import Views from "../../../Components/Views/Views";
+import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
+import StudentCard from "./StudentCard.jsx";
+import { useUI } from "../../../context/UIContext";
+import { usePageSearch } from "../../../hooks/useSearch";
+import SearchField from "../../../Components/SearchField";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
 const size = 7;
-const Students = () => {
-    const showAlert = useAlert();
-    const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
 
-    const [page, setPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(0);
+const FIELD_META = {
+    primary: "studentId",
+    root: "branchId",
+};
 
-    const fetchStudents = useCallback(
-        async (page = 1, searchTerm, filter) => {
-            setLoading(true);
-            const { data, success, totalCount } = await getAllStudentsAPI({
-                branchId: currentBranch.branchId,
-                token,
-                page,
-                size,
-                searchTerm,
-                ...filter,
-            });
-            if (success) {
-                setData(data);
-                setTotalPage(Math.ceil(totalCount / size));
-            } else {
-                showAlert("failed to fetch student data !", "error");
-            }
-            setLoading(false);
-        },
-        [showAlert, currentBranch.branchId, token],
-    );
-
-    useEffect(() => {
-        currentBranch && fetchStudents();
-    }, [fetchStudents, currentBranch]);
-
-    const handlePageChange = async (e, p) => {
-        setLoading(true);
-        setPage(p);
-        fetchStudents(p);
-        setLoading(false);
-    };
-
-    const handleSearch = async (searchTerm) => {
-        setLoading(true);
-        await fetchStudents(page, searchTerm);
-        setLoading(false);
-    };
-    const onClickOnRow = (row) => {
-        navigate(`/management/student/${row.studentId}`);
-    };
-
-    const onApplyFIlter = (x) => {
-        Object.keys(x).length > 0 ? fetchStudents(page, null, x) : fetchStudents(page);
-    };
-    return (
-        <FlexBetweenColumn sx={{ overflow: "auto" }}>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={handleSearch} />
-                <QrForm title="" link={"student-form"} />
-                <Filter
-                    onChange={onApplyFIlter}
-                    filterOptions={[
-                        { name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] },
-                    ]}
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate(`/management/student/NEW`)}
-                    sx={{ fontWeight: "bold", padding: "1px" }}
-                >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
-
-            <Box>
-                {data && (
-                    <DataTable
-                        data={data}
-                        imageFieldName={"imageUrl"}
-                        statusFieldName="membershipStatus"
-                        startIndex={(parseInt(page) - 1) * size}
-                        onClickOnRow={onClickOnRow}
-                        columns={["imageUrl", "name", "email", "phone", "dob", "membershipStatus"]}
-                    />
-                )}
+const FIELDS = [
+    {
+        show: true,
+        section: "Personal Details",
+        name: "imageUrl",
+        label: "Image",
+        type: "IMAGE",
+        extraProp: { size: "30px" },
+    },
+    { show: true, section: "Personal Details", name: "name", label: "Name" },
+    { show: true, section: "Contact Details", name: "email", label: "Email" },
+    { show: true, section: "Contact Details", name: "phone", label: "Phone" },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "membershipStatus",
+        label: "Status",
+        getValue: (value) => (
+            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
+                {value}
             </Box>
-            <FlexBetween>
-                <Box></Box>
-                <Pagination
-                    count={totalPage}
-                    onChange={handlePageChange}
-                    page={page}
-                    color="primary"
-                    sx={{ my: 2 }}
-                />
-            </FlexBetween>
-            {loading && <Loading />}
+        ),
+        extraProp: { readOnly: true },
+    },
+    { show: false, section: "Contact Details", name: "address", label: "Address" },
+    {
+        show: false,
+        section: "Contact Details",
+        name: "emergencyContactNumber",
+        label: "Emergency Contact Number",
+    },
+];
+const VIEWS = ["LIST", "CARD", "FORM"];
+
+const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
+
+const Students = ({ ID }) => {
+    const navigate = useNavigate();
+    const { isMobile } = useUI();
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const { triggerSearch } = usePageSearch();
+    const allActivities = useSelector((state) => state.activity.activities);
+
+    const ASSIGNMENT_FIELD = {
+        show: false,
+        name: "assignments",
+        label: "Contracts",
+        type: "VIEW",
+
+        viewProps: {
+            tableCruds: studentsAssignmentsCruds,
+            tableName: "studentActivities",
+            size: 2,
+            actions: [],
+            fields: [
+                {
+                    show: true,
+                    name: "activityName",
+                    label: "Activity",
+                    type: "SELECT",
+                    getValue: (value) => ({ value, key: value }),
+                    editable: (row) => row.assignmentId === "NEW",
+                    extraProp: {
+                        getOptions: async (search, page, limit) =>
+                            allActivities
+                                .filter((a) =>
+                                    a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                )
+                                .slice(page * limit, (page + 1) * limit)
+                                .map((a) => ({ key: a.activityType, value: a.activityType })),
+                    },
+                },
+                { show: true, name: "membershipType", label: "Membership Type" },
+                { show: true, name: "activityAmount", label: "Amount" },
+                { show: true, name: "daysPerWeek", label: "Days Per week" },
+                { show: true, name: "batchName", label: "Batch Name" },
+                { show: true, name: "batchTime", label: "Batch Time" },
+                {
+                    show: true,
+                    name: "registrationDate",
+                    label: "Registration Date",
+                    type: "DATE",
+                    extraProp: { readOnly: true },
+                    defaultValue: getCurrentDateTimeUTC(),
+                },
+                { show: true, name: "membershipStartDate", label: "Start Date", type: "DATE" },
+                { show: true, name: "membershipEndDate", label: "End Date", type: "DATE" },
+                {
+                    show: true,
+                    name: "membershipStatus",
+                    label: "Membership Status",
+                    defaultValue: "INACTIVE",
+                    getValue: (value) => (
+                        <Box
+                            sx={{
+                                color: value === "ACTIVE" ? "green" : "red",
+                                fontWeight: "bolder",
+                            }}
+                        >
+                            {value}
+                        </Box>
+                    ),
+                    extraProp: { readOnly: true },
+                },
+            ],
+            fieldsMeta: {
+                primary: "assignmentId",
+                root: "studentId",
+            },
+            fieldToDisplayOnDelete: "activityName",
+        },
+    };
+
+    const [addNewFunc, setAddNewFunc] = useState(null);
+    return (
+        <FlexBetweenColumn>
+            {!ID && (
+                <FlexBetween paddingBottom={2} gap={1}>
+                    <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                            addNewFunc();
+                            navigate("/management/students/NEW");
+                        }}
+                        sx={{ fontWeight: "bold", padding: ".8rem" }}
+                    >
+                        <AddIcon sx={{ padding: 0, margin: "auto" }} />
+                    </Button>
+                </FlexBetween>
+            )}
+            <Views
+                formKey={ID}
+                tableName={"students"}
+                tableCruds={studentsCruds}
+                size={size}
+                key={"students"}
+                fields={[...FIELDS, ASSIGNMENT_FIELD]}
+                rootId={currentBranch.branchId}
+                fieldsMeta={FIELD_META}
+                currentView={VIEWS[!isMobile ? 0 : 1]}
+                fieldToDisplayOnDelete="name"
+                onSetAddNewFunc={setAddNewFunc}
+                CardContentComponent={StudentCard}
+                editMode={"FORM"}
+            />
         </FlexBetweenColumn>
     );
+};
+
+Students.propTypes = {
+    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default Students;

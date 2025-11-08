@@ -226,7 +226,7 @@ const Views = ({
     };
 
     const openFormView = (row) => {
-        navigate(`/management/instructors/${row.instructorId}`);
+        navigate(`/management/${tableName}/${row[fieldsMeta.primary]}`);
     };
 
     const defaultActions = [
