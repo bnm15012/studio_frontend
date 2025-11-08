@@ -230,10 +230,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
     if (!newRow.activityName || !newRow.membershipType) return;
     try {
       newRow["studentId"] = studentId;
-      newRow["paymentEntry"] = paymentEntry;
-      if (paymentEntry.status === "COMPLETED") {
-        newRow["paymentEntry"]["paymentDate"] = getCurrentDateTimeUTC();
-      }
+      newRow["paymentEntry"] = { ...paymentEntry, paymentDate: newRow["paymentEntry"]["paymentDate"] };
       newRow["paymentEntry"]["payeeId"] = studentId;
       newRow["paymentEntry"]["branchId"] = currentBranch.branchId;
       const { success, message, data: newRowData } = await assignActivityStudentAPI({
@@ -258,7 +255,17 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
   };
 
   const handleNewRowChange = (field, value) => {
-    setNewRow((prev) => ({ ...prev, [field]: value }));
+    setNewRow((prev) => {
+      const updated = { ...prev };
+      if (field.includes('.')) {
+        const [outerKey, innerKey] = field.split('.');
+        updated[outerKey] = { ...updated[outerKey], [innerKey]: value };
+      } else {
+        updated[field] = value;
+      }
+
+      return updated;
+    });
   };
 
   const handleActivityMembershipChange = async (
@@ -547,7 +554,7 @@ const EnrolledActivitiesTableStudent = ({ studentId, data, studentData }) => {
                         format="DATE"
                         value={newRow.paymentEntry.paymentDate}
                         onChange={(value) =>
-                          handleInputChange(null, "paymentEntry.paymentDate", value)}
+                          handleNewRowChange("paymentEntry.paymentDate", value)}
                       />
                     }
                   </TableCell>
