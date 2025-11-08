@@ -94,7 +94,6 @@ const FormView = (props) => {
                                 disabled={loading}
                                 onClick={() => {
                                     handleCancel();
-                                    if (formKey === "NEW") navigate(`/management/${tableName}/`);
                                 }}
                             >
                                 <CancelIcon sx={{ color: "red" }} />
@@ -106,8 +105,9 @@ const FormView = (props) => {
                     )}
                 </Box>
             </FlexBetween>
-            {!data && <Loading />}
-            {data && (
+            {!data ? (
+                <Loading />
+            ) : (
                 <FlexBetween
                     flexDirection={isMobile ? "column" : "row"}
                     my={2}
@@ -203,11 +203,13 @@ const FormView = (props) => {
                     </Box>
                 </FlexBetween>
             )}
-            {viewFields?.length > 0 &&
+            {editingId !== "NEW" &&
+                viewFields?.length > 0 &&
                 viewFields.map((view) => (
                     <>
                         <>{view.label}</>
                         <Views
+                            key={view.label}
                             {...view.viewProps}
                             rootId={formKey}
                             currentView={currentView}

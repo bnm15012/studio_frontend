@@ -90,6 +90,7 @@ const Views = ({
         }
         setEditingId(null);
         setOriginalRow(null);
+        if (formKey === "NEW") navigate(`/management/${tableName}/`);
     };
 
     const handleSave = async (id) => {
@@ -195,6 +196,8 @@ const Views = ({
 
     useEffect(() => {
         fetchData();
+        setEditingId(formKey === "NEW");
+        if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -216,10 +219,6 @@ const Views = ({
         formKey && setRecord(tableState.recordById[formKey] || {});
         setData(tableState.items ?? []);
     }, [formKey, tableState]);
-
-    useEffect(() => {
-        if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
-    }, [addNewRow, onSetAddNewFunc]);
 
     const handleDeleteClick = (row) => {
         setDeleteId(row[fieldsMeta.primary]);
@@ -248,7 +247,7 @@ const Views = ({
         {
             name: "form",
             enabled: !loading,
-            hide: editMode !== "FORM" || formKey,
+            hide: editMode !== "FORM" || !!formKey,
             onClick: openFormView,
             icon: <OpenInNew />,
             sx: { color: "blue" },
@@ -357,7 +356,7 @@ Views.propTypes = {
     formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableName: PropTypes.string.isRequired,
     size: PropTypes.number.isRequired,
-    rootId: PropTypes.number,
+    rootId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableCruds: PropTypes.any,
     fields: PropTypes.array,
     fieldsMeta: PropTypes.shape({
@@ -368,7 +367,7 @@ Views.propTypes = {
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     showAddButton: PropTypes.bool,
-    CardContentComponent: PropTypes.node,
+    CardContentComponent: PropTypes.elementType,
     actions: PropTypes.arrayOf(Object),
     editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),
 };

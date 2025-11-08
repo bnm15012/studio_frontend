@@ -180,6 +180,8 @@ const Instructors = ({ ID }) => {
             fieldToDisplayOnDelete: "activityName",
         },
     };
+
+    const [addNewFunc, setAddNewFunc] = useState(null);
     return (
         <FlexBetweenColumn>
             {!ID && (
@@ -189,6 +191,7 @@ const Instructors = ({ ID }) => {
                         variant="contained"
                         color="primary"
                         onClick={() => {
+                            addNewFunc();
                             navigate("/management/instructors/NEW");
                         }}
                         sx={{ fontWeight: "bold", padding: ".8rem" }}
@@ -208,6 +211,7 @@ const Instructors = ({ ID }) => {
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"
+                onSetAddNewFunc={setAddNewFunc}
                 CardContentComponent={InstructorCard}
                 editMode={"FORM"}
             />
@@ -224,7 +228,6 @@ const Instructors = ({ ID }) => {
 };
 
 Instructors.propTypes = {
-    page: PropTypes.string.isRequired,
     ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 

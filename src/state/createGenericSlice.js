@@ -19,7 +19,8 @@ export function createGenericSlice(options) {
         initialState,
         reducers: {
             setItems(state, action) {
-                state.items = action.payload;
+                state.rootId = action.payload.rootId;
+                state.items = action.payload.data;
             },
             setInfo(state, action) {
                 state.totalCount = action.payload.totalCount;
@@ -38,7 +39,11 @@ export function createGenericSlice(options) {
                 state.items = [action.payload, ...state.items];
             },
             appendItems(state, action) {
-                const newItems = action.payload.filter(
+                if (state.rootId != action.payload.rootId) {
+                    state.rootId = action.payload.rootId;
+                    state.items = [];
+                }
+                const newItems = action.payload.data.filter(
                     (item) =>
                         !state.items.some(
                             (existing) => existing[options.idKey] === item[options.idKey],

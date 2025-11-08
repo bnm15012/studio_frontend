@@ -96,7 +96,9 @@ export function createCrud({
             async (dispatch, getState) => {
                 try {
                     const state = getState()[route];
+                    if (rootId === "NEW") return;
                     if (
+                        state.rootId === rootId &&
                         state.currentPage === params?.page &&
                         params?.searchTerm === state.searchTerm &&
                         JSON.stringify(params) === JSON.stringify(state.filterKeys)
@@ -113,9 +115,9 @@ export function createCrud({
                     });
 
                     if (infinite && params?.searchTerm === state.searchTerm) {
-                        dispatch(actions.appendItems(data));
+                        dispatch(actions.appendItems({ data, rootId }));
                     } else {
-                        dispatch(actions.setItems(data));
+                        dispatch(actions.setItems({ data, rootId }));
                     }
 
                     dispatch(
@@ -142,6 +144,8 @@ export function createCrud({
             (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
             async (dispatch, getState) => {
                 try {
+                    if (id === "NEW") return;
+
                     const state = getState()[route];
                     const cached = state.recordById[id];
 

@@ -6,7 +6,7 @@ import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
 
 const BranchesDropdown = () => {
-    const branches = useSelector((state) => state.branch.branches) || [];
+    const branches = useSelector((state) => state.branch.items) || [];
     const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
     const dispatch = useDispatch();
     const navigate = useNavigate();
