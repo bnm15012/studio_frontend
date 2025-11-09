@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Box, Typography, IconButton, Tooltip } from "@mui/material";
-import { Phone, Copy } from "lucide-react";
+import { Phone, Copy, Mail } from "lucide-react";
 import PropTypes from "prop-types";
 
-// Main Component
 const ContactSection = ({ contact }) => {
     const [copied, setCopied] = useState(false);
+
+    const isEmail = contact.includes("@");
 
     const handleCopy = async () => {
         try {
@@ -17,14 +18,14 @@ const ContactSection = ({ contact }) => {
         }
     };
 
-    const handleCall = () => {
-        if (contact) {
-            window.open(`tel:${contact}`, "_self");
-        }
+    const handleClick = () => {
+        if (!contact) return;
+        const link = isEmail ? `mailto:${contact}` : `tel:${contact}`;
+        window.open(link, "_self");
     };
 
     return (
-        <Box display="flex" alignItems="center" gap={2}>
+        <Box display="flex" alignItems="center" gap={2} my={2}>
             <Box
                 sx={{
                     p: 1,
@@ -33,14 +34,17 @@ const ContactSection = ({ contact }) => {
                     display: "flex",
                     alignItems: "center",
                 }}
+                onClick={handleClick}
             >
-                <Phone onClick={handleCall} size={18} />
+                {isEmail ? <Mail size={18} /> : <Phone size={18} />}
             </Box>
-            <Box flexGrow={1} onClick={handleCall} sx={{ cursor: "pointer" }}>
-                <Typography variant="body2" fontWeight={500}>
+
+            <Box flexGrow={1} onClick={handleClick} sx={{ cursor: "pointer" }}>
+                <Typography variant="body2" fontWeight={500} sx={{ wordBreak: "break-all" }}>
                     {contact}
                 </Typography>
             </Box>
+
             <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
                 <IconButton size="small" onClick={handleCopy}>
                     <Copy size={16} color="#1976d2" />
