@@ -43,11 +43,11 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  version: 6,
+  version: 1,
   whitelist: ['auth', 'branch'],
   migrate: (state,) => {
     const currentVersion = state?._persist?.version;
-    if (currentVersion !== 6) {
+    if (currentVersion !== 1) {
       return Promise.resolve(undefined);
     }
     return Promise.resolve(state);
