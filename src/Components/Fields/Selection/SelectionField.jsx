@@ -67,7 +67,7 @@ export default function SelectionField({
             options={options}
             loading={loading}
             onChange={(e, option) => {
-                setValue(option.key);
+                setValue(option);
             }}
             inputValue={inputValue}
             onInputChange={(event, newInput) => {

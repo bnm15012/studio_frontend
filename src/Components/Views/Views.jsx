@@ -32,6 +32,7 @@ const Views = ({
     CardContentComponent,
     actions = [],
     beforeAdd = async (row) => row,
+    beforeUpdate = async (row) => row,
     editMode = "INLINE",
 }) => {
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ const Views = ({
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
-    const [record, setRecord] = useState({});
+    const [record, setRecord] = useState();
 
     const handleViewOpen = (row) => {
         setViewRow(row);
@@ -102,7 +103,9 @@ const Views = ({
                 dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
                 setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
             } else {
-                dispatch(tableCruds.update(id, newRow, token, showAlert, setLoading));
+                dispatch(
+                    tableCruds.update(id, await beforeUpdate(newRow), token, showAlert, setLoading),
+                );
             }
         } catch (error) {
             console.error(error);
@@ -136,7 +139,6 @@ const Views = ({
             current[key] = { ...current[key] };
             current = current[key];
         }
-
         current[pathParts[pathParts.length - 1]] = value;
         return updatedItem;
     };
@@ -219,7 +221,7 @@ const Views = ({
     }, [fetchData, page, subscribe]);
 
     useEffect(() => {
-        formKey && setRecord(tableState.recordById[formKey] || {});
+        formKey && setRecord(tableState.recordById[formKey]);
         setData(tableState.items ?? []);
     }, [formKey, tableState]);
 
@@ -369,6 +371,7 @@ Views.propTypes = {
     }),
     onSetAddNewFunc: PropTypes.func,
     beforeAdd: PropTypes.func,
+    beforeUpdate: PropTypes.func,
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     showAddButton: PropTypes.bool,

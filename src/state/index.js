@@ -9,9 +9,9 @@ import dialogSlice from "./dialogSlice";
 import notificationSlice from "./notificationSlice";
 import activitySlice from "./activitySlice";
 import analysisSlice from "./analysisSlice";
-import bookingSlice from "./bookingSlice";
 import membershipTypesSlice from "./activityMembershipTypeSlice";
 import {
+    bookingCruds,
     branchCruds,
     clientCruds,
     enquiryCruds,
@@ -33,11 +33,11 @@ const rootReducer = combineReducers({
     studentActivities: studentsAssignmentsCruds.reducer,
     branch: branchCruds.reducer,
     clients: clientCruds.reducer,
+    booking: bookingCruds.reducer,
     expenses: expenseCruds.reducer,
     payments: paymentCruds.reducer,
     analysis: analysisSlice,
     dialog: dialogSlice,
-    booking: bookingSlice,
     notifications: notificationSlice,
     membershipTypes: membershipTypesSlice,
     enquiries: enquiryCruds.reducer,

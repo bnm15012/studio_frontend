@@ -75,7 +75,7 @@ const Field = ({
             case "BOOL":
                 return value ? "Yes" : "No";
             case "SELECT":
-                return value.value;
+                return value?.value;
             case "DATE":
             case "DATETIME":
                 return getLocalDateTime(value, type);

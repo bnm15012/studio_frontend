@@ -67,7 +67,7 @@ const Sidebar = ({ sidebarOpen }) => {
             icon: <Contacts />,
         },
         {
-            path: "/management/bookings",
+            path: "/management/booking",
             label: "Bookings",
             show: isEnabled(FEATURE_KEYS.BOOKINGS),
             showOnBottomBar: isEnabled(FEATURE_KEYS.BOOKINGS),

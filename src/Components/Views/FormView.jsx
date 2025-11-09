@@ -35,6 +35,7 @@ const FormView = (props) => {
     const theme = useTheme();
 
     const normalFields = fields.filter((f) => !["IMAGE", "VIEW"].includes(f.type));
+
     const imageField = fields.find((f) => f.type === "IMAGE");
     const viewFields = fields.filter((f) => f.type === "VIEW");
 
@@ -119,7 +120,6 @@ const FormView = (props) => {
                         alignItems: "flex-start",
                     }}
                 >
-                    {/* 🖼️ Image Section */}
                     {imageField && (
                         <Box
                             p={2}
@@ -184,12 +184,13 @@ const FormView = (props) => {
                                                                           data,
                                                                           field.name,
                                                                       ),
+                                                                      data,
                                                                   )
                                                                 : getNestedValue(data, field.name)
                                                         }
-                                                        setValue={(v) =>
-                                                            handleChange(v, formKey, field.name)
-                                                        }
+                                                        setValue={(v) => {
+                                                            handleChange(v, formKey, field.name);
+                                                        }}
                                                         type={field.type}
                                                         extraProp={field.extraProp}
                                                     />

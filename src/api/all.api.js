@@ -18,6 +18,8 @@ export const studentsAssignmentsCruds = createCrud({
 
 export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
 
+export const bookingCruds = createCrud({ route: "booking" });
+
 export const expenseCruds = createCrud({ route: "expenses", idKey: "expenseId" });
 
 export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" });

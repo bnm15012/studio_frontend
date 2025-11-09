@@ -25,8 +25,8 @@ const Management = () => {
         switch (page) {
             case "clients":
                 return <Clients />;
-            case "bookings":
-                if (ID) return <BookingFormView ID={ID} page={page} />;
+            case "booking":
+                if (ID) return <Bookings ID={ID} />;
                 return <Bookings />;
             case "students":
                 if (ID) return <Students ID={ID} />;
