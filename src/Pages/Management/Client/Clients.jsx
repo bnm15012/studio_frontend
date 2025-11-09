@@ -1,101 +1,79 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button, Pagination } from "@mui/material";
-import SearchField from "../../../Components/SearchField";
+import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
-import { useDispatch, useSelector } from "react-redux";
-import TableWithEditAddDelete from "./CLientTable.jsx";
-import { useAppSelector } from "../../../state/index.js";
-import { clientCruds } from "../../../api/all.api.js";
+import { useSelector } from "react-redux";
+import { clientCruds } from "../../../api/all.api";
+import Views from "../../../Components/Views/Views";
+import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import { useUI } from "../../../context/UIContext";
+import ClientCardComponent from "./ClientCardComponent";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
-const size = 7;
-const Clients = () => {
-    const showAlert = useAlert();
-    const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const clientState = useAppSelector((state) => state.clients);
-    const [newRow, setNewRow] = useState(null);
 
-    const fetchClients = useCallback(
-        async (page = 1, searchTerm = "") => {
-            dispatch(
-                clientCruds.getAll(
-                    showAlert,
-                    setLoading,
-                    token,
-                    { page, size, searchTerm },
-                    currentBranch.branchId,
-                ),
-            );
+const LIMIT = 7;
+
+const FIELD_META = {
+    primary: "clientId",
+    root: "branchId",
+};
+
+const VIEWS = ["LIST", "CARD"];
+
+const FIELDS = [
+    { show: true, name: "groupName", label: "Group Name" },
+    { show: true, name: "pocName", label: "Poc Name" },
+    { show: true, name: "pocPhone", label: "Group Phone", type: FIELD_TYPES.NUMBER },
+    { show: true, name: "pocEmail", label: "Group Email" },
+    {
+        show: true,
+        name: "clientType",
+        label: "Client Type",
+        type: FIELD_TYPES.SELECT,
+        getValue: (value) => value && { value, key: value },
+        extraProp: {
+            getOptions: async (search, page, limit) =>
+                clientTypes.map((a) => ({ key: a, value: a })),
         },
-        [dispatch, showAlert, token, currentBranch.branchId],
-    );
-
-    useEffect(() => {
-        !clientState.items.length && fetchClients();
-    }, [clientState.items.length, fetchClients]);
-
-    const handlePageChange = async (e, p) => {
-        setLoading(true);
-        setPage(p);
-        await fetchClients(p);
-        setLoading(false);
-    };
-
-    const handleAddNew = () => {
-        setNewRow({
-            groupName: "test",
-            pocName: "test",
-            pocPhone: "test",
-            pocEmail: "test",
-            clientType: clientTypes[0],
-            notes: "",
-            branchId: currentBranch.branchId,
-        });
-    };
+    },
+    { show: true, name: "notes", label: "Notes" },
+];
+const Clients = () => {
+    const { isMobile } = useUI();
+    const [addNewFunc, setAddNewFunc] = useState(null);
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
-            {loading && <Loading />}
-            <FlexBetween paddingBottom={2} height={"4rem"} gap={1}>
-                <SearchField handleSearch={(searchTerm) => fetchClients(1, searchTerm)} />
+            <FlexBetween paddingBottom={2} gap={1}>
+                <Box ml={"auto"}></Box>
                 <Button
                     variant="contained"
                     color="primary"
-                    disabled={newRow != null}
-                    onClick={() => handleAddNew()}
-                    sx={{ fontWeight: "bold", padding: "1px" }}
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
+                    sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
                     <AddIcon sx={{ padding: 0, margin: "auto" }} />
                 </Button>
             </FlexBetween>
             <Box>
-                <TableWithEditAddDelete
-                    initialData={clientState.items ?? []}
-                    clientTypes={clientTypes}
-                    startIndex={(parseInt(page) - 1) * size}
-                    token={token}
-                    newRow={newRow}
-                    setNewRow={setNewRow}
+                <Views
+                    tableName={"clients"}
+                    tableCruds={clientCruds}
+                    size={LIMIT}
+                    key={"clients"}
+                    fields={FIELDS}
+                    rootId={currentBranch.branchId}
+                    fieldsMeta={FIELD_META}
+                    onSetAddNewFunc={setAddNewFunc}
+                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    fieldToDisplayOnDelete="groupName"
+                    CardContentComponent={ClientCardComponent}
                 />
             </Box>
-            <FlexBetween>
-                <Box></Box>
-                <Pagination
-                    count={clientState.totalPages}
-                    page={page}
-                    onChange={handlePageChange}
-                    color="primary"
-                    sx={{ my: 2 }}
-                />
-            </FlexBetween>
         </FlexBetweenColumn>
     );
 };

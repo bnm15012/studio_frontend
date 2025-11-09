@@ -36,28 +36,6 @@ export const getAllClientsAPI = async ({ branchId, page, size, token, searchTerm
     }
 };
 
-/**
- * Delete an client by ID.
- * @param {Object} params - Parameters for API call.
- * @param {number} params.clientId - Client ID to delete.
- * @param {string} params.token - Authorization token.
- */
-export const deleteClientAPI = async ({ clientId, token }) => {
-    try {
-        await api.delete(`/clients/delete/${clientId}`, getHeaders(token));
-        return {
-            data: null,
-            success: true,
-            message: "Client deleted successfully!",
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: getErrorMessage(error, "Failed to delete client!"),
-        };
-    }
-};
-
 export const getCLientByNamesAPI = async ({ clientName, token }) => {
     try {
         const response = await api.get(
