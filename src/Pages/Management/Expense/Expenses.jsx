@@ -43,7 +43,10 @@ const FIELDS = [
         name: "expenseCategory",
         label: "Expense Category",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value, value }),
+        getValue: (value) => {
+            debugger;
+            return { key: value, value };
+        },
         extraProp: {
             getOptions: async (search, page, limit) =>
                 categories

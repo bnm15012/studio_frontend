@@ -12,6 +12,7 @@ export default function SelectionField({
     getOptions,
     addValue = true,
     variant = "standard",
+    saveType = "string",
 }) {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
@@ -67,7 +68,7 @@ export default function SelectionField({
             options={options}
             loading={loading}
             onChange={(e, option) => {
-                setValue(option);
+                setValue(saveType == "string" ? option.value : option);
             }}
             inputValue={inputValue}
             onInputChange={(event, newInput) => {
@@ -104,6 +105,7 @@ SelectionField.propTypes = {
         key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
+    saveType: PropTypes.oneOf(["string", "object"]),
     addValue: PropTypes.bool,
     setValue: PropTypes.func.isRequired,
     readOnly: PropTypes.bool,

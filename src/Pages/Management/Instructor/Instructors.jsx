@@ -13,7 +13,7 @@ import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
 const size = 7;
@@ -52,6 +52,7 @@ const FIELDS = [
                 {value}
             </Box>
         ),
+        defaultValue: "ACTIVE",
         extraProp: { readOnly: true },
     },
     { show: false, section: "Contact Details", name: "address", label: "Address" },
@@ -99,89 +100,91 @@ const Instructors = ({ ID }) => {
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
     const allActivities = useSelector((state) => state.activity.activities);
 
-    const ASSIGNMENT_FIELD = {
-        show: false,
-        name: "assignments",
-        label: "Contracts",
-        type: "VIEW",
+    const ASSIGNMENT_FIELD = useMemo(
+        () => ({
+            show: false,
+            name: "assignments",
+            label: "Contracts",
+            type: "VIEW",
 
-        viewProps: {
-            tableCruds: instructorsAssignmentsCruds,
-            tableName: "instructorActivities",
-            size: 2,
-            actions: [
-                {
-                    name: "Document",
-                    icon: <FeedIcon />,
-                    enabled: true,
-                    sx: { color: "blue" },
-                    onClick: (row) => {
-                        setGenerateContractDoc(row);
+            viewProps: {
+                tableCruds: instructorsAssignmentsCruds,
+                tableName: "instructorActivities",
+                size: 2,
+                actions: [
+                    {
+                        name: "Document",
+                        icon: <FeedIcon />,
+                        enabled: true,
+                        sx: { color: "blue" },
+                        onClick: (row) => {
+                            setGenerateContractDoc(row);
+                        },
                     },
-                },
-            ],
-            fields: [
-                {
-                    show: true,
-                    name: "activityName",
-                    label: "Activity",
-                    type: "SELECT",
-                    getValue: (value) => ({ value, key: value }),
-                    editable: (row) => row.assignmentId === "NEW",
-                    extraProp: {
-                        getOptions: async (search, page, limit) =>
-                            allActivities
-                                .filter((a) =>
-                                    a.activityType.toLowerCase().includes(search.toLowerCase()),
-                                )
-                                .slice(page * limit, (page + 1) * limit)
-                                .map((a) => ({ key: a.activityType, value: a.activityType })),
+                ],
+                fields: [
+                    {
+                        show: true,
+                        name: "activityName",
+                        label: "Activity",
+                        type: "SELECT",
+                        getValue: (value) => ({ value, key: value }),
+                        editable: (row) => row.assignmentId === "NEW",
+                        extraProp: {
+                            getOptions: async (search, page, limit) =>
+                                allActivities
+                                    .filter((a) =>
+                                        a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                    )
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a) => ({ key: a.activityType, value: a.activityType })),
+                        },
                     },
+                    {
+                        show: true,
+                        name: "assignedDate",
+                        label: "Assigned Date",
+                        type: "DATE",
+                        extraProp: { readOnly: true },
+                        defaultValue: getCurrentDateTimeUTC(),
+                    },
+                    { show: true, name: "startDate", label: "Start Date", type: "DATE" },
+                    { show: true, name: "endDate", label: "End Date", type: "DATE" },
+                    {
+                        show: true,
+                        name: "contractDocument",
+                        label: "Contract Document",
+                        type: "IMAGE_DIALOG",
+                        extraProp: { defaultImage: "/assets/paper_2.jpg" },
+                    },
+                    {
+                        show: true,
+                        name: "membershipStatus",
+                        label: "Membership Status",
+                        defaultValue: "INACTIVE",
+                        getValue: (value) => (
+                            <Box
+                                sx={{
+                                    color: value === "ACTIVE" ? "green" : "red",
+                                    fontWeight: "bolder",
+                                }}
+                            >
+                                {value}
+                            </Box>
+                        ),
+                        extraProp: { readOnly: true },
+                    },
+                ],
+                fieldsMeta: {
+                    primary: "assignmentId",
+                    root: "instructorId",
                 },
-                {
-                    show: true,
-                    name: "assignedDate",
-                    label: "Assigned Date",
-                    type: "DATE",
-                    extraProp: { readOnly: true },
-                    defaultValue: getCurrentDateTimeUTC(),
-                },
-                { show: true, name: "startDate", label: "Start Date", type: "DATE" },
-                { show: true, name: "endDate", label: "End Date", type: "DATE" },
-                {
-                    show: true,
-                    name: "contractDocument",
-                    label: "Contract Document",
-                    type: "IMAGE_DIALOG",
-                    extraProp: { defaultImage: "/assets/paper_2.jpg" },
-                },
-                {
-                    show: true,
-                    name: "membershipStatus",
-                    label: "Membership Status",
-                    defaultValue: "INACTIVE",
-                    getValue: (value) => (
-                        <Box
-                            sx={{
-                                color: value === "ACTIVE" ? "green" : "red",
-                                fontWeight: "bolder",
-                            }}
-                        >
-                            {value}
-                        </Box>
-                    ),
-                    extraProp: { readOnly: true },
-                },
-            ],
-            fieldsMeta: {
-                primary: "assignmentId",
-                root: "instructorId",
+                fieldToDisplayOnDelete: "activityName",
             },
-            fieldToDisplayOnDelete: "activityName",
-        },
-    };
+        }),
+        [allActivities],
+    );
 
-    const [addNewFunc, setAddNewFunc] = useState(null);
     return (
         <FlexBetweenColumn>
             {!ID && (
@@ -191,7 +194,6 @@ const Instructors = ({ ID }) => {
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                            addNewFunc();
                             navigate("/management/instructors/NEW");
                         }}
                         sx={{ fontWeight: "bold", padding: ".8rem" }}
@@ -211,7 +213,6 @@ const Instructors = ({ ID }) => {
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"
-                onSetAddNewFunc={setAddNewFunc}
                 CardContentComponent={InstructorCard}
                 editMode={"FORM"}
             />

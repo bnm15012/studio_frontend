@@ -411,7 +411,6 @@ const Students = ({ ID }) => {
         }),
         [allActivities, beforeAdd, currentBranch.branchId],
     );
-    const [addNewFunc, setAddNewFunc] = useState(null);
 
     return (
         <FlexBetweenColumn>
@@ -422,7 +421,6 @@ const Students = ({ ID }) => {
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                            addNewFunc();
                             navigate("/management/students/NEW");
                         }}
                         sx={{ fontWeight: "bold", padding: ".8rem" }}
@@ -442,7 +440,6 @@ const Students = ({ ID }) => {
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"
-                onSetAddNewFunc={setAddNewFunc}
                 CardContentComponent={StudentCard}
                 editMode={"FORM"}
             />

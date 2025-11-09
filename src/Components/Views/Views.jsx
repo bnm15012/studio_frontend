@@ -56,7 +56,7 @@ const Views = ({
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
-    const [record, setRecord] = useState();
+    const [record, setRecord] = useState({});
 
     const handleViewOpen = (row) => {
         setViewRow(row);
@@ -70,7 +70,7 @@ const Views = ({
 
     const handleEdit = (row) => {
         if (editingId) {
-            showAlert("Can't Add New while edit", "warning");
+            showAlert("Can't Edit New while edit", "warning");
             return;
         }
         const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
@@ -195,20 +195,24 @@ const Views = ({
             newRow = updateField(f.defaultValue ?? "", newRow, f.name);
         });
 
-        setData((prev) => [newRow, ...prev]);
+        if (formKey) setRecord(newRow);
+        else setData((prev) => [newRow, ...prev]);
+
         setEditingId("NEW");
-    }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, rootId, showAlert]);
+        console.log(formKey);
+    }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, formKey, rootId, showAlert]);
 
     useEffect(() => {
         fetchData();
-        setEditingId(formKey === "NEW");
         if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        formKey && fetchOneData(formKey);
-    }, [fetchOneData, formKey]);
+        if (formKey === "NEW") {
+            record && !Object.keys(record).length && addNewRow();
+        } else if (formKey) fetchOneData(formKey);
+    }, [addNewRow, fetchOneData, formKey, record]);
 
     useEffect(() => {
         const unsubscribe = subscribe((term, filterKeys) => {
@@ -221,7 +225,9 @@ const Views = ({
     }, [fetchData, page, subscribe]);
 
     useEffect(() => {
-        formKey && setRecord(tableState.recordById[formKey]);
+        if (formKey && formKey !== "NEW") {
+            setRecord(tableState.recordById[formKey] || {});
+        }
         setData(tableState.items ?? []);
     }, [formKey, tableState]);
 
@@ -282,6 +288,8 @@ const Views = ({
         handlePageChange,
         addNewRow: showAddButton ? addNewRow : undefined,
     };
+
+    console.log(record);
 
     return (
         <>

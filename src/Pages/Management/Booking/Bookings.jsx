@@ -96,11 +96,18 @@ const Bookings = ({ ID }) => {
         async (row) => {
             const modifiedData = { ...row };
 
+            const clientEntry = modifiedData.clientEntry;
+
+            if (Object.keys(clientEntry).includes("key")) {
+                modifiedData.clientEntry = { clientId: clientEntry.key };
+            }
+
             const paymentInit = {
                 actualAmount: 0,
                 amount: 0,
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
+                branchId: currentBranch.branchId,
             };
 
             const paymentData = await awaitForDialog(paymentInit);
@@ -112,7 +119,7 @@ const Bookings = ({ ID }) => {
             }
             return modifiedData;
         },
-        [awaitForDialog],
+        [awaitForDialog, currentBranch.branchId],
     );
 
     const FIELDS = useMemo(
@@ -128,6 +135,7 @@ const Bookings = ({ ID }) => {
                     obj && { value: obj.value || obj.pocName, key: obj.key || obj.clientId },
                 extraProp: {
                     addValue: false,
+                    saveType: "object",
                     getOptions: (searchTerm = "", page, size) =>
                         getClientsByName({ clientName: searchTerm, page, size }),
                 },
@@ -138,6 +146,7 @@ const Bookings = ({ ID }) => {
                 name: "totalAmount",
                 label: "Total Amount",
                 type: FIELD_TYPES.NUMBER,
+                defaultValue: 20,
             },
             {
                 show: true,
@@ -167,7 +176,7 @@ const Bookings = ({ ID }) => {
                 label: "Advance Amount",
                 section: "Advance Payment Details",
                 type: FIELD_TYPES.NUMBER,
-                defaultValue: 0,
+                defaultValue: 10,
             },
             {
                 show: true,
@@ -175,6 +184,7 @@ const Bookings = ({ ID }) => {
                 name: "startTime",
                 label: "Start Time",
                 type: "DATETIME",
+                defaultValue: getCurrentDateTimeUTC(),
             },
             {
                 show: true,
@@ -182,12 +192,15 @@ const Bookings = ({ ID }) => {
                 name: "endTime",
                 label: "End Time",
                 type: "DATETIME",
+                defaultValue: getCurrentDateTimeUTC(),
             },
             {
                 show: false,
                 name: "advanceDate",
                 section: "Advance Payment Details",
                 label: "Advance Date",
+                type: "DATETIME",
+                defaultValue: getCurrentDateTimeUTC(),
             },
             {
                 show: false,
@@ -228,13 +241,12 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 label: "Balance Amount",
                 type: FIELD_TYPES.NUMBER,
-                defaultValue: 0,
+                defaultValue: 10,
             },
             { show: false, section: "Booking Details", name: "notes", label: "Notes" },
         ],
         [getClientsByName],
     );
-    const [addNewFunc, setAddNewFunc] = useState(null);
 
     return (
         <FlexBetweenColumn>
@@ -254,7 +266,6 @@ const Bookings = ({ ID }) => {
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                            addNewFunc();
                             navigate("/management/booking/NEW");
                         }}
                         sx={{ fontWeight: "bold", padding: ".8rem" }}
@@ -287,7 +298,6 @@ const Bookings = ({ ID }) => {
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="purpose"
-                onSetAddNewFunc={setAddNewFunc}
                 CardContentComponent={BookingCard}
                 editMode={"FORM"}
             />

@@ -9,7 +9,6 @@ import Expenses from "./Expense/Expenses";
 import Payments from "./Payments/Payments";
 import Reports from "./Reports/Reports";
 import Enquiry from "./Enquiry/Enquiry.jsx";
-import BookingFormView from "./Booking/BookingFormView";
 import Communication from "./Communication/Communication";
 import Branches from "./Branches/Branches";
 import BranchPage from "./Branches/BranchPage";
