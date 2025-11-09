@@ -46,7 +46,6 @@ import { updatePaymentAPI } from "../../Payments/payment.api";
 const PAYMENT_STATUS = [
   { label: "COMPLETED", value: "COMPLETED" },
   { label: "PENDING", value: "PENDING" },
-  { label: "FAILED", value: "FAILED" }
 ]
 const PAYMENT_TYPE = [
   { label: "CASH", value: "CASH" },
@@ -68,7 +67,7 @@ const initialNewRowState = {
     payeeType: "STUDENT",
     actualAmount: 0,
     amount: 0,
-    paymentDate: undefined,
+    paymentDate: getCurrentDateTimeUTC(),
     status: PAYMENT_STATUS[0].value,
     paymentType: PAYMENT_TYPE[0].value,
   }
