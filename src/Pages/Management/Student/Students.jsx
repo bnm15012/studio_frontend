@@ -13,6 +13,9 @@ import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import StudentInvoice from "./StudentInvoice.jsx";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 
 const size = 7;
 
@@ -20,6 +23,9 @@ const FIELD_META = {
     primary: "studentId",
     root: "branchId",
 };
+
+const PAYMENT_STATUS = ["COMPLETED", "PENDING"];
+const PAYMENT_TYPE = ["CASH", "UPI"];
 
 const FIELDS = [
     {
@@ -70,9 +76,38 @@ const Students = ({ ID }) => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
+    const [showInvoice, setShowInvoice] = useState(false);
+    const [paymentEntry, setPaymentEntry] = useState({
+        actualAmount: 0,
+        amount: 0,
+        status: PAYMENT_STATUS[0].value,
+        paymentType: PAYMENT_TYPE[0].value,
+    });
+
+    const openPaymentDialog = useCallback(
+        () =>
+            new Promise((resolve) => {
+                setPaymentEntry({});
+                setOpen(true);
+
+                const handleSave = (data) => {
+                    setOpen(false);
+                    resolve(data); // resolves when dialog saved
+                };
+
+                const handleClose = () => {
+                    setOpen(false);
+                    resolve(null); // resolves null if cancelled
+                };
+
+                // store handlers so the dialog can call them
+                setPaymentEntry({ onSave: handleSave, onClose: handleClose });
+            }),
+        [],
+    );
 
     const beforeAdd = useCallback(
-        (row) => {
+        async (row) => {
             const modifiedData = { ...row };
             const batchEntry = allActivities
                 ?.find((a) => a.activityType === modifiedData["activityName"])
@@ -82,6 +117,8 @@ const Students = ({ ID }) => {
                         b.name === modifiedData["batchName"] &&
                         b.daysPerWeek === modifiedData["daysPerWeek"],
                 );
+
+            const paymentData = await openPaymentDialog();
 
             if (batchEntry) {
                 modifiedData.activityAmount = batchEntry.price;
@@ -97,7 +134,7 @@ const Students = ({ ID }) => {
         () => ({
             show: false,
             name: "assignments",
-            label: "Contracts",
+            label: "Assigned Activities",
             type: "VIEW",
 
             viewProps: {
@@ -105,7 +142,17 @@ const Students = ({ ID }) => {
                 tableName: "studentActivities",
                 beforeAdd,
                 size: 2,
-                actions: [],
+                actions: [
+                    {
+                        name: "Document",
+                        icon: <ReceiptIcon />,
+                        enabled: true,
+                        sx: { color: "blue" },
+                        onClick: (row) => {
+                            setShowInvoice(row);
+                        },
+                    },
+                ],
                 fields: [
                     {
                         show: true,
@@ -299,13 +346,13 @@ const Students = ({ ID }) => {
                         show: false,
                         name: "paymentEntry.status",
                         label: "Payee",
-                        defaultValue: "PENDING",
+                        defaultValue: PAYMENT_STATUS[0],
                     },
                     {
                         show: false,
                         name: "paymentEntry.paymentType",
                         label: "Payee",
-                        defaultValue: "CASH",
+                        defaultValue: PAYMENT_TYPE[0],
                     },
                     {
                         show: false,
@@ -387,6 +434,24 @@ const Students = ({ ID }) => {
                 CardContentComponent={StudentCard}
                 editMode={"FORM"}
             />
+            {showInvoice && (
+                <StudentInvoice
+                    open={true}
+                    onClose={() => setShowInvoice(false)}
+                    activityData={showInvoice}
+                />
+            )}
+            {openPaymentDialog && <PaymentEntryDialog
+                open={true}
+                setOpen={setOpen}
+                onSave={() => {
+                    setOpenPaymentDialog(false);
+                }}
+                paymentEntry={paymentEntry}
+                setPaymentEntry={setPaymentEntry}
+                paymentStatus={PAYMENT_STATUS}
+                paymentType={PAYMENT_TYPE}
+            />}
         </FlexBetweenColumn>
     );
 };

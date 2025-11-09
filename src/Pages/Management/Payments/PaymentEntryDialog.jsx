@@ -75,14 +75,6 @@ const PaymentEntryDialog = ({
                     ))}
                 </Select>
             </FormControl>
-            {/* <FormControl>
-            <DateTimeField
-              format="DATE"
-              value={paymentEntry?.paymentDate}
-              onChange={value => setPaymentEntry({ ...paymentEntry, paymentDate: value })}
-              textFieldVarient={"outlined"}
-            />
-          </FormControl> */}
         </Box>
     </StyledDialog>
 );

@@ -1,26 +1,33 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
-import { getLocalDateTime } from "../../../../utils/DateUtil";
-import { useUI } from "../../../../context/UIContext";
-import StyledDialog from "../../../../Components/New/StyledDialog";
+import { useEffect, useRef, useState } from "react";
+import { getLocalDateTime } from "../../../utils/DateUtil";
+import { useUI } from "../../../context/UIContext";
+import StyledDialog from "../../../Components/New/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
-import { WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "../../../../Components/New/Html2PDF/HtmlToPdfViewer";
+import { Download, WhatsApp } from "@mui/icons-material";
+import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
-const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
+const StudentInvoice = ({ open, onClose, activityData }) => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const pdfViewerRef = useRef();
     const { isBatchEnabled } = useUI();
     const studio = useSelector((state) => state.auth.studio);
 
+    const tableState = useSelector((state) => state["students"]);
+
+    const [studentData, setStudentData] = useState();
+
+    useEffect(() => {
+        studentData && setStudentData(tableState.recordById[activityData.studentId] || {});
+    }, [activityData.studentId, studentData, tableState.recordById]);
     return (
         <StyledDialog
             open={open}
             onClose={onClose}
             maxWidth="md"
-            confirmText="Download"
+            confirmText={<Download />}
             onConfirm={() => pdfViewerRef.current.downloadPDF()}
             actions={[
                 {
@@ -51,7 +58,7 @@ const StudentInvoice = ({ open, onClose, studentData, activityData }) => {
                         title: "Invoice",
                         templateName: "MEMBERSHIP_INVOICE",
                         activityType: activityData?.activityName,
-                        memberIds: [studentData.studentId],
+                        memberIds: [studentData?.studentId],
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={
@@ -342,13 +349,8 @@ const tableCellStyle = {
 StudentInvoice.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    studentData: PropTypes.shape({
-        studentId: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        phone: PropTypes.string.isRequired,
-    }).isRequired,
     activityData: PropTypes.shape({
+        studentId: PropTypes.number,
         activity: PropTypes.object,
         activityName: PropTypes.string.isRequired,
         activityAmount: PropTypes.number,

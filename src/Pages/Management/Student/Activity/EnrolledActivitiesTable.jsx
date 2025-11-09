@@ -36,7 +36,7 @@ import DateTimeField from "../../../../Components/DateTimeField";
 import { getEndDateBySubscriptionPlan } from "../../../../utils/SubscriptionPlanUtil";
 import PaymentEntryDialog from "../../Payments/PaymentEntryDialog";
 import DeleteDialog from "../../../../Components/DeleteDialog";
-import StudentInvoice from "./StudentInvoice";
+import StudentInvoice from "../StudentInvoice";
 // import { clearPaymentPages } from "../../../../state/paymentSlice";
 import { StyledTableContainer } from "../../../../Components/StyledTableComponents";
 import { useUI } from "../../../../context/UIContext";

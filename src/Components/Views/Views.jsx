@@ -31,7 +31,7 @@ const Views = ({
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
     actions = [],
-    beforeAdd = (row) => row,
+    beforeAdd = async (row) => row,
     editMode = "INLINE",
 }) => {
     const dispatch = useDispatch();

@@ -218,7 +218,6 @@ const Instructors = ({ ID }) => {
             {generateContractDoc && (
                 <InstructorContract
                     open={true}
-                    tableCruds={instructorsCruds}
                     onClose={() => setGenerateContractDoc(false)}
                     activityData={generateContractDoc}
                 />

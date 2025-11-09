@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { Add } from "@mui/icons-material";
 import FlexEvenly from "../FlexEvenly";
+import { useUI } from "../../context/UIContext";
+import FlexBetween from "../FlexBetween";
 const ListView = ({
     fields,
     data,
@@ -29,6 +31,8 @@ const ListView = ({
 }) => {
     const isEdit = (row, field) =>
         editingId === row[fieldsMeta.primary] && (field?.editable ? field.editable(row) : true);
+
+    const { isMobile } = useUI();
     return (
         <StyledTableContainer component={Paper}>
             <StyledTable>
@@ -112,38 +116,43 @@ const ListView = ({
                                 ))}
 
                             <StyledTableCell>
-                                {editingId === row[fieldsMeta.primary] ? (
-                                    <>
-                                        <IconButton
-                                            sx={{ color: "blue" }}
-                                            onClick={() => handleSave(row[fieldsMeta.primary])}
-                                        >
-                                            <SaveIcon />
-                                        </IconButton>
-                                        <IconButton sx={{ color: "red" }} onClick={handleCancel}>
-                                            <CancelIcon />
-                                        </IconButton>
-                                    </>
-                                ) : (
-                                    <>
-                                        {actions
-                                            .filter((a) => !a.hide)
-                                            .map(({ name, enabled, onClick, icon, sx }) => (
-                                                <IconButton
-                                                    key={name}
-                                                    disabled={
-                                                        typeof enabled === "function"
-                                                            ? !enabled(row)
-                                                            : !enabled
-                                                    }
-                                                    sx={sx}
-                                                    onClick={() => onClick(row)}
-                                                >
-                                                    {icon || name}
-                                                </IconButton>
-                                            ))}
-                                    </>
-                                )}
+                                <FlexBetween flexDirection={isMobile ? "column" : "row"}>
+                                    {editingId === row[fieldsMeta.primary] ? (
+                                        <>
+                                            <IconButton
+                                                sx={{ color: "blue" }}
+                                                onClick={() => handleSave(row[fieldsMeta.primary])}
+                                            >
+                                                <SaveIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                sx={{ color: "red" }}
+                                                onClick={handleCancel}
+                                            >
+                                                <CancelIcon />
+                                            </IconButton>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {actions
+                                                .filter((a) => !a.hide)
+                                                .map(({ name, enabled, onClick, icon, sx }) => (
+                                                    <IconButton
+                                                        key={name}
+                                                        disabled={
+                                                            typeof enabled === "function"
+                                                                ? !enabled(row)
+                                                                : !enabled
+                                                        }
+                                                        sx={sx}
+                                                        onClick={() => onClick(row)}
+                                                    >
+                                                        {icon || name}
+                                                    </IconButton>
+                                                ))}
+                                        </>
+                                    )}
+                                </FlexBetween>
                             </StyledTableCell>
                         </StyledTableRow>
                     ))}
