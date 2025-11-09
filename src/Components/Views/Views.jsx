@@ -98,7 +98,7 @@ const Views = ({
         try {
             const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
             if (id === "NEW") {
-                const { [fieldsMeta.primary]: id, ...withoutId } = beforeAdd(newRow);
+                const { [fieldsMeta.primary]: id, ...withoutId } = await beforeAdd(newRow);
                 dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
                 setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
             } else {
@@ -108,6 +108,7 @@ const Views = ({
             console.error(error);
             showAlert("Operation failed. Please try again!", "error");
         } finally {
+            setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
             setEditingId(null);
         }
     };

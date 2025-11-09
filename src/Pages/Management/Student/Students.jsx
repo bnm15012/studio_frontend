@@ -78,19 +78,10 @@ const Students = ({ ID }) => {
     const allActivities = useSelector((state) => state.activity.activities);
     const [showInvoice, setShowInvoice] = useState(false);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
-    const [paymentEntry, setPaymentEntry] = useState({
-        actualAmount: 0,
-        amount: 0,
-        status: PAYMENT_STATUS[0].value,
-        paymentType: PAYMENT_TYPE[0].value,
-    });
 
     const awaitForDialog = useCallback(
-        () =>
+        (paymentInit) =>
             new Promise((resolve) => {
-                setPaymentEntry({});
-                setOpenPaymentDialog(true);
-
                 const handleSave = (data) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
@@ -101,7 +92,11 @@ const Students = ({ ID }) => {
                     resolve(null);
                 };
 
-                setPaymentEntry({ onSave: handleSave, onClose: handleClose });
+                setOpenPaymentDialog({
+                    onSave: handleSave,
+                    onClose: handleClose,
+                    paymentInit,
+                });
             }),
         [],
     );
@@ -118,18 +113,33 @@ const Students = ({ ID }) => {
                         b.daysPerWeek === modifiedData["daysPerWeek"],
                 );
 
+            let paymentInit = {
+                actualAmount: 0,
+                amount: 0,
+                status: PAYMENT_STATUS[0],
+                paymentType: PAYMENT_TYPE[0],
+            };
+
             if (batchEntry) {
                 modifiedData.activityAmount = batchEntry.price;
                 modifiedData.batchTime = batchEntry.startTime + "-" + batchEntry.endTime;
-                paymentEntry.actualAmount = batchEntry.price;
-                paymentEntry.amount = batchEntry.price;
+                paymentInit = {
+                    actualAmount: batchEntry.price,
+                    amount: batchEntry.price,
+                    status: PAYMENT_STATUS[0],
+                    paymentType: PAYMENT_TYPE[0],
+                };
             }
-            const paymentData = await awaitForDialog();
+            const paymentData = await awaitForDialog(paymentInit);
 
-            debugger;
+            if (paymentData) {
+                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+            } else {
+                return null;
+            }
             return modifiedData;
         },
-        [allActivities, awaitForDialog, paymentEntry],
+        [allActivities, awaitForDialog],
     );
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -446,14 +456,11 @@ const Students = ({ ID }) => {
             {openPaymentDialog && (
                 <PaymentEntryDialog
                     open={true}
-                    setOpenPaymentDialog={setOpenPaymentDialog}
-                    onSave={() => {
-                        setOpenPaymentDialog(false);
-                    }}
-                    paymentEntry={paymentEntry}
-                    setPaymentEntry={setPaymentEntry}
-                    paymentStatus={PAYMENT_STATUS}
-                    paymentType={PAYMENT_TYPE}
+                    onSave={(data) => openPaymentDialog?.onSave?.(data)}
+                    onClose={() => openPaymentDialog?.onClose?.()}
+                    initialData={openPaymentDialog.paymentInit}
+                    paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
+                    paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
                 />
             )}
         </FlexBetweenColumn>
