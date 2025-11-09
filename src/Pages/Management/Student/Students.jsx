@@ -77,6 +77,7 @@ const Students = ({ ID }) => {
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
     const [showInvoice, setShowInvoice] = useState(false);
+    const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const [paymentEntry, setPaymentEntry] = useState({
         actualAmount: 0,
         amount: 0,
@@ -84,23 +85,22 @@ const Students = ({ ID }) => {
         paymentType: PAYMENT_TYPE[0].value,
     });
 
-    const openPaymentDialog = useCallback(
+    const awaitForDialog = useCallback(
         () =>
             new Promise((resolve) => {
                 setPaymentEntry({});
-                setOpen(true);
+                setOpenPaymentDialog(true);
 
                 const handleSave = (data) => {
-                    setOpen(false);
-                    resolve(data); // resolves when dialog saved
+                    setOpenPaymentDialog(false);
+                    resolve(data);
                 };
 
                 const handleClose = () => {
-                    setOpen(false);
-                    resolve(null); // resolves null if cancelled
+                    setOpenPaymentDialog(false);
+                    resolve(null);
                 };
 
-                // store handlers so the dialog can call them
                 setPaymentEntry({ onSave: handleSave, onClose: handleClose });
             }),
         [],
@@ -118,16 +118,18 @@ const Students = ({ ID }) => {
                         b.daysPerWeek === modifiedData["daysPerWeek"],
                 );
 
-            const paymentData = await openPaymentDialog();
-
             if (batchEntry) {
                 modifiedData.activityAmount = batchEntry.price;
                 modifiedData.batchTime = batchEntry.startTime + "-" + batchEntry.endTime;
+                paymentEntry.actualAmount = batchEntry.price;
+                paymentEntry.amount = batchEntry.price;
             }
+            const paymentData = await awaitForDialog();
 
+            debugger;
             return modifiedData;
         },
-        [allActivities],
+        [allActivities, awaitForDialog, paymentEntry],
     );
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -441,17 +443,19 @@ const Students = ({ ID }) => {
                     activityData={showInvoice}
                 />
             )}
-            {openPaymentDialog && <PaymentEntryDialog
-                open={true}
-                setOpen={setOpen}
-                onSave={() => {
-                    setOpenPaymentDialog(false);
-                }}
-                paymentEntry={paymentEntry}
-                setPaymentEntry={setPaymentEntry}
-                paymentStatus={PAYMENT_STATUS}
-                paymentType={PAYMENT_TYPE}
-            />}
+            {openPaymentDialog && (
+                <PaymentEntryDialog
+                    open={true}
+                    setOpenPaymentDialog={setOpenPaymentDialog}
+                    onSave={() => {
+                        setOpenPaymentDialog(false);
+                    }}
+                    paymentEntry={paymentEntry}
+                    setPaymentEntry={setPaymentEntry}
+                    paymentStatus={PAYMENT_STATUS}
+                    paymentType={PAYMENT_TYPE}
+                />
+            )}
         </FlexBetweenColumn>
     );
 };
