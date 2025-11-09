@@ -71,8 +71,6 @@ const Students = ({ ID }) => {
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
 
-    const [selectedActivity, setSelectedActivity] = useState();
-
     const ASSIGNMENT_FIELD = {
         show: false,
         name: "assignments",
@@ -90,11 +88,7 @@ const Students = ({ ID }) => {
                     name: "activityName",
                     label: "Activity",
                     type: "SELECT",
-                    getValue: (value) =>
-                        // if (editingId) {
-                        // setSelectedActivity(allActivities.find((a) => a.activityType === value));
-                        // }
-                        ({ value, key: value }),
+                    getValue: (value) => value && { value, key: value },
                     editable: (row) => row.assignmentId === "NEW",
                     extraProp: {
                         getOptions: async (search, page, limit) =>
@@ -111,21 +105,134 @@ const Students = ({ ID }) => {
                     name: "membershipType",
                     label: "Membership Type",
                     type: "SELECT",
-                    getValue: (value) => ({ value, key: value }),
+                    getValue: (value) => value && { value, key: value },
                     extraProp: {
-                        getOptions: async (search, page, limit) =>
-                            selectedActivity.batchEntries
-                                .filter((b) =>
-                                    b.planType.toLowerCase().includes(search.toLowerCase()),
-                                )
+                        addValue: false,
+                        getOptions: async (search, page, limit, row) => {
+                            const batchEntries = allActivities.find(
+                                (a) => a.activityType === row["activityName"],
+                            )?.batchEntries;
+                            return [
+                                ...new Set(
+                                    batchEntries
+                                        ?.filter((b) =>
+                                            b.planType.toLowerCase().includes(search.toLowerCase()),
+                                        )
+                                        .map((b) => b.planType),
+                                ),
+                            ]
                                 .slice(page * limit, (page + 1) * limit)
-                                .map((a) => ({ key: a.planType, value: a.planType })),
+                                .map((a) => ({ key: a, value: a }));
+                        },
                     },
                 },
-                { show: true, name: "daysPerWeek", label: "Days Per week" },
-                { show: true, name: "activityAmount", label: "Amount" },
-                { show: true, name: "batchName", label: "Batch Name" },
-                { show: true, name: "batchTime", label: "Batch Time" },
+                {
+                    show: true,
+                    name: "daysPerWeek",
+                    label: "Days Per week",
+                    type: "SELECT",
+                    getValue: (value) => value && { value, key: value },
+                    extraProp: {
+                        addValue: false,
+                        getOptions: async (search, page, limit, row) => {
+                            const batchEntries = allActivities
+                                .find((a) => a.activityType === row["activityName"])
+                                ?.batchEntries?.filter((b) => b.planType === row["membershipType"]);
+                            return [...new Set(batchEntries?.map((b) => b.daysPerWeek))].map(
+                                (a) => ({
+                                    key: a,
+                                    value: a,
+                                }),
+                            );
+                        },
+                    },
+                },
+                {
+                    show: true,
+                    name: "batchName",
+                    label: "Batch Name",
+                    type: "SELECT",
+                    getValue: (value) => value && { value, key: value },
+                    extraProp: {
+                        addValue: false,
+                        getOptions: async (search, page, limit, row) => {
+                            const batchEntries = allActivities
+                                .find((a) => a.activityType === row["activityName"])
+                                ?.batchEntries?.filter(
+                                    (b) =>
+                                        b.planType === row["membershipType"] &&
+                                        b.daysPerWeek === row["daysPerWeek"],
+                                );
+                            return [
+                                ...new Set(
+                                    batchEntries
+                                        ?.filter((b) =>
+                                            b.name.toLowerCase().includes(search.toLowerCase()),
+                                        )
+                                        .map((b) => b.name),
+                                ),
+                            ]
+                                .slice(page * limit, (page + 1) * limit)
+                                .map((a) => ({ key: a, value: a }));
+                        },
+                    },
+                },
+                {
+                    show: true,
+                    name: "activityAmount",
+                    label: "Amount",
+                    getValue: (v, row, isEdit) => {
+                        if (isEdit) {
+                            const batchEntry = allActivities
+                                .find((a) => a.activityType === row["activityName"])
+                                ?.batchEntries?.find(
+                                    (b) =>
+                                        b.planType === row["membershipType"] &&
+                                        b.name === row["batchName"] &&
+                                        b.daysPerWeek === row["daysPerWeek"],
+                                );
+                            return batchEntry?.["price"] || v;
+                        } else {
+                            return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
+                                <>
+                                    Rs. {row.paymentEntry.amount}{" "}
+                                    <span
+                                        style={{
+                                            textDecoration: "line-through",
+                                            color: "red",
+                                        }}
+                                    >
+                                        Rs. {row.paymentEntry.actualAmount}
+                                    </span>
+                                </>
+                            ) : (
+                                `Rs. ${row.paymentEntry.amount}`
+                            );
+                        }
+                    },
+                    extraProp: { readOnly: true },
+                    defaultValue: "-",
+                },
+                {
+                    show: true,
+                    name: "batchTime",
+                    label: "Batch Time",
+                    getValue: (v, row) => {
+                        const batchEntry = allActivities
+                            .find((a) => a.activityType === row["activityName"])
+                            ?.batchEntries?.find(
+                                (b) =>
+                                    b.planType === row["membershipType"] &&
+                                    b.name === row["batchName"] &&
+                                    b.daysPerWeek === row["daysPerWeek"],
+                            );
+                        return batchEntry
+                            ? batchEntry["startTime"] + "-" + batchEntry["endTime"]
+                            : v;
+                    },
+                    extraProp: { readOnly: true },
+                    defaultValue: "-",
+                },
                 {
                     show: true,
                     name: "registrationDate",
@@ -136,6 +243,12 @@ const Students = ({ ID }) => {
                 },
                 { show: true, name: "membershipStartDate", label: "Start Date", type: "DATE" },
                 { show: true, name: "membershipEndDate", label: "End Date", type: "DATE" },
+                {
+                    show: true,
+                    name: "paymentEntry.paymentDate",
+                    label: "Payment Date",
+                    type: "DATE",
+                },
                 {
                     show: true,
                     name: "membershipStatus",

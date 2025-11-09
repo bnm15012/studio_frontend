@@ -11,10 +11,39 @@ export const instructorsAssignmentsCruds = createCrud({
 
 export const studentsCruds = createCrud({ route: "students", idKey: "studentId" });
 
-export const studentsAssignmentsCruds = createCrud({
+const base = createCrud({
     route: "studentActivities",
     idKey: "studentId",
 });
+
+export const studentsAssignmentsCruds = {
+    ...base,
+    add:
+        (...args) =>
+        async (dispatch, getState) => {
+            const [newData, token, showAlert, setLoading, prepend] = args;
+
+            const modifiedData = { ...newData };
+
+            const allActivities = getState()?.activity?.activities || [];
+
+            const batchEntry = allActivities
+                ?.find((a) => a.activityType === modifiedData["activityName"])
+                ?.batchEntries?.find(
+                    (b) =>
+                        b.planType === modifiedData["membershipType"] &&
+                        b.name === modifiedData["batchName"] &&
+                        b.daysPerWeek === modifiedData["daysPerWeek"],
+                );
+
+            if (batchEntry) {
+                modifiedData.activityAmount = batchEntry.price;
+                modifiedData.batchTime = batchEntry.startTime + "-" + batchEntry.endTime;
+            }
+
+            await base.add(modifiedData, token, showAlert, setLoading, prepend)(dispatch, getState);
+        },
+};
 
 export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
 

@@ -10,6 +10,7 @@ export default function SelectionField({
     readOnly,
     setValue,
     getOptions,
+    addValue = true,
     variant = "standard",
 }) {
     const [open, setOpen] = useState(false);
@@ -35,10 +36,10 @@ export default function SelectionField({
     );
 
     useEffect(() => {
-        if (value && !options.find((o) => o.key === value.key)) {
+        if (addValue && value && !options.find((o) => o.key === value.key)) {
             setOptions((prev) => [...prev, value]);
         }
-    }, [value, options]);
+    }, [value, options, addValue]);
 
     useEffect(() => {
         searchTerm && fetchOptions(searchTerm);
@@ -103,6 +104,7 @@ SelectionField.propTypes = {
         key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         value: PropTypes.string,
     }),
+    addValue: PropTypes.bool,
     setValue: PropTypes.func.isRequired,
     readOnly: PropTypes.bool,
     getOptions: PropTypes.func.isRequired,
