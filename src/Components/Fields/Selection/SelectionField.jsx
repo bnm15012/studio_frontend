@@ -102,7 +102,7 @@ export default function SelectionField({
 SelectionField.propTypes = {
     value: PropTypes.shape({
         key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        value: PropTypes.string,
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }),
     addValue: PropTypes.bool,
     setValue: PropTypes.func.isRequired,

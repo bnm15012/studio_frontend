@@ -11,7 +11,7 @@ import { useUI } from "../../../context/UIContext";
 import { usePageSearch } from "../../../hooks/useSearch";
 import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 
 const size = 7;
@@ -71,118 +71,181 @@ const Students = ({ ID }) => {
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
 
-    const ASSIGNMENT_FIELD = {
-        show: false,
-        name: "assignments",
-        label: "Contracts",
-        type: "VIEW",
+    const beforeAdd = useCallback(
+        (row) => {
+            const modifiedData = { ...row };
+            const batchEntry = allActivities
+                ?.find((a) => a.activityType === modifiedData["activityName"])
+                ?.batchEntries?.find(
+                    (b) =>
+                        b.planType === modifiedData["membershipType"] &&
+                        b.name === modifiedData["batchName"] &&
+                        b.daysPerWeek === modifiedData["daysPerWeek"],
+                );
 
-        viewProps: {
-            tableCruds: studentsAssignmentsCruds,
-            tableName: "studentActivities",
-            size: 2,
-            actions: [],
-            fields: [
-                {
-                    show: true,
-                    name: "activityName",
-                    label: "Activity",
-                    type: "SELECT",
-                    getValue: (value) => value && { value, key: value },
-                    editable: (row) => row.assignmentId === "NEW",
-                    extraProp: {
-                        getOptions: async (search, page, limit) =>
-                            allActivities
-                                .filter((a) =>
-                                    a.activityType.toLowerCase().includes(search.toLowerCase()),
-                                )
-                                .slice(page * limit, (page + 1) * limit)
-                                .map((a) => ({ key: a.activityType, value: a.activityType })),
-                    },
-                },
-                {
-                    show: true,
-                    name: "membershipType",
-                    label: "Membership Type",
-                    type: "SELECT",
-                    getValue: (value) => value && { value, key: value },
-                    extraProp: {
-                        addValue: false,
-                        getOptions: async (search, page, limit, row) => {
-                            const batchEntries = allActivities.find(
-                                (a) => a.activityType === row["activityName"],
-                            )?.batchEntries;
-                            return [
-                                ...new Set(
-                                    batchEntries
-                                        ?.filter((b) =>
-                                            b.planType.toLowerCase().includes(search.toLowerCase()),
-                                        )
-                                        .map((b) => b.planType),
-                                ),
-                            ]
-                                .slice(page * limit, (page + 1) * limit)
-                                .map((a) => ({ key: a, value: a }));
+            if (batchEntry) {
+                modifiedData.activityAmount = batchEntry.price;
+                modifiedData.batchTime = batchEntry.startTime + "-" + batchEntry.endTime;
+            }
+
+            return modifiedData;
+        },
+        [allActivities],
+    );
+
+    const ASSIGNMENT_FIELD = useMemo(
+        () => ({
+            show: false,
+            name: "assignments",
+            label: "Contracts",
+            type: "VIEW",
+
+            viewProps: {
+                tableCruds: studentsAssignmentsCruds,
+                tableName: "studentActivities",
+                beforeAdd,
+                size: 2,
+                actions: [],
+                fields: [
+                    {
+                        show: true,
+                        name: "activityName",
+                        label: "Activity",
+                        type: "SELECT",
+                        getValue: (value) => value && { value, key: value },
+                        editable: (row) => row.assignmentId === "NEW",
+                        extraProp: {
+                            getOptions: async (search, page, limit) =>
+                                allActivities
+                                    .filter((a) =>
+                                        a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                    )
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a) => ({ key: a.activityType, value: a.activityType })),
                         },
                     },
-                },
-                {
-                    show: true,
-                    name: "daysPerWeek",
-                    label: "Days Per week",
-                    type: "SELECT",
-                    getValue: (value) => value && { value, key: value },
-                    extraProp: {
-                        addValue: false,
-                        getOptions: async (search, page, limit, row) => {
-                            const batchEntries = allActivities
-                                .find((a) => a.activityType === row["activityName"])
-                                ?.batchEntries?.filter((b) => b.planType === row["membershipType"]);
-                            return [...new Set(batchEntries?.map((b) => b.daysPerWeek))].map(
-                                (a) => ({
-                                    key: a,
-                                    value: a,
-                                }),
-                            );
+                    {
+                        show: true,
+                        name: "membershipType",
+                        label: "Membership Type",
+                        type: "SELECT",
+                        getValue: (value) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search, page, limit, row) => {
+                                const batchEntries = allActivities.find(
+                                    (a) => a.activityType === row["activityName"],
+                                )?.batchEntries;
+                                return [
+                                    ...new Set(
+                                        batchEntries
+                                            ?.filter((b) =>
+                                                b.planType
+                                                    .toLowerCase()
+                                                    .includes(search.toLowerCase()),
+                                            )
+                                            .map((b) => b.planType),
+                                    ),
+                                ]
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a) => ({ key: a, value: a }));
+                            },
                         },
                     },
-                },
-                {
-                    show: true,
-                    name: "batchName",
-                    label: "Batch Name",
-                    type: "SELECT",
-                    getValue: (value) => value && { value, key: value },
-                    extraProp: {
-                        addValue: false,
-                        getOptions: async (search, page, limit, row) => {
-                            const batchEntries = allActivities
-                                .find((a) => a.activityType === row["activityName"])
-                                ?.batchEntries?.filter(
-                                    (b) =>
-                                        b.planType === row["membershipType"] &&
-                                        b.daysPerWeek === row["daysPerWeek"],
+                    {
+                        show: true,
+                        name: "daysPerWeek",
+                        label: "Days Per week",
+                        type: "SELECT",
+                        getValue: (value) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search, page, limit, row) => {
+                                const batchEntries = allActivities
+                                    .find((a) => a.activityType === row["activityName"])
+                                    ?.batchEntries?.filter(
+                                        (b) => b.planType === row["membershipType"],
+                                    );
+                                return [...new Set(batchEntries?.map((b) => b.daysPerWeek))].map(
+                                    (a) => ({
+                                        key: a,
+                                        value: a,
+                                    }),
                                 );
-                            return [
-                                ...new Set(
-                                    batchEntries
-                                        ?.filter((b) =>
-                                            b.name.toLowerCase().includes(search.toLowerCase()),
-                                        )
-                                        .map((b) => b.name),
-                                ),
-                            ]
-                                .slice(page * limit, (page + 1) * limit)
-                                .map((a) => ({ key: a, value: a }));
+                            },
                         },
                     },
-                },
-                {
-                    show: true,
-                    name: "activityAmount",
-                    label: "Amount",
-                    getValue: (v, row, isEdit) => {
-                        if (isEdit) {
+                    {
+                        show: true,
+                        name: "batchName",
+                        label: "Batch Name",
+                        type: "SELECT",
+                        getValue: (value) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search, page, limit, row) => {
+                                const batchEntries = allActivities
+                                    .find((a) => a.activityType === row["activityName"])
+                                    ?.batchEntries?.filter(
+                                        (b) =>
+                                            b.planType === row["membershipType"] &&
+                                            b.daysPerWeek === row["daysPerWeek"],
+                                    );
+                                return [
+                                    ...new Set(
+                                        batchEntries
+                                            ?.filter((b) =>
+                                                b.name.toLowerCase().includes(search.toLowerCase()),
+                                            )
+                                            .map((b) => b.name),
+                                    ),
+                                ]
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a) => ({ key: a, value: a }));
+                            },
+                        },
+                    },
+                    {
+                        show: true,
+                        name: "activityAmount",
+                        label: "Amount",
+                        getValue: (v, row, isEdit) => {
+                            if (isEdit) {
+                                const batchEntry = allActivities
+                                    .find((a) => a.activityType === row["activityName"])
+                                    ?.batchEntries?.find(
+                                        (b) =>
+                                            b.planType === row["membershipType"] &&
+                                            b.name === row["batchName"] &&
+                                            b.daysPerWeek === row["daysPerWeek"],
+                                    );
+                                return batchEntry?.["price"] || v;
+                            } else {
+                                return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
+                                    <>
+                                        Rs. {row.paymentEntry.amount}{" "}
+                                        <span
+                                            style={{
+                                                textDecoration: "line-through",
+                                                color: "red",
+                                            }}
+                                        >
+                                            Rs. {row.paymentEntry.actualAmount}
+                                        </span>
+                                    </>
+                                ) : (
+                                    `Rs. ${row.paymentEntry.amount}`
+                                );
+                            }
+                        },
+                        extraProp: { readOnly: true },
+                        defaultValue: "-",
+                    },
+                    {
+                        show: true,
+                        name: "batchTime",
+                        label: "Batch Time",
+                        getValue: (v, row) => {
                             const batchEntry = allActivities
                                 .find((a) => a.activityType === row["activityName"])
                                 ?.batchEntries?.find(
@@ -191,91 +254,106 @@ const Students = ({ ID }) => {
                                         b.name === row["batchName"] &&
                                         b.daysPerWeek === row["daysPerWeek"],
                                 );
-                            return batchEntry?.["price"] || v;
-                        } else {
-                            return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
-                                <>
-                                    Rs. {row.paymentEntry.amount}{" "}
-                                    <span
-                                        style={{
-                                            textDecoration: "line-through",
-                                            color: "red",
-                                        }}
-                                    >
-                                        Rs. {row.paymentEntry.actualAmount}
-                                    </span>
-                                </>
-                            ) : (
-                                `Rs. ${row.paymentEntry.amount}`
-                            );
-                        }
+                            return batchEntry
+                                ? batchEntry["startTime"] + "-" + batchEntry["endTime"]
+                                : v;
+                        },
+                        extraProp: { readOnly: true },
+                        defaultValue: "-",
                     },
-                    extraProp: { readOnly: true },
-                    defaultValue: "-",
-                },
-                {
-                    show: true,
-                    name: "batchTime",
-                    label: "Batch Time",
-                    getValue: (v, row) => {
-                        const batchEntry = allActivities
-                            .find((a) => a.activityType === row["activityName"])
-                            ?.batchEntries?.find(
-                                (b) =>
-                                    b.planType === row["membershipType"] &&
-                                    b.name === row["batchName"] &&
-                                    b.daysPerWeek === row["daysPerWeek"],
-                            );
-                        return batchEntry
-                            ? batchEntry["startTime"] + "-" + batchEntry["endTime"]
-                            : v;
+                    {
+                        show: true,
+                        name: "registrationDate",
+                        label: "Registration Date",
+                        type: "DATE",
+                        extraProp: { readOnly: true },
+                        defaultValue: getCurrentDateTimeUTC(),
                     },
-                    extraProp: { readOnly: true },
-                    defaultValue: "-",
+                    {
+                        show: true,
+                        name: "membershipStartDate",
+                        label: "Start Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeUTC(),
+                    },
+                    {
+                        show: true,
+                        name: "membershipEndDate",
+                        label: "End Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeUTC(),
+                    },
+                    {
+                        show: true,
+                        name: "paymentEntry.paymentDate",
+                        label: "Payment Date",
+                        type: "DATE",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.payeeType",
+                        label: "Payee",
+                        defaultValue: "STUDENT",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.status",
+                        label: "Payee",
+                        defaultValue: "PENDING",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.paymentType",
+                        label: "Payee",
+                        defaultValue: "CASH",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.actualAmount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.amount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.branchId",
+                        label: "Payee",
+                        defaultValue: currentBranch.branchId,
+                    },
+                    {
+                        show: true,
+                        name: "membershipStatus",
+                        label: "Membership Status",
+                        defaultValue: "INACTIVE",
+                        getValue: (value) => (
+                            <Box
+                                sx={{
+                                    color: value === "ACTIVE" ? "green" : "red",
+                                    fontWeight: "bolder",
+                                }}
+                            >
+                                {value}
+                            </Box>
+                        ),
+                        extraProp: { readOnly: true },
+                    },
+                ],
+                fieldsMeta: {
+                    primary: "assignmentId",
+                    root: "studentId",
                 },
-                {
-                    show: true,
-                    name: "registrationDate",
-                    label: "Registration Date",
-                    type: "DATE",
-                    extraProp: { readOnly: true },
-                    defaultValue: getCurrentDateTimeUTC(),
-                },
-                { show: true, name: "membershipStartDate", label: "Start Date", type: "DATE" },
-                { show: true, name: "membershipEndDate", label: "End Date", type: "DATE" },
-                {
-                    show: true,
-                    name: "paymentEntry.paymentDate",
-                    label: "Payment Date",
-                    type: "DATE",
-                },
-                {
-                    show: true,
-                    name: "membershipStatus",
-                    label: "Membership Status",
-                    defaultValue: "INACTIVE",
-                    getValue: (value) => (
-                        <Box
-                            sx={{
-                                color: value === "ACTIVE" ? "green" : "red",
-                                fontWeight: "bolder",
-                            }}
-                        >
-                            {value}
-                        </Box>
-                    ),
-                    extraProp: { readOnly: true },
-                },
-            ],
-            fieldsMeta: {
-                primary: "assignmentId",
-                root: "studentId",
+                fieldToDisplayOnDelete: "activityName",
             },
-            fieldToDisplayOnDelete: "activityName",
-        },
-    };
-
+        }),
+        [allActivities, beforeAdd, currentBranch.branchId],
+    );
     const [addNewFunc, setAddNewFunc] = useState(null);
+
     return (
         <FlexBetweenColumn>
             {!ID && (

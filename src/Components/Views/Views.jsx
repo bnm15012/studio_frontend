@@ -31,6 +31,7 @@ const Views = ({
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
     actions = [],
+    beforeAdd = (row) => row,
     editMode = "INLINE",
 }) => {
     const dispatch = useDispatch();
@@ -97,7 +98,7 @@ const Views = ({
         try {
             const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
             if (id === "NEW") {
-                const { [fieldsMeta.primary]: id, ...withoutId } = newRow;
+                const { [fieldsMeta.primary]: id, ...withoutId } = beforeAdd(newRow);
                 dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
                 setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
             } else {
@@ -123,28 +124,30 @@ const Views = ({
         }
     };
 
+    const updateField = (value, obj, fieldPath) => {
+        const updatedItem = { ...obj };
+
+        const pathParts = fieldPath.split(".");
+        let current = updatedItem;
+
+        for (let i = 0; i < pathParts.length - 1; i++) {
+            const key = pathParts[i];
+            current[key] = { ...current[key] };
+            current = current[key];
+        }
+
+        current[pathParts[pathParts.length - 1]] = value;
+        return updatedItem;
+    };
+
     const handleChange = (value, id, fieldPath) => {
-        const updateField = (obj) => {
-            const updatedItem = { ...obj };
-
-            const pathParts = fieldPath.split(".");
-            let current = updatedItem;
-
-            for (let i = 0; i < pathParts.length - 1; i++) {
-                const key = pathParts[i];
-                current[key] = { ...current[key] };
-                current = current[key];
-            }
-
-            current[pathParts[pathParts.length - 1]] = value;
-            return updatedItem;
-        };
-
         if (formKey) {
-            setRecord((prev) => updateField(prev));
+            setRecord((prev) => updateField(value, prev, fieldPath));
         } else {
             setData((prev) =>
-                prev.map((item) => (item[fieldsMeta.primary] === id ? updateField(item) : item)),
+                prev.map((item) =>
+                    item[fieldsMeta.primary] === id ? updateField(value, item, fieldPath) : item,
+                ),
             );
         }
     };
@@ -182,13 +185,12 @@ const Views = ({
             showAlert("Can't Add New while edit", "warning");
             return;
         }
-        const newRow = fields.reduce(
-            (acc, f) => {
-                acc[f.name] = f.defaultValue ?? "";
-                return acc;
-            },
-            { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId },
-        );
+
+        let newRow = { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId };
+
+        fields.forEach((f) => {
+            newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+        });
 
         setData((prev) => [newRow, ...prev]);
         setEditingId("NEW");
@@ -365,6 +367,7 @@ Views.propTypes = {
         root: PropTypes.string,
     }),
     onSetAddNewFunc: PropTypes.func,
+    beforeAdd: PropTypes.func,
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     showAddButton: PropTypes.bool,
