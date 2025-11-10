@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import UserAccessDialog from "./UserAccessDialog";
 import PropTypes from "prop-types";
+import FlexEvenly from "../../../../Components/FlexEvenly";
 
 const UserAccessButton = (props) => {
     const { value, setValue, isEdit = false } = props;
@@ -9,9 +10,16 @@ const UserAccessButton = (props) => {
     const [accessDialogOpen, setAccessDialogOpen] = useState(false);
     return (
         <>
-            <Button variant="outlined" size="small" onClick={() => setAccessDialogOpen(true)}>
-                Access
-            </Button>{" "}
+            <FlexEvenly width={"100%"}>
+                <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{ px: 1, py: 0 }}
+                    onClick={() => setAccessDialogOpen(true)}
+                >
+                    Access
+                </Button>{" "}
+            </FlexEvenly>
             {accessDialogOpen && (
                 <UserAccessDialog
                     open={true}

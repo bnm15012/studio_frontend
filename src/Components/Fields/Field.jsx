@@ -18,7 +18,7 @@ const Field = ({
     validation = {},
     extraProp = {},
 }) => {
-    const { min, max, rows, getOptions, readOnly, CustomeComponent } = extraProp;
+    const { min, max, rows, getOptions, readOnly, CustomComponent } = extraProp;
     const commonProps = {
         value,
         minVal: min,
@@ -57,7 +57,7 @@ const Field = ({
                     />
                 );
             case "CUSTOME":
-                return <CustomeComponent {...commonProps} isEdit={true} />;
+                return <CustomComponent {...commonProps} isEdit={true} />;
             case "IMAGE":
                 return <ImageComponent allowEdit={isEdit} {...commonProps} />;
             default:
@@ -82,7 +82,7 @@ const Field = ({
             case "DATETIME":
                 return getLocalDateTime(value, type);
             case "CUSTOME":
-                return <CustomeComponent {...commonProps} />;
+                return <CustomComponent {...commonProps} />;
             case "IMAGE":
                 return renderInputField();
             case "IMAGE_DIALOG":

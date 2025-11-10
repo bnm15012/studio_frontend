@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
@@ -10,6 +10,8 @@ import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
 const LIMIT = 7;
 
@@ -33,19 +35,26 @@ const FIELDS = [
         label: "Access Rights",
         type: "CUSTOME",
         extraProp: {
-            CustomeComponent: UserAccessButton,
+            CustomComponent: UserAccessButton,
         },
     },
 ];
 
 const BranchPage = () => {
     const { isMobile } = useUI();
+    const navigate = useNavigate();
     const [addNewFunc, setAddNewFunc] = useState(null);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
+                <IconButton onClick={() => navigate(`/management/branch`)}>
+                    <ArrowBackIcon sx={{ color: "black" }} />
+                </IconButton>
+                <Typography variant="h5" fontWeight={"bold"} my={"auto"}>
+                    Branch: {selectedBranch.name}
+                </Typography>
                 <Box ml={"auto"}></Box>
                 <Button
                     variant="contained"
@@ -67,7 +76,7 @@ const BranchPage = () => {
                     key={"users"}
                     fields={FIELDS}
                     actions={[{ name: "delete", hide: true }]}
-                    rootId={currentBranch.branchId}
+                    rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
                     onSetAddNewFunc={setAddNewFunc}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
