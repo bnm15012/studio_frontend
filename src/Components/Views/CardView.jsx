@@ -9,6 +9,7 @@ import {
     StyledCardContent,
 } from "../New/StyledCard";
 import FlexEvenly from "../FlexEvenly";
+import { getNestedValue } from "../../utils/objectHelpers";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -44,7 +45,7 @@ const CardView = (props) => {
         CardContentComponent,
     } = props;
     const hasMore = data.length < tableState.totalCount;
-    const visibleFields = fields.filter((f) => f.show !== false);
+    const visibleFields = fields.filter((f) => f.show);
 
     return (
         <Box>
@@ -64,8 +65,11 @@ const CardView = (props) => {
                                             <FieldContainer key={field.name}>
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 {field?.getValue
-                                                    ? field.getValue(row[field.name]).value
-                                                    : row[field.name]}
+                                                    ? field.getValue(
+                                                          getNestedValue(row, field.name).value,
+                                                          row,
+                                                      )
+                                                    : getNestedValue(row, field.name)}
                                             </FieldContainer>
                                         ))}
                                     </>

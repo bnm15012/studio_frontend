@@ -51,14 +51,14 @@ const FormView = (props) => {
             {/* 🔹 Header */}
             <FlexBetween
                 backgroundColor={theme.palette.background.paper}
-                sx={{ width: "100%", p: 2, borderRadius: 2, boxShadow: theme.shadows[2] }}
+                sx={{ width: "100%", p: 1, borderRadius: 2, boxShadow: theme.shadows[2] }}
             >
                 <FlexBetween alignItems="center" gap={2}>
                     <IconButton onClick={() => navigate(`/management/${tableName}`)}>
                         <ArrowBackIcon sx={{ color: "black" }} />
                     </IconButton>
                     <Typography variant="h5" fontWeight="bold">
-                        {tableName} Info
+                        {tableName}
                     </Typography>
                 </FlexBetween>
 
@@ -111,8 +111,8 @@ const FormView = (props) => {
             ) : (
                 <FlexBetween
                     flexDirection={isMobile ? "column" : "row"}
-                    my={2}
-                    p={3}
+                    my={1}
+                    p={1}
                     backgroundColor={theme.palette.background.paper}
                     sx={{
                         boxShadow: theme.shadows[7],
@@ -143,12 +143,11 @@ const FormView = (props) => {
                         </Box>
                     )}
 
-                    <Box flexGrow={1} width="100%" ml={isMobile ? 0 : 3}>
+                    <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
                         {Object.entries(groupedFields).map(
                             ([sectionName, fieldsInSection], idx) => (
                                 <Box
                                     key={sectionName}
-                                    mb={4}
                                     p={2}
                                     borderRadius={2}
                                     backgroundColor={theme.palette.background.default}
@@ -168,11 +167,15 @@ const FormView = (props) => {
                                             columnGap: 3,
                                             display: "grid",
                                             gridTemplateColumns:
-                                                "repeat(auto-fill, minmax(22rem, 1fr))",
+                                                "repeat(auto-fill, minmax(22em, 1fr))",
                                         }}
                                     >
                                         {fieldsInSection.map((field) => (
-                                            <FlexBetween key={field.name} gap={2}>
+                                            <FlexBetween
+                                                key={field.name}
+                                                gap={isMobile ? 0 : 2}
+                                                flexDirection={isMobile ? "column" : "row"}
+                                            >
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 <FieldValue>
                                                     <Field
@@ -201,7 +204,7 @@ const FormView = (props) => {
                                 </Box>
                             ),
                         )}
-                    </Box>
+                    </FlexBetweenColumn>
                 </FlexBetween>
             )}
             {editingId !== "NEW" &&

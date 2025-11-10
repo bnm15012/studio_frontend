@@ -63,7 +63,7 @@ const FIELDS = [
         show: false,
         section: "Contact Details",
         name: "emergencyContactNumber",
-        label: "Emergency Contact Number",
+        label: "Emergency Contact",
     },
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];
