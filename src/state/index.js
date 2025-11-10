@@ -22,11 +22,13 @@ import {
     paymentCruds,
     studentsAssignmentsCruds,
     studentsCruds,
+    usersCruds,
 } from "../api/all.api";
 
 const rootReducer = combineReducers({
     auth: authSlice,
     activity: activitySlice,
+    users: usersCruds.reducer,
     instructors: instructorsCruds.reducer,
     instructorActivities: instructorsAssignmentsCruds.reducer,
     students: studentsCruds.reducer,

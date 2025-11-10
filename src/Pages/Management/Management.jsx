@@ -52,7 +52,7 @@ const Management = () => {
             case "type":
                 return <MembershipType />;
             case "branch":
-                if (ID) return <BranchPage ID={ID} page={page} />;
+                if (ID) return <BranchPage ID={ID} />;
                 return <Branches />;
             default:
                 return <h1>Not implemented yet !</h1>;

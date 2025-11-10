@@ -1,110 +1,82 @@
-import { useCallback, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { useAlert } from "../../../utils/Alert";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import FlexBetween from "../../../Components/FlexBetween";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import AddIcon from "@mui/icons-material/Add";
-import ManagerUserTable from "./ManagerUser/ManagerUserTable";
-import { getAllManagersAPI } from "./ManagerUser/manageruser.api";
-import Loading from "../../../Components/Loading/Loading";
+import { useState } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { Box, Button } from "@mui/material";
+import FlexBetween from "../../../Components/FlexBetween";
+import AddIcon from "@mui/icons-material/Add";
+import { useSelector } from "react-redux";
+import { usersCruds } from "../../../api/all.api";
+import Views from "../../../Components/Views/Views";
+import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import { useUI } from "../../../context/UIContext";
+import UserCard from "./ManagerUser/UserCard";
+import UserAccessButton from "./ManagerUser/UserAccessButton";
 
-const BranchPage = ({ page, ID }) => {
-    const showAlert = useAlert();
-    const navigate = useNavigate();
-    const studio = useSelector((state) => state.auth.studio);
-    const selectedBranch = useSelector((state) => state.branch.selectedBranch);
-    const token = useSelector((state) => state.auth.token);
-    const [loading, setLoading] = useState(false);
+const LIMIT = 7;
 
-    const [managers, setMnagers] = useState();
+const FIELD_META = {
+    primary: "userId",
+    root: "branchId",
+};
 
-    const fetchBranches = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data, success, message } = await getAllManagersAPI({
-                branchId: ID,
-                token,
-            });
+const VIEWS = ["LIST", "CARD"];
 
-            if (success) {
-                setMnagers(data);
-            } else {
-                showAlert(message, "error");
-            }
-        } catch (error) {
-            console.error(error);
-            showAlert("Failed to fetch managers!", "error");
-        } finally {
-            setLoading(false);
-        }
-    }, [ID, token, showAlert]);
-    const [newRow, setNewRow] = useState(null);
+const FIELDS = [
+    { show: true, name: "userName", label: "User Name" },
+    { show: true, name: "email", label: "Email" },
+    { show: false, name: "password", label: "password", defaultValue: "123456" },
+    { show: false, name: "role", label: "Role", defaultValue: "Manager" },
+    { show: true, name: "enabled", label: "Active", defaultValue: true, type: FIELD_TYPES.BOOL },
+    { show: true, name: "phone", label: "Phone", type: FIELD_TYPES.NUMBER },
+    {
+        show: true,
+        name: "userAccessEntry",
+        label: "Access Rights",
+        type: "CUSTOME",
+        extraProp: {
+            CustomeComponent: UserAccessButton,
+        },
+    },
+];
 
-    useEffect(() => {
-        !managers && fetchBranches();
-        if (ID != selectedBranch.branchId) navigate(`/management/${page}`);
-    }, [managers, ID, fetchBranches, selectedBranch.branchId, navigate, page]);
+const BranchPage = () => {
+    const { isMobile } = useUI();
+    const [addNewFunc, setAddNewFunc] = useState(null);
+    const currentBranch = useSelector((state) => state.branch.currentBranch);
 
-    const handleAddNew = () => {
-        setNewRow({
-            userId: "NEW",
-            userName: "test1",
-            email: "test@mail.com",
-            phone: "1234567890",
-            enabled: true,
-            role: "MANAGER",
-            password: "123456",
-            studioEntry: {
-                studioId: studio.studioId,
-                branchList: [
-                    {
-                        branchId: selectedBranch.branchId,
-                    },
-                ],
-            },
-        });
-    };
     return (
-        <FlexBetweenColumn gap={2}>
-            <FlexBetween alignItems={"center"} gap={2}>
-                <IconButton onClick={() => navigate(`/management/${page}`)}>
-                    <ArrowBackIcon sx={{ color: "black" }} />
-                </IconButton>
-                <Typography variant="h5" fontWeight={"bold"}>
-                    Branch : {selectedBranch.name}
-                </Typography>
-                <Box sx={{ flexGrow: 1 }}></Box>
+        <FlexBetweenColumn>
+            <FlexBetween paddingBottom={2} gap={1}>
+                <Box ml={"auto"}></Box>
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={<AddIcon />}
-                    disabled={newRow != null}
-                    onClick={() => handleAddNew()}
-                    sx={{ fontWeight: "bold", padding: 2 }}
+                    startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
+                    sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
-                    Add new Manager
+                    Add New Manager
                 </Button>
             </FlexBetween>
-            {loading && <Loading />}
-            {managers && (
-                <ManagerUserTable
-                    selectedBranch={selectedBranch}
-                    token={token}
-                    newRow={newRow}
-                    setNewRow={setNewRow}
-                    initialData={managers}
+            <Box>
+                <Views
+                    tableName={"users"}
+                    tableCruds={usersCruds}
+                    size={LIMIT}
+                    key={"users"}
+                    fields={FIELDS}
+                    actions={[{ name: "delete", hide: true }]}
+                    rootId={currentBranch.branchId}
+                    fieldsMeta={FIELD_META}
+                    onSetAddNewFunc={setAddNewFunc}
+                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    fieldToDisplayOnDelete="userName"
+                    CardContentComponent={UserCard}
                 />
-            )}
+            </Box>
         </FlexBetweenColumn>
     );
-};
-BranchPage.propTypes = {
-    page: PropTypes.string.isRequired,
-    ID: PropTypes.string.isRequired,
 };
 
 export default BranchPage;

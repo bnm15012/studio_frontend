@@ -18,7 +18,7 @@ const Field = ({
     validation = {},
     extraProp = {},
 }) => {
-    const { min, max, rows, getOptions, readOnly } = extraProp;
+    const { min, max, rows, getOptions, readOnly, CustomeComponent } = extraProp;
     const commonProps = {
         value,
         minVal: min,
@@ -56,6 +56,8 @@ const Field = ({
                         defaultImage={extraProp?.defaultImage}
                     />
                 );
+            case "CUSTOME":
+                return <CustomeComponent {...commonProps} isEdit={true} />;
             case "IMAGE":
                 return <ImageComponent allowEdit={isEdit} {...commonProps} />;
             default:
@@ -73,12 +75,14 @@ const Field = ({
     const getValue = () => {
         switch (type) {
             case "BOOL":
-                return value ? "Yes" : "No";
+                return <StyledSwitch {...commonProps} readOnly={true} />;
             case "SELECT":
                 return value?.value;
             case "DATE":
             case "DATETIME":
                 return getLocalDateTime(value, type);
+            case "CUSTOME":
+                return <CustomeComponent {...commonProps} />;
             case "IMAGE":
                 return renderInputField();
             case "IMAGE_DIALOG":
@@ -102,7 +106,6 @@ Field.propTypes = {
     placeholder: PropTypes.string,
     label: PropTypes.string,
     type: PropTypes.string,
-    disabled: PropTypes.bool,
     variant: PropTypes.string,
     extraProp: PropTypes.shape({
         min: PropTypes.number,

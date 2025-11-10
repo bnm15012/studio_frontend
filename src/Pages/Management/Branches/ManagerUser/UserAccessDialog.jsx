@@ -1,8 +1,9 @@
-import { Grid, Radio, RadioGroup, FormControl, FormLabel, FormControlLabel } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import StyledDialog from "../../../../Components/New/StyledDialog";
+import Field from "../../../../Components/Fields/Field";
 
 const ACCESS_BUTTONS = {
     activity: "Activity",
@@ -16,16 +17,17 @@ const ACCESS_BUTTONS = {
 
 const ACCESS_RIGHTS = ["NONE", "FULL"];
 
-const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
+const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = false }) => {
     const settings = useSelector((state) => state.auth.settings);
     const [accessState, setAccessState] = useState({});
+
     const studioLevelAccess = Object.keys(settings)
         .filter((k) => settings[k])
         .map((key) => key.replaceAll("_", ""));
 
     useEffect(() => {
-        if (user?.userAccessEntry) {
-            setAccessState({ ...user.userAccessEntry });
+        if (userAccessEntry) {
+            setAccessState({ ...userAccessEntry });
         } else {
             const initialState = {};
             Object.keys(ACCESS_BUTTONS).forEach((key) => {
@@ -33,7 +35,7 @@ const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
             });
             setAccessState(initialState);
         }
-    }, [user]);
+    }, [userAccessEntry]);
 
     const handleChange = (key, value) => {
         setAccessState((prev) => ({ ...prev, [key]: value }));
@@ -44,11 +46,11 @@ const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
         onClose();
     };
 
-    if (!user) return null;
+    if (!userAccessEntry) return null;
 
     return (
         <StyledDialog
-            title={"User Access Settings"}
+            title="User Access Settings"
             cancelText={isEdit ? "Cancel" : "Close"}
             confirmText="Save"
             onConfirm={isEdit ? handleSave : null}
@@ -57,32 +59,28 @@ const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
             maxWidth="sm"
             fullWidth
         >
-            <Grid container spacing={2}>
+            <Box
+                display="grid"
+                gridTemplateColumns="1fr auto"
+                gap={2}
+                sx={{ alignItems: "center" }}
+            >
                 {Object.keys(ACCESS_BUTTONS)
                     .filter((ab) => studioLevelAccess.includes(ab.toUpperCase()))
                     .map((key) => (
-                        <Grid item xs={12} sm={6} key={key}>
-                            <FormControl component="fieldset" fullWidth>
-                                <FormLabel component="legend">{ACCESS_BUTTONS[key]}</FormLabel>
-                                <RadioGroup
-                                    row
-                                    value={accessState[key] || "NONE"}
-                                    onChange={(e) => handleChange(key, e.target.value)}
-                                >
-                                    {ACCESS_RIGHTS.map((right) => (
-                                        <FormControlLabel
-                                            disabled={!isEdit}
-                                            key={right}
-                                            value={right}
-                                            control={<Radio />}
-                                            label={right}
-                                        />
-                                    ))}
-                                </RadioGroup>
-                            </FormControl>
-                        </Grid>
+                        <Box key={key} display="contents">
+                            <Typography variant="body1" sx={{ textTransform: "capitalize" }}>
+                                {ACCESS_BUTTONS[key]}
+                            </Typography>
+                            <Field
+                                isEdit={isEdit}
+                                value={accessState[key] === "FULL"}
+                                type="BOOL"
+                                setValue={(v) => handleChange(key, ACCESS_RIGHTS[Number(v)])}
+                            />
+                        </Box>
                     ))}
-            </Grid>
+            </Box>
         </StyledDialog>
     );
 };
@@ -90,7 +88,7 @@ const UserAccessDialog = ({ open, onClose, user, onSave, isEdit = false }) => {
 UserAccessDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    user: PropTypes.object,
+    userAccessEntry: PropTypes.object,
     isEdit: PropTypes.bool,
     onSave: PropTypes.func.isRequired,
 };
