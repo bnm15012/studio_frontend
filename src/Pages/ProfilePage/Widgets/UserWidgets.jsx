@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import ClassIcon from "@mui/icons-material/Class";
-import EmailIcon from "@mui/icons-material/Email";
-import LocationCityIcon from "@mui/icons-material/LocationCity";
-import PhoneIcon from "@mui/icons-material/Phone";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
 import { Typography, Paper, IconButton, Tooltip, Divider, Box, useTheme } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import FlexEvenlyColumn from "../../../Components/FlexEvenlyColumn";
-import ImageComponent from "../../../Components/ImageComponent";
-import EditableData from "../../../Components/EditableData";
+import {
+    Class as ClassIcon,
+    Email as EmailIcon,
+    LocationCity as LocationCityIcon,
+    Phone as PhoneIcon,
+    Edit as EditIcon,
+    Save as SaveIcon,
+} from "@mui/icons-material";
+import { Percent } from "lucide-react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
 import { useAlert } from "../../../utils/Alert";
-import { Percent } from "lucide-react";
 import { useUI } from "../../../context/UIContext";
+import ImageComponent from "../../../Components/ImageComponent";
+import Field from "../../../Components/Fields/Field";
 
 const UserWidgets = ({ admin, studio }) => {
     const theme = useTheme();
@@ -23,7 +23,6 @@ const UserWidgets = ({ admin, studio }) => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const token = useSelector((state) => state.auth.token);
-    const isNonMobile = !isMobile;
 
     const [imageUrl, setImageUrl] = useState(null);
     const [studioLogo, setStudioLogo] = useState(null);
@@ -35,7 +34,6 @@ const UserWidgets = ({ admin, studio }) => {
         gstNumber: "",
     });
 
-    // Verify if changes were made
     const verifyChanges = (values) => {
         const userData = {
             phone: values.phone,
@@ -98,27 +96,30 @@ const UserWidgets = ({ admin, studio }) => {
     return (
         <Paper
             sx={{
-                p: 3,
+                p: 4,
                 backgroundColor: theme.palette.background.paper,
                 maxWidth: "100%",
+                borderRadius: 3,
             }}
         >
-            {/* Header: User Image and Name */}
-            <FlexBetween>
-                <FlexBetween
-                    flexDirection={isNonMobile ? "row" : "column"}
-                    alignItems={isNonMobile ? "center" : "flex-start"}
-                    sx={{ mb: 3 }}
-                >
+            {/* Header */}
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                flexWrap="wrap"
+                mb={3}
+            >
+                <Box display="flex" alignItems="center" flexWrap="wrap" gap={3}>
                     <ImageComponent
                         dirName="user"
-                        size={isNonMobile ? "100px" : "80px"}
+                        size="100px"
                         setValue={setImageUrl}
                         value={admin.imageUrl}
                         isCircular
                         allowEdit={editMode}
                     />
-                    <Box sx={{ ml: isNonMobile ? 3 : 0, mt: isNonMobile ? 0 : 2 }}>
+                    <Box>
                         <Typography variant="h5" fontWeight={600}>
                             {admin.userName}
                         </Typography>
@@ -126,89 +127,150 @@ const UserWidgets = ({ admin, studio }) => {
                             {admin.role}
                         </Typography>
                     </Box>
-                    <Box sx={{ flexGrow: 1 }} />
-                </FlexBetween>
-                <Box>
-                    <Tooltip title={editMode ? "Save Profile" : "Edit Profile"}>
-                        <IconButton
-                            onClick={() => setEditMode(!editMode)}
-                            sx={{
-                                backgroundColor: theme.palette.primary.light,
-                                color: theme.palette.primary.contrastText,
-                                "&:hover": { backgroundColor: theme.palette.primary.main },
-                            }}
-                        >
-                            {editMode ? <SaveIcon onClick={saveProfile} /> : <EditIcon />}
-                        </IconButton>
-                    </Tooltip>
                 </Box>
-            </FlexBetween>
+
+                <Tooltip title={editMode ? "Save Profile" : "Edit Profile"}>
+                    <IconButton
+                        onClick={() => {
+                            if (editMode) saveProfile();
+                            setEditMode(!editMode);
+                        }}
+                        sx={{
+                            backgroundColor: theme.palette.primary.light,
+                            color: theme.palette.primary.contrastText,
+                            "&:hover": { backgroundColor: theme.palette.primary.main },
+                        }}
+                    >
+                        {editMode ? <SaveIcon /> : <EditIcon />}
+                    </IconButton>
+                </Tooltip>
+            </Box>
 
             <Divider sx={{ mb: 3 }} />
 
-            {/* Content: Contact & Studio Info */}
-            <FlexBetween flexDirection={isNonMobile ? "row" : "column"} gap={3}>
-                <FlexEvenlyColumn gap={2} sx={{ flex: 1 }}>
-                    <Typography variant="h6">Contact Information</Typography>
-                    <Divider sx={{ mb: 1 }} />
-                    <EditableData
-                        showFieldName={false}
-                        data={admin}
-                        fieldName="email"
-                        icon={<EmailIcon />}
-                        setData={setEditedValues}
-                    />
-                    <EditableData
-                        showFieldName={false}
-                        data={editedValues}
-                        isEdit={editMode}
-                        fieldName="phone"
-                        validation={{ pattern: /^\+?[1-9]\d{9}$/ }}
-                        icon={<PhoneIcon />}
-                        setData={setEditedValues}
-                    />
-                    <Typography variant="h6" sx={{ mt: 3 }}>
-                        Studio Information
-                    </Typography>
-                    <Divider sx={{ mb: 1 }} />
-                    <EditableData
-                        showFieldName={false}
-                        data={editedValues}
-                        isEdit={editMode}
-                        fieldName="studioName"
-                        icon={<ClassIcon />}
-                        setData={setEditedValues}
-                    />
-                    <EditableData
-                        showFieldName={false}
-                        data={editedValues}
-                        isEdit={editMode}
-                        fieldName="location"
-                        icon={<LocationCityIcon />}
-                        setData={setEditedValues}
-                    />
-                    <EditableData
-                        showFieldName={false}
-                        data={editedValues}
-                        isEdit={editMode}
-                        fieldName="gstNumber"
-                        icon={<Percent />}
-                        setData={setEditedValues}
-                        placeholder="Enter GST Number"
-                    />
-                </FlexEvenlyColumn>
+            {/* Main Grid Layout */}
+            <Box
+                display="grid"
+                gridTemplateColumns={isMobile ? "1fr" : "1.2fr 0.8fr"}
+                gap={4}
+                alignItems="flex-start"
+            >
+                {/* Left Column — Fields */}
+                <Box
+                    display="grid"
+                    gridTemplateColumns={isMobile ? "1fr" : "1fr 1fr"}
+                    columnGap={3}
+                    rowGap={2}
+                >
+                    {/* Contact Info */}
+                    <Box gridColumn="1 / -1">
+                        <Typography variant="h6" mb={1}>
+                            Contact Information
+                        </Typography>
+                        <Divider />
+                    </Box>
 
-                <Box sx={{ display: "flex", justifyContent: "center", mt: isNonMobile ? 0 : 3 }}>
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <EmailIcon />
+                        <Field
+                            value={admin.email}
+                            setValue={(value) =>
+                                setEditedValues((prev) => ({ ...prev, email: value }))
+                            }
+                            extraProp={{ readOnly: true }}
+                        />
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <PhoneIcon />
+                        <Field
+                            label="Phone"
+                            value={editedValues.phone}
+                            setValue={(value) =>
+                                setEditedValues((prev) => ({ ...prev, phone: value }))
+                            }
+                            isEdit={editMode}
+                            validation={{
+                                required: true,
+                                regex: /^\+?[1-9]\d{9}$/,
+                                message: "Please enter a valid phone number",
+                            }}
+                        />
+                    </Box>
+
+                    {/* Studio Info */}
+                    <Box gridColumn="1 / -1" mt={3}>
+                        <Typography variant="h6" mb={1}>
+                            Studio Information
+                        </Typography>
+                        <Divider />
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <ClassIcon />
+                        <Field
+                            label="Studio Name"
+                            value={editedValues.studioName}
+                            setValue={(value) =>
+                                setEditedValues((prev) => ({ ...prev, studioName: value }))
+                            }
+                            isEdit={editMode}
+                            validation={{ required: true }}
+                        />
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <LocationCityIcon />
+                        <Field
+                            label="Location"
+                            value={editedValues.location}
+                            setValue={(value) =>
+                                setEditedValues((prev) => ({ ...prev, location: value }))
+                            }
+                            isEdit={editMode}
+                            validation={{ required: true }}
+                        />
+                    </Box>
+
+                    <Box display="flex" alignItems="center" gap={2}>
+                        <Percent />
+                        <Field
+                            label="GST Number"
+                            placeholder="Enter GST Number"
+                            value={editedValues.gstNumber}
+                            setValue={(value) =>
+                                setEditedValues((prev) => ({ ...prev, gstNumber: value }))
+                            }
+                            isEdit={editMode}
+                            validation={{
+                                regex: /^[0-9A-Z]{15}$/,
+                                message: "Enter valid 15-digit GST number",
+                            }}
+                        />
+                    </Box>
+                </Box>
+
+                {/* Right Column — Studio Image */}
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    flexDirection="column"
+                    gap={2}
+                >
+                    <Typography variant="h6" mb={1}>
+                        Studio Logo
+                    </Typography>
                     <ImageComponent
                         dirName="studio"
-                        size={isNonMobile ? "200px" : "120px"}
+                        size={isMobile ? "150px" : "200px"}
                         setValue={setStudioLogo}
                         value={studio?.logo || "/assets/default_logo.png"}
                         isCircular
                         allowEdit={editMode}
                     />
                 </Box>
-            </FlexBetween>
+            </Box>
         </Paper>
     );
 };

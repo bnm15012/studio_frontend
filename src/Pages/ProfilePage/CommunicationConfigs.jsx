@@ -4,7 +4,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
 import FlexBetween from "../../Components/FlexBetween";
 import PropTypes from "prop-types";
-import EditableData from "../../Components/EditableData";
+import Field from "../../Components/Fields/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "../../utils/Alert";
@@ -75,18 +75,20 @@ const CommunicationConfigs = ({ studio }) => {
                             <Box flexGrow={1}></Box>
                         </FlexBetween>
                         <FlexBetween>
-                            <Typography width={"8rem"} color="primary" fontWeight={"bolder"}>
+                            <Typography width={"8.5rem"} color="primary" fontWeight={"bolder"}>
                                 Passcode
                             </Typography>
-                            <EditableData
-                                showFieldName={false}
-                                data={editedValues}
+                            <Field
+                                placeholder="Enter 16 char passcode without space"
+                                value={editedValues["passcode"]}
+                                setValue={(value) =>
+                                    setEditedValues((prev) => ({ ...prev, passcode: value }))
+                                }
                                 isEdit={editProf}
-                                fieldName="passcode"
-                                setData={setEditedValues}
                                 validation={{
-                                    pattern: /^[^\s]{16}$/,
-                                    errorMessage: "Must be exactly 16 characters with no spaces",
+                                    required: true,
+                                    regex: /^[^\s]{16}$/,
+                                    message: "Must be exactly 16 characters with no spaces",
                                 }}
                             />
                             <Box flexGrow={1}></Box>

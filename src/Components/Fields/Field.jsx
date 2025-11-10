@@ -98,10 +98,7 @@ const Field = ({
 Field.propTypes = {
     value: PropTypes.any,
     setValue: PropTypes.func.isRequired,
-    validation: PropTypes.shape({
-        isRequired: PropTypes.bool,
-        regex: PropTypes.string,
-    }),
+    validation: PropTypes.object,
     placeholder: PropTypes.string,
     label: PropTypes.string,
     type: PropTypes.string,
