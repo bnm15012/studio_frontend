@@ -181,7 +181,7 @@ export function HeroSection() {
                                     variant="contained"
                                     size="large"
                                     onClick={() => {
-                                        dispatch(openDialog("loginDialog"));
+                                        dispatch(openDialog("signupDialog"));
                                     }}
                                     endIcon={<ArrowForwardIcon />}
                                     sx={{

@@ -12,18 +12,32 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItems from "./MenuItems";
 import ImageComponent from "../../Components/ImageComponent";
+import UserProfileDropdown from "./UserProfileDropDown";
+import BranchesDropdown from "./BranchesDropdown";
+import Notification from "./Notification";
 import FlexBetween from "../../Components/FlexBetween";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
-import { useSelector } from "react-redux";
+import { logoutUser } from "../../state/thunks";
+import { useDispatch, useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const { isMobile } = useUI();
+
+    const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
+    const handleLogout = async () => {
+        dispatch(logoutUser());
+        navigate("/");
+    };
 
     return (
         <FlexBetween zIndex={1000}>
@@ -59,29 +73,35 @@ export const Navbar = ({ position = "fixed" }) => {
                         </FlexBetween>
                     )}
 
-                    {/* Mobile Menu Button */}
-                    {!isNonMobileScreens && !isMenuOpen && (
+                    {!user ? (
+                        <Box display="flex" gap={1} mt={0}>
+                            <AuthButtons isNonMobileScreens={isNonMobileScreens} />
+                        </Box>
+                    ) : (
+                        <FlexBetween gap={2}>
+                            <Notification />
+                            {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
+                                <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
+                            )}
+                            <UserProfileDropdown
+                                user={user}
+                                navigate={navigate}
+                                handleLogout={handleLogout}
+                            />
+                        </FlexBetween>
+                    )}
+                    {!isNonMobileScreens && !isMenuOpen && !user && (
                         <IconButton
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            sx={{ color: "white" }}
+                            sx={{ mx: 1, color: "white" }}
                         >
                             <MenuIcon />
                         </IconButton>
                     )}
-                    {isNonMobileScreens && !user && (
-                        <Box
-                            display="flex"
-                            gap={2}
-                            width={isNonMobileScreens ? "auto" : "100%"}
-                            mt={isNonMobileScreens ? 0 : 2}
-                        >
-                            <AuthButtons isNonMobileScreens={isNonMobileScreens} />
-                        </Box>
-                    )}
                 </FlexBetween>
                 <Drawer
                     anchor="right"
-                    open={isMenuOpen && !isNonMobileScreens}
+                    open={isMenuOpen && !isNonMobileScreens && !user}
                     onClose={() => setIsMenuOpen(false)}
                     sx={{
                         "& .MuiDrawer-paper": {
@@ -108,7 +128,6 @@ export const Navbar = ({ position = "fixed" }) => {
                             m={"auto"}
                         >
                             <MenuItems />
-                            {!user && <AuthButtons isNonMobileScreens={isNonMobileScreens} />}
                         </FlexBetween>
                     </Box>
                 </Drawer>

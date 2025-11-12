@@ -1,25 +1,14 @@
 import { Button, styled } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import UserProfileDropdown from "./UserProfileDropDown";
-import BranchesDropdown from "./BranchesDropdown";
-import Notification from "./Notification";
-import { logoutUser } from "../../state/thunks";
 import PropTypes from "prop-types";
-import { useUI } from "../../context/UIContext";
 
 const MenuItems = ({ isNonMobileScreens }) => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
     const location = useLocation();
     const isHomePage = location.pathname === "/";
     const user = useSelector((state) => state.auth.user);
-
-    const handleLogout = async () => {
-        dispatch(logoutUser());
-        navigate("/");
-    };
+    
 
     const scrollTo = (target) => {
         const el = document.querySelector(target);
@@ -61,13 +50,7 @@ const MenuItems = ({ isNonMobileScreens }) => {
             {isHomePage && navButton("Pricing", "#pricing")}
         </>
     ) : (
-        <>
-            <Notification />
-            {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
-                <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
-            )}
-            <UserProfileDropdown user={user} navigate={navigate} handleLogout={handleLogout} />
-        </>
+        <></>
     );
 };
 

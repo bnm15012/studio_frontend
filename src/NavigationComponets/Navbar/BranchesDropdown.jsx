@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { FormControl, Select, MenuItem } from "@mui/material";
+import { FormControl, Select, MenuItem, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { branchCruds } from "../../api/all.api";
 import { clearAllstate } from "../../state/thunks";
@@ -41,17 +41,31 @@ const BranchesDropdown = () => {
                     return branch ? branch.name : "Select Branch";
                 }}
             >
-                {branches.map((branch) => (
-                    <MenuItem
-                        disabled={!branch.isActive}
-                        key={branch.branchId}
-                        value={branch.branchId}
-                        selected={branch.branchId === currentBranch?.branchId}
-                    >
-                        {branch.name}
-                        {!branch.isActive && "(Disabled)"}
-                    </MenuItem>
-                ))}
+                {branches.map((branch) => {
+                    const isDisabled = !branch.isActive;
+                    const menuItem = (
+                        <MenuItem
+                            key={branch.branchId}
+                            value={branch.branchId}
+                            disabled={isDisabled}
+                            selected={branch.branchId === currentBranch?.branchId}
+                        >
+                            {branch.name}
+                        </MenuItem>
+                    );
+
+                    return isDisabled ? (
+                        <Tooltip
+                            key={branch.branchId}
+                            title="This branch is inactive"
+                            placement="top"
+                        >
+                            <span>{menuItem}</span>
+                        </Tooltip>
+                    ) : (
+                        menuItem
+                    );
+                })}
             </Select>
         </FormControl>
     );

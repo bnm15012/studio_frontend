@@ -11,7 +11,7 @@ import { useUI } from "../../context/UIContext";
 
 const UserProfileDropdown = ({ user, handleLogout }) => {
     const dispatch = useDispatch();
-    const { isAdmin, DEBUG } = useUI();
+    const { isAdmin, DEBUG, isMobile } = useUI();
     const [anchorEl, setAnchorEl] = useState(null);
     const [openplansPopUp, setOpenplansPopUp] = useState(false);
     const openMenu = Boolean(anchorEl);
@@ -29,7 +29,7 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
             <Button onClick={handleClick}>
                 <FlexBetween color={"whitesmoke"} alignItems={"center"}>
                     <Typography fontWeight={"bolder"} sx={{ textWrap: "nowrap" }}>
-                        WELCOME {user.userName}
+                        {isMobile ? "" : "WELCOME"} {user.userName}
                     </Typography>
                     <ArrowDropDown />
                 </FlexBetween>
