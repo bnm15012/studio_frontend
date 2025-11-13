@@ -64,7 +64,7 @@ const TemplatesPage = () => {
     const [addNewFunc, setAddNewFunc] = useState(null);
 
     return (
-        <Box p={3}>
+        <Box>
             <FlexBetween paddingBottom={2} flexDirection={"row-reverse"}>
                 <Button variant="contained" color="primary" onClick={() => addNewFunc()}>
                     Add Template

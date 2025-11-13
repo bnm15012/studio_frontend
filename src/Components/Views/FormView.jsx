@@ -173,8 +173,8 @@ const FormView = (props) => {
                                         {fieldsInSection.map((field) => (
                                             <FlexBetween
                                                 key={field.name}
-                                                gap={isMobile ? 0 : 2}
-                                                flexDirection={isMobile ? "column" : "row"}
+                                                gap={isMobile ? 1 : 2}
+                                                // flexDirection={isMobile ? "column" : "row"}
                                             >
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 <FieldValue>

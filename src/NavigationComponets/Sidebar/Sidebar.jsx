@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, Fab, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -19,9 +19,8 @@ import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import { useUI } from "../../context/UIContext";
 import { BookTemplate, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import FlexBetween from "../../Components/FlexBetween";
 import { useState } from "react";
-import { GridView } from "@mui/icons-material";
+import { Close, GridView } from "@mui/icons-material";
 
 const Sidebar = ({ sidebarOpen }) => {
     const navigate = useNavigate();
@@ -166,7 +165,7 @@ const Sidebar = ({ sidebarOpen }) => {
                                 component={motion.div}
                                 position="fixed"
                                 width="100vw"
-                                height="calc(100vh - 3.2rem - 5.7rem)"
+                                height="calc(100vh - 3.2rem)"
                                 boxSizing="border-box"
                                 zIndex={1000}
                                 bgcolor="#312850f7"
@@ -209,35 +208,23 @@ const Sidebar = ({ sidebarOpen }) => {
                             </Box>
                         )}
                     </AnimatePresence>
-                    <FlexBetween
-                        position="fixed !important"
-                        bottom={0}
-                        width="100%"
-                        height={"5.7rem"}
-                        pt={0.5}
-                        bgcolor={"#283650ff"}
-                        zIndex={1001}
+                    <Fab
+                        color="primary"
+                        onClick={() => setOpen(!open)}
+                        sx={{
+                            position: "fixed",
+                            bottom: 24,
+                            right: 24,
+                            zIndex: 1200,
+                            boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.3)",
+                            transition: "transform 0.3s ease",
+                            "&:hover": {
+                                transform: "scale(1.1)",
+                            },
+                        }}
                     >
-                        {routes
-                            .filter((r) => r.showOnBottomBar)
-                            .slice(0, 1)
-                            .filter((r) => r.show)
-                            .map((route) => (
-                                <SidebarItem
-                                    key={route.path}
-                                    route={route}
-                                    isSelected={location.pathname === route.path}
-                                    onClick={() => navigate(route.path)}
-                                    isNonMobileScreens={false}
-                                />
-                            ))}
-                        <SidebarItem
-                            isSelected={open}
-                            route={{ icon: <GridView /> }}
-                            onClick={() => setOpen(!open)}
-                            isNonMobileScreens={false}
-                        />
-                    </FlexBetween>
+                        {open ? <Close /> : <GridView />}
+                    </Fab>
                 </>
             ) : (
                 <Box

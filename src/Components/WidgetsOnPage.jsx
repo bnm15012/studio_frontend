@@ -13,9 +13,7 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
     return (
         <Box sx={{ backgroundColor: theme.palette.background.default }} height={"100vh"}>
             <Navbar position="static" />
-            <FlexBetween
-                height={isMobile ? "calc(100vh - 3.2rem - 5.7rem)" : "calc(100vh - 3.2rem)"}
-            >
+            <FlexBetween height={"calc(100vh - 3.2rem)"}>
                 <Sidebar sidebarOpen={isSidebarShouldBeOn} />
                 <FlexBetweenColumn
                     overflow={"auto"}
@@ -23,6 +21,7 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
                     width={isMobile ? "100vw" : "calc(100vw - 13rem)"}
                     mx={0}
                     my={0}
+                    pb={15}
                 >
                     {components}
                 </FlexBetweenColumn>

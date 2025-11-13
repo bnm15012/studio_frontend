@@ -244,6 +244,7 @@ const Views = ({
         {
             name: "edit",
             enabled: !loading,
+            hide: editMode === "FORM" && !formKey,
             onClick: handleEdit,
             icon: <Edit />,
             sx: { color: "blue" },

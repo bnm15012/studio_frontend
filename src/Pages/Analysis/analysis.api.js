@@ -108,8 +108,16 @@ function processMonthlyStudioData(rawData) {
             {
                 label: "Payment Amount by Type",
                 data: Object.values(paymentAmountMap),
-                backgroundColor: ["rgba(76, 175, 80, 0.9)", "rgba(0, 255, 242, 0.9)"],
-                hoverBackgroundColor: ["rgba(76, 175, 80, 1)", "rgba(0, 255, 242, 1)"],
+                backgroundColor: [
+                    "rgba(33, 150, 243, 0.9)",
+                    "rgba(255, 87, 34, 0.9)",
+                    "rgba(255, 235, 59, 0.9)",
+                ],
+                hoverBackgroundColor: [
+                    "rgba(33, 150, 243, 1)",
+                    "rgba(255, 87, 34, 1)",
+                    "rgba(255, 235, 59, 1)",
+                ],
             },
         ],
     };
