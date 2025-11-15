@@ -15,6 +15,7 @@ import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
 
 const size = 7;
 
@@ -180,6 +181,7 @@ const Instructors = ({ ID }) => {
                     root: "instructorId",
                 },
                 fieldToDisplayOnDelete: "activityName",
+                CardContentComponent: InstructorAssignedActivityCard,
             },
         }),
         [allActivities],

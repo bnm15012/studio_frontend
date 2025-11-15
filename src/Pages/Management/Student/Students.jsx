@@ -16,6 +16,7 @@ import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import StudentInvoice from "./StudentInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
+import StudentAssignActivityCard from "./StudentAssignActivityCard.jsx";
 
 const size = 7;
 
@@ -412,6 +413,7 @@ const Students = ({ ID }) => {
                     primary: "assignmentId",
                     root: "studentId",
                 },
+                CardContentComponent: StudentAssignActivityCard,
                 fieldToDisplayOnDelete: "activityName",
             },
         }),
