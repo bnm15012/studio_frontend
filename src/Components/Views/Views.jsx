@@ -199,7 +199,6 @@ const Views = ({
         else setData((prev) => [newRow, ...prev]);
 
         setEditingId("NEW");
-        console.log(formKey);
     }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, formKey, rootId, showAlert]);
 
     useEffect(() => {
@@ -289,8 +288,6 @@ const Views = ({
         handlePageChange,
         addNewRow: showAddButton ? addNewRow : undefined,
     };
-
-    console.log(record);
 
     return (
         <>
