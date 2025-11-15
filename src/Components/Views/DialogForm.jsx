@@ -3,6 +3,8 @@ import FlexBetween from "../FlexBetween";
 import { Button } from "@mui/material";
 import PropTypes from "prop-types";
 import StyledDialog from "../New/StyledDialog";
+import { getNestedValue } from "../../utils/objectHelpers";
+import { FieldLabel } from "../New/StyledField";
 
 export const DialogForm = (props) => {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, handleCancel } = props;
@@ -18,17 +20,24 @@ export const DialogForm = (props) => {
         >
             <FlexBetween flexDirection={"column"} gap={2} mt={2}>
                 {visibleFields.map((field) => (
-                    <FlexBetween key={field.name}>
+                    <FlexBetween key={field.name} gap={2}>
+                        <FieldLabel>{field.label}</FieldLabel>
                         <Field
-                            label={field.label}
+                            isEdit={field?.editable ? field.editable(data) : true}
                             value={
                                 field?.getValue
-                                    ? field.getValue(data[field.name])
-                                    : data[field.name]
+                                    ? field.getValue(getNestedValue(data, field.name), data, true)
+                                    : getNestedValue(data, field.name)
                             }
-                            setValue={(v) => handleChange(v, id, field.name)}
+                            setValue={(v) => {
+                                handleChange(v, data[fieldsMeta.primary], field.name);
+                            }}
                             type={field.type}
-                            extraProp={field.extraProp}
+                            extraProp={{
+                                ...field.extraProp,
+                                getOptions: async (search, page, limit) =>
+                                    field.extraProp.getOptions(search, page, limit, data),
+                            }}
                         />
                     </FlexBetween>
                 ))}

@@ -128,7 +128,7 @@ const Instructors = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value) => ({ value, key: value }),
+                        getValue: (value) => value && { value, key: value },
                         editable: (row) => row.assignmentId === "NEW",
                         extraProp: {
                             getOptions: async (search, page, limit) =>

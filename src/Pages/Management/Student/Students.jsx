@@ -188,6 +188,7 @@ const Students = ({ ID }) => {
                         name: "membershipType",
                         label: "Membership Type",
                         type: "SELECT",
+                        editable: (row) => row.assignmentId === "NEW",
                         getValue: (value) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
@@ -215,6 +216,7 @@ const Students = ({ ID }) => {
                         show: true,
                         name: "daysPerWeek",
                         label: "Days Per week",
+                        editable: (row) => row.assignmentId === "NEW",
                         type: "SELECT",
                         getValue: (value) => value && { value, key: value },
                         extraProp: {
@@ -239,6 +241,7 @@ const Students = ({ ID }) => {
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
+                        editable: (row) => row.assignmentId === "NEW",
                         getValue: (value) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
@@ -280,6 +283,7 @@ const Students = ({ ID }) => {
                                     );
                                 return batchEntry?.["price"] || v;
                             } else {
+                                if (!row) return null;
                                 return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
                                     <>
                                         Rs. {row.paymentEntry.amount}{" "}
@@ -304,7 +308,8 @@ const Students = ({ ID }) => {
                         show: true,
                         name: "batchTime",
                         label: "Batch Time",
-                        getValue: (v, row) => {
+                        getValue: (v, row, isEdit) => {
+                            if (!isEdit) return v;
                             const batchEntry = allActivities
                                 .find((a) => a.activityType === row["activityName"])
                                 ?.batchEntries?.find(
@@ -347,6 +352,7 @@ const Students = ({ ID }) => {
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",
+                        editable: (row) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
                     },
                     {
                         show: false,

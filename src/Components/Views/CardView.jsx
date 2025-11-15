@@ -46,7 +46,7 @@ const CardView = (props) => {
     } = props;
     const hasMore = data.length < tableState.totalCount;
     const visibleFields = fields.filter((f) => f.show);
-
+    // debugger;
     return (
         <Box>
             <StyledCardContainer>
@@ -66,9 +66,9 @@ const CardView = (props) => {
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 {field?.getValue
                                                     ? field.getValue(
-                                                          getNestedValue(row, field.name).value,
+                                                          getNestedValue(row, field.name),
                                                           row,
-                                                      )
+                                                      )?.value
                                                     : getNestedValue(row, field.name)}
                                             </FieldContainer>
                                         ))}
