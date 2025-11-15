@@ -25,6 +25,7 @@ const Views = ({
     showAddButton,
     tableCruds,
     fields,
+    cardLayout,
     fieldsMeta,
     onSetAddNewFunc,
     currentView,
@@ -302,6 +303,7 @@ const Views = ({
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}
+                    cardLayout={cardLayout}
                     CardContentComponent={CardContentComponent}
                     handleLoadMore={() => {
                         handlePageChange(tableState.currentPage + 1);
@@ -378,6 +380,7 @@ Views.propTypes = {
     onSetAddNewFunc: PropTypes.func,
     beforeAdd: PropTypes.func,
     beforeUpdate: PropTypes.func,
+    cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),
     fieldToDisplayOnDelete: PropTypes.string,
     currentView: PropTypes.string,
     showAddButton: PropTypes.bool,

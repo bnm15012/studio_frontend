@@ -1,132 +1,43 @@
-import { CardContent, Box, Typography, Chip, Divider, useTheme } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { CalendarMonth, Paid, CreditCard } from "@mui/icons-material";
+import { CurrencyRupee } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { getLocalDateTime } from "../../../utils/DateUtil";
-import { User2 } from "lucide-react";
-import FlexBetween from "../../../Components/FlexBetween";
-
-const HeaderGradient = styled(Box)(({ theme }) => ({
-    display: "flex",
-    padding: theme.spacing(1),
-    justifyContent: "space-between",
-    alignItems: "center",
-}));
+import { IndianRupeeIcon, QrCodeIcon, User2 } from "lucide-react";
+import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
+import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 
 const PaymentCard = ({ row }) => {
-    const theme = useTheme();
     const { payeeType, status, paymentDate, paymentType, amount, studentEntry, clientEntry } = row;
-
-    const commonSX = {
-        height: 40,
-        width: 40,
-        borderRadius: "50%",
-        background: theme.palette.primary.main + "15",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    };
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case "completed":
-                return "success";
-            case "pending":
-                return "warning";
-            case "failed":
-                return "error";
+                return "green";
             default:
-                return "default";
+                return "red";
         }
     };
 
     return (
         <>
-            {/* Gradient Header */}
-            <HeaderGradient>
-                <Typography variant="subtitle1" fontWeight={600}>
-                    {payeeType || "Unknown Payee"}
-                </Typography>
-                <Chip
-                    size="small"
-                    label={status}
-                    color={getStatusColor(status)}
-                    sx={{
-                        backgroundColor:
-                            theme.palette[getStatusColor(status)]?.main + " !important",
-                        color: theme.palette.common.white + " !important",
-                        fontWeight: 600,
-                        textTransform: "capitalize",
-                    }}
-                />
-            </HeaderGradient>
-
-            <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                {/* Payee Name */}
-                <Box display="flex" alignItems="center" gap={2}>
-                    <Box sx={commonSX}>
-                        <User2 sx={{ color: theme.palette.primary.main }} />
-                    </Box>
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Payee Name
-                        </Typography>
-                        <Typography variant="body1" fontWeight={500}>
-                            {studentEntry?.name || clientEntry?.groupName || "N/A"}
-                        </Typography>
-                    </Box>
-                </Box>
-                {/* Payment Type */}
-                <Box display="flex" alignItems="center" gap={2}>
-                    <Box sx={commonSX}>
-                        <CreditCard sx={{ color: theme.palette.primary.main }} />
-                    </Box>
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Payment Type
-                        </Typography>
-                        <Typography variant="body1" fontWeight={500}>
-                            {paymentType}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* Payment Date */}
-                <Box display="flex" alignItems="center" gap={2}>
-                    <Box sx={commonSX}>
-                        <CalendarMonth sx={{ color: theme.palette.info.main }} />
-                    </Box>
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Payment Date
-                        </Typography>
-                        <Typography variant="body1" fontWeight={500}>
-                            {getLocalDateTime(paymentDate, "DATETIME")}
-                        </Typography>
-                    </Box>
-                </Box>
-
-                <Divider sx={{ my: 1 }} />
-
-                {/* Amount */}
-                <FlexBetween
-                    sx={{
-                        backgroundColor: theme.palette.action.hover,
-                        p: 1,
-                        borderRadius: 2,
-                    }}
-                >
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <Paid sx={{ color: theme.palette.success.main }} />
-                        <Typography variant="body2" color="text.secondary" fontWeight={500}>
-                            Amount
-                        </Typography>
-                    </Box>
-                    <Typography variant="h6" fontWeight={700} color="text.primary">
-                        ₹{Number(amount).toLocaleString()}
-                    </Typography>
-                </FlexBetween>
-            </CardContent>
+            <CardHeader
+                FieldIcon={IndianRupeeIcon}
+                fieldValue={amount}
+                enabled={true}
+                badge={status}
+                badgeSx={{ background: getStatusColor(status) }}
+            />
+            <CardChip
+                value={
+                    (studentEntry?.name || clientEntry?.groupName || "N/A") + " (" + payeeType + ")"
+                }
+                ChipIcon={User2}
+                label={"Payee Name"}
+            />
+            <CardChip
+                value={paymentType}
+                ChipIcon={paymentType === "CASH" ? CurrencyRupee : QrCodeIcon}
+                label={"Payment Type"}
+            />
+            <CardChip type="DATETIME" value={paymentDate} label={"Payment Date"} />
         </>
     );
 };

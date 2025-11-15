@@ -1,43 +1,14 @@
-import { Box, Chip, Typography, useTheme } from "@mui/material";
-import FlexBetween from "../../../../Components/FlexBetween";
 import Field from "../../../../Components/Fields/Field";
-import ContactSection from "../../Enquiry/ContactSection";
+import ContactSection from "../../../../Components/New/StyledCardComponents/ContactSection";
 import UserAccessButton from "./UserAccessButton";
 import PropTypes from "prop-types";
+import CardHeader from "../../../../Components/New/StyledCardComponents/CardHeader";
 
 const UserCard = ({ row }) => {
-    const theme = useTheme();
     const { userName, email, role, enabled, phone, userAccessEntry, imageUrl } = row;
     return (
         <>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 6,
-                    background: enabled
-                        ? "linear-gradient(90deg, #018605ff, #81c784, #21f344ff)"
-                        : "linear-gradient(90deg, #bdbdbd, #e0e0e0)",
-                }}
-            />
-            <FlexBetween>
-                <Chip
-                    label={role}
-                    sx={{
-                        backgroundColor: theme.palette.secondary.main,
-                        color: "white",
-                        fontWeight: "bolder",
-                    }}
-                />
-            </FlexBetween>
-            <FlexBetween mt={2}>
-                <Field value={imageUrl} type="IMAGE" isEdit={false} extraProp={{ size: "35px" }} />
-                <Typography m={"auto"} ml={2}>
-                    {userName}
-                </Typography>
-            </FlexBetween>
+            <CardHeader badge={role} fieldValue={userName} image={imageUrl} enabled={enabled} />
             <ContactSection contact={email} />
             <ContactSection contact={phone} />
             <Field

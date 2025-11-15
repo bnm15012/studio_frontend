@@ -182,6 +182,7 @@ const Instructors = ({ ID }) => {
                 },
                 fieldToDisplayOnDelete: "activityName",
                 CardContentComponent: InstructorAssignedActivityCard,
+                cardLayout: "horizontal",
             },
         }),
         [allActivities],

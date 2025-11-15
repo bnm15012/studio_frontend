@@ -34,6 +34,7 @@ const FIELDS = [
         name: "userAccessEntry",
         label: "Access Rights",
         type: "CUSTOME",
+        defaultValue: {},
         extraProp: {
             CustomComponent: UserAccessButton,
         },
@@ -65,7 +66,7 @@ const BranchPage = () => {
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
-                    Add New Manager
+                    Add Manager
                 </Button>
             </FlexBetween>
             <Box>

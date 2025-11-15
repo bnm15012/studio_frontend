@@ -43,6 +43,16 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
                 },
             }}
         >
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 6,
+                    background: "linear-gradient(90deg, #0288d1, #26c6da, #4dd0e1)",
+                }}
+            />
             <CardHeader
                 sx={{ pb: 1 }}
                 title={

@@ -23,9 +23,9 @@ const ContactSection = ({ contact }) => {
         const link = isEmail ? `mailto:${contact}` : `tel:${contact}`;
         window.open(link, "_self");
     };
-
+    const iconProps = { fontSize: "small", color: "blue" };
     return (
-        <Box display="flex" alignItems="center" gap={2} my={2}>
+        <Box display="flex" alignItems="center" gap={2}>
             <Box
                 sx={{
                     p: 1,
@@ -36,15 +36,16 @@ const ContactSection = ({ contact }) => {
                 }}
                 onClick={handleClick}
             >
-                {isEmail ? <Mail size={18} /> : <Phone size={18} />}
+                {isEmail ? <Mail {...iconProps} /> : <Phone {...iconProps} />}
             </Box>
-
             <Box flexGrow={1} onClick={handleClick} sx={{ cursor: "pointer" }}>
-                <Typography variant="body2" fontWeight={500} sx={{ wordBreak: "break-all" }}>
+                <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+                    {isEmail ? "Email" : "Phone"}
+                </Typography>
+                <Typography variant="body2" color="text.primary">
                     {contact}
                 </Typography>
             </Box>
-
             <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
                 <IconButton size="small" onClick={handleCopy}>
                     <Copy size={16} color="#1976d2" />

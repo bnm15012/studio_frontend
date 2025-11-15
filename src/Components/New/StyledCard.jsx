@@ -3,15 +3,26 @@ import { styled, useTheme } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
-export const StyledCardContainer = styled(Box)(({ theme }) => ({
+export const StyledCardContainer = styled(Box)(({ theme, layout }) => ({
     display: "grid",
     gap: theme.spacing(3),
-    gridTemplateColumns: "repeat(auto-fill, minmax(20rem, 1fr))",
+
+    ...(layout === "horizontal"
+        ? {
+              gridAutoFlow: "column",
+              gridAutoColumns: "20rem",
+              overflowX: "auto",
+              overflowY: "hidden",
+          }
+        : {
+              gridTemplateColumns: "repeat(auto-fill, minmax(20rem, 1fr))",
+          }),
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     position: "relative",
     display: "flex",
+    gap: theme.spacing(1.5),
     height: "100%",
     flexDirection: "column",
     background: "linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%)",

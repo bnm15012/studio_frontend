@@ -61,7 +61,29 @@ const getLocalDateTime = (date, formate = "DATE") => {
         );
 };
 
+const getTimePassed = (utcString) => {
+    if (!utcString) return "N/A";
+
+    const localString = convertUTCToLocal(utcString);
+    const localDate = new Date(localString.replace(" ", "T"));
+
+    const now = new Date();
+    const diffMs = now - localDate;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 5) return "Just now";
+    if (seconds < 60) return `${seconds} sec ago`;
+    if (minutes < 60) return `${minutes} min ago`;
+    if (hours < 24) return `${hours} hr ago`;
+    return `${days} days ago`;
+};
+
 export {
+    getTimePassed,
     addDays,
     getCurrentDateTimeUTC,
     convertUTCToLocal,

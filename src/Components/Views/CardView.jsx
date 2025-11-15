@@ -42,14 +42,24 @@ const CardView = (props) => {
         handleViewOpen,
         tableState,
         handleLoadMore,
+        cardLayout = "vertical",
         CardContentComponent,
     } = props;
     const hasMore = data.length < tableState.totalCount;
     const visibleFields = fields.filter((f) => f.show);
-    // debugger;
+
     return (
         <Box>
-            <StyledCardContainer>
+            <StyledCardContainer
+                sx={
+                    cardLayout === "horizontal" && {
+                        gridAutoFlow: "column",
+                        gridAutoColumns: "22rem",
+                        width: "100%",
+                        overflowX: "auto",
+                    }
+                }
+            >
                 {data.map((row, index) => {
                     const rowId = row[fieldsMeta.primary];
 
@@ -98,6 +108,7 @@ const CardView = (props) => {
                         </StyledMotionCard>
                     );
                 })}
+                {data.length === 0 && <StyledCardContent>No Data Available</StyledCardContent>}
             </StyledCardContainer>
             {hasMore && (
                 <LoadMoreContainer>
@@ -113,6 +124,7 @@ const CardView = (props) => {
 CardView.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     tableState: PropTypes.object,
+    cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),
     fields: PropTypes.array,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,

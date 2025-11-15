@@ -415,6 +415,7 @@ const Students = ({ ID }) => {
                 },
                 CardContentComponent: StudentAssignActivityCard,
                 fieldToDisplayOnDelete: "activityName",
+                cardLayout: "horizontal",
             },
         }),
         [allActivities, beforeAdd, currentBranch.branchId],
@@ -473,7 +474,7 @@ const Students = ({ ID }) => {
 };
 
 Students.propTypes = {
-    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Students;
