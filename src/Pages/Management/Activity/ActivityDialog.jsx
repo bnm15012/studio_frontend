@@ -22,10 +22,9 @@ import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
-import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
-import { getAllDataAPI } from "../../../api/common.api";
 import StyledDialog from "../../../Components/New/StyledDialog";
 import Field from "../../../Components/Fields/Field";
+import { activityMembershipTypeCruds } from "../../../api/all.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
@@ -45,16 +44,9 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         : [];
 
     const fetchMembershipTypesData = useCallback(async () => {
-        dispatch(
-            getAllDataAPI({
-                rootId: studio.studioId,
-                token,
-                showAlert,
-                route: "activity-membership-type",
-                setData: setMemberShipTypes,
-                setLoading,
-            }),
-        );
+        // dispatch(
+        //     activityMembershipTypeCruds.getAll(showAlert, setLoading, token, {}, studio.studioId),
+        // );
     }, [dispatch, studio.studioId, token, showAlert]);
 
     useEffect(() => {
