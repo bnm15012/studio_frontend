@@ -9,8 +9,9 @@ import dialogSlice from "./dialogSlice";
 import notificationSlice from "./notificationSlice";
 import activitySlice from "./activitySlice";
 import analysisSlice from "./analysisSlice";
-import membershipTypesSlice from "./activityMembershipTypeSlice";
+
 import {
+    activityMembershipTypeCruds,
     bookingCruds,
     branchCruds,
     clientCruds,
@@ -41,7 +42,7 @@ const rootReducer = combineReducers({
     analysis: analysisSlice,
     dialog: dialogSlice,
     notifications: notificationSlice,
-    membershipTypes: membershipTypesSlice,
+    activityMembershipType: activityMembershipTypeCruds.reducer,
     enquiries: enquiryCruds.reducer,
     genericTemplate: genericTemplateCruds.reducer,
 });

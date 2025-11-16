@@ -1,69 +1,55 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
-import { useDispatch, useSelector } from "react-redux";
-import MembershipTypesTable from "./MembershipTypesTable";
-import { setMemberShipTypes } from "../../../state/activityMembershipTypeSlice";
-import { getAllDataAPI } from "../../../api/common.api";
+import { useSelector } from "react-redux";
+import { activityMembershipTypeCruds } from "../../../api/all.api";
+import Views from "../../../Components/Views/Views";
+
+const LIMIT = 7;
+
+const FIELD_META = {
+    primary: "activityMembershipTypeId",
+    root: "studioId",
+};
+
+const VIEWS = ["LIST"];
+
+const FIELDS = [{ show: true, name: "activityMembershipType", label: "Membership Type" }];
 
 const MembershipType = () => {
-    const dispatch = useDispatch();
-    const showAlert = useAlert();
-    const [loading, setLoading] = useState(false);
-    const token = useSelector((state) => state.auth.token);
-    const studio = useSelector((state) => state.auth.studio);
-    const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
-    const [newRow, setNewRow] = useState(null);
-
-    const fetchMembershipTypesData = useCallback(async () => {
-        dispatch(
-            getAllDataAPI({
-                rootId: studio.studioId,
-                token,
-                showAlert,
-                route: "activity-membership-type",
-                setData: setMemberShipTypes,
-                setLoading,
-            }),
-        );
-    }, [dispatch, studio.studioId, token, showAlert]);
-
-    useEffect(() => {
-        !cachedMembershipTypes.length && fetchMembershipTypesData();
-    }, [cachedMembershipTypes.length, fetchMembershipTypesData]);
-
-    function handleAddNew() {
-        setNewRow({
-            activityMembershipTypeId: undefined,
-            activityMembershipType: "",
-        });
-    }
+    // const { triggerSearch } = usePageSearch();
+    const [addNewFunc, setAddNewFunc] = useState(null);
+    const studio = useSelector((s) => s.auth.studio);
 
     return (
         <FlexBetweenColumn>
-            {loading && <Loading />}
-            <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
+            <FlexBetween paddingBottom={2} gap={1}>
+                {/* <SearchField handleSearch={triggerSearch} /> */}
                 <Button
                     variant="contained"
                     color="primary"
-                    disabled={newRow != null}
-                    onClick={() => handleAddNew()}
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
                     <AddIcon sx={{ padding: 0, margin: "auto" }} />
                 </Button>
             </FlexBetween>
             <Box>
-                <MembershipTypesTable
-                    initialData={cachedMembershipTypes}
-                    studioId={studio.studioId}
-                    token={token}
-                    newRow={newRow}
-                    setNewRow={setNewRow}
+                <Views
+                    tableName={"activityMembershipType"}
+                    tableCruds={activityMembershipTypeCruds}
+                    size={LIMIT}
+                    key={"activityMembershipType"}
+                    fields={FIELDS}
+                    rootId={studio.studioId}
+                    fieldsMeta={FIELD_META}
+                    onSetAddNewFunc={setAddNewFunc}
+                    currentView={VIEWS[0]}
+                    fieldToDisplayOnDelete="activityMembershipType"
                 />
             </Box>
         </FlexBetweenColumn>
