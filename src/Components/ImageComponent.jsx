@@ -5,7 +5,7 @@ import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/ma
 import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import { useAlert } from "../utils/Alert";
-import { uploadImageApiCall } from "../utils/uploadImg.api";
+import { uploadImageApiCall } from "../api/uploadImg.api";
 
 const ImageComponent = ({
     value,

@@ -11,7 +11,13 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
     const { isMobile } = useUI();
 
     return (
-        <Box sx={{ backgroundColor: theme.palette.background.default }} height={"100vh"}>
+        <Box
+            sx={{
+                backgroundColor: theme.palette.background.default,
+                // border: "1px solid red",
+            }}
+            height={"100vh"}
+        >
             <Navbar position="static" />
             <FlexBetween height={"calc(100vh - 3.2rem)"}>
                 <Sidebar sidebarOpen={isSidebarShouldBeOn} />

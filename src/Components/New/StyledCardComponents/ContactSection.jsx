@@ -42,7 +42,7 @@ const ContactSection = ({ contact }) => {
                 <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
                     {isEmail ? "Email" : "Phone"}
                 </Typography>
-                <Typography variant="body2" color="text.primary">
+                <Typography variant="body2" color="text.primary" textOverflow={"ellipsis"}>
                     {contact}
                 </Typography>
             </Box>

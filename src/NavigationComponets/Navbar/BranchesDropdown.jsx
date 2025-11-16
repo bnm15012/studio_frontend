@@ -34,7 +34,7 @@ const BranchesDropdown = () => {
     return (
         <FlexBetween height="100%" alignItems="center">
             <Tooltip title={currentBranch?.name || "Select Branch"} placement="bottom">
-                <Button sx={{ alignItems: "center" }} onClick={handleClick}>
+                <Button sx={{ alignItems: "center", p: 1 }} onClick={handleClick}>
                     <FlexBetween color={"whitesmoke"} alignItems="center" width="100%">
                         <Typography
                             fontWeight="bolder"

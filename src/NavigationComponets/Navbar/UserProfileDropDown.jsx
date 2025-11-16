@@ -26,7 +26,7 @@ const UserProfileDropdown = ({ user, handleLogout }) => {
 
     return (
         <FlexBetween height={"100%"} alignItems={"center"}>
-            <Button onClick={handleClick}>
+            <Button onClick={handleClick} sx={{ p: 1 }}>
                 <FlexBetween color={"whitesmoke"} alignItems={"center"}>
                     <Typography fontWeight={"bolder"} sx={{ textWrap: "nowrap" }}>
                         {isMobile ? "" : "WELCOME"} {user.userName}

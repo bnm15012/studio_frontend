@@ -15,7 +15,7 @@ export const StyledCardContainer = styled(Box)(({ theme, layout }) => ({
               overflowY: "hidden",
           }
         : {
-              gridTemplateColumns: "repeat(auto-fill, minmax(20rem, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(19rem, 1fr))",
           }),
 }));
 

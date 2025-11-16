@@ -72,7 +72,7 @@ const DashBoard = () => {
                         color: "#2196F3",
                         value: tmp.totalStudents,
                         label: "Total Students",
-                        navigateTo: "/management/student",
+                        navigateTo: "/management/students",
                         icon: <Group sx={{ fontSize: "40px" }} />,
                     },
                     {

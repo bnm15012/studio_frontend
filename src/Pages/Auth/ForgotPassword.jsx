@@ -17,7 +17,7 @@ import { useAlert } from "../../utils/Alert";
 import FlexEvenlyColumn from "../../Components/FlexEvenlyColumn";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { validatePassword } from "../../utils/validationConstraints";
+import { validatePassword } from "../../utils/validationConstraints.js";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
 
 const ForgotPassword = () => {

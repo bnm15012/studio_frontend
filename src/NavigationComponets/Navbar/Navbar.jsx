@@ -78,7 +78,7 @@ export const Navbar = ({ position = "fixed" }) => {
                             <AuthButtons isNonMobileScreens={isNonMobileScreens} />
                         </Box>
                     ) : (
-                        <FlexBetween gap={2}>
+                        <FlexBetween>
                             <Notification />
                             {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
                                 <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />

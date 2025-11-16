@@ -37,35 +37,35 @@ const FIELDS = [
         type: "IMAGE",
         extraProp: { size: "30px" },
     },
-    { show: true, section: "Personal Details", name: "name", label: "Name" },
-    { show: true, section: "Contact Details", name: "email", label: "Email" },
-    { show: true, section: "Contact Details", name: "phone", label: "Phone" },
-    {
-        show: true,
-        section: "Personal Details",
-        name: "dob",
-        label: "Date of Birth",
-        type: "DATE",
-    },
-    {
-        show: true,
-        section: "Personal Details",
-        name: "membershipStatus",
-        label: "Status",
-        getValue: (value) => (
-            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                {value}
-            </Box>
-        ),
-        extraProp: { readOnly: true },
-    },
-    { show: false, section: "Contact Details", name: "address", label: "Address" },
-    {
-        show: false,
-        section: "Contact Details",
-        name: "emergencyContactNumber",
-        label: "Emergency Contact",
-    },
+    // { show: true, section: "Personal Details", name: "name", label: "Name" },
+    // { show: true, section: "Contact Details", name: "email", label: "Email" },
+    // { show: true, section: "Contact Details", name: "phone", label: "Phone" },
+    // {
+    //     show: true,
+    //     section: "Personal Details",
+    //     name: "dob",
+    //     label: "Date of Birth",
+    //     type: "DATE",
+    // },
+    // {
+    //     show: true,
+    //     section: "Personal Details",
+    //     name: "membershipStatus",
+    //     label: "Status",
+    //     getValue: (value) => (
+    //         <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
+    //             {value}
+    //         </Box>
+    //     ),
+    //     extraProp: { readOnly: true },
+    // },
+    // { show: false, section: "Contact Details", name: "address", label: "Address" },
+    // {
+    //     show: false,
+    //     section: "Contact Details",
+    //     name: "emergencyContactNumber",
+    //     label: "Emergency Contact",
+    // },
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];
 
