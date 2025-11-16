@@ -247,7 +247,7 @@ const Sidebar = ({ sidebarOpen }) => {
                             <SidebarItem
                                 key={route.path}
                                 route={route}
-                                isSelected={location.pathname === route.path}
+                                isSelected={location.pathname.includes(route.path)}
                                 onClick={() => navigate(route.path)}
                                 isNonMobileScreens={true}
                             />

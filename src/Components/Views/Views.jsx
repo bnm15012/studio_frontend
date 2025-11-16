@@ -85,6 +85,7 @@ const Views = ({
     );
 
     const handleCancel = useCallback(() => {
+        if (formKey === "NEW") navigate(`/management/${tableName}/`);
         if (formKey) {
             setRecord(editingId === "NEW" ? {} : originalRow);
         } else {
@@ -98,7 +99,6 @@ const Views = ({
         }
         updateEditId(null);
         setOriginalRow(null);
-        if (formKey === "NEW") navigate(`/management/${tableName}/`);
     }, [editingId, fieldsMeta.primary, formKey, navigate, originalRow, tableName]);
 
     const handleSave = useCallback(
@@ -125,6 +125,7 @@ const Views = ({
                 showAlert("Operation failed. Please try again!", "error");
             } finally {
                 updateEditId(null);
+                if (formKey === "NEW") navigate(`/management/${tableName}/`);
             }
         },
         [
@@ -134,9 +135,11 @@ const Views = ({
             dispatch,
             fieldsMeta.primary,
             formKey,
+            navigate,
             record,
             showAlert,
             tableCruds,
+            tableName,
             token,
         ],
     );
@@ -226,9 +229,11 @@ const Views = ({
 
         let newRow = { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId };
 
-        fields.forEach((f) => {
-            newRow = updateField(f.defaultValue ?? "", newRow, f.name);
-        });
+        fields
+            .filter((f) => f.type != "VIEW")
+            .forEach((f) => {
+                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+            });
 
         if (formKey) setRecord(newRow);
         else setData((prev) => [newRow, ...prev]);
@@ -244,7 +249,7 @@ const Views = ({
 
     useEffect(() => {
         if (formKey === "NEW") {
-            addNewRow();
+            record && !Object.keys(record).length && addNewRow();
         } else if (formKey) fetchOneData(formKey);
     }, [addNewRow, fetchOneData, formKey]);
 
@@ -355,6 +360,7 @@ const Views = ({
             tableState,
         ],
     );
+    console.log(editingId);
 
     return (
         <>
