@@ -10,6 +10,8 @@ import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
+import SearchField from "../../../Components/SearchField";
+import { usePageSearch } from "../../../hooks/useSearch";
 
 const categories = [
     "ELECTRICITY",
@@ -56,13 +58,14 @@ const FIELDS = [
 ];
 const Expenses = () => {
     const { isMobile } = useUI();
+    const { triggerSearch } = usePageSearch();
     const [addNewFunc, setAddNewFunc] = useState(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
-                <Box ml={"auto"}></Box>
+                <SearchField handleSearch={triggerSearch} />
                 <Button
                     variant="contained"
                     color="primary"

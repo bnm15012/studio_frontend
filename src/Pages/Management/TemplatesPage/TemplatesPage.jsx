@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useSelector } from "react-redux";
 import Views from "../../../Components/Views/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
+import { usePageSearch } from "../../../hooks/useSearch";
+import SearchField from "../../../Components/SearchField";
+import { Add } from "@mui/icons-material";
+import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 
 const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);
 
@@ -56,6 +60,8 @@ const VIEWS = ["LIST", "CARD"];
 
 const TemplatesPage = () => {
     const { isMobile } = useUI();
+    const { triggerSearch } = usePageSearch();
+
     useSelector((state) => state.activity.activities)?.map((x) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
     ) || [];
@@ -64,10 +70,18 @@ const TemplatesPage = () => {
     const [addNewFunc, setAddNewFunc] = useState(null);
 
     return (
-        <Box>
-            <FlexBetween paddingBottom={2} flexDirection={"row-reverse"}>
-                <Button variant="contained" color="primary" onClick={() => addNewFunc()}>
-                    Add Template
+        <FlexBetweenColumn>
+            <FlexBetween paddingBottom={2} gap={1}>
+                <SearchField handleSearch={triggerSearch} />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        if (addNewFunc) addNewFunc();
+                    }}
+                    sx={{ fontWeight: "bold", padding: ".8rem" }}
+                >
+                    <Add sx={{ padding: 0, margin: "auto" }} />
                 </Button>
             </FlexBetween>
 
@@ -84,7 +98,7 @@ const TemplatesPage = () => {
                 CardContentComponent={TemplateCard}
                 editMode={"DIALOG"}
             />
-        </Box>
+        </FlexBetweenColumn>
     );
 };
 

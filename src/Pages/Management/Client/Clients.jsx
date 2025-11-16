@@ -9,6 +9,8 @@ import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
+import SearchField from "../../../Components/SearchField";
+import { usePageSearch } from "../../../hooks/useSearch";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 
@@ -40,6 +42,7 @@ const FIELDS = [
     { show: true, name: "notes", label: "Notes" },
 ];
 const Clients = () => {
+    const { triggerSearch } = usePageSearch();
     const { isMobile } = useUI();
     const [addNewFunc, setAddNewFunc] = useState(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
@@ -47,7 +50,7 @@ const Clients = () => {
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
-                <Box ml={"auto"}></Box>
+                <SearchField handleSearch={triggerSearch} />
                 <Button
                     variant="contained"
                     color="primary"

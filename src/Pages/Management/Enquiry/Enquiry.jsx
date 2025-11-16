@@ -12,6 +12,8 @@ import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
+import SearchField from "../../../Components/SearchField.jsx";
+import { usePageSearch } from "../../../hooks/useSearch.js";
 
 const LIMIT = 7;
 
@@ -38,13 +40,14 @@ const FIELDS = [
 const Enquiry = () => {
     const dispatch = useDispatch();
     const { isMobile } = useUI();
+    const { triggerSearch } = usePageSearch();
     const [addNewFunc, setAddNewFunc] = useState(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
-                <Box ml={"auto"}></Box>
+                <SearchField handleSearch={triggerSearch} />
                 <QrForm title="" link={"enquiry-form"} />
                 <Button
                     variant="contained"

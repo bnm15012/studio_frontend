@@ -7,6 +7,9 @@ import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
+import FlexBetween from "../../../Components/FlexBetween";
+import SearchField from "../../../Components/SearchField";
+import { usePageSearch } from "../../../hooks/useSearch";
 
 const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 8;
@@ -70,10 +73,14 @@ const FIELDS = [
 ];
 const Expenses = () => {
     const { isMobile } = useUI();
+    const { triggerSearch } = usePageSearch();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
+            <FlexBetween paddingBottom={2} gap={1} height={"4.3rem"}>
+                <SearchField handleSearch={triggerSearch} />
+            </FlexBetween>
             <Box>
                 <Views
                     actions={[
