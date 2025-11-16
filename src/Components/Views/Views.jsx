@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useAlert } from "../../utils/Alert";
 import Loading from "../Loading/Loading";
@@ -44,7 +44,6 @@ const Views = ({
     const token = useSelector((state) => state.auth.token);
     const tableState = useSelector((state) => state[tableName]);
 
-    const [page, setPage] = useState(1);
     const [data, setData] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -59,6 +58,9 @@ const Views = ({
     const [viewRow, setViewRow] = useState(null);
     const [record, setRecord] = useState({});
 
+    const updateEditId = (id) => {
+        setEditingId(id);
+    };
     const handleViewOpen = (row) => {
         setViewRow(row);
         setViewDialogOpen(true);
@@ -69,19 +71,22 @@ const Views = ({
         setViewDialogOpen(false);
     };
 
-    const handleEdit = (row) => {
-        if (editingId) {
-            showAlert("Can't Edit New while edit", "warning");
-            return;
-        }
-        const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
-        setOriginalRow({ ...original });
-        setEditingId(row[fieldsMeta.primary]);
-    };
+    const handleEdit = useCallback(
+        (row) => {
+            if (editingId) {
+                showAlert("Can't Edit New while edit", "warning");
+                return;
+            }
+            const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
+            setOriginalRow({ ...original });
+            updateEditId(row[fieldsMeta.primary]);
+        },
+        [data, editingId, fieldsMeta.primary, showAlert],
+    );
 
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         if (formKey) {
-            setRecord(originalRow);
+            setRecord(editingId === "NEW" ? {} : originalRow);
         } else {
             if (editingId === "NEW") {
                 setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== editingId));
@@ -91,43 +96,65 @@ const Views = ({
                 );
             }
         }
-        setEditingId(null);
+        updateEditId(null);
         setOriginalRow(null);
         if (formKey === "NEW") navigate(`/management/${tableName}/`);
-    };
+    }, [editingId, fieldsMeta.primary, formKey, navigate, originalRow, tableName]);
 
-    const handleSave = async (id) => {
-        try {
-            const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
-            if (id === "NEW") {
-                const { [fieldsMeta.primary]: id, ...withoutId } = await beforeAdd(newRow);
-                dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
-                setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
-            } else {
-                dispatch(
-                    tableCruds.update(id, await beforeUpdate(newRow), token, showAlert, setLoading),
-                );
+    const handleSave = useCallback(
+        async (id) => {
+            try {
+                const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
+                if (id === "NEW") {
+                    const { [fieldsMeta.primary]: id, ...withoutId } = await beforeAdd(newRow);
+                    dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
+                    setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
+                } else {
+                    dispatch(
+                        tableCruds.update(
+                            id,
+                            await beforeUpdate(newRow),
+                            token,
+                            showAlert,
+                            setLoading,
+                        ),
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+                showAlert("Operation failed. Please try again!", "error");
+            } finally {
+                updateEditId(null);
             }
-        } catch (error) {
-            console.error(error);
-            showAlert("Operation failed. Please try again!", "error");
-        } finally {
-            setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
-            setEditingId(null);
-        }
-    };
+        },
+        [
+            beforeAdd,
+            beforeUpdate,
+            data,
+            dispatch,
+            fieldsMeta.primary,
+            formKey,
+            record,
+            showAlert,
+            tableCruds,
+            token,
+        ],
+    );
 
-    const handleDelete = async (id) => {
-        try {
-            dispatch(tableCruds.delete(id, token, showAlert, setLoading));
-        } catch (error) {
-            console.error(error);
-            showAlert(`Failed to delete ${tableName}!`, "error");
-        } finally {
-            setDeleteDialogOpen(false);
-            setDeleteId(null);
-        }
-    };
+    const handleDelete = useCallback(
+        async (id) => {
+            try {
+                dispatch(tableCruds.delete(id, token, showAlert, setLoading));
+            } catch (error) {
+                console.error(error);
+                showAlert(`Failed to delete ${tableName}!`, "error");
+            } finally {
+                setDeleteDialogOpen(false);
+                setDeleteId(null);
+            }
+        },
+        [dispatch, showAlert, tableCruds, tableName, token],
+    );
 
     const updateField = (value, obj, fieldPath) => {
         const updatedItem = { ...obj };
@@ -144,17 +171,22 @@ const Views = ({
         return updatedItem;
     };
 
-    const handleChange = (value, id, fieldPath) => {
-        if (formKey) {
-            setRecord((prev) => updateField(value, prev, fieldPath));
-        } else {
-            setData((prev) =>
-                prev.map((item) =>
-                    item[fieldsMeta.primary] === id ? updateField(value, item, fieldPath) : item,
-                ),
-            );
-        }
-    };
+    const handleChange = useCallback(
+        (value, id, fieldPath) => {
+            if (formKey) {
+                setRecord((prev) => updateField(value, prev, fieldPath));
+            } else {
+                setData((prev) =>
+                    prev.map((item) =>
+                        item[fieldsMeta.primary] === id
+                            ? updateField(value, item, fieldPath)
+                            : item,
+                    ),
+                );
+            }
+        },
+        [fieldsMeta.primary, formKey],
+    );
 
     const fetchData = useCallback(
         async (page = 1, searchTerm = "", filterKeys = {}) => {
@@ -179,10 +211,12 @@ const Views = ({
         [dispatch, tableCruds, showAlert, token],
     );
 
-    const handlePageChange = async (p) => {
-        setPage(p);
-        await fetchData(p, searchTerm, filterKeys);
-    };
+    const handlePageChange = useCallback(
+        async (p) => {
+            await fetchData(p, searchTerm, filterKeys);
+        },
+        [fetchData, filterKeys, searchTerm],
+    );
 
     const addNewRow = useCallback(() => {
         if (editingId) {
@@ -199,7 +233,7 @@ const Views = ({
         if (formKey) setRecord(newRow);
         else setData((prev) => [newRow, ...prev]);
 
-        setEditingId("NEW");
+        updateEditId("NEW");
     }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, formKey, rootId, showAlert]);
 
     useEffect(() => {
@@ -210,9 +244,9 @@ const Views = ({
 
     useEffect(() => {
         if (formKey === "NEW") {
-            record && !Object.keys(record).length && addNewRow();
+            addNewRow();
         } else if (formKey) fetchOneData(formKey);
-    }, [addNewRow, fetchOneData, formKey, record]);
+    }, [addNewRow, fetchOneData, formKey]);
 
     useEffect(() => {
         const unsubscribe = subscribe((term, filterKeys) => {
@@ -222,73 +256,105 @@ const Views = ({
         });
 
         return unsubscribe;
-    }, [fetchData, page, subscribe]);
+    }, [fetchData, subscribe]);
+
+    useEffect(() => {
+        setData(tableState.items ?? []);
+    }, [tableState.items]);
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
             setRecord(tableState.recordById[formKey] || {});
         }
-        setData(tableState.items ?? []);
-    }, [formKey, tableState]);
+    }, [formKey, tableState.recordById]);
 
-    const handleDeleteClick = (row) => {
-        setDeleteId(row[fieldsMeta.primary]);
-        setDeleteDialogOpen(true);
-    };
-
-    const openFormView = (row) => {
-        navigate(`/management/${tableName}/${row[fieldsMeta.primary]}`);
-    };
-
-    const defaultActions = [
-        {
-            name: "edit",
-            enabled: !loading,
-            hide: editMode === "FORM" && !formKey,
-            onClick: handleEdit,
-            icon: <Edit />,
-            sx: { color: "blue" },
+    const handleDeleteClick = useCallback(
+        (row) => {
+            setDeleteId(row[fieldsMeta.primary]);
+            setDeleteDialogOpen(true);
         },
-        {
-            name: "delete",
-            enabled: !loading,
-            onClick: handleDeleteClick,
-            icon: <Delete />,
-            sx: { color: "red" },
-        },
-        {
-            name: "form",
-            enabled: !loading,
-            hide: editMode !== "FORM" || !!formKey,
-            onClick: openFormView,
-            icon: <OpenInNew />,
-            sx: { color: "blue" },
-        },
-    ];
+        [fieldsMeta.primary],
+    );
 
-    const mergedActions = [
-        ...defaultActions.map((def) => {
+    const openFormView = useCallback(
+        (row) => {
+            navigate(`/management/${tableName}/${row[fieldsMeta.primary]}`);
+        },
+        [fieldsMeta.primary, navigate, tableName],
+    );
+
+    const defaultActions = useMemo(
+        () => [
+            {
+                name: "edit",
+                enabled: !loading,
+                hide: editMode === "FORM" && !formKey,
+                onClick: handleEdit,
+                icon: <Edit />,
+                sx: { color: "blue" },
+            },
+            {
+                name: "delete",
+                enabled: !loading,
+                onClick: handleDeleteClick,
+                icon: <Delete />,
+                sx: { color: "red" },
+            },
+            {
+                name: "form",
+                enabled: !loading,
+                hide: editMode !== "FORM" || !!formKey,
+                onClick: openFormView,
+                icon: <OpenInNew />,
+                sx: { color: "blue" },
+            },
+        ],
+        [editMode, formKey, handleDeleteClick, handleEdit, loading, openFormView],
+    );
+
+    const mergedActions = useMemo(() => {
+        const defaults = defaultActions.map((def) => {
             const override = actions.find((a) => a.name === def.name);
             return override ? { ...def, ...override } : def;
-        }),
-        ...actions.filter((a) => !defaultActions.some((def) => def.name === a.name)),
-    ];
+        });
+        return [
+            ...defaults,
+            ...actions.filter((a) => !defaultActions.some((def) => def.name === a.name)),
+        ];
+    }, [defaultActions, actions]);
 
-    const commonProps = {
-        data,
-        tableName,
-        tableState,
-        fields,
-        editingId,
-        fieldsMeta,
-        actions: mergedActions,
-        handleChange,
-        handleViewOpen,
-        handleSave,
-        handleCancel,
-        handlePageChange,
-        addNewRow: showAddButton ? addNewRow : undefined,
-    };
+    const commonProps = useMemo(
+        () => ({
+            data,
+            tableName,
+            tableState,
+            fields,
+            editingId,
+            fieldsMeta,
+            actions: mergedActions,
+            handleChange,
+            handleViewOpen,
+            handleSave,
+            handleCancel,
+            handlePageChange,
+            addNewRow: showAddButton ? addNewRow : undefined,
+        }),
+        [
+            addNewRow,
+            data,
+            editingId,
+            fields,
+            fieldsMeta,
+            handleCancel,
+            handleChange,
+            handlePageChange,
+            handleSave,
+            mergedActions,
+            showAddButton,
+            tableName,
+            tableState,
+        ],
+    );
 
     return (
         <>

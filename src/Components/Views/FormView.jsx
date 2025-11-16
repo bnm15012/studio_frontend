@@ -14,6 +14,8 @@ import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel, FieldValue } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
 import Views from "./Views";
+import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
+import { memo } from "react";
 
 const FormView = (props) => {
     const {
@@ -54,7 +56,14 @@ const FormView = (props) => {
                 sx={{ width: "100%", p: 1, borderRadius: 2, boxShadow: theme.shadows[2] }}
             >
                 <FlexBetween alignItems="center" gap={2}>
-                    <IconButton onClick={() => navigate(`/management/${tableName}`)}>
+                    <IconButton
+                        onClick={() => {
+                            if (editingId) {
+                                handleCancel();
+                            }
+                            navigate(`/management/${tableName}`);
+                        }}
+                    >
                         <ArrowBackIcon sx={{ color: "black" }} />
                     </IconButton>
                     <Typography variant="h5" fontWeight="bold">
@@ -161,21 +170,9 @@ const FormView = (props) => {
                                         {sectionName}
                                     </Typography>
                                     <Divider sx={{ mb: 0 }} />
-
-                                    <FlexBetweenColumn
-                                        sx={{
-                                            columnGap: 3,
-                                            display: "grid",
-                                            gridTemplateColumns:
-                                                "repeat(auto-fill, minmax(22em, 1fr))",
-                                        }}
-                                    >
+                                    <StyledFieldContainer>
                                         {fieldsInSection.map((field) => (
-                                            <FlexBetween
-                                                key={field.name}
-                                                gap={isMobile ? 1 : 2}
-                                                // flexDirection={isMobile ? "column" : "row"}
-                                            >
+                                            <StyledFieldItem key={field.name} gap={1}>
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 <FieldValue>
                                                     <Field
@@ -198,9 +195,9 @@ const FormView = (props) => {
                                                         extraProp={field.extraProp}
                                                     />
                                                 </FieldValue>
-                                            </FlexBetween>
+                                            </StyledFieldItem>
                                         ))}
-                                    </FlexBetweenColumn>
+                                    </StyledFieldContainer>
                                 </Box>
                             ),
                         )}
@@ -248,4 +245,4 @@ FormView.propTypes = {
     ),
 };
 
-export default FormView;
+export default memo(FormView);

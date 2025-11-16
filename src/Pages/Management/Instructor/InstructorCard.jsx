@@ -11,7 +11,7 @@ const InstructorCard = ({ row }) => {
         <>
             <CardHeader
                 badge={instructorStatus}
-                enabled={instructorStatus === "ACTIVE" ? "Active" : "Inactive"}
+                enabled={instructorStatus === "ACTIVE"}
                 fieldValue={name}
                 image={imageUrl}
                 badgeSx={{ backgroundColor: instructorStatus === "ACTIVE" ? "green" : "grey.400" }}

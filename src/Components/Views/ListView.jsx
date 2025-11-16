@@ -15,6 +15,8 @@ import { Add } from "@mui/icons-material";
 import FlexEvenly from "../FlexEvenly";
 import { useUI } from "../../context/UIContext";
 import FlexBetween from "../FlexBetween";
+import { memo } from "react";
+
 const ListView = ({
     fields,
     data,
@@ -218,4 +220,4 @@ ListView.propTypes = {
     ),
 };
 
-export default ListView;
+export default memo(ListView);

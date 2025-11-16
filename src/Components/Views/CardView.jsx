@@ -10,6 +10,7 @@ import {
 } from "../New/StyledCard";
 import FlexEvenly from "../FlexEvenly";
 import { getNestedValue } from "../../utils/objectHelpers";
+import { memo } from "react";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -144,4 +145,4 @@ CardView.propTypes = {
     ),
 };
 
-export default CardView;
+export default memo(CardView);
