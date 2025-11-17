@@ -4,13 +4,24 @@ FROM node:20-alpine AS build
 # Set working directory inside the container
 WORKDIR /app
 
+# Accept GitHub Action secrets as build args
+ARG VITE_APP_REST_API
+ARG VITE_APP_RAZOR_PAY_KEY
+ARG VITE_APP_FORM_SIG
+ARG VITE_DEBUG
+
+# Generate .env dynamically inside the container
+RUN echo "VITE_APP_REST_API=$VITE_APP_REST_API" > .env && \
+    echo "VITE_APP_RAZOR_PAY_KEY=$VITE_APP_RAZOR_PAY_KEY" >> .env && \
+    echo "VITE_APP_FORM_SIG=$VITE_APP_FORM_SIG" >> .env && \
+    echo "VITE_DEBUG=$VITE_DEBUG" >> .env
+
 # Step 2: Install dependencies
 COPY package.json ./
 RUN npm install
 
 # Step 3: Copy the rest of the application files, including the public folder
 COPY . .
-COPY .env.docker .env
 
 # Step 4: Build the Vite app
 RUN npm run build
