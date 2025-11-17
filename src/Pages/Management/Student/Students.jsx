@@ -39,7 +39,16 @@ const FIELDS = [
     },
     { show: true, section: "Personal Details", name: "name", label: "Name" },
     { show: true, section: "Contact Details", name: "email", label: "Email" },
-    { show: true, section: "Contact Details", name: "phone", label: "Phone" },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "phone",
+        label: "Phone",
+        validation: {
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces",
+        },
+    },
     {
         show: true,
         section: "Personal Details",
@@ -57,6 +66,7 @@ const FIELDS = [
                 {value}
             </Box>
         ),
+        defaultValue: "ACTIVE",
         extraProp: { readOnly: true },
     },
     { show: false, section: "Contact Details", name: "address", label: "Address" },
@@ -65,6 +75,10 @@ const FIELDS = [
         section: "Contact Details",
         name: "emergencyContactNumber",
         label: "Emergency Contact",
+        validation: {
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces",
+        },
     },
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];

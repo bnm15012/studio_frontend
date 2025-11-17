@@ -12,7 +12,7 @@ const InstructorAssignedActivityCard = ({ row }) => {
         <>
             <CardHeader
                 badge={membershipStatus}
-                enabled={membershipStatus === "ACTIVE" ? "Active" : "Inactive"}
+                enabled={membershipStatus === "ACTIVE"}
                 fieldValue={activityName}
                 FieldIcon={Activity}
                 badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}

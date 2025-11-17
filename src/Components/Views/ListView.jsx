@@ -112,6 +112,7 @@ const ListView = ({
                                                             row,
                                                         ),
                                                 }}
+                                                validation={field.validation}
                                             />
                                         )}
                                     </StyledTableCell>

@@ -11,7 +11,7 @@ const StudentCard = ({ row }) => {
         <>
             <CardHeader
                 badge={membershipStatus}
-                enabled={membershipStatus === "ACTIVE" ? "Active" : "Inactive"}
+                enabled={membershipStatus === "ACTIVE"}
                 fieldValue={name}
                 image={imageUrl}
                 badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}

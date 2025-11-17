@@ -193,6 +193,7 @@ const FormView = (props) => {
                                                         }}
                                                         type={field.type}
                                                         extraProp={field.extraProp}
+                                                        validation={field.validation}
                                                     />
                                                 </FieldValue>
                                             </StyledFieldItem>

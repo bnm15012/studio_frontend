@@ -38,6 +38,7 @@ export const DialogForm = (props) => {
                                 getOptions: async (search, page, limit) =>
                                     field.extraProp.getOptions(search, page, limit, data),
                             }}
+                            validation={field.validation}
                         />
                     </FlexBetween>
                 ))}

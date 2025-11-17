@@ -26,7 +26,7 @@ const StudentAssignActivityCard = ({ row }) => {
             {/* Header */}
             <CardHeader
                 badge={membershipStatus}
-                enabled={membershipStatus === "ACTIVE" ? "Active" : "Inactive"}
+                enabled={membershipStatus === "ACTIVE"}
                 fieldValue={activityName}
                 image={null}
                 badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}

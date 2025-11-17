@@ -99,6 +99,7 @@ const Views = ({
         }
         updateEditId(null);
         setOriginalRow(null);
+        setRecord({});
     }, [editingId, fieldsMeta.primary, formKey, navigate, originalRow, tableName]);
 
     const handleSave = useCallback(
@@ -230,7 +231,7 @@ const Views = ({
         let newRow = { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId };
 
         fields
-            .filter((f) => f.type != "VIEW")
+            // .filter((f) => f.type != "VIEW")
             .forEach((f) => {
                 newRow = updateField(f.defaultValue ?? "", newRow, f.name);
             });
@@ -249,9 +250,16 @@ const Views = ({
 
     useEffect(() => {
         if (formKey === "NEW") {
-            record && !Object.keys(record).length && addNewRow();
-        } else if (formKey) fetchOneData(formKey);
-    }, [addNewRow, fetchOneData, formKey]);
+            addNewRow();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        if (formKey && formKey !== "NEW") {
+            fetchOneData(formKey);
+        }
+    }, [formKey, fetchOneData]);
 
     useEffect(() => {
         const unsubscribe = subscribe((term, filterKeys) => {
@@ -360,7 +368,7 @@ const Views = ({
             tableState,
         ],
     );
-    console.log(editingId);
+    console.log(editingId, record);
 
     return (
         <>

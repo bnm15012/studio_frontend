@@ -28,7 +28,7 @@ const CardChip = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => (
 );
 
 CardChip.propTypes = {
-    ChipIcon: PropTypes.element,
+    ChipIcon: PropTypes.elementType,
     label: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]),
     type: PropTypes.oneOf(["DATE", "DATETIME", "STR"]),
