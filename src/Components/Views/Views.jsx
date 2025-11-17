@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAlert } from "../../utils/Alert";
 import Loading from "../Loading/Loading";
@@ -36,6 +36,13 @@ const Views = ({
     beforeUpdate = async (row) => row,
     editMode = "INLINE",
 }) => {
+    const consts = useRef({
+        primaryKey: fieldsMeta.primary,
+        rootKey: fieldsMeta.root,
+        fields,
+        rootId,
+    });
+
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const navigate = useNavigate();
@@ -77,11 +84,13 @@ const Views = ({
                 showAlert("Can't Edit New while edit", "warning");
                 return;
             }
-            const original = data.find((d) => d[fieldsMeta.primary] === row[fieldsMeta.primary]);
+            const original = data.find(
+                (d) => d[consts.current.primaryKey] === row[consts.current.primaryKey],
+            );
             setOriginalRow({ ...original });
-            updateEditId(row[fieldsMeta.primary]);
+            updateEditId(row[consts.current.primaryKey]);
         },
-        [data, editingId, fieldsMeta.primary, showAlert],
+        [data, editingId, showAlert],
     );
 
     const handleCancel = useCallback(() => {
@@ -90,26 +99,32 @@ const Views = ({
             setRecord(editingId === "NEW" ? {} : originalRow);
         } else {
             if (editingId === "NEW") {
-                setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== editingId));
+                setData((prev) =>
+                    prev.filter((row) => row[consts.current.primaryKey] !== editingId),
+                );
             } else if (originalRow) {
                 setData((prev) =>
-                    prev.map((row) => (row[fieldsMeta.primary] === editingId ? originalRow : row)),
+                    prev.map((row) =>
+                        row[consts.current.primaryKey] === editingId ? originalRow : row,
+                    ),
                 );
             }
         }
         updateEditId(null);
         setOriginalRow(null);
-        setRecord({});
-    }, [editingId, fieldsMeta.primary, formKey, navigate, originalRow, tableName]);
+    }, [editingId, formKey, navigate, originalRow, tableName]);
 
     const handleSave = useCallback(
         async (id) => {
             try {
-                const newRow = formKey ? record : data.find((e) => e[fieldsMeta.primary] === id);
+                const newRow = formKey
+                    ? record
+                    : data.find((e) => e[consts.current.primaryKey] === id);
                 if (id === "NEW") {
-                    const { [fieldsMeta.primary]: id, ...withoutId } = await beforeAdd(newRow);
+                    const { [consts.current.primaryKey]: id, ...withoutId } =
+                        await beforeAdd(newRow);
                     dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
-                    setData((prev) => prev.filter((row) => row[fieldsMeta.primary] !== id));
+                    setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== id));
                 } else {
                     dispatch(
                         tableCruds.update(
@@ -134,7 +149,6 @@ const Views = ({
             beforeUpdate,
             data,
             dispatch,
-            fieldsMeta.primary,
             formKey,
             navigate,
             record,
@@ -149,6 +163,7 @@ const Views = ({
         async (id) => {
             try {
                 dispatch(tableCruds.delete(id, token, showAlert, setLoading));
+                if (formKey) navigate(`/management/${tableName}/`);
             } catch (error) {
                 console.error(error);
                 showAlert(`Failed to delete ${tableName}!`, "error");
@@ -182,14 +197,14 @@ const Views = ({
             } else {
                 setData((prev) =>
                     prev.map((item) =>
-                        item[fieldsMeta.primary] === id
+                        item[consts.current.primaryKey] === id
                             ? updateField(value, item, fieldPath)
                             : item,
                     ),
                 );
             }
         },
-        [fieldsMeta.primary, formKey],
+        [formKey],
     );
 
     const fetchData = useCallback(
@@ -222,25 +237,31 @@ const Views = ({
         [fetchData, filterKeys, searchTerm],
     );
 
-    const addNewRow = useCallback(() => {
-        if (editingId) {
-            showAlert("Can't Add New while edit", "warning");
-            return;
-        }
+    const addNewRow = useCallback(
+        (editingId) => {
+            if (editingId) {
+                showAlert("Can't Add New while edit", "warning");
+                return;
+            }
 
-        let newRow = { [fieldsMeta.primary]: "NEW", [fieldsMeta.root]: rootId };
+            let newRow = {
+                [consts.current.primaryKey]: "NEW",
+                [consts.current.rootKey]: consts.current.rootId,
+            };
 
-        fields
-            // .filter((f) => f.type != "VIEW")
-            .forEach((f) => {
-                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
-            });
+            consts.current.fields
+                .filter((f) => f.type != "VIEW")
+                .forEach((f) => {
+                    newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+                });
 
-        if (formKey) setRecord(newRow);
-        else setData((prev) => [newRow, ...prev]);
+            if (formKey) setRecord(newRow);
+            else setData((prev) => [newRow, ...prev]);
 
-        updateEditId("NEW");
-    }, [editingId, fields, fieldsMeta.primary, fieldsMeta.root, formKey, rootId, showAlert]);
+            updateEditId("NEW");
+        },
+        [formKey, showAlert],
+    );
 
     useEffect(() => {
         fetchData();
@@ -249,11 +270,8 @@ const Views = ({
     }, []);
 
     useEffect(() => {
-        if (formKey === "NEW") {
-            addNewRow();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (formKey === "NEW") addNewRow(editingId);
+    }, [formKey]);
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
@@ -281,49 +299,36 @@ const Views = ({
         }
     }, [formKey, tableState.recordById]);
 
-    const handleDeleteClick = useCallback(
-        (row) => {
-            setDeleteId(row[fieldsMeta.primary]);
-            setDeleteDialogOpen(true);
-        },
-        [fieldsMeta.primary],
-    );
+    const handleDeleteClick = useCallback((row) => {
+        setDeleteId(row[consts.current.primaryKey]);
+        setDeleteDialogOpen(true);
+    }, []);
 
     const openFormView = useCallback(
         (row) => {
-            navigate(`/management/${tableName}/${row[fieldsMeta.primary]}`);
+            navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
         },
-        [fieldsMeta.primary, navigate, tableName],
+        [navigate, tableName],
     );
 
-    const defaultActions = useMemo(
-        () => [
-            {
-                name: "edit",
-                enabled: !loading,
-                hide: editMode === "FORM" && !formKey,
-                onClick: handleEdit,
-                icon: <Edit />,
-                sx: { color: "blue" },
-            },
-            {
-                name: "delete",
-                enabled: !loading,
-                onClick: handleDeleteClick,
-                icon: <Delete />,
-                sx: { color: "red" },
-            },
-            {
-                name: "form",
-                enabled: !loading,
-                hide: editMode !== "FORM" || !!formKey,
-                onClick: openFormView,
-                icon: <OpenInNew />,
-                sx: { color: "blue" },
-            },
-        ],
-        [editMode, formKey, handleDeleteClick, handleEdit, loading, openFormView],
-    );
+    const defaultActions = useMemo(() => {
+        const base = [
+            { name: "edit", icon: <Edit />, sx: { color: "blue" }, onClick: handleEdit },
+            { name: "delete", icon: <Delete />, sx: { color: "red" }, onClick: handleDeleteClick },
+            { name: "form", icon: <OpenInNew />, sx: { color: "blue" }, onClick: openFormView },
+        ];
+
+        return base.map((a) => ({
+            ...a,
+            enabled: !loading,
+            hide:
+                a.name === "edit"
+                    ? editMode === "FORM" && !formKey
+                    : a.name === "form"
+                      ? editMode !== "FORM" || !!formKey
+                      : false,
+        }));
+    }, [loading, editMode, formKey, handleEdit, handleDeleteClick, openFormView]);
 
     const mergedActions = useMemo(() => {
         const defaults = defaultActions.map((def) => {
@@ -341,7 +346,7 @@ const Views = ({
             data,
             tableName,
             tableState,
-            fields,
+            fields: consts.current.fields,
             editingId,
             fieldsMeta,
             actions: mergedActions,
@@ -356,7 +361,6 @@ const Views = ({
             addNewRow,
             data,
             editingId,
-            fields,
             fieldsMeta,
             handleCancel,
             handleChange,
@@ -368,7 +372,10 @@ const Views = ({
             tableState,
         ],
     );
-    console.log(editingId, record);
+
+    const loadMore = useCallback(() => {
+        handlePageChange(tableState.currentPage + 1);
+    }, [tableState.currentPage, handlePageChange]);
 
     return (
         <>
@@ -385,9 +392,7 @@ const Views = ({
                     {...commonProps}
                     cardLayout={cardLayout}
                     CardContentComponent={CardContentComponent}
-                    handleLoadMore={() => {
-                        handlePageChange(tableState.currentPage + 1);
-                    }}
+                    handleLoadMore={loadMore}
                 />
             ) : (
                 <ListView {...commonProps} editingId={editMode === "INLINE" ? editingId : false} />
@@ -399,7 +404,7 @@ const Views = ({
                     <DialogForm
                         setClose={handleCancel}
                         {...commonProps}
-                        data={data.find((d) => d[fieldsMeta.primary] === editingId)}
+                        data={data.find((d) => d[consts.current.primaryKey] === editingId)}
                     />
                 )}
             {viewDialogOpen && (
@@ -412,7 +417,7 @@ const Views = ({
                 >
                     {viewRow && (
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
-                            {fields.map((field) => (
+                            {consts.current.fields.map((field) => (
                                 <Typography key={field.name} variant="subtitle1">
                                     <strong>{field.label}:</strong>
                                     <Paper
@@ -439,7 +444,7 @@ const Views = ({
                     onClose={() => setDeleteDialogOpen(false)}
                     onConfirm={() => handleDelete(deleteId)}
                     id={deleteId}
-                    displayData={`${tableName} for ${data.find((d) => d[fieldsMeta.primary] === deleteId)?.[fieldToDisplayOnDelete]}`}
+                    displayData={`${tableName} for ${data.find((d) => d[consts.current.primaryKey] === deleteId)?.[fieldToDisplayOnDelete]}`}
                 />
             )}
         </>

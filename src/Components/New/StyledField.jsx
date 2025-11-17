@@ -12,7 +12,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
     fontWeight: "bolder",
     lineHeight: "3rem",
     textWrap: "nowrap",
-    height: "3rem",
+    height: "2rem",
     textTransform: "uppercase",
     letterSpacing: "0.5px",
     [theme.breakpoints.down("sm")]: {
@@ -21,7 +21,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
 }));
 
 export const FieldValue = styled(Box)(({ theme }) => ({
-    margin: theme.spacing("auto", 0),
+    // margin: theme.spacing("auto", 0),
     fontWeight: 500,
     lineHeight: "3rem",
     width: "100%",
