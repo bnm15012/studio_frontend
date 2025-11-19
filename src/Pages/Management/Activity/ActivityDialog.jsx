@@ -38,15 +38,21 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const [loading, setLoading] = useState(false);
     const studio = useSelector((state) => state.auth.studio);
     const token = useSelector((state) => state.auth.token);
-    const cachedMembershipTypes = useSelector((state) => state.membershipTypes.data);
+    const cachedMembershipTypes = useSelector((state) => state.activityMembershipType.items);
     const membershipTypes = isMembershipTableEnabled
         ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)]
         : [];
 
     const fetchMembershipTypesData = useCallback(async () => {
-        // dispatch(
-        //     activityMembershipTypeCruds.getAll(showAlert, setLoading, token, {}, studio.studioId),
-        // );
+        dispatch(
+            activityMembershipTypeCruds.getAll(
+                showAlert,
+                setLoading,
+                token,
+                { size: 100 },
+                studio.studioId,
+            ),
+        );
     }, [dispatch, studio.studioId, token, showAlert]);
 
     useEffect(() => {
@@ -58,7 +64,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
             setFormData(activity);
         } else {
             setFormData({
-                activityId: 0,
+                activityId: "NEW",
                 activityType: "ZUMBA",
                 description: "",
                 branchId: currentBranch.branchId,

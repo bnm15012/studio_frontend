@@ -13,8 +13,6 @@ import PropTypes from "prop-types";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { Add } from "@mui/icons-material";
 import FlexEvenly from "../FlexEvenly";
-import { useUI } from "../../context/UIContext";
-import FlexBetween from "../FlexBetween";
 import { memo } from "react";
 
 const ListView = ({
@@ -34,7 +32,6 @@ const ListView = ({
     const isEdit = (row, field) =>
         editingId === row[fieldsMeta.primary] && (field?.editable ? field.editable(row) : true);
 
-    const { isMobile } = useUI();
     return (
         <StyledTableContainer component={Paper}>
             <StyledTable>
@@ -119,7 +116,7 @@ const ListView = ({
                                 ))}
 
                             <StyledTableCell>
-                                <FlexBetween flexDirection={isMobile ? "column" : "row"}>
+                                <FlexEvenly>
                                     {editingId === row[fieldsMeta.primary] ? (
                                         <>
                                             <IconButton
@@ -155,7 +152,7 @@ const ListView = ({
                                                 ))}
                                         </>
                                     )}
-                                </FlexBetween>
+                                </FlexEvenly>
                             </StyledTableCell>
                         </StyledTableRow>
                     ))}
