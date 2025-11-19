@@ -21,7 +21,7 @@ const PaymentCard = ({ row }) => {
             <CardHeader
                 FieldIcon={IndianRupeeIcon}
                 fieldValue={amount}
-                enabled={true}
+                enabled={status?.toLowerCase() === "completed"}
                 badge={status}
                 badgeSx={{ background: getStatusColor(status) }}
             />

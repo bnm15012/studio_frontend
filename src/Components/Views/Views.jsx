@@ -220,7 +220,7 @@ const Views = ({
                 ),
             );
         },
-        [dispatch, tableCruds, showAlert, token, size, rootId, currentView],
+        [dispatch],
     );
 
     const fetchOneData = useCallback(

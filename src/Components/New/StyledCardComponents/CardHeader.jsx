@@ -54,7 +54,7 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
 };
 
 CardHeader.propTypes = {
-    FieldIcon: PropTypes.element,
+    FieldIcon: PropTypes.elementType,
     badgeSx: PropTypes.object,
     fieldValue: PropTypes.string.isRequired,
     image: PropTypes.string,

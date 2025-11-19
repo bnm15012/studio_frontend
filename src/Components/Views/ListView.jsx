@@ -50,7 +50,9 @@ const ListView = ({
                                     {label}
                                 </StyledTableCell>
                             ))}
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                        <StyledTableCell
+                            sx={{ fontWeight: "bold", color: "#1976d2", textAlign: "center" }}
+                        >
                             Actions
                         </StyledTableCell>
                     </StyledTableRow>
