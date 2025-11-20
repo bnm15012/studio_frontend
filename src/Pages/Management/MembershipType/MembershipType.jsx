@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
@@ -20,7 +20,7 @@ const FIELDS = [{ show: true, name: "activityMembershipType", label: "Membership
 
 const MembershipType = () => {
     // const { triggerSearch } = usePageSearch();
-    const [addNewFunc, setAddNewFunc] = useState(null);
+    const api = useRef({});
     const studio = useSelector((s) => s.auth.studio);
 
     return (
@@ -31,7 +31,7 @@ const MembershipType = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (addNewFunc) addNewFunc();
+                        api.current?.addNewRow();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -47,7 +47,7 @@ const MembershipType = () => {
                     fields={FIELDS}
                     rootId={studio.studioId}
                     fieldsMeta={FIELD_META}
-                    onSetAddNewFunc={setAddNewFunc}
+                    apiRef={api}
                     currentView={VIEWS[0]}
                     fieldToDisplayOnDelete="activityMembershipType"
                 />

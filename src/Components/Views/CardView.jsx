@@ -43,7 +43,6 @@ const CardView = (props) => {
         handleViewOpen,
         tableState,
         handleLoadMore,
-        cardLayout = "vertical",
         CardContentComponent,
     } = props;
     const hasMore = data.length < tableState.totalCount;
@@ -51,16 +50,7 @@ const CardView = (props) => {
 
     return (
         <Box>
-            <StyledCardContainer
-                sx={
-                    cardLayout === "horizontal" && {
-                        gridAutoFlow: "column",
-                        gridAutoColumns: "22rem",
-                        width: "100%",
-                        overflowX: "auto",
-                    }
-                }
-            >
+            <StyledCardContainer>
                 {data.map((row, index) => {
                     const rowId = row[fieldsMeta.primary];
 
@@ -125,7 +115,6 @@ const CardView = (props) => {
 CardView.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     tableState: PropTypes.object,
-    cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),
     fields: PropTypes.array,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,
@@ -140,7 +129,7 @@ CardView.propTypes = {
             onClick: PropTypes.func,
             icon: PropTypes.element,
             sx: PropTypes.object,
-            enabled: PropTypes.bool,
+            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
         }),
     ),
 };

@@ -4,7 +4,8 @@ import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 import { getLocalDateTime } from "../../../utils/DateUtil";
-import { Class } from "@mui/icons-material";
+import { Class, Task } from "@mui/icons-material";
+import ShowMoreDialog from "../../../Components/Views/ShowMoreDialog";
 
 const StudentAssignActivityCard = ({ row }) => {
     const {
@@ -28,41 +29,44 @@ const StudentAssignActivityCard = ({ row }) => {
                 badge={membershipStatus}
                 enabled={membershipStatus === "ACTIVE"}
                 fieldValue={activityName}
+                FieldIcon={Activity}
                 image={null}
                 badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}
             />
-            <CardChip value={batchTime} label="Batch Time" ChipIcon={Clock1} />
-            <CardChip value={batchName} label="Batch Name" ChipIcon={Class} />
             <CardChip
                 value={registrationDate}
                 type="DATE"
                 label="Registration Date"
                 ChipIcon={Calendar}
             />
-            <CardChip
-                value={membershipStartDate}
-                type="DATE"
-                label="Membership Start"
-                ChipIcon={TimerReset}
-            />
-            <CardChip
-                value={membershipEndDate}
-                type="DATE"
-                label="Membership End"
-                ChipIcon={TimerReset}
-            />
-            <CardChip value={membershipType} label="Membership Type" ChipIcon={Activity} />
             <CardChip value={`₹${activityAmount}`} label="Amount" ChipIcon={Wallet} />
             <CardChip value={daysPerWeek} label="Days Per Week" ChipIcon={Calendar} />
-            <CardChip
-                value={
-                    paymentEntry?.paymentDate
-                        ? getLocalDateTime(paymentEntry.paymentDate)
-                        : "Not Paid"
-                }
-                label="Last Payment Date"
-                ChipIcon={Wallet}
-            />
+            <ShowMoreDialog title={"More Activity Details"}>
+                <CardChip value={batchTime} label="Batch Time" ChipIcon={Clock1} />
+                <CardChip value={batchName} label="Batch Name" ChipIcon={Class} />
+                <CardChip
+                    value={membershipStartDate}
+                    type="DATE"
+                    label="Membership Start"
+                    ChipIcon={TimerReset}
+                />
+                <CardChip
+                    value={membershipEndDate}
+                    type="DATE"
+                    label="Membership End"
+                    ChipIcon={TimerReset}
+                />
+                <CardChip value={membershipType} label="Membership Type" ChipIcon={Task} />
+                <CardChip
+                    value={
+                        paymentEntry?.paymentDate
+                            ? getLocalDateTime(paymentEntry.paymentDate)
+                            : "Not Paid"
+                    }
+                    label="Last Payment Date"
+                    ChipIcon={Wallet}
+                />
+            </ShowMoreDialog>
         </>
     );
 };

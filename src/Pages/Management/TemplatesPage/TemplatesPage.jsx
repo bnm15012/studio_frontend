@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useSelector } from "react-redux";
@@ -67,7 +67,7 @@ const TemplatesPage = () => {
     ) || [];
     const studio = useSelector((state) => state.auth.studio);
 
-    const [addNewFunc, setAddNewFunc] = useState(null);
+    const api = useRef({});
 
     return (
         <FlexBetweenColumn>
@@ -77,7 +77,7 @@ const TemplatesPage = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (addNewFunc) addNewFunc();
+                        api.current?.addNewRow();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -93,7 +93,7 @@ const TemplatesPage = () => {
                 fieldToDisplayOnDelete="templateName"
                 fieldsMeta={FIELD_META}
                 rootId={studio.studioId}
-                onSetAddNewFunc={setAddNewFunc}
+                apiRef={api}
                 fields={FIELDS}
                 CardContentComponent={TemplateCard}
                 editMode={"DIALOG"}

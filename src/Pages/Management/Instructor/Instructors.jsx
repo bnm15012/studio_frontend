@@ -13,7 +13,7 @@ import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
 
@@ -98,6 +98,7 @@ const Instructors = ({ ID }) => {
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { triggerSearch } = usePageSearch();
+    const api = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
     const allActivities = useSelector((state) => state.activity.activities);
 
@@ -107,8 +108,9 @@ const Instructors = ({ ID }) => {
             name: "assignments",
             label: "Contracts",
             type: "VIEW",
-
+            api: api,
             viewProps: {
+                apiRef: api,
                 tableCruds: instructorsAssignmentsCruds,
                 tableName: "instructorActivities",
                 size: 2,

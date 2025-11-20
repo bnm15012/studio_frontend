@@ -4,7 +4,7 @@ import { IconButton, Typography, Box, CircularProgress, Divider } from "@mui/mat
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
-import { CloudUpload } from "@mui/icons-material";
+import { Add, CloudUpload } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
@@ -209,7 +209,14 @@ const FormView = (props) => {
                 viewFields?.length > 0 &&
                 viewFields.map((view) => (
                     <Box key={view.label}>
-                        <>{view.label}</>
+                        <FlexBetween m={1}>
+                            <Typography variant="h5">{view.label}</Typography>
+                            {view?.api?.current?.addNewRow && (
+                                <IconButton onClick={() => view.api.current.addNewRow(editingId)}>
+                                    <Add sx={{ color: "green" }} />
+                                </IconButton>
+                            )}
+                        </FlexBetween>
                         <Views
                             key={view.label}
                             {...view.viewProps}
@@ -226,6 +233,7 @@ const FormView = (props) => {
 FormView.propTypes = {
     formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     data: PropTypes.object,
+    addNewRow: PropTypes.func,
     fields: PropTypes.array,
     editingId: PropTypes.any,
     tableName: PropTypes.string,

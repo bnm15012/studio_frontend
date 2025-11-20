@@ -11,12 +11,13 @@ import { useUI } from "../../../context/UIContext";
 import { usePageSearch } from "../../../hooks/useSearch";
 import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import StudentInvoice from "./StudentInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import StudentAssignActivityCard from "./StudentAssignActivityCard.jsx";
+import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil.js";
 
 const size = 7;
 
@@ -93,6 +94,7 @@ const Students = ({ ID }) => {
     const allActivities = useSelector((state) => state.activity.activities);
     const [showInvoice, setShowInvoice] = useState(false);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+    const api = useRef({});
 
     const awaitForDialog = useCallback(
         (paymentInit) =>
@@ -163,7 +165,7 @@ const Students = ({ ID }) => {
             name: "assignments",
             label: "Assigned Activities",
             type: "VIEW",
-
+            api: api,
             viewProps: {
                 tableCruds: studentsAssignmentsCruds,
                 tableName: "studentActivities",
@@ -173,7 +175,7 @@ const Students = ({ ID }) => {
                     {
                         name: "Document",
                         icon: <ReceiptIcon />,
-                        enabled: true,
+                        enabled: (row) => row.paymentEntry?.status === "COMPLETED",
                         sx: { color: "blue" },
                         onClick: (row) => {
                             setShowInvoice(row);
@@ -360,6 +362,15 @@ const Students = ({ ID }) => {
                         name: "membershipEndDate",
                         label: "End Date",
                         type: "DATE",
+                        getValue: (value, row, isEdit) => {
+                            if (isEdit && row.membershipType) {
+                                return getEndDateBySubscriptionPlan(
+                                    row.membershipStartDate,
+                                    row.membershipType,
+                                );
+                            }
+                            return value;
+                        },
                         defaultValue: getCurrentDateTimeUTC(),
                     },
                     {
@@ -430,6 +441,8 @@ const Students = ({ ID }) => {
                 CardContentComponent: StudentAssignActivityCard,
                 fieldToDisplayOnDelete: "activityName",
                 cardLayout: "horizontal",
+                editMode: "DIALOG",
+                apiRef: api,
             },
         }),
         [allActivities, beforeAdd, currentBranch.branchId],

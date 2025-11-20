@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
@@ -44,7 +44,7 @@ const FIELDS = [
 const BranchPage = () => {
     const { isMobile } = useUI();
     const navigate = useNavigate();
-    const [addNewFunc, setAddNewFunc] = useState(null);
+    const api = useRef({});
     const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
     return (
@@ -62,7 +62,7 @@ const BranchPage = () => {
                     color="primary"
                     startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
                     onClick={() => {
-                        if (addNewFunc) addNewFunc();
+                        api.current?.addNewRow();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -79,7 +79,7 @@ const BranchPage = () => {
                     actions={[{ name: "delete", hide: true }]}
                     rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
-                    onSetAddNewFunc={setAddNewFunc}
+                    apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="userName"
                     CardContentComponent={UserCard}

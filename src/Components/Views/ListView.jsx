@@ -172,7 +172,7 @@ const ListView = ({
                                                 color: "white",
                                             },
                                         }}
-                                        onClick={addNewRow}
+                                        onClick={() => addNewRow(editingId)}
                                     >
                                         <Add />
                                     </IconButton>

@@ -25,9 +25,8 @@ const Views = ({
     showAddButton,
     tableCruds,
     fields,
-    cardLayout,
     fieldsMeta,
-    onSetAddNewFunc,
+    apiRef = { current: {} },
     currentView,
     fieldToDisplayOnDelete = "name",
     CardContentComponent,
@@ -138,6 +137,7 @@ const Views = ({
                 }
             } catch (error) {
                 console.error(error);
+                setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== "NEW"));
                 showAlert("Operation failed. Please try again!", "error");
             } finally {
                 updateEditId(null);
@@ -265,9 +265,8 @@ const Views = ({
 
     useEffect(() => {
         fetchData();
-        if (onSetAddNewFunc) onSetAddNewFunc(() => addNewRow);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        apiRef.current.addNewRow = addNewRow;
+    }, [addNewRow, fetchData]);
 
     useEffect(() => {
         if (formKey === "NEW") addNewRow(editingId);
@@ -390,7 +389,6 @@ const Views = ({
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}
-                    cardLayout={cardLayout}
                     CardContentComponent={CardContentComponent}
                     handleLoadMore={loadMore}
                 />
@@ -462,7 +460,9 @@ Views.propTypes = {
         primary: PropTypes.string,
         root: PropTypes.string,
     }),
-    onSetAddNewFunc: PropTypes.func,
+    apiRef: PropTypes.shape({
+        current: PropTypes.object,
+    }),
     beforeAdd: PropTypes.func,
     beforeUpdate: PropTypes.func,
     cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),

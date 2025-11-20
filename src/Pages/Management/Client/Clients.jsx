@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
@@ -44,7 +44,7 @@ const FIELDS = [
 const Clients = () => {
     const { triggerSearch } = usePageSearch();
     const { isMobile } = useUI();
-    const [addNewFunc, setAddNewFunc] = useState(null);
+    const api = useRef({});
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
@@ -55,7 +55,7 @@ const Clients = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (addNewFunc) addNewFunc();
+                        api.current?.addNewRow();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -71,7 +71,7 @@ const Clients = () => {
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
-                    onSetAddNewFunc={setAddNewFunc}
+                    apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="groupName"
                     CardContentComponent={ClientCardComponent}

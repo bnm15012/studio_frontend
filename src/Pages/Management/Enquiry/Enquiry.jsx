@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
@@ -41,7 +41,7 @@ const Enquiry = () => {
     const dispatch = useDispatch();
     const { isMobile } = useUI();
     const { triggerSearch } = usePageSearch();
-    const [addNewFunc, setAddNewFunc] = useState(null);
+    const api = useRef({});
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
@@ -63,7 +63,7 @@ const Enquiry = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        if (addNewFunc) addNewFunc();
+                        api.current?.addNewRow();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >
@@ -80,7 +80,7 @@ const Enquiry = () => {
                     rootId={currentBranch.branchId}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}
-                    onSetAddNewFunc={setAddNewFunc}
+                    apiRef={api}
                     CardContentComponent={EnquiryCardComponent}
                 />
             </Box>
