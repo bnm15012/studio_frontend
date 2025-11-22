@@ -1,5 +1,4 @@
-import { OpenInNew } from "@mui/icons-material";
-import { Delete, Edit } from "lucide-react";
+import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 
 export const defaultActions = ({
     loading,

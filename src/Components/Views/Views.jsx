@@ -93,7 +93,7 @@ const Views = (props) => {
             setOriginalRow({ ...original });
             updateEditId(row[consts.current.primaryKey]);
         },
-        [data, editingId, showAlert],
+        [data, showAlert],
     );
 
     const handleCancel = useCallback(() => {
@@ -313,24 +313,27 @@ const Views = (props) => {
         [navigate, tableName],
     );
 
-    const mergedActions = useMergedActions(actions, {
-        loading,
-        editMode,
-        formKey,
-        handleEdit,
-        handleDeleteClick,
-        openFormView,
-    });
+    const mergedActions = useMergedActions(
+        actions,
+        useMemo(
+            () => ({
+                loading,
+                editMode,
+                formKey,
+                handleEdit,
+                handleDeleteClick,
+                openFormView,
+            }),
+            [editMode, formKey, handleEdit, handleDeleteClick, loading, openFormView],
+        ),
+    );
 
-    const commonProps = useMemo(
+    const commonStableProps = useMemo(
         () => ({
-            data,
             tableName,
             tableState,
             fields: consts.current.fields,
-            editingId,
             fieldsMeta,
-            actions: mergedActions,
             handleChange,
             handleViewOpen,
             handleSave,
@@ -340,19 +343,22 @@ const Views = (props) => {
         }),
         [
             addNewRow,
-            data,
-            editingId,
             fieldsMeta,
             handleCancel,
             handleChange,
             handlePageChange,
             handleSave,
-            mergedActions,
             showAddButton,
             tableName,
             tableState,
         ],
     );
+
+    const commonProps = {
+        data,
+        editingId,
+        actions: mergedActions,
+    };
 
     const loadMore = useCallback(() => {
         handlePageChange(tableState.currentPage + 1);
@@ -363,6 +369,7 @@ const Views = (props) => {
             {formKey ? (
                 <FormView
                     {...commonProps}
+                    {...commonStableProps}
                     formKey={formKey}
                     loading={loading}
                     data={record}
@@ -371,11 +378,16 @@ const Views = (props) => {
             ) : currentView === "CARD" ? (
                 <CardView
                     {...commonProps}
+                    {...commonStableProps}
                     CardContentComponent={CardContentComponent}
                     handleLoadMore={loadMore}
                 />
             ) : (
-                <ListView {...commonProps} editingId={editMode === "INLINE" ? editingId : false} />
+                <ListView
+                    {...commonProps}
+                    {...commonStableProps}
+                    editingId={editMode === "INLINE" ? editingId : false}
+                />
             )}
             {loading && <Loading />}
             {editMode !== "FORM" &&
