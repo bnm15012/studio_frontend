@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { validate } from "../utils/validate";
 
-export const useRowEditing = ({
+export const useCrudAction = ({
     formKey,
     data,
     setData,
@@ -12,6 +12,7 @@ export const useRowEditing = ({
     token,
     showAlert,
     setLoading,
+    overRideOnChange,
     navigate,
     tableName,
     consts,
@@ -107,14 +108,72 @@ export const useRowEditing = ({
             tableName,
         ],
     );
+
+    const updateField = useCallback(
+        (value, obj, fieldPath) => {
+            const updatedItem = overRideOnChange(value, { ...obj }, fieldPath);
+
+            const parts = fieldPath.split(".");
+            let current = updatedItem;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                const key = parts[i];
+                current[key] = { ...current[key] };
+                current = current[key];
+            }
+            current[parts[parts.length - 1]] = value;
+            return updatedItem;
+        },
+        [overRideOnChange],
+    );
+
+    const handleChange = useCallback(
+        (value, id, fieldPath) => {
+            if (formKey) {
+                setRecord((prev) => updateField(value, prev, fieldPath));
+            } else {
+                setData((prev) =>
+                    prev.map((item) =>
+                        item[consts.current.primaryKey] === id
+                            ? updateField(value, item, fieldPath)
+                            : item,
+                    ),
+                );
+            }
+        },
+        [formKey],
+    );
+
+    const addNewRow = useCallback(() => {
+        if (editingId) {
+            showAlert("Can't Add New while edit", "warning");
+            return;
+        }
+        let newRow = {
+            [consts.current.primaryKey]: "NEW",
+            [consts.current.rootKey]: consts.current.rootId,
+        };
+
+        consts.current.fields
+            .filter((f) => f.type != "VIEW")
+            .forEach((f) => {
+                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+            });
+
+        if (formKey) setRecord(newRow);
+        else setData((prev) => [newRow, ...prev]);
+
+        updateEditId("NEW");
+    }, [formKey, showAlert, updateField]);
+
     return {
         editingId,
-        originalRow,
         record,
         setRecord,
         handleEdit,
         handleCancel,
         handleSave,
-        updateEditId,
+        addNewRow,
+        handleChange,
     };
 };

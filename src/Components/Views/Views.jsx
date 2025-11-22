@@ -15,7 +15,7 @@ import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
-import { useRowEditing } from "./hooks/useRowEditing";
+import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
 
 const Views = (props) => {
@@ -69,22 +69,31 @@ const Views = (props) => {
         setLoading,
     });
 
-    const { editingId, record, setRecord, handleEdit, handleCancel, handleSave, updateEditId } =
-        useRowEditing({
-            formKey,
-            data,
-            setData,
-            beforeAdd,
-            beforeUpdate,
-            dispatch,
-            tableCruds,
-            token,
-            showAlert,
-            setLoading,
-            navigate,
-            tableName,
-            consts,
-        });
+    const {
+        editingId,
+        record,
+        setRecord,
+        handleEdit,
+        handleCancel,
+        handleSave,
+        addNewRow,
+        handleChange,
+    } = useCrudAction({
+        formKey,
+        data,
+        setData,
+        beforeAdd,
+        beforeUpdate,
+        dispatch,
+        overRideOnChange,
+        tableCruds,
+        token,
+        showAlert,
+        setLoading,
+        navigate,
+        tableName,
+        consts,
+    });
 
     const handleViewOpen = (row) => {
         setViewRow(row);
@@ -111,83 +120,6 @@ const Views = (props) => {
         },
         [dispatch, showAlert, tableCruds, tableName, token],
     );
-
-    const updateField = useCallback(
-        (value, obj, fieldPath) => {
-            const updatedItem = overRideOnChange(value, { ...obj }, fieldPath);
-
-            const parts = fieldPath.split(".");
-            let current = updatedItem;
-
-            for (let i = 0; i < parts.length - 1; i++) {
-                const key = parts[i];
-                current[key] = { ...current[key] };
-                current = current[key];
-            }
-            current[parts[parts.length - 1]] = value;
-            return updatedItem;
-        },
-        [overRideOnChange],
-    );
-
-    const handleChange = useCallback(
-        (value, id, fieldPath) => {
-            if (formKey) {
-                setRecord((prev) => updateField(value, prev, fieldPath));
-            } else {
-                setData((prev) =>
-                    prev.map((item) =>
-                        item[consts.current.primaryKey] === id
-                            ? updateField(value, item, fieldPath)
-                            : item,
-                    ),
-                );
-            }
-        },
-        [formKey],
-    );
-
-    const addNewRow = useCallback(() => {
-        if (editingId) {
-            showAlert("Can't Add New while edit", "warning");
-            return;
-        }
-        let newRow = {
-            [consts.current.primaryKey]: "NEW",
-            [consts.current.rootKey]: consts.current.rootId,
-        };
-
-        consts.current.fields
-            .filter((f) => f.type != "VIEW")
-            .forEach((f) => {
-                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
-            });
-
-        if (formKey) setRecord(newRow);
-        else setData((prev) => [newRow, ...prev]);
-
-        updateEditId("NEW");
-    }, [formKey, showAlert, updateField]);
-
-    useEffect(() => {
-        apiRef.current.addNewRow = addNewRow;
-    }, [addNewRow]);
-
-    useEffect(() => {
-        if (formKey === "NEW") addNewRow(editingId);
-    }, [formKey]);
-
-    useEffect(() => {
-        if (formKey && formKey !== "NEW") {
-            fetchOne(formKey);
-        }
-    }, [formKey, fetchOne]);
-
-    useEffect(() => {
-        if (formKey && formKey !== "NEW") {
-            setRecord(tableState.recordById[formKey] || {});
-        }
-    }, [formKey, tableState.recordById]);
 
     const handleDeleteClick = useCallback((row) => {
         setDeleteId(row[consts.current.primaryKey]);
@@ -247,6 +179,26 @@ const Views = (props) => {
         editingId,
         actions: mergedActions,
     };
+
+    useEffect(() => {
+        apiRef.current.addNewRow = addNewRow;
+    }, [addNewRow]);
+
+    useEffect(() => {
+        if (formKey === "NEW") addNewRow(editingId);
+    }, [formKey]);
+
+    useEffect(() => {
+        if (formKey && formKey !== "NEW") {
+            fetchOne(formKey);
+        }
+    }, [formKey, fetchOne]);
+
+    useEffect(() => {
+        if (formKey && formKey !== "NEW") {
+            setRecord(tableState.recordById[formKey] || {});
+        }
+    }, [formKey, tableState.recordById]);
 
     return (
         <>
