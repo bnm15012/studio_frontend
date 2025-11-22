@@ -16,6 +16,7 @@ import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
+import { useMergedActions } from "./hooks/useMergedActions";
 
 const Views = (props) => {
     const {
@@ -203,15 +204,15 @@ const Views = (props) => {
         (value, obj, fieldPath) => {
             const updatedItem = overRideOnChange(value, { ...obj }, fieldPath);
 
-            const pathParts = fieldPath.split(".");
+            const parts = fieldPath.split(".");
             let current = updatedItem;
 
-            for (let i = 0; i < pathParts.length - 1; i++) {
-                const key = pathParts[i];
+            for (let i = 0; i < parts.length - 1; i++) {
+                const key = parts[i];
                 current[key] = { ...current[key] };
                 current = current[key];
             }
-            current[pathParts[pathParts.length - 1]] = value;
+            current[parts[parts.length - 1]] = value;
             return updatedItem;
         },
         [overRideOnChange],
@@ -352,16 +353,7 @@ const Views = (props) => {
         }));
     }, [loading, editMode, formKey, handleEdit, handleDeleteClick, openFormView]);
 
-    const mergedActions = useMemo(() => {
-        const defaults = defaultActions.map((def) => {
-            const override = actions.find((a) => a.name === def.name);
-            return override ? { ...def, ...override } : def;
-        });
-        return [
-            ...defaults,
-            ...actions.filter((a) => !defaultActions.some((def) => def.name === a.name)),
-        ];
-    }, [defaultActions, actions]);
+    const mergedActions = useMergedActions(defaultActions, actions);
 
     const commonProps = useMemo(
         () => ({
