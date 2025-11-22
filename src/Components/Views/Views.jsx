@@ -16,7 +16,7 @@ import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
-import { validate } from "./utils/validate";
+import { useRowEditing } from "./hooks/useRowEditing";
 
 const Views = (props) => {
     const {
@@ -55,22 +55,33 @@ const Views = (props) => {
     const tableState = useSelector((state) => state[tableName]);
 
     const [data, setData] = useState([]);
-    const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
-    const [originalRow, setOriginalRow] = useState(null);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [filterKeys, setFilterKeys] = useState({});
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
-    const [record, setRecord] = useState({});
 
-    const updateEditId = (id) => {
-        setEditingId(id);
-    };
+    const { editingId, record, setRecord, handleEdit, handleCancel, handleSave, updateEditId } =
+        useRowEditing({
+            formKey,
+            data,
+            setData,
+            beforeAdd,
+            beforeUpdate,
+            dispatch,
+            tableCruds,
+            token,
+            showAlert,
+            setLoading,
+            navigate,
+            tableName,
+            consts,
+        });
+
     const handleViewOpen = (row) => {
         setViewRow(row);
         setViewDialogOpen(true);
@@ -80,88 +91,6 @@ const Views = (props) => {
         setViewRow(null);
         setViewDialogOpen(false);
     };
-
-    const handleEdit = useCallback(
-        (row) => {
-            if (editingId) {
-                showAlert("Can't Edit New while edit/add", "warning");
-                return;
-            }
-            const original = data.find(
-                (d) => d[consts.current.primaryKey] === row[consts.current.primaryKey],
-            );
-            setOriginalRow({ ...original });
-            updateEditId(row[consts.current.primaryKey]);
-        },
-        [data, showAlert],
-    );
-
-    const handleCancel = useCallback(() => {
-        if (formKey === "NEW") navigate(`/management/${tableName}/`);
-        if (formKey) {
-            setRecord(editingId === "NEW" ? {} : originalRow);
-        } else {
-            if (editingId === "NEW") {
-                setData((prev) =>
-                    prev.filter((row) => row[consts.current.primaryKey] !== editingId),
-                );
-            } else if (originalRow) {
-                setData((prev) =>
-                    prev.map((row) =>
-                        row[consts.current.primaryKey] === editingId ? originalRow : row,
-                    ),
-                );
-            }
-        }
-        updateEditId(null);
-        setOriginalRow(null);
-    }, [editingId, formKey, navigate, originalRow, tableName]);
-
-    const handleSave = useCallback(
-        async (id) => {
-            try {
-                const newRow = formKey
-                    ? record
-                    : data.find((e) => e[consts.current.primaryKey] === id);
-                validate(newRow);
-                if (id === "NEW") {
-                    const { [consts.current.primaryKey]: id, ...withoutId } =
-                        await beforeAdd(newRow);
-                    dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
-                    setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== id));
-                } else {
-                    dispatch(
-                        tableCruds.update(
-                            id,
-                            await beforeUpdate(newRow),
-                            token,
-                            showAlert,
-                            setLoading,
-                        ),
-                    );
-                }
-                updateEditId(null);
-            } catch (error) {
-                console.error(error);
-                showAlert(error.message ?? "Operation failed. Please try again!", "error");
-            } finally {
-                if (formKey === "NEW") navigate(`/management/${tableName}/`);
-            }
-        },
-        [
-            beforeAdd,
-            beforeUpdate,
-            data,
-            dispatch,
-            formKey,
-            navigate,
-            record,
-            showAlert,
-            tableCruds,
-            tableName,
-            token,
-        ],
-    );
 
     const handleDelete = useCallback(
         async (id) => {

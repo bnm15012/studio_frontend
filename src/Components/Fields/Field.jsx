@@ -101,7 +101,14 @@ const Field = ({
 
 Field.propTypes = {
     value: PropTypes.any,
-    setValue: PropTypes.func.isRequired,
+    setValue: (props) => {
+        if (props.isEdit && typeof props.setValue !== "function") {
+            return new Error(
+                "`setValue` is required and must be a function when `isEdit` is true.",
+            );
+        }
+        return null;
+    },
     validation: PropTypes.object,
     placeholder: PropTypes.string,
     label: PropTypes.string,
