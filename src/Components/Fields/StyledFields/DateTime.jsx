@@ -18,7 +18,6 @@ const DateTime = ({
     format = "DATETIME",
     variant = "standard",
     placeholder = "Select date and time",
-    // validation,
 }) => {
     const theme = useTheme();
     const [localDateTime, setLocalDateTime] = useState(null);

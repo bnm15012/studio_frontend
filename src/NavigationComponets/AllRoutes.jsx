@@ -22,6 +22,7 @@ import LoginDialog from "../Pages/Auth/LoginDialog";
 import SignupDialog from "../Pages/Auth/SignupDialog";
 import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
+import HashRedirect from "./HashRedirect";
 
 export const AllRoutes = () => {
     const user = useSelector((state) => state.auth.user);
@@ -54,6 +55,7 @@ export const AllRoutes = () => {
             <ForgotPassword />
             <ProfilePage />
             <LoginDialog />
+            <HashRedirect />
             <SignupDialog />
             {user && <SubscriptionPopup />}
         </Suspense>

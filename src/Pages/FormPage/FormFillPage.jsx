@@ -10,58 +10,84 @@ const formData = [
         id: "student-form",
         name: "Student Registration Form",
         onSubmit: addStudentAPI,
-        fields: {
-            name: { type: "text", required: true },
-            email: {
-                type: "text",
-                required: true,
+        fields: [
+            { name: "name", label: "Name", validation: { required: true } },
+            {
+                name: "email",
+                label: "Email",
+                type: "email",
                 validation: {
+                    required: true,
                     regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    errorMessage: "Please enter a valid email address",
+                    message: "Please enter a valid email address",
                 },
             },
-            phone: {
-                type: "text",
-                required: true,
+            {
+                name: "phone",
+                label: "Phone Number",
+                type: "number",
                 validation: {
+                    required: true,
                     regex: /^\d{10}$/,
-                    errorMessage: "Please enter a valid 10-digit phone number",
+                    message: "Please enter a valid 10-digit phone number",
                 },
             },
-            dob: { type: "date", required: true },
-            emergencyContactNumber: {
-                type: "text",
-                required: true,
+            {
+                name: "dob",
+                type: "DATE",
+                label: "Date of Birth",
                 validation: {
-                    regex: /^\d{10,12}$/,
-                    errorMessage: "Please enter a valid emergency contact number",
+                    required: true,
                 },
             },
-            address: { type: "text", required: true },
-        },
+            {
+                name: "emergencyContactNumber",
+                type: "number",
+                validation: {
+                    required: true,
+                    regex: /^\d{10,12}$/,
+                    message: "Please enter a valid emergency contact number",
+                },
+            },
+            {
+                name: "address",
+                label: "Address",
+                validation: {
+                    required: true,
+                },
+            },
+        ],
     },
     {
         id: "enquiry-form",
         name: "Enquiry Form",
         onSubmit: addEnquiryAPI,
-        fields: {
-            name: { type: "text", required: true },
-            contact: {
-                type: "text",
-                required: true,
+        fields: [
+            { name: "enquiryPurpose", label: "Enquiry Purpose", validation: { required: true } },
+            { name: "name", label: "Name", validation: { required: true } },
+            {
+                name: "contact",
+                label: "Phone Number",
+                type: "number",
                 validation: {
+                    required: true,
                     regex: /^\d{10}$/,
-                    errorMessage: "Please enter a valid contact number",
+                    message: "Please enter a valid 10-digit phone number",
                 },
             },
-            enquiryPurpose: { type: "text", required: true },
-            enquiryDate: {
-                type: "date",
-                required: true,
+            {
+                name: "enquiryDate",
+                type: "DATE",
+                label: "Date of Enquiry",
+                validation: {
+                    required: true,
+                },
+                extraProp: {
+                    readOnly: true,
+                },
                 defaultValue: getCurrentDateTimeUTC(),
-                readOnly: true,
             },
-        },
+        ],
     },
 ];
 

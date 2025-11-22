@@ -10,7 +10,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
     const [open, setOpen] = useState(false);
     const qrRef = useRef(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-    const qrLink = `${window.location.origin}/form/${link}/${currentBranch.branchId}`;
+    const qrLink = `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

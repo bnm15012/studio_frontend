@@ -2,8 +2,10 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useAlert } from "../utils/Alert";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, TextField, MenuItem, Button, Paper } from "@mui/material";
-import DateTimeField from "./DateTimeField";
+import { Box, Typography, Button, Paper } from "@mui/material";
+import Field from "./Fields/Field";
+import { StyledFieldItem } from "./Views/FormComponents";
+import { FieldLabel, FieldValue } from "./New/StyledField";
 
 const FormBuilder = ({ form, branchId }) => {
     const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
@@ -16,22 +18,22 @@ const FormBuilder = ({ form, branchId }) => {
 
     useEffect(() => {
         const initialState = { _form_sig: FORM_SIG };
-        Object.entries(form.fields).forEach(([key, config]) => {
-            if (config.defaultValue !== undefined) {
-                initialState[key] = config.defaultValue;
+        form.fields.forEach(({ name, defaultValue }) => {
+            if (defaultValue !== undefined) {
+                initialState[name] = defaultValue;
             }
         });
         setFormState((prev) => ({ ...initialState, ...prev }));
     }, [FORM_SIG, form]);
 
-    const validateField = (key, value, config) => {
-        if (config.required && !value) {
+    const validateField = (key, value, validation) => {
+        if (validation.required && !value) {
             return "This field is required";
         }
-        if (config.validation?.regex) {
-            const regex = new RegExp(config.validation.regex);
+        if (validation?.regex) {
+            const regex = new RegExp(validation.regex);
             if (!regex.test(value)) {
-                return config.validation.errorMessage || "Invalid format";
+                return validation.message || "Invalid format";
             }
         }
         return null;
@@ -57,16 +59,16 @@ const FormBuilder = ({ form, branchId }) => {
         }
 
         const newErrors = {};
-        Object.entries(form.fields).forEach(([key, config]) => {
-            const error = validateField(key, formState[key], config);
+        form.fields.forEach(({ name, validation }) => {
+            const error = validateField(name, formState[name], validation);
             if (error) {
-                newErrors[key] = error;
+                newErrors[name] = error;
             }
         });
 
         setErrors(newErrors);
         if (Object.keys(newErrors).length > 0) {
-            console.error(newErrors);
+            console.error(newErrors, errors);
             showAlert("Please fix validation errors before submitting.", "error");
             return;
         }
@@ -134,89 +136,23 @@ const FormBuilder = ({ form, branchId }) => {
                             value={formState._form_sig}
                             onChange={(e) => handleChange("_form_sig", e.target.value)}
                         />
-
-                        {Object.entries(form.fields).map(([key, config]) => {
-                            const { type, required, options, readOnly } = config;
-                            const label = key.charAt(0).toUpperCase() + key.slice(1);
-                            const error = errors[key];
-
-                            if (type === "text") {
-                                return (
-                                    <TextField
-                                        size="medium"
-                                        key={key}
-                                        disabled={readOnly || false}
-                                        label={label}
-                                        type={type}
-                                        variant="outlined"
-                                        required={required}
-                                        value={formState[key] || ""}
-                                        onChange={(e) => handleChange(key, e.target.value)}
-                                        error={!!error}
-                                        helperText={error}
-                                        fullWidth
-                                        sx={{
-                                            background: theme.palette.background.default,
-                                            borderRadius: "12px",
-                                            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                                            "& .MuiOutlinedInput-root": {
-                                                fontSize: "1.1rem",
-                                            },
+                        {form.fields.map((field) => (
+                            <StyledFieldItem key={field.name} gap={2}>
+                                <FieldLabel>{field.label}</FieldLabel>
+                                <FieldValue>
+                                    <Field
+                                        key={field.name}
+                                        value={formState[field.name]}
+                                        setValue={(v) => {
+                                            handleChange(field.name, v);
                                         }}
+                                        type={field.type}
+                                        extraProp={field.extraProp}
+                                        validation={field.validation}
                                     />
-                                );
-                            }
-
-                            if (type === "date") {
-                                return (
-                                    <DateTimeField
-                                        onChange={(e) => handleChange(key, e)}
-                                        value={formState[key]}
-                                        disabled={readOnly || false}
-                                        placeholder="Date of birth"
-                                        format="DATE"
-                                        key={key}
-                                        textFieldVarient="outlined"
-                                        sx={{
-                                            background: theme.palette.background.default,
-                                            borderRadius: "12px",
-                                            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                                        }}
-                                    />
-                                );
-                            }
-                            if (type === "selection") {
-                                return (
-                                    <TextField
-                                        key={key}
-                                        size="medium"
-                                        select
-                                        label={label}
-                                        required={required}
-                                        value={formState[key] || ""}
-                                        onChange={(e) => handleChange(key, e.target.value)}
-                                        fullWidth
-                                        sx={{
-                                            background: theme.palette.background.default,
-                                            borderRadius: "12px",
-                                            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                                            "& .MuiOutlinedInput-root": {
-                                                fontSize: "1.1rem",
-                                            },
-                                        }}
-                                    >
-                                        <MenuItem value="">Select...</MenuItem>
-                                        {options.map(([val, label]) => (
-                                            <MenuItem key={val} value={val}>
-                                                {label}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-                                );
-                            }
-
-                            return null;
-                        })}
+                                </FieldValue>
+                            </StyledFieldItem>
+                        ))}
 
                         <Button
                             type="submit"
@@ -249,7 +185,7 @@ const FormBuilder = ({ form, branchId }) => {
 FormBuilder.propTypes = {
     form: PropTypes.shape({
         name: PropTypes.string.isRequired,
-        fields: PropTypes.object.isRequired,
+        fields: PropTypes.array.isRequired,
         onSubmit: PropTypes.func.isRequired,
     }).isRequired,
     branchId: PropTypes.number,
