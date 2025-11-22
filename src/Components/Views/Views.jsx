@@ -12,11 +12,11 @@ import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
 import { Typography, Box, Paper } from "@mui/material";
-import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
+import { validate } from "./utils/validate";
 
 const Views = (props) => {
     const {
@@ -117,26 +117,6 @@ const Views = (props) => {
         setOriginalRow(null);
     }, [editingId, formKey, navigate, originalRow, tableName]);
 
-    const isEmpty = useCallback(
-        (v) =>
-            v === null ||
-            v === undefined ||
-            (typeof v === "string" && v.trim() === "") ||
-            (Array.isArray(v) && v.length === 0),
-        [],
-    );
-
-    const validate = useCallback(
-        (data) => {
-            consts.current.fields.forEach(({ name, label, validation }) => {
-                if (validation?.required && (!Object.hasOwn(data, name) || isEmpty(data[name]))) {
-                    throw new Error(`${label || name} is required`);
-                }
-            });
-        },
-        [isEmpty],
-    );
-
     const handleSave = useCallback(
         async (id) => {
             try {
@@ -177,7 +157,6 @@ const Views = (props) => {
             navigate,
             record,
             showAlert,
-            validate,
             tableCruds,
             tableName,
             token,
@@ -334,26 +313,14 @@ const Views = (props) => {
         [navigate, tableName],
     );
 
-    const defaultActions = useMemo(() => {
-        const base = [
-            { name: "edit", icon: <Edit />, sx: { color: "blue" }, onClick: handleEdit },
-            { name: "delete", icon: <Delete />, sx: { color: "red" }, onClick: handleDeleteClick },
-            { name: "form", icon: <OpenInNew />, sx: { color: "blue" }, onClick: openFormView },
-        ];
-
-        return base.map((a) => ({
-            ...a,
-            enabled: !loading,
-            hide:
-                a.name === "edit"
-                    ? editMode === "FORM" && !formKey
-                    : a.name === "form"
-                      ? editMode !== "FORM" || !!formKey
-                      : false,
-        }));
-    }, [loading, editMode, formKey, handleEdit, handleDeleteClick, openFormView]);
-
-    const mergedActions = useMergedActions(defaultActions, actions);
+    const mergedActions = useMergedActions(actions, {
+        loading,
+        editMode,
+        formKey,
+        handleEdit,
+        handleDeleteClick,
+        openFormView,
+    });
 
     const commonProps = useMemo(
         () => ({
