@@ -4,7 +4,6 @@ import { useAlert } from "../../utils/Alert";
 import Loading from "../Loading/Loading";
 
 import PropTypes from "prop-types";
-import DeleteDialog from "../DeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
 
 import ListView from "./ListView";
@@ -17,33 +16,27 @@ import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
 import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
+import { useDeleteHandler } from "./hooks/useDeleteHandler";
 
 const Views = (props) => {
     const {
         formKey,
         tableName,
-        size,
-        rootId,
-        showAddButton,
+        showAddButton = false,
         tableCruds,
         fields,
         fieldsMeta,
         apiRef = { current: {} },
-        currentView,
+        currentView = "LIST",
         fieldToDisplayOnDelete = "name",
         CardContentComponent,
         actions = [],
-        beforeAdd = async (row) => row,
-        beforeUpdate = async (row) => row,
         editMode = "INLINE",
-        overRideOnChange = (value, obj, fieldPath) => obj,
     } = props;
 
     const consts = useRef({
         primaryKey: fieldsMeta.primary,
         rootKey: fieldsMeta.root,
-        fields,
-        rootId,
     });
 
     const dispatch = useDispatch();
@@ -52,19 +45,14 @@ const Views = (props) => {
 
     const token = useSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteId, setDeleteId] = useState(null);
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
 
     const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
-        tableCruds,
-        tableName,
+        ...props,
         token,
         showAlert,
-        size,
-        rootId,
         currentView,
         setLoading,
     });
@@ -79,19 +67,14 @@ const Views = (props) => {
         addNewRow,
         handleChange,
     } = useCrudAction({
-        formKey,
+        ...props,
         data,
         setData,
-        beforeAdd,
-        beforeUpdate,
         dispatch,
-        overRideOnChange,
-        tableCruds,
         token,
         showAlert,
         setLoading,
         navigate,
-        tableName,
         consts,
     });
 
@@ -104,27 +87,18 @@ const Views = (props) => {
         setViewRow(null);
         setViewDialogOpen(false);
     };
-
-    const handleDelete = useCallback(
-        async (id) => {
-            try {
-                dispatch(tableCruds.delete(id, token, showAlert, setLoading));
-                if (formKey) navigate(`/management/${tableName}/`);
-            } catch (error) {
-                console.error(error);
-                showAlert(`Failed to delete ${tableName}!`, "error");
-            } finally {
-                setDeleteDialogOpen(false);
-                setDeleteId(null);
-            }
-        },
-        [dispatch, showAlert, tableCruds, tableName, token],
-    );
-
-    const handleDeleteClick = useCallback((row) => {
-        setDeleteId(row[consts.current.primaryKey]);
-        setDeleteDialogOpen(true);
-    }, []);
+    const { handleDeleteClick, DeleteDialogComponent } = useDeleteHandler({
+        tableCruds,
+        token,
+        showAlert,
+        setLoading,
+        dispatch,
+        navigate,
+        tableName,
+        consts,
+        data,
+        fieldToDisplayOnDelete,
+    });
 
     const openFormView = useCallback(
         (row) => {
@@ -150,10 +124,7 @@ const Views = (props) => {
 
     const commonStableProps = useMemo(
         () => ({
-            tableName,
-            tableState,
-            fields: consts.current.fields,
-            fieldsMeta,
+            ...props,
             handleChange,
             handleViewOpen,
             handleSave,
@@ -161,21 +132,12 @@ const Views = (props) => {
             handlePageChange,
             addNewRow: showAddButton ? addNewRow : undefined,
         }),
-        [
-            addNewRow,
-            fieldsMeta,
-            handleCancel,
-            handleChange,
-            handlePageChange,
-            handleSave,
-            showAddButton,
-            tableName,
-            tableState,
-        ],
+        [addNewRow, handleCancel, handleChange, handlePageChange, handleSave, props, showAddButton],
     );
 
     const commonProps = {
         data,
+        tableState,
         editingId,
         actions: mergedActions,
     };
@@ -246,7 +208,7 @@ const Views = (props) => {
                 >
                     {viewRow && (
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
-                            {consts.current.fields.map((field) => (
+                            {fields.map((field) => (
                                 <Typography key={field.name} variant="subtitle1">
                                     <strong>{field.label}:</strong>
                                     <Paper
@@ -267,15 +229,7 @@ const Views = (props) => {
                     )}
                 </StyledDialog>
             )}
-            {deleteDialogOpen && deleteId && (
-                <DeleteDialog
-                    open={deleteDialogOpen}
-                    onClose={() => setDeleteDialogOpen(false)}
-                    onConfirm={() => handleDelete(deleteId)}
-                    id={deleteId}
-                    displayData={`${tableName} for ${data.find((d) => d[consts.current.primaryKey] === deleteId)?.[fieldToDisplayOnDelete]}`}
-                />
-            )}
+            {DeleteDialogComponent}
         </>
     );
 };

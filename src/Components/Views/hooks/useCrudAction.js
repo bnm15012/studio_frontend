@@ -5,17 +5,17 @@ export const useCrudAction = ({
     formKey,
     data,
     setData,
-    beforeAdd,
-    beforeUpdate,
     dispatch,
     tableCruds,
     token,
     showAlert,
     setLoading,
-    overRideOnChange,
     navigate,
     tableName,
     consts,
+    beforeAdd = async (row) => row,
+    beforeUpdate = async (row) => row,
+    overRideOnChange = (value, obj) => obj,
 }) => {
     const [editingId, setEditingId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
