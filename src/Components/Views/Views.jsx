@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import DeleteDialog from "../DeleteDialog";
 import { useDispatch, useSelector } from "react-redux";
 
-import { usePageSearch } from "../../hooks/useSearch";
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
@@ -17,6 +16,7 @@ import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
 import { useRowEditing } from "./hooks/useRowEditing";
+import { useTableData } from "./hooks/useTableData";
 
 const Views = (props) => {
     const {
@@ -49,21 +49,25 @@ const Views = (props) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const navigate = useNavigate();
-    const { subscribe } = usePageSearch();
 
     const token = useSelector((state) => state.auth.token);
-    const tableState = useSelector((state) => state[tableName]);
-
-    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterKeys, setFilterKeys] = useState({});
-
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState(null);
+
+    const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
+        tableCruds,
+        tableName,
+        token,
+        showAlert,
+        size,
+        rootId,
+        currentView,
+        setLoading,
+    });
 
     const { editingId, record, setRecord, handleEdit, handleCancel, handleSave, updateEditId } =
         useRowEditing({
@@ -143,36 +147,6 @@ const Views = (props) => {
         [formKey],
     );
 
-    const fetchData = useCallback(
-        async (page = 1, searchTerm = "", filterKeys = {}) => {
-            dispatch(
-                tableCruds.getAll(
-                    showAlert,
-                    setLoading,
-                    token,
-                    { page, searchTerm, size, ...filterKeys },
-                    rootId,
-                    currentView === "CARD",
-                ),
-            );
-        },
-        [dispatch],
-    );
-
-    const fetchOneData = useCallback(
-        async (formKey) => {
-            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading));
-        },
-        [dispatch, tableCruds, showAlert, token],
-    );
-
-    const handlePageChange = useCallback(
-        async (p) => {
-            await fetchData(p, searchTerm, filterKeys);
-        },
-        [fetchData, filterKeys, searchTerm],
-    );
-
     const addNewRow = useCallback(() => {
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
@@ -196,9 +170,8 @@ const Views = (props) => {
     }, [formKey, showAlert, updateField]);
 
     useEffect(() => {
-        fetchData();
         apiRef.current.addNewRow = addNewRow;
-    }, [addNewRow, fetchData]);
+    }, [addNewRow]);
 
     useEffect(() => {
         if (formKey === "NEW") addNewRow(editingId);
@@ -206,23 +179,9 @@ const Views = (props) => {
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
-            fetchOneData(formKey);
+            fetchOne(formKey);
         }
-    }, [formKey, fetchOneData]);
-
-    useEffect(() => {
-        const unsubscribe = subscribe((term, filterKeys) => {
-            fetchData(1, term, filterKeys);
-            setSearchTerm(term);
-            setFilterKeys(filterKeys);
-        });
-
-        return unsubscribe;
-    }, [fetchData, subscribe]);
-
-    useEffect(() => {
-        setData(tableState.items ?? []);
-    }, [tableState.items]);
+    }, [formKey, fetchOne]);
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
@@ -289,10 +248,6 @@ const Views = (props) => {
         actions: mergedActions,
     };
 
-    const loadMore = useCallback(() => {
-        handlePageChange(tableState.currentPage + 1);
-    }, [tableState.currentPage, handlePageChange]);
-
     return (
         <>
             {formKey ? (
@@ -325,6 +280,7 @@ const Views = (props) => {
                     <DialogForm
                         setClose={handleCancel}
                         {...commonProps}
+                        {...commonStableProps}
                         data={data.find((d) => d[consts.current.primaryKey] === editingId)}
                     />
                 )}

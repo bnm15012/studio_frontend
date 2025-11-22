@@ -9,6 +9,7 @@ import {
     StyledCardContent,
 } from "../New/StyledCard";
 import FlexEvenly from "../FlexEvenly";
+import FlexBetween from "../FlexBetween";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { memo } from "react";
 
@@ -77,24 +78,26 @@ const CardView = (props) => {
                                 )}
                             </StyledCardContent>
                             <StyledCardActions>
-                                <FlexEvenly width={"100%"} gap={2}>
-                                    {actions
-                                        .filter((f) => !f.hide)
-                                        .map(({ name, enabled, onClick, icon, sx }) => (
-                                            <IconButton
-                                                disabled={
-                                                    typeof enabled === "function"
-                                                        ? !enabled(row)
-                                                        : !enabled
-                                                }
-                                                key={name}
-                                                sx={sx}
-                                                onClick={() => onClick(row)}
-                                            >
-                                                {icon || name}
-                                            </IconButton>
-                                        ))}
-                                </FlexEvenly>
+                                <FlexBetween>
+                                    <FlexEvenly width={"100%"} gap={2}>
+                                        {actions
+                                            .filter((f) => !f.hide)
+                                            .map(({ name, enabled, onClick, icon, sx }) => (
+                                                <IconButton
+                                                    disabled={
+                                                        typeof enabled === "function"
+                                                            ? !enabled(row)
+                                                            : !enabled
+                                                    }
+                                                    key={name}
+                                                    sx={sx}
+                                                    onClick={() => onClick(row)}
+                                                >
+                                                    {icon || name}
+                                                </IconButton>
+                                            ))}
+                                    </FlexEvenly>
+                                </FlexBetween>
                             </StyledCardActions>
                         </StyledMotionCard>
                     );

@@ -56,7 +56,7 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
 CardHeader.propTypes = {
     FieldIcon: PropTypes.elementType,
     badgeSx: PropTypes.object,
-    fieldValue: PropTypes.string.isRequired,
+    fieldValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     image: PropTypes.string,
     badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.element]).isRequired,
     enabled: PropTypes.bool,
