@@ -108,7 +108,7 @@ export const themeSettings = (mode) => ({
     shadows: colorTokens.shadows[mode],
     palette: {
         mode: mode,
-        ...(mode === "dark"
+        ...(mode === "light"
             ? {
                   primary: {
                       dark: colorTokens.primary[200],

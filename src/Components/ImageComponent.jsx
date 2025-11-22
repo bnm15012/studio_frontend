@@ -72,7 +72,7 @@ const ImageComponent = ({
                     justifyContent="center"
                     alignItems="center"
                     sx={{
-                        borderRadius: isCircular ? "50%" : "0",
+                        borderRadius: isCircular === true ? "50%" : isCircular || "0",
                         overflow: "hidden",
                         border: allowEdit ? `4px dashed ${theme.palette.primary.main}` : "none",
                         cursor: allowEdit ? "pointer" : "default",
@@ -136,7 +136,7 @@ ImageComponent.propTypes = {
     value: PropTypes.string,
     setValue: PropTypes.func,
     size: PropTypes.string,
-    isCircular: PropTypes.bool,
+    isCircular: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     allowEdit: PropTypes.bool,
     dirName: PropTypes.string,
 };

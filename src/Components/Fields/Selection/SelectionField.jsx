@@ -12,6 +12,7 @@ export default function SelectionField({
     getOptions,
     addValue = true,
     variant = "standard",
+    validation = {},
     saveType = "string",
 }) {
     const [open, setOpen] = useState(false);
@@ -64,7 +65,7 @@ export default function SelectionField({
             onClose={handleClose}
             value={value && value.key ? value : null}
             isOptionEqualToValue={(option, value) => option.key === value.key}
-            getOptionLabel={(option) => option.value}
+            getOptionLabel={(option) => String(option.value)}
             options={options}
             loading={loading}
             onChange={(e, option) => {
@@ -80,6 +81,7 @@ export default function SelectionField({
                     {...params}
                     label={label}
                     variant={variant}
+                    required={validation.required}
                     placeholder="type to search"
                     slotProps={{
                         input: {
@@ -112,4 +114,5 @@ SelectionField.propTypes = {
     getOptions: PropTypes.func.isRequired,
     variant: PropTypes.string,
     label: PropTypes.string,
+    validation: PropTypes.object,
 };

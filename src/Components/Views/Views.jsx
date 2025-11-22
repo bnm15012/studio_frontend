@@ -17,24 +17,27 @@ import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 
-const Views = ({
-    formKey,
-    tableName,
-    size,
-    rootId,
-    showAddButton,
-    tableCruds,
-    fields,
-    fieldsMeta,
-    apiRef = { current: {} },
-    currentView,
-    fieldToDisplayOnDelete = "name",
-    CardContentComponent,
-    actions = [],
-    beforeAdd = async (row) => row,
-    beforeUpdate = async (row) => row,
-    editMode = "INLINE",
-}) => {
+const Views = (props) => {
+    const {
+        formKey,
+        tableName,
+        size,
+        rootId,
+        showAddButton,
+        tableCruds,
+        fields,
+        fieldsMeta,
+        apiRef = { current: {} },
+        currentView,
+        fieldToDisplayOnDelete = "name",
+        CardContentComponent,
+        actions = [],
+        beforeAdd = async (row) => row,
+        beforeUpdate = async (row) => row,
+        editMode = "INLINE",
+        overRideOnChange = (value, obj, fieldPath) => obj,
+    } = props;
+
     const consts = useRef({
         primaryKey: fieldsMeta.primary,
         rootKey: fieldsMeta.root,
@@ -80,7 +83,7 @@ const Views = ({
     const handleEdit = useCallback(
         (row) => {
             if (editingId) {
-                showAlert("Can't Edit New while edit", "warning");
+                showAlert("Can't Edit New while edit/add", "warning");
                 return;
             }
             const original = data.find(
@@ -113,12 +116,33 @@ const Views = ({
         setOriginalRow(null);
     }, [editingId, formKey, navigate, originalRow, tableName]);
 
+    const isEmpty = useCallback(
+        (v) =>
+            v === null ||
+            v === undefined ||
+            (typeof v === "string" && v.trim() === "") ||
+            (Array.isArray(v) && v.length === 0),
+        [],
+    );
+
+    const validate = useCallback(
+        (data) => {
+            consts.current.fields.forEach(({ name, label, validation }) => {
+                if (validation?.required && (!Object.hasOwn(data, name) || isEmpty(data[name]))) {
+                    throw new Error(`${label || name} is required`);
+                }
+            });
+        },
+        [isEmpty],
+    );
+
     const handleSave = useCallback(
         async (id) => {
             try {
                 const newRow = formKey
                     ? record
                     : data.find((e) => e[consts.current.primaryKey] === id);
+                validate(newRow);
                 if (id === "NEW") {
                     const { [consts.current.primaryKey]: id, ...withoutId } =
                         await beforeAdd(newRow);
@@ -135,12 +159,11 @@ const Views = ({
                         ),
                     );
                 }
+                updateEditId(null);
             } catch (error) {
                 console.error(error);
-                setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== "NEW"));
-                showAlert("Operation failed. Please try again!", "error");
+                showAlert(error.message ?? "Operation failed. Please try again!", "error");
             } finally {
-                updateEditId(null);
                 if (formKey === "NEW") navigate(`/management/${tableName}/`);
             }
         },
@@ -153,6 +176,7 @@ const Views = ({
             navigate,
             record,
             showAlert,
+            validate,
             tableCruds,
             tableName,
             token,
@@ -175,20 +199,23 @@ const Views = ({
         [dispatch, showAlert, tableCruds, tableName, token],
     );
 
-    const updateField = (value, obj, fieldPath) => {
-        const updatedItem = { ...obj };
+    const updateField = useCallback(
+        (value, obj, fieldPath) => {
+            const updatedItem = overRideOnChange(value, { ...obj }, fieldPath);
 
-        const pathParts = fieldPath.split(".");
-        let current = updatedItem;
+            const pathParts = fieldPath.split(".");
+            let current = updatedItem;
 
-        for (let i = 0; i < pathParts.length - 1; i++) {
-            const key = pathParts[i];
-            current[key] = { ...current[key] };
-            current = current[key];
-        }
-        current[pathParts[pathParts.length - 1]] = value;
-        return updatedItem;
-    };
+            for (let i = 0; i < pathParts.length - 1; i++) {
+                const key = pathParts[i];
+                current[key] = { ...current[key] };
+                current = current[key];
+            }
+            current[pathParts[pathParts.length - 1]] = value;
+            return updatedItem;
+        },
+        [overRideOnChange],
+    );
 
     const handleChange = useCallback(
         (value, id, fieldPath) => {
@@ -237,31 +264,27 @@ const Views = ({
         [fetchData, filterKeys, searchTerm],
     );
 
-    const addNewRow = useCallback(
-        (editingId) => {
-            if (editingId) {
-                showAlert("Can't Add New while edit", "warning");
-                return;
-            }
+    const addNewRow = useCallback(() => {
+        if (editingId) {
+            showAlert("Can't Add New while edit", "warning");
+            return;
+        }
+        let newRow = {
+            [consts.current.primaryKey]: "NEW",
+            [consts.current.rootKey]: consts.current.rootId,
+        };
 
-            let newRow = {
-                [consts.current.primaryKey]: "NEW",
-                [consts.current.rootKey]: consts.current.rootId,
-            };
+        consts.current.fields
+            .filter((f) => f.type != "VIEW")
+            .forEach((f) => {
+                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+            });
 
-            consts.current.fields
-                .filter((f) => f.type != "VIEW")
-                .forEach((f) => {
-                    newRow = updateField(f.defaultValue ?? "", newRow, f.name);
-                });
+        if (formKey) setRecord(newRow);
+        else setData((prev) => [newRow, ...prev]);
 
-            if (formKey) setRecord(newRow);
-            else setData((prev) => [newRow, ...prev]);
-
-            updateEditId("NEW");
-        },
-        [formKey, showAlert],
-    );
+        updateEditId("NEW");
+    }, [formKey, showAlert, updateField]);
 
     useEffect(() => {
         fetchData();
@@ -452,6 +475,7 @@ const Views = ({
 Views.propTypes = {
     formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableName: PropTypes.string.isRequired,
+    overRideOnChange: PropTypes.func,
     size: PropTypes.number.isRequired,
     rootId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     tableCruds: PropTypes.any,

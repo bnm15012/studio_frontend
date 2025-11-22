@@ -4,7 +4,7 @@ import { IconButton, Typography, Box, CircularProgress, Divider } from "@mui/mat
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
-import { Add, CloudUpload } from "@mui/icons-material";
+import { CloudUpload } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
@@ -13,9 +13,10 @@ import Loading from "../Loading/Loading";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel, FieldValue } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
-import Views from "./Views";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
+import ViewTabs from "./ViewTabs";
+import FlexEvenly from "../FlexEvenly";
 
 const FormView = (props) => {
     const {
@@ -122,34 +123,32 @@ const FormView = (props) => {
                     flexDirection={isMobile ? "column" : "row"}
                     my={1}
                     p={1}
-                    backgroundColor={theme.palette.background.paper}
                     sx={{
-                        boxShadow: theme.shadows[7],
                         borderRadius: 2,
                         alignItems: "flex-start",
                     }}
                 >
                     {imageField && (
-                        <Box
-                            p={2}
-                            width={isMobile ? "100%" : "220px"}
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <Field
-                                label={imageField.label}
-                                isEdit={!!editingId}
-                                value={getNestedValue(data, imageField.name)}
-                                setValue={(v) => handleChange(v, formKey, imageField.name)}
-                                type={imageField.type}
-                                extraProp={{
-                                    ...imageField.extraProp,
-                                    size: "160px",
-                                    isCircular: true,
-                                }}
-                            />
-                        </Box>
+                        <FlexEvenly p={1} width={isMobile ? "100%" : "220px"}>
+                            <Box
+                                borderRadius={2}
+                                p={1}
+                                backgroundColor={theme.palette.background.paper}
+                            >
+                                <Field
+                                    label={imageField.label}
+                                    isEdit={!!editingId}
+                                    value={getNestedValue(data, imageField.name)}
+                                    setValue={(v) => handleChange(v, formKey, imageField.name)}
+                                    type={imageField.type}
+                                    extraProp={{
+                                        ...imageField.extraProp,
+                                        size: "160px",
+                                        isCircular: "10%",
+                                    }}
+                                />
+                            </Box>
+                        </FlexEvenly>
                     )}
 
                     <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
@@ -159,8 +158,8 @@ const FormView = (props) => {
                                     key={sectionName}
                                     p={2}
                                     borderRadius={2}
-                                    backgroundColor={theme.palette.background.default}
-                                    boxShadow={theme.shadows[1]}
+                                    backgroundColor={theme.palette.background.paper}
+                                    boxShadow={theme.shadows[2]}
                                 >
                                     <Typography
                                         variant="h6"
@@ -205,27 +204,12 @@ const FormView = (props) => {
                     </FlexBetweenColumn>
                 </FlexBetween>
             )}
-            {editingId !== "NEW" &&
-                viewFields?.length > 0 &&
-                viewFields.map((view) => (
-                    <Box key={view.label}>
-                        <FlexBetween m={1}>
-                            <Typography variant="h5">{view.label}</Typography>
-                            {view?.api?.current?.addNewRow && (
-                                <IconButton onClick={() => view.api.current.addNewRow(editingId)}>
-                                    <Add sx={{ color: "green" }} />
-                                </IconButton>
-                            )}
-                        </FlexBetween>
-                        <Views
-                            key={view.label}
-                            {...view.viewProps}
-                            rootId={formKey}
-                            currentView={currentView}
-                            showAddButton={true}
-                        />
-                    </Box>
-                ))}
+            <ViewTabs
+                currentView={currentView}
+                editingId={editingId}
+                formKey={formKey}
+                viewFields={viewFields}
+            />
         </>
     );
 };

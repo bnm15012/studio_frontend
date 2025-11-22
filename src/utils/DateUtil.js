@@ -1,4 +1,4 @@
-const addDays = (date, days) => {
+export const addDays = (date, days) => {
     if (!date) {
         throw new Error("Date cannot be null");
     }
@@ -7,16 +7,38 @@ const addDays = (date, days) => {
     return result.toISOString().replace("T", " ").slice(0, 19);
 };
 
-const getCurrentDateTimeUTC = () => new Date().toISOString().replace("T", " ").slice(0, 19);
+export const isToday = (utcString) => {
+    if (!utcString) return false;
 
-const convertUTCToLocal = (utcString) => {
+    const localDate = new Date(convertUTCToLocal(utcString).replace(" ", "T"));
+    const now = new Date();
+
+    return (
+        localDate.getDate() === now.getDate() &&
+        localDate.getMonth() === now.getMonth() &&
+        localDate.getFullYear() === now.getFullYear()
+    );
+};
+
+export const isPast = (utcString) => {
+    if (!utcString) return false;
+
+    const localDate = new Date(convertUTCToLocal(utcString).replace(" ", "T"));
+    const now = new Date();
+
+    return localDate.getTime() < now.getTime();
+};
+
+export const getCurrentDateTimeUTC = () => new Date().toISOString().replace("T", " ").slice(0, 19);
+
+export const convertUTCToLocal = (utcString) => {
     const utcDate = new Date(utcString.replace(" ", "T") + "Z");
     const timezoneOffset = utcDate.getTimezoneOffset();
     const localDate = new Date(utcDate.getTime() - timezoneOffset * 60000);
     return localDate.toISOString().slice(0, 19).replace("T", " ");
 };
 
-const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
+export const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
     if (!(dateObj instanceof Date) || isNaN(dateObj)) {
         throw new Error("Invalid Date object provided");
     }
@@ -40,7 +62,7 @@ const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
     return formatted;
 };
 
-const convertLocalToUTC = (localString) => {
+export const convertLocalToUTC = (localString) => {
     if (String(localString).length == 10)
         localString += " " + convertUTCToLocal(getCurrentDateTimeUTC()).slice(11, 19);
     const localDate = new Date(localString.replace(" ", "T") + "Z");
@@ -49,7 +71,7 @@ const convertLocalToUTC = (localString) => {
     return utcDate.toISOString().slice(0, 19).replace("T", " ");
 };
 
-const getLocalDateTime = (date, formate = "DATE") => {
+export const getLocalDateTime = (date, formate = "DATE") => {
     if (!date) return "N/A";
     if (formate === "DATE")
         return new Date(date.replace(" ", "T") + "Z")?.toLocaleDateString("en-GB");
@@ -61,7 +83,7 @@ const getLocalDateTime = (date, formate = "DATE") => {
         );
 };
 
-const getTimePassed = (utcString) => {
+export const getTimePassed = (utcString) => {
     if (!utcString) return "N/A";
 
     const localString = convertUTCToLocal(utcString);
@@ -80,14 +102,4 @@ const getTimePassed = (utcString) => {
     if (minutes < 60) return `${minutes} min ago`;
     if (hours < 24) return `${hours} hr ago`;
     return `${days} days ago`;
-};
-
-export {
-    getTimePassed,
-    addDays,
-    getCurrentDateTimeUTC,
-    convertUTCToLocal,
-    formatDate,
-    convertLocalToUTC,
-    getLocalDateTime,
 };

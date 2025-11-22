@@ -121,14 +121,6 @@ const Students = ({ ID }) => {
     const beforeAdd = useCallback(
         async (row) => {
             const modifiedData = { ...row };
-            const batchEntry = allActivities
-                ?.find((a) => a.activityType === modifiedData["activityName"])
-                ?.batchEntries?.find(
-                    (b) =>
-                        b.planType === modifiedData["membershipType"] &&
-                        b.name === modifiedData["batchName"] &&
-                        b.daysPerWeek === modifiedData["daysPerWeek"],
-                );
 
             let paymentInit = {
                 actualAmount: 0,
@@ -137,16 +129,13 @@ const Students = ({ ID }) => {
                 paymentType: PAYMENT_TYPE[0],
             };
 
-            if (batchEntry) {
-                modifiedData.activityAmount = batchEntry.price;
-                modifiedData.batchTime = batchEntry.startTime + "-" + batchEntry.endTime;
-                paymentInit = {
-                    actualAmount: batchEntry.price,
-                    amount: batchEntry.price,
-                    status: PAYMENT_STATUS[0],
-                    paymentType: PAYMENT_TYPE[0],
-                };
-            }
+            paymentInit = {
+                actualAmount: modifiedData.activityAmount,
+                amount: modifiedData.activityAmount,
+                status: PAYMENT_STATUS[0],
+                paymentType: PAYMENT_TYPE[0],
+            };
+
             const paymentData = await awaitForDialog(paymentInit);
 
             if (paymentData) {
@@ -156,7 +145,37 @@ const Students = ({ ID }) => {
             }
             return modifiedData;
         },
-        [allActivities, awaitForDialog],
+        [awaitForDialog],
+    );
+
+    const overRideOnChange = useCallback(
+        (value, obj, fieldPath) => {
+            if (!value) return obj;
+            if (fieldPath === "activityName") {
+                obj["membershipType"] = undefined;
+                obj["daysPerWeek"] = undefined;
+                obj["batchName"] = undefined;
+            } else if (fieldPath === "membershipType") {
+                obj["daysPerWeek"] = undefined;
+                obj["batchName"] = undefined;
+            } else if (fieldPath === "daysPerWeek") {
+                obj["batchName"] = undefined;
+            } else if (fieldPath === "batchName") {
+                const batchEntry = allActivities
+                    .find((a) => a.activityType === obj["activityName"])
+                    ?.batchEntries?.find(
+                        (b) =>
+                            b.planType === obj["membershipType"] &&
+                            b.name === value &&
+                            b.daysPerWeek === obj["daysPerWeek"],
+                    );
+
+                obj["batchTime"] = batchEntry?.["startTime"] + "-" + batchEntry?.["endTime"];
+                obj["activityAmount"] = batchEntry?.["price"];
+            }
+            return obj;
+        },
+        [allActivities],
     );
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -170,6 +189,7 @@ const Students = ({ ID }) => {
                 tableCruds: studentsAssignmentsCruds,
                 tableName: "studentActivities",
                 beforeAdd,
+                overRideOnChange: overRideOnChange,
                 size: 2,
                 actions: [
                     {
@@ -199,6 +219,7 @@ const Students = ({ ID }) => {
                                     .slice(page * limit, (page + 1) * limit)
                                     .map((a) => ({ key: a.activityType, value: a.activityType })),
                         },
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -228,6 +249,7 @@ const Students = ({ ID }) => {
                                     .map((a) => ({ key: a, value: a }));
                             },
                         },
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -252,6 +274,7 @@ const Students = ({ ID }) => {
                                 );
                             },
                         },
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -283,23 +306,14 @@ const Students = ({ ID }) => {
                                     .map((a) => ({ key: a, value: a }));
                             },
                         },
+                        validation: { required: true },
                     },
                     {
                         show: true,
                         name: "activityAmount",
                         label: "Amount",
                         getValue: (v, row, isEdit) => {
-                            if (isEdit) {
-                                const batchEntry = allActivities
-                                    .find((a) => a.activityType === row["activityName"])
-                                    ?.batchEntries?.find(
-                                        (b) =>
-                                            b.planType === row["membershipType"] &&
-                                            b.name === row["batchName"] &&
-                                            b.daysPerWeek === row["daysPerWeek"],
-                                    );
-                                return batchEntry?.["price"] || v;
-                            } else {
+                            if (!isEdit) {
                                 if (!row) return null;
                                 return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
                                     <>
@@ -316,31 +330,19 @@ const Students = ({ ID }) => {
                                 ) : (
                                     `Rs. ${row.paymentEntry.amount}`
                                 );
+                            } else {
+                                return v;
                             }
                         },
                         extraProp: { readOnly: true },
-                        defaultValue: "-",
+                        validation: { required: true },
                     },
                     {
                         show: true,
                         name: "batchTime",
                         label: "Batch Time",
-                        getValue: (v, row, isEdit) => {
-                            if (!isEdit) return v;
-                            const batchEntry = allActivities
-                                .find((a) => a.activityType === row["activityName"])
-                                ?.batchEntries?.find(
-                                    (b) =>
-                                        b.planType === row["membershipType"] &&
-                                        b.name === row["batchName"] &&
-                                        b.daysPerWeek === row["daysPerWeek"],
-                                );
-                            return batchEntry
-                                ? batchEntry["startTime"] + "-" + batchEntry["endTime"]
-                                : v;
-                        },
                         extraProp: { readOnly: true },
-                        defaultValue: "-",
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -349,6 +351,7 @@ const Students = ({ ID }) => {
                         type: "DATE",
                         extraProp: { readOnly: true },
                         defaultValue: getCurrentDateTimeUTC(),
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -356,6 +359,8 @@ const Students = ({ ID }) => {
                         label: "Start Date",
                         type: "DATE",
                         defaultValue: getCurrentDateTimeUTC(),
+                        validation: { required: true },
+                        extraProp: { min: getCurrentDateTimeUTC() },
                     },
                     {
                         show: true,
@@ -372,6 +377,8 @@ const Students = ({ ID }) => {
                             return value;
                         },
                         defaultValue: getCurrentDateTimeUTC(),
+                        validation: { required: true },
+                        extraProp: { min: getCurrentDateTimeUTC(), readOnly: true },
                     },
                     {
                         show: true,

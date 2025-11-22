@@ -42,7 +42,7 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
                     sx={{
                         my: "auto",
                         backgroundColor: theme.palette.primary.main,
-                        color: "white",
+                        color: theme.palette.primary.contrastText,
                         fontWeight: "bolder",
                         ...badgeSx,
                     }}

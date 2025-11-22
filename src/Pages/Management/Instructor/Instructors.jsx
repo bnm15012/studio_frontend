@@ -33,9 +33,27 @@ const FIELDS = [
         type: "IMAGE",
         extraProp: { size: "30px" },
     },
-    { show: true, section: "Personal Details", name: "name", label: "Name" },
-    { show: true, section: "Contact Details", name: "email", label: "Email" },
-    { show: true, section: "Contact Details", name: "phone", label: "Phone" },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "name",
+        label: "Name",
+        validation: { required: true },
+    },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "email",
+        label: "Email",
+        validation: { required: true },
+    },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "phone",
+        label: "Phone",
+        validation: { required: true },
+    },
     {
         show: true,
         section: "Personal Details",
@@ -142,6 +160,7 @@ const Instructors = ({ ID }) => {
                                     .slice(page * limit, (page + 1) * limit)
                                     .map((a) => ({ key: a.activityType, value: a.activityType })),
                         },
+                        validation: { required: true },
                     },
                     {
                         show: true,
@@ -151,7 +170,13 @@ const Instructors = ({ ID }) => {
                         extraProp: { readOnly: true },
                         defaultValue: getCurrentDateTimeUTC(),
                     },
-                    { show: true, name: "startDate", label: "Start Date", type: "DATE" },
+                    {
+                        show: true,
+                        name: "startDate",
+                        label: "Start Date",
+                        type: "DATE",
+                        validation: { required: true },
+                    },
                     { show: true, name: "endDate", label: "End Date", type: "DATE" },
                     {
                         show: true,

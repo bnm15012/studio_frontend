@@ -25,13 +25,13 @@ export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     gap: theme.spacing(1.5),
     height: "100%",
     flexDirection: "column",
-    background: "linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%)",
+    background: theme.palette.background.paper,
 }));
 
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     position: "relative",
     justifyContent: "flex-end",
-    background: "linear-gradient(135deg, #f8f9ff 0%, #eef2ff 100%)",
+    background: theme.palette.background.paper,
 }));
 
 export const CardBadge = styled(Box)(({ theme }) => ({
@@ -39,7 +39,7 @@ export const CardBadge = styled(Box)(({ theme }) => ({
     top: 16,
     right: 16,
     background: theme.palette.primary.dark,
-    color: "#fff",
+    color: theme.palette.primary.light,
     fontSize: "0.75rem",
     fontWeight: 600,
     padding: theme.spacing(0.5, 1.5),
