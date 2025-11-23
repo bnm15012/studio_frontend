@@ -1,6 +1,5 @@
-import { Typography, Button, Box, Avatar } from "@mui/material";
-import { Calendar, Send } from "lucide-react";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { Button, Avatar } from "@mui/material";
+import { Send } from "lucide-react";
 import { Email, Group, WhatsApp } from "@mui/icons-material";
 import {
     StyledCardActions,
@@ -9,6 +8,8 @@ import {
     StyledMotionCard,
 } from "../../../Components/New/StyledCard";
 import PropTypes from "prop-types";
+import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
+import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 
 const MessageHistoryCard = ({ history, onViewRecipients }) => (
     <StyledCardContainer>
@@ -25,61 +26,24 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => (
                         sx={{ p: 2.5, display: "flex", flexDirection: "column", gap: 2 }}
                     >
                         {/* Header Section */}
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "flex-start",
-                            }}
-                        >
-                            <Typography
-                                variant="subtitle1"
-                                fontWeight="600"
-                                sx={{
-                                    flex: 1,
-                                    overflow: "hidden",
-                                    display: "-webkit-box",
-                                    WebkitBoxOrient: "vertical",
-                                    WebkitLineClamp: 2,
-                                }}
-                            >
-                                {row?.Calendartitle}
-                            </Typography>
-
-                            <Avatar
-                                size="small"
-                                sx={{
-                                    p: 2,
-                                    backgroundColor:
-                                        row?.notificationType === "EMAIL" ? "blue" : "green",
-                                }}
-                            >
-                                {row?.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
-                            </Avatar>
-                        </Box>
-
-                        {/* Details Section */}
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 1,
-                            }}
-                        >
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <Calendar size={16} />
-                                <Typography variant="body1">
-                                    {getLocalDateTime(row?.sentDate, "DATETIME")}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <Send size={16} />
-                                <Typography variant="body1">
-                                    {row?.memberType ? "All Recipients" : "Few"}
-                                </Typography>
-                            </Box>
-                        </Box>
+                        <CardHeader
+                            FieldIcon={Send}
+                            fieldValue={row?.memberType ? "All Recipients" : "Few"}
+                            badgeSx={{ backgroundColor: "" }}
+                            badge={
+                                <Avatar
+                                    size="small"
+                                    sx={{
+                                        p: 2,
+                                        backgroundColor:
+                                            row?.notificationType === "EMAIL" ? "blue" : "green",
+                                    }}
+                                >
+                                    {row?.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
+                                </Avatar>
+                            }
+                        />
+                        <CardChip label={"Sent Date"} value={row?.sentDate} type="DATETIME" />
                     </StyledCardContent>
                     <StyledCardActions>
                         <Button
