@@ -108,7 +108,7 @@ export const themeSettings = (mode) => ({
     shadows: colorTokens.shadows[mode],
     palette: {
         mode: mode,
-        ...(mode === "light"
+        ...(mode === "dark"
             ? {
                   primary: {
                       dark: colorTokens.primary[200],
@@ -243,6 +243,11 @@ export const themeSettings = (mode) => ({
         borderRadius: 12,
     },
     components: {
+        MuiIconButton: {
+            defaultProps: {
+                color: "primary",
+            },
+        },
         MuiSelect: {
             defaultProps: {
                 MenuProps: {

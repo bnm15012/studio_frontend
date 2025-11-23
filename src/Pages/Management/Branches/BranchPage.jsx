@@ -51,7 +51,7 @@ const BranchPage = () => {
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
                 <IconButton onClick={() => navigate(`/management/branch`)}>
-                    <ArrowBackIcon sx={{ color: "black" }} />
+                    <ArrowBackIcon />
                 </IconButton>
                 <Typography variant="h5" fontWeight={"bold"} my={"auto"}>
                     Branch: {selectedBranch.name}
@@ -59,7 +59,6 @@ const BranchPage = () => {
                 <Box ml={"auto"}></Box>
                 <Button
                     variant="contained"
-                    color="primary"
                     startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
                     onClick={() => {
                         api.current?.addNewRow();

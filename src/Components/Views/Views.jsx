@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAlert } from "../../utils/Alert";
-import Loading from "../Loading/Loading";
 
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box, Paper, CircularProgress } from "@mui/material";
 import DialogForm from "./DialogForm";
 import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +36,7 @@ const Views = (props) => {
     const consts = useRef({
         primaryKey: fieldsMeta.primary,
         rootKey: fieldsMeta.root,
+        fields,
     });
 
     const dispatch = useDispatch();
@@ -166,8 +166,8 @@ const Views = (props) => {
         <>
             {formKey ? (
                 <FormView
-                    {...commonProps}
                     {...commonStableProps}
+                    {...commonProps}
                     formKey={formKey}
                     loading={loading}
                     data={record}
@@ -175,19 +175,18 @@ const Views = (props) => {
                 />
             ) : currentView === "CARD" ? (
                 <CardView
-                    {...commonProps}
                     {...commonStableProps}
+                    {...commonProps}
                     CardContentComponent={CardContentComponent}
                     handleLoadMore={loadMore}
                 />
             ) : (
                 <ListView
-                    {...commonProps}
                     {...commonStableProps}
+                    {...commonProps}
                     editingId={editMode === "INLINE" ? editingId : false}
                 />
             )}
-            {loading && <Loading />}
             {editMode !== "FORM" &&
                 (editMode === "DIALOG" || currentView === "CARD") &&
                 editingId && (
@@ -229,6 +228,7 @@ const Views = (props) => {
                     )}
                 </StyledDialog>
             )}
+            {loading && <CircularProgress />}
             {DeleteDialogComponent}
         </>
     );

@@ -3,9 +3,12 @@ import { defaultActions } from "../constant/defaultActions";
 
 export const useMergedActions = (actions, args) =>
     useMemo(() => {
-        const merged = defaultActions(args).map((d) => ({
-            ...d,
-            ...(actions.find((a) => a.name === d.name) || {}),
-        }));
-        return [...merged, ...actions.filter((a) => !merged.some((m) => m.name === a.name))];
+        const defaults = defaultActions(args).map((def) => {
+            const override = actions.find((a) => a.name === def.name);
+            return override ? { ...def, ...override } : def;
+        });
+        return [
+            ...defaults,
+            ...actions.filter((a) => !defaultActions(args).some((def) => def.name === a.name)),
+        ];
     }, [args, actions]);

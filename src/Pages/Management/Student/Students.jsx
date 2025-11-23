@@ -189,7 +189,7 @@ const Students = ({ ID }) => {
                 tableCruds: studentsAssignmentsCruds,
                 tableName: "studentActivities",
                 beforeAdd,
-                overRideOnChange: overRideOnChange,
+                overRideOnChange,
                 size: 2,
                 actions: [
                     {

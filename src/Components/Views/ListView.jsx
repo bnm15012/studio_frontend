@@ -122,15 +122,11 @@ const ListView = ({
                                     {editingId === row[fieldsMeta.primary] ? (
                                         <>
                                             <IconButton
-                                                sx={{ color: "blue" }}
                                                 onClick={() => handleSave(row[fieldsMeta.primary])}
                                             >
                                                 <SaveIcon />
                                             </IconButton>
-                                            <IconButton
-                                                sx={{ color: "red" }}
-                                                onClick={handleCancel}
-                                            >
+                                            <IconButton color="error" onClick={handleCancel}>
                                                 <CancelIcon />
                                             </IconButton>
                                         </>

@@ -15,7 +15,7 @@ export const useCrudAction = ({
     consts,
     beforeAdd = async (row) => row,
     beforeUpdate = async (row) => row,
-    overRideOnChange = (value, obj) => obj,
+    overRideOnChange = (value, obj, field) => obj,
 }) => {
     const [editingId, setEditingId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
@@ -66,7 +66,7 @@ export const useCrudAction = ({
                 const newRow = formKey
                     ? record
                     : data.find((e) => e[consts.current.primaryKey] === id);
-                validate(newRow);
+                validate(newRow, consts.current.fields);
                 if (id === "NEW") {
                     const { [consts.current.primaryKey]: id, ...withoutId } =
                         await beforeAdd(newRow);
@@ -110,10 +110,10 @@ export const useCrudAction = ({
     );
 
     const updateField = useCallback(
-        (value, obj, fieldPath) => {
-            const updatedItem = overRideOnChange(value, { ...obj }, fieldPath);
+        (value, obj, field) => {
+            const updatedItem = overRideOnChange(value, { ...obj }, field);
 
-            const parts = fieldPath.split(".");
+            const parts = field.split(".");
             let current = updatedItem;
 
             for (let i = 0; i < parts.length - 1; i++) {

@@ -25,7 +25,7 @@ const MembershipType = () => {
 
     return (
         <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
+            <FlexBetween paddingBottom={2} gap={1} flexDirection={"row-reverse"}>
                 {/* <SearchField handleSearch={triggerSearch} /> */}
                 <Button
                     variant="contained"
