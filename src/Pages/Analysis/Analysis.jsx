@@ -77,7 +77,6 @@ const chartOptions = {
         easing: "easeOutQuart",
     },
 };
-// ... imports remain unchanged
 
 const Analysis = () => {
     const theme = useTheme();

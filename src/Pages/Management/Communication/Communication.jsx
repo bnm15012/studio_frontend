@@ -207,7 +207,7 @@ const Communication = () => {
                     width={"100%"}
                     sx={{
                         p: 2,
-                        gap: 1,
+                        gap: 2,
                         backgroundColor: theme.palette.background.paper,
                         boxShadow: "0px 4px 8px rgba(0,0,0,0.3)",
                         borderRadius: "8px",
@@ -328,7 +328,7 @@ const Communication = () => {
                             }
                         />
                     </Box>
-                    <FlexBetween>
+                    <FlexBetween flexDirection={isMobile ? "column" : "row"} gap={2} width="100%">
                         <FormControl component="fieldset">
                             <Typography variant="h6" fontWeight="bold">
                                 Recipients

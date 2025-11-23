@@ -25,7 +25,6 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => (
                     <StyledCardContent
                         sx={{ p: 2.5, display: "flex", flexDirection: "column", gap: 2 }}
                     >
-                        {/* Header Section */}
                         <CardHeader
                             FieldIcon={Send}
                             fieldValue={row?.memberType ? "All Recipients" : "Few"}

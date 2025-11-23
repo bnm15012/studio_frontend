@@ -1,7 +1,7 @@
 import { setLogin, setStudio, setSubscriptionPlan } from "../../state/authSlice";
 import api from "../../utils/api";
 import axios from "axios";
-import { transformRegisterData } from "./auth.uti";
+import { transformRegisterData } from "./auth.util";
 import { branchCruds } from "../../api/all.api";
 
 export const registerApiCall = async (values) => {
