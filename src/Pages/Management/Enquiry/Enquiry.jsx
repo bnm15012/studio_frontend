@@ -4,7 +4,7 @@ import { Box, Button } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import QrForm from "../../../Components/QrForm.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
@@ -38,7 +38,6 @@ const FIELDS = [
 ];
 
 const Enquiry = () => {
-    const dispatch = useDispatch();
     const { isMobile } = useUI();
     const { triggerSearch } = usePageSearch();
     const api = useRef({});
@@ -53,7 +52,7 @@ const Enquiry = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                        dispatch(enquiryCruds.removeAll());
+                        api.current?.refreshData();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >

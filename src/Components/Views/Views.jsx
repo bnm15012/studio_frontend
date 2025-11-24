@@ -100,6 +100,10 @@ const Views = (props) => {
         fieldToDisplayOnDelete,
     });
 
+    const refreshData = useCallback(() => {
+        dispatch(tableCruds.refresh(showAlert, setLoading, token));
+    }, [dispatch, showAlert, tableCruds, token]);
+
     const openFormView = useCallback(
         (row) => {
             navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
@@ -144,7 +148,8 @@ const Views = (props) => {
 
     useEffect(() => {
         apiRef.current.addNewRow = addNewRow;
-    }, [addNewRow]);
+        apiRef.current.refreshData = refreshData;
+    }, [addNewRow, apiRef, refreshData]);
 
     useEffect(() => {
         if (formKey === "NEW") addNewRow(editingId);

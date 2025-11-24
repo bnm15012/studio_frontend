@@ -173,6 +173,28 @@ export function createCrud({
                     setLoading(false);
                 }
             },
+        refresh:
+            (showAlert, setLoading, token, infinite = false) =>
+            async (dispatch, getState) => {
+                const state = getState()[route];
+                dispatch(actions.clearData());
+
+                return dispatch(
+                    baseCrud.getAll(
+                        showAlert,
+                        setLoading,
+                        token,
+                        {
+                            page: state.currentPage,
+                            size: state.pageSize,
+                            searchTerm: state.searchTerm,
+                            ...state.filterKeys,
+                        },
+                        state.rootId,
+                        state.infinite,
+                    ),
+                );
+            },
     };
 
     return { ...baseCrud, ...extraCruds };
