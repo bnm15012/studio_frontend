@@ -7,7 +7,7 @@ import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../New/StyledField";
 
 export const DialogForm = (props) => {
-    const { data, fields, fieldsMeta, setClose, handleChange, handleSave, handleCancel } = props;
+    const { data, fields, fieldsMeta, setClose, handleChange, handleSave } = props;
     const id = data[fieldsMeta.primary];
     const visibleFields = fields.filter((f) => f.show !== false);
 
@@ -57,7 +57,7 @@ export const DialogForm = (props) => {
                             fullWidth
                             size="small"
                             variant="outlined"
-                            onClick={handleCancel}
+                            onClick={setClose}
                             sx={{
                                 color: "red",
                                 "&:hover": {
@@ -83,7 +83,6 @@ DialogForm.propTypes = {
     }),
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
     setClose: PropTypes.func,
 };
 

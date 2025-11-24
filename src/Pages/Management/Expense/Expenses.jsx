@@ -38,6 +38,8 @@ const FIELDS = [
         name: "expenseDate",
         label: "Expense Date",
         type: FIELD_TYPES.DATE,
+        validation: { required: true },
+
         defaultValue: getCurrentDateTimeUTC(),
     },
     {
@@ -45,7 +47,8 @@ const FIELDS = [
         name: "expenseCategory",
         label: "Expense Category",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value, value }),
+        validation: { required: true },
+        getValue: (value) => value && { key: value, value },
         extraProp: {
             getOptions: async (search, page, limit) =>
                 categories
@@ -54,7 +57,14 @@ const FIELDS = [
                     .map((a) => ({ key: a, value: a })),
         },
     },
-    { show: true, name: "amount", label: "Amount", type: FIELD_TYPES.NUMBER },
+    {
+        show: true,
+        name: "amount",
+        validation: { required: true },
+        label: "Amount",
+        type: FIELD_TYPES.NUMBER,
+        defaultValue: 0,
+    },
 ];
 const Expenses = () => {
     const { isMobile } = useUI();

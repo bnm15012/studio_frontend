@@ -10,6 +10,7 @@ export const useCrudAction = ({
     token,
     showAlert,
     setLoading,
+    rootId,
     navigate,
     tableName,
     consts,
@@ -36,7 +37,7 @@ export const useCrudAction = ({
             setOriginalRow({ ...original });
             updateEditId(row[consts.current.primaryKey]);
         },
-        [data, showAlert],
+        [consts, data, editingId, showAlert],
     );
 
     const handleCancel = useCallback(() => {
@@ -58,7 +59,7 @@ export const useCrudAction = ({
         }
         updateEditId(null);
         setOriginalRow(null);
-    }, [formKey, navigate, originalRow, tableName]);
+    }, [formKey, navigate, tableName, editingId, originalRow, setData, consts]);
 
     const handleSave = useCallback(
         async (id) => {
@@ -141,7 +142,7 @@ export const useCrudAction = ({
                 );
             }
         },
-        [formKey],
+        [consts, formKey, setData, updateField],
     );
 
     const addNewRow = useCallback(() => {
@@ -151,7 +152,7 @@ export const useCrudAction = ({
         }
         let newRow = {
             [consts.current.primaryKey]: "NEW",
-            [consts.current.rootKey]: consts.current.rootId,
+            [consts.current.rootKey]: rootId,
         };
 
         consts.current.fields
@@ -164,7 +165,7 @@ export const useCrudAction = ({
         else setData((prev) => [newRow, ...prev]);
 
         updateEditId("NEW");
-    }, [formKey, showAlert, updateField]);
+    }, [consts, rootId, editingId, formKey, setData, showAlert, updateField]);
 
     return {
         editingId,

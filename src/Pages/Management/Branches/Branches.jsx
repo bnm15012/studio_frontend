@@ -28,7 +28,7 @@ const FIELDS = [
     { show: true, name: "state", label: "State" },
     { show: true, name: "pincode", label: "Pincode" },
     { show: true, name: "phone", label: "Phone" },
-    { show: true, name: "isActive", label: "Active", type: FIELD_TYPES.BOOL },
+    { show: true, name: "isActive", label: "Active", type: FIELD_TYPES.BOOL, defaultValue: true },
 ];
 
 const Branches = () => {

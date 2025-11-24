@@ -18,24 +18,34 @@ export const useTableData = ({
     const { subscribe } = usePageSearch();
 
     const [data, setData] = useState([]);
+    const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterKeys, setFilterKeys] = useState({});
 
-    const fetchData = useCallback(
-        async (page = 1, searchTerm = "", filterKeys = {}) => {
-            dispatch(
-                tableCruds.getAll(
-                    showAlert,
-                    setLoading,
-                    token,
-                    { page, searchTerm, size, ...filterKeys },
-                    rootId,
-                    currentView === "CARD",
-                ),
-            );
-        },
-        [dispatch],
-    );
+    const fetchData = useCallback(async () => {
+        dispatch(
+            tableCruds.getAll(
+                showAlert,
+                setLoading,
+                token,
+                { page, searchTerm, size, ...filterKeys },
+                rootId,
+                currentView === "CARD",
+            ),
+        );
+    }, [
+        currentView,
+        dispatch,
+        filterKeys,
+        page,
+        rootId,
+        searchTerm,
+        setLoading,
+        showAlert,
+        size,
+        tableCruds,
+        token,
+    ]);
 
     const fetchOne = useCallback(
         async (formKey) => {
@@ -44,10 +54,9 @@ export const useTableData = ({
         [dispatch, tableCruds, token, showAlert, setLoading],
     );
 
-    const handlePageChange = useCallback(
-        (page) => fetchData(page, searchTerm, filterKeys),
-        [fetchData, searchTerm, filterKeys],
-    );
+    const handlePageChange = useCallback((page) => {
+        setPage(page);
+    }, []);
 
     const loadMore = useCallback(
         () => handlePageChange((tableState?.currentPage || 1) + 1),
@@ -56,7 +65,7 @@ export const useTableData = ({
 
     useEffect(() => {
         const unsubscribe = subscribe((term, filters) => {
-            fetchData(1, term, filters);
+            setPage(1);
             setSearchTerm(term);
             setFilterKeys(filters);
         });
@@ -66,7 +75,7 @@ export const useTableData = ({
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     useEffect(() => {
         setData(tableState.items ?? []);
