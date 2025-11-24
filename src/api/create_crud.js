@@ -173,6 +173,7 @@ export function createCrud({
                     setLoading(false);
                 }
             },
+
         refresh:
             (showAlert, setLoading, token, infinite = false) =>
             async (dispatch, getState) => {
@@ -185,7 +186,7 @@ export function createCrud({
                         setLoading,
                         token,
                         {
-                            page: state.currentPage,
+                            page: 1,
                             size: state.pageSize,
                             searchTerm: state.searchTerm,
                             ...state.filterKeys,

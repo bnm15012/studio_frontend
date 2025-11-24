@@ -1,16 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
-import { useAlert } from "../../utils/Alert";
-
+import DialogForm from "./DialogForm";
+import FormView from "./FormView";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
-
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../New/StyledDialog";
+import { useAlert } from "../../utils/Alert";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";
-import DialogForm from "./DialogForm";
-import FormView from "./FormView";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
 import { useCrudAction } from "./hooks/useCrudAction";

@@ -64,13 +64,16 @@ export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
     return (
         <StyledCardBase
             elevation={elevation}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             whileHover={{
                 y: -5,
                 boxShadow: theme.shadows[10],
             }}
-            sx={{ boxShadow: theme.shadows[7] }}
-            transition={{ duration: 0.3 }}
             {...props}
+            sx={{ boxShadow: theme.shadows[7] }}
+            transition={{ duration: 1, ease: "easeOut" }}
         >
             {children}
         </StyledCardBase>

@@ -23,6 +23,7 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
             />
             <FlexBetween minHeight={60} padding={0.5}>
                 <FlexBetween sx={{ flexGrow: 1, my: "auto" }}>
+                    <Box sx={{ my: "auto" }}></Box>
                     {image ? (
                         <Field
                             value={image}
