@@ -115,7 +115,7 @@ const Bookings = ({ ID }) => {
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             } else {
-                return null;
+                throw new Error("Payment cancelled");
             }
             return modifiedData;
         },

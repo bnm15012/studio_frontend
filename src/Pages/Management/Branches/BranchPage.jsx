@@ -26,7 +26,6 @@ const FIELDS = [
     { show: true, name: "userName", label: "User Name" },
     { show: true, name: "email", label: "Email" },
     { show: false, name: "password", label: "password", defaultValue: "123456" },
-    { show: false, name: "role", label: "Role", defaultValue: "Manager" },
     { show: true, name: "enabled", label: "Active", defaultValue: true, type: FIELD_TYPES.BOOL },
     { show: true, name: "phone", label: "Phone", type: FIELD_TYPES.NUMBER },
     {
@@ -45,8 +44,22 @@ const BranchPage = () => {
     const { isMobile } = useUI();
     const navigate = useNavigate();
     const api = useRef({});
+    const studio = useSelector((s) => s.auth.studio);
     const selectedBranch = useSelector((state) => state.branch.selectedBranch);
 
+    const beforeAdd = async (row) => {
+        const updatedRow = { ...row };
+        delete updatedRow["branchId"];
+        updatedRow["studioEntry"] = {
+            studioId: studio.studioId,
+            branchList: [
+                {
+                    branchId: selectedBranch.branchId,
+                },
+            ],
+        };
+        return updatedRow;
+    };
     return (
         <FlexBetweenColumn>
             <FlexBetween paddingBottom={2} gap={1}>
@@ -70,6 +83,8 @@ const BranchPage = () => {
             </FlexBetween>
             <Box>
                 <Views
+                    beforeAdd={beforeAdd}
+                    beforeUpdate={beforeAdd}
                     tableName={"users"}
                     tableCruds={usersCruds}
                     size={LIMIT}

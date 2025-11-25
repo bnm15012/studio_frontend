@@ -71,6 +71,7 @@ const Views = (props) => {
         token,
         showAlert,
         setLoading,
+        tableState,
         navigate,
         consts,
     });

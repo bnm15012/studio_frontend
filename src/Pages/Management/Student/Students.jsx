@@ -141,7 +141,7 @@ const Students = ({ ID }) => {
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             } else {
-                return null;
+                throw new Error("Payment cancelled");
             }
             return modifiedData;
         },
@@ -186,11 +186,12 @@ const Students = ({ ID }) => {
             type: "VIEW",
             api: api,
             viewProps: {
+                showAddButton: true,
                 tableCruds: studentsAssignmentsCruds,
                 tableName: "studentActivities",
                 beforeAdd,
                 overRideOnChange,
-                size: 2,
+                size: 3,
                 actions: [
                     {
                         name: "Document",
@@ -448,11 +449,10 @@ const Students = ({ ID }) => {
                 CardContentComponent: StudentAssignActivityCard,
                 fieldToDisplayOnDelete: "activityName",
                 cardLayout: "horizontal",
-                editMode: "DIALOG",
                 apiRef: api,
             },
         }),
-        [allActivities, beforeAdd, currentBranch.branchId],
+        [allActivities, beforeAdd, currentBranch.branchId, overRideOnChange],
     );
 
     return (

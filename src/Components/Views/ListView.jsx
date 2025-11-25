@@ -1,4 +1,4 @@
-import { TableBody, TableHead, Paper, IconButton, TablePagination, Button } from "@mui/material";
+import { TableBody, TableHead, Paper, IconButton, Button, Pagination } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -11,9 +11,9 @@ import {
 import Field from "../Fields/Field";
 import PropTypes from "prop-types";
 import { getNestedValue } from "../../utils/objectHelpers";
-import { Add } from "@mui/icons-material";
 import FlexEvenly from "../FlexEvenly";
 import { memo } from "react";
+import FlexBetween from "../FlexBetween";
 
 const ListView = ({
     fields,
@@ -154,38 +154,17 @@ const ListView = ({
                             </StyledTableCell>
                         </StyledTableRow>
                     ))}
-                    {addNewRow && (
-                        <StyledTableRow>
-                            <StyledTableCell colSpan={20}>
-                                <FlexEvenly>
-                                    <IconButton
-                                        disabled={editingId}
-                                        sx={{
-                                            color: "whitesmoke",
-                                            backgroundColor: "blue",
-                                            ":hover": {
-                                                backgroundColor: "darkblue",
-                                                color: "white",
-                                            },
-                                        }}
-                                        onClick={() => addNewRow(editingId)}
-                                    >
-                                        <Add />
-                                    </IconButton>
-                                </FlexEvenly>
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    )}
                 </TableBody>
             </StyledTable>
-            <TablePagination
-                component="div"
-                count={tableState.totalCount}
-                page={Math.max(0, tableState.currentPage - 1)}
-                onPageChange={(e, p) => handlePageChange(p + 1)}
-                rowsPerPage={tableState.pageSize}
-                rowsPerPageOptions={[]}
-            />
+            <FlexBetween m={1} flexDirection={"row-reverse"}>
+                <Pagination
+                    page={tableState.currentPage}
+                    count={Math.ceil(tableState.totalCount / tableState.pageSize)}
+                    onChange={(e, p) => handlePageChange(p)}
+                    color="primary"
+                    shape="rounded"
+                />
+            </FlexBetween>
         </StyledTableContainer>
     );
 };

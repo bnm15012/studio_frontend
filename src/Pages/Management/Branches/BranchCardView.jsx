@@ -13,6 +13,7 @@ const BranchCardView = ({ row }) => {
             <CardHeader
                 fieldValue={name}
                 FieldIcon={Business}
+                enabled={isActive}
                 badge={
                     <Box display="flex" alignItems="center" gap={1}>
                         <Circle

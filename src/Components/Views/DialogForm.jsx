@@ -16,6 +16,7 @@ export const DialogForm = (props) => {
             open={true}
             onClose={setClose}
             closeIcon={true}
+            size={"xs"}
             title={id === "NEW" ? "Create Record" : "Edit Record"}
         >
             <FlexBetween flexDirection={"column"} gap={2} mt={2}>
@@ -47,9 +48,8 @@ export const DialogForm = (props) => {
                         <Button
                             size="small"
                             fullWidth
-                            variant="contained"
                             onClick={() => handleSave(id)}
-                            sx={{ color: "white" }}
+                            sx={{ backgroundColor: "green", color: "white" }}
                         >
                             Save
                         </Button>
@@ -60,6 +60,7 @@ export const DialogForm = (props) => {
                             onClick={setClose}
                             sx={{
                                 color: "red",
+                                border: "2px solid red",
                                 "&:hover": {
                                     color: "white",
                                     background: "rgba(239, 64, 64, 1)",

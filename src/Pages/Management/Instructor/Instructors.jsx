@@ -132,6 +132,7 @@ const Instructors = ({ ID }) => {
                 tableCruds: instructorsAssignmentsCruds,
                 tableName: "instructorActivities",
                 size: 2,
+                showAddButton: true,
                 actions: [
                     {
                         name: "Document",

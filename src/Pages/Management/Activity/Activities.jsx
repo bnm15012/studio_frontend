@@ -183,7 +183,7 @@ const Activities = () => {
     };
 
     return (
-        <>
+        <Box>
             <FlexBetween paddingBottom={2} gap={1}>
                 <Box sx={{ flexGrow: "1" }} />
                 <Button
@@ -250,7 +250,7 @@ const Activities = () => {
                 activity={editingActivity}
                 onSave={handleSaveCard}
             />
-        </>
+        </Box>
     );
 };
 

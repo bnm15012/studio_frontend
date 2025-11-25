@@ -43,12 +43,7 @@ const ViewTabs = ({ viewFields, editingId, formKey, currentView }) => {
                     key={view.label}
                     sx={{ mt: 2, display: tabIndex === index ? "block" : "none" }}
                 >
-                    <Views
-                        {...view.viewProps}
-                        rootId={formKey}
-                        currentView={currentView}
-                        showAddButton={false}
-                    />
+                    <Views {...view.viewProps} rootId={formKey} currentView={currentView} />
                 </Box>
             ))}
         </Box>

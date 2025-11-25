@@ -27,7 +27,6 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
                     width={isMobile ? "100vw" : "calc(100vw - 13rem)"}
                     mx={0}
                     my={0}
-                    pb={15}
                 >
                     {components}
                 </FlexBetweenColumn>

@@ -62,7 +62,7 @@ const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = fal
             <Box
                 display="grid"
                 gridTemplateColumns="1fr auto"
-                gap={2}
+                gap={1.5}
                 sx={{ alignItems: "center" }}
             >
                 {Object.keys(ACCESS_BUTTONS)

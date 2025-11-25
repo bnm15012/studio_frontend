@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { validate } from "../utils/validate";
 
 export const useCrudAction = ({
@@ -13,6 +13,7 @@ export const useCrudAction = ({
     rootId,
     navigate,
     tableName,
+    tableState,
     consts,
     beforeAdd = async (row) => row,
     beforeUpdate = async (row) => row,
@@ -25,6 +26,11 @@ export const useCrudAction = ({
     const updateEditId = (id) => {
         setEditingId(id);
     };
+
+    useEffect(() => {
+        updateEditId(null);
+    }, [tableState.currentPage]);
+
     const handleEdit = useCallback(
         (row) => {
             if (editingId) {
@@ -85,11 +91,10 @@ export const useCrudAction = ({
                     );
                 }
                 updateEditId(null);
+                if (formKey === "NEW") navigate(`/management/${tableName}/`);
             } catch (error) {
                 console.error(error);
                 showAlert(error.message ?? "Operation failed. Please try again!", "error");
-            } finally {
-                if (formKey === "NEW") navigate(`/management/${tableName}/`);
             }
         },
         [
@@ -165,7 +170,7 @@ export const useCrudAction = ({
         else setData((prev) => [newRow, ...prev]);
 
         updateEditId("NEW");
-    }, [consts, rootId, editingId, formKey, setData, showAlert, updateField]);
+    }, [editingId, consts, rootId, formKey, setData, showAlert, updateField]);
 
     return {
         editingId,

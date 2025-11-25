@@ -41,6 +41,7 @@ const StyledDialog = ({
     confirmText = "Confirm",
     cancelText = "Cancel",
     onConfirm,
+    size = "xs",
     confirmDisabled = false,
     actions = [],
     titleBgColor = "success",
@@ -54,26 +55,17 @@ const StyledDialog = ({
             open={open}
             onClose={onClose}
             slots={{ transition: isMobile ? Transition : undefined }}
-            sx={{
-                "& .MuiDialog-paper": isMobile
-                    ? {
-                          position: "fixed",
-                          bottom: 0,
-                          margin: 0,
-                          borderTopLeftRadius: 16,
-                          borderTopRightRadius: 16,
-                          width: "100%",
-                          backgroundColor: theme.palette.background.paper,
-                          boxShadow: theme.shadows[8],
-                      }
-                    : {},
-            }}
             fullWidth
-            maxWidth="xs"
+            maxWidth={size}
             {...props}
         >
             <DialogTitle
-                sx={{ background: backgrounds[titleBgColor], color: "white", textAlign: "center" }}
+                sx={{
+                    background: backgrounds[titleBgColor],
+                    color: "white",
+                    textAlign: "center",
+                    mb: 2,
+                }}
             >
                 {title && <>{title}</>}
                 {closeIcon && (
@@ -119,9 +111,8 @@ const StyledDialog = ({
                     <Button
                         disabled={confirmDisabled}
                         onClick={onConfirm}
-                        color="primary"
-                        variant="contained"
-                        sx={{ ml: 1 }}
+                        // variant="contained"
+                        sx={{ ml: 1, backgroundColor: "green", color: "white" }}
                     >
                         {confirmText}
                     </Button>
@@ -138,6 +129,7 @@ StyledDialog.propTypes = {
     titleBgColor: PropTypes.string,
     onConfirm: PropTypes.func,
     confirmDisabled: PropTypes.bool,
+    size: PropTypes.oneOf(["lg", "md", "sm", "xs", "xl"]),
     title: PropTypes.string,
     children: PropTypes.node,
     confirmText: PropTypes.string,
