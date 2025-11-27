@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import { getTimePassed } from "../../../utils/DateUtil";
+import { getTimePassed, isToday } from "../../../utils/DateUtil";
 import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
@@ -13,11 +13,12 @@ const EnquiryCard = ({ row }) => {
         <>
             <CardHeader
                 FieldIcon={QuestionAnswerIcon}
-                fieldValue={name}
+                fieldValue={enquiryPurpose}
+                enabled={isToday(enquiryDate)}
                 badge={getTimePassed(enquiryDate)}
             />
             <CardChip value={enquiryDate} type={"DATETIME"} label={"Enquiry Date"} />
-            <CardChip value={enquiryPurpose} label={"Enquiry Purpose"} ChipIcon={FileText} />
+            <CardChip value={name} label={"Enquire Name"} ChipIcon={FileText} />
             <ContactSection contact={contact} />
         </>
     );

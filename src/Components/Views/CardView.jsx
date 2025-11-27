@@ -40,6 +40,7 @@ const CardView = (props) => {
         fields,
         data,
         fieldsMeta,
+        loading,
         actions,
         handleViewOpen,
         tableState,
@@ -85,15 +86,17 @@ const CardView = (props) => {
                         </StyledMotionCard>
                     );
                 })}
-                {data.length === 0 && <StyledCardContent>No Data Available</StyledCardContent>}
-                {hasMore && (
-                    <LoadMoreContainer>
-                        <LoadMoreButton onClick={handleLoadMore} variant="contained">
-                            Load More
-                        </LoadMoreButton>
-                    </LoadMoreContainer>
+                {data.length === 0 && !loading && (
+                    <StyledCardContent>No Data Available</StyledCardContent>
                 )}
             </StyledCardContainer>
+            {hasMore && (
+                <LoadMoreContainer>
+                    <LoadMoreButton onClick={handleLoadMore} variant="contained">
+                        Load More
+                    </LoadMoreButton>
+                </LoadMoreContainer>
+            )}
         </Box>
     );
 };
@@ -106,6 +109,7 @@ CardView.propTypes = {
         primary: PropTypes.string,
         root: PropTypes.string,
     }),
+    loading: PropTypes.bool,
     handleLoadMore: PropTypes.func,
     CardContentComponent: PropTypes.elementType,
     handleViewOpen: PropTypes.func,

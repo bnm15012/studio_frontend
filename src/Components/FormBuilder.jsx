@@ -10,7 +10,6 @@ import { FieldLabel, FieldValue } from "./New/StyledField";
 const FormBuilder = ({ form, branchId }) => {
     const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
     const [formState, setFormState] = useState({ _form_sig: FORM_SIG });
-    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const showAlert = useAlert();
     const theme = useTheme();
@@ -28,52 +27,34 @@ const FormBuilder = ({ form, branchId }) => {
 
     const validateField = (key, value, validation) => {
         if (validation.required && !value) {
-            return "This field is required";
+            throw Error(key + " field is required");
         }
         if (validation?.regex) {
             const regex = new RegExp(validation.regex);
             if (!regex.test(value)) {
-                return validation.message || "Invalid format";
+                throw Error(validation.message || "Invalid format");
             }
         }
-        return null;
     };
 
     const handleChange = (key, value) => {
         setFormState((prev) => ({ ...prev, [key]: value }));
-
-        const fieldConfig = form.fields[key];
-        if (fieldConfig) {
-            const error = validateField(key, value, fieldConfig);
-            setErrors((prev) => ({ ...prev, [key]: error }));
-        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { _form_sig, ...cleanData } = formState;
-        if (_form_sig !== FORM_SIG) {
-            showAlert("Invalid form signature", "error");
-            return;
-        }
-
-        const newErrors = {};
-        form.fields.forEach(({ name, validation }) => {
-            const error = validateField(name, formState[name], validation);
-            if (error) {
-                newErrors[name] = error;
-            }
-        });
-
-        setErrors(newErrors);
-        if (Object.keys(newErrors).length > 0) {
-            console.error(newErrors, errors);
-            showAlert("Please fix validation errors before submitting.", "error");
-            return;
-        }
-
         try {
+            const { _form_sig, ...cleanData } = formState;
+            if (_form_sig !== FORM_SIG) {
+                showAlert("Invalid form signature", "error");
+                return;
+            }
+
+            form.fields.forEach(({ name, validation, label }) => {
+                validateField(label, formState[name], validation);
+            });
+
             setLoading(true);
             const { success, message } = await form.onSubmit({
                 newData: { ...cleanData, branchId: parseInt(branchId) },
@@ -87,7 +68,7 @@ const FormBuilder = ({ form, branchId }) => {
             }
         } catch (error) {
             console.error(error);
-            showAlert("Failed to save/update student", "error");
+            showAlert(error?.message || "Failed to save/update student", "error");
         }
         setLoading(false);
     };

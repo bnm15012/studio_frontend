@@ -1,15 +1,11 @@
 import { useRef } from "react";
-import { Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
 import { useSelector } from "react-redux";
 import Views from "../../../Components/Views/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
-import { usePageSearch } from "../../../hooks/useSearch";
-import SearchField from "../../../Components/SearchField";
-import { Add } from "@mui/icons-material";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import ActionBar from "../../../Components/ActionBar";
 
 const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);
 
@@ -60,7 +56,6 @@ const VIEWS = ["LIST", "CARD"];
 
 const TemplatesPage = () => {
     const { isMobile } = useUI();
-    const { triggerSearch } = usePageSearch();
 
     useSelector((state) => state.activity.activities)?.map((x) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
@@ -71,19 +66,7 @@ const TemplatesPage = () => {
 
     return (
         <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={triggerSearch} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        api.current?.addNewRow();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <Add sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
+            <ActionBar api={api} />
             <Views
                 size={5}
                 tableName={"genericTemplate"}

@@ -109,8 +109,8 @@ const StyledDialog = ({
                     <Button
                         disabled={confirmDisabled}
                         onClick={onConfirm}
-                        // variant="contained"
-                        sx={{ ml: 1, backgroundColor: "green", color: "white" }}
+                        variant="contained"
+                        sx={{ ml: 1, color: "white" }}
                     >
                         {confirmText}
                     </Button>

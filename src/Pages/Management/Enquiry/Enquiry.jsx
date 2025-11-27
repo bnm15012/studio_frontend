@@ -1,19 +1,14 @@
 import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
-import RefreshIcon from "@mui/icons-material/Refresh";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import QrForm from "../../../Components/QrForm.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
-import SearchField from "../../../Components/SearchField.jsx";
-import { usePageSearch } from "../../../hooks/useSearch.js";
+import ActionBar from "../../../Components/ActionBar.jsx";
 
 const LIMIT = 7;
 
@@ -39,36 +34,12 @@ const FIELDS = [
 
 const Enquiry = () => {
     const { isMobile } = useUI();
-    const { triggerSearch } = usePageSearch();
     const api = useRef({});
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={triggerSearch} />
-                <QrForm title="" link={"enquiry-form"} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        api.current?.refreshData();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <RefreshIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        api.current?.addNewRow();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
+            <ActionBar api={api} qrProps={{ link: "enquiry-form" }} />
             <Box>
                 <Views
                     tableName={"enquiries"}

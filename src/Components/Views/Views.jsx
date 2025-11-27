@@ -143,6 +143,7 @@ const Views = (props) => {
     const commonProps = {
         data,
         tableState,
+        loading,
         editingId,
         actions: mergedActions,
     };
@@ -175,7 +176,6 @@ const Views = (props) => {
                     {...commonStableProps}
                     {...commonProps}
                     formKey={formKey}
-                    loading={loading}
                     data={record}
                     currentView={currentView}
                 />

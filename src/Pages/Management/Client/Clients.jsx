@@ -1,16 +1,13 @@
 import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
 import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
-import SearchField from "../../../Components/SearchField";
-import { usePageSearch } from "../../../hooks/useSearch";
+import ActionBar from "../../../Components/ActionBar";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 
@@ -42,26 +39,13 @@ const FIELDS = [
     { show: true, name: "notes", label: "Notes" },
 ];
 const Clients = () => {
-    const { triggerSearch } = usePageSearch();
     const { isMobile } = useUI();
     const api = useRef({});
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={triggerSearch} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        api.current?.addNewRow();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
+            <ActionBar api={api} />
             <Box>
                 <Views
                     tableName={"clients"}

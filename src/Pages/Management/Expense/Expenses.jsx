@@ -1,8 +1,6 @@
 import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
@@ -10,8 +8,7 @@ import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
-import SearchField from "../../../Components/SearchField";
-import { usePageSearch } from "../../../hooks/useSearch";
+import ActionBar from "../../../Components/ActionBar";
 
 const categories = [
     "ELECTRICITY",
@@ -68,25 +65,12 @@ const FIELDS = [
 ];
 const Expenses = () => {
     const { isMobile } = useUI();
-    const { triggerSearch } = usePageSearch();
     const api = useRef({});
     const currentBranch = useSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <SearchField handleSearch={triggerSearch} />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        api.current?.addNewRow();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                </Button>
-            </FlexBetween>
+            <ActionBar api={api} />
             <Box>
                 <Views
                     tableName={"expenses"}

@@ -1,21 +1,17 @@
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Views from "../../../Components/Views/Views";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
-import { usePageSearch } from "../../../hooks/useSearch";
-import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
+import ActionBar from "../../../Components/ActionBar";
 
 const size = 7;
 
@@ -116,10 +112,8 @@ const VIEWS = ["LIST", "CARD", "FORM"];
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
 const Instructors = ({ ID }) => {
-    const navigate = useNavigate();
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const { triggerSearch } = usePageSearch();
     const api = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
     const allActivities = useSelector((state) => state.activity.activities);
@@ -222,23 +216,10 @@ const Instructors = ({ ID }) => {
 
     return (
         <FlexBetweenColumn>
-            {!ID && (
-                <FlexBetween paddingBottom={2} gap={1}>
-                    <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            navigate("/management/instructors/NEW");
-                        }}
-                        sx={{ fontWeight: "bold", padding: ".8rem" }}
-                    >
-                        <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                    </Button>
-                </FlexBetween>
-            )}
+            {!ID && <ActionBar api={api} filterOptions={filterOptions} tableName={"instructors"} />}
             <Views
                 formKey={ID}
+                apiRef={api}
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
                 size={size}

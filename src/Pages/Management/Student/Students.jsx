@@ -1,15 +1,10 @@
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
-import { Box, Button } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Views from "../../../Components/Views/Views";
 import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
 import StudentCard from "./StudentCard.jsx";
 import { useUI } from "../../../context/UIContext";
-import { usePageSearch } from "../../../hooks/useSearch";
-import SearchField from "../../../Components/SearchField";
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
@@ -18,6 +13,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import StudentAssignActivityCard from "./StudentAssignActivityCard.jsx";
 import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil.js";
+import ActionBar from "../../../Components/ActionBar.jsx";
 
 const size = 7;
 
@@ -87,10 +83,8 @@ const VIEWS = ["LIST", "CARD", "FORM"];
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
 const Students = ({ ID }) => {
-    const navigate = useNavigate();
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
     const [showInvoice, setShowInvoice] = useState(false);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
@@ -448,29 +442,30 @@ const Students = ({ ID }) => {
                 apiRef: api,
             },
         }),
-        [allActivities, beforeAdd, currentBranch.branchId, overRideOnChange],
+        [
+            FEATURE_KEYS.PAYMENT_DATE,
+            allActivities,
+            beforeAdd,
+            currentBranch.branchId,
+            isEnabled,
+            overRideOnChange,
+        ],
     );
 
     return (
         <FlexBetweenColumn>
             {!ID && (
-                <FlexBetween paddingBottom={2} gap={1}>
-                    <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            navigate("/management/students/NEW");
-                        }}
-                        sx={{ fontWeight: "bold", padding: ".8rem" }}
-                    >
-                        <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                    </Button>
-                </FlexBetween>
+                <ActionBar
+                    api={api}
+                    filterOptions={filterOptions}
+                    qrProps={{ link: "student-form" }}
+                    tableName={"students"}
+                />
             )}
             <Views
                 formKey={ID}
                 tableName={"students"}
+                apiRef={api}
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}

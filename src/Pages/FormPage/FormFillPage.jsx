@@ -43,9 +43,10 @@ const formData = [
             {
                 name: "emergencyContactNumber",
                 type: "number",
+                label: "Emergency Contact",
                 validation: {
                     required: true,
-                    regex: /^\d{10,12}$/,
+                    regex: /^\d{10}$/,
                     message: "Please enter a valid emergency contact number",
                 },
             },
