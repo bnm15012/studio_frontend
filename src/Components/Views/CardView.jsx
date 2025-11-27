@@ -1,4 +1,4 @@
-import { Button, Box, IconButton } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import { FieldContainer, FieldLabel } from "../New/StyledField";
@@ -8,10 +8,10 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "../New/StyledCard";
-import FlexEvenly from "../FlexEvenly";
 import FlexBetween from "../FlexBetween";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { memo } from "react";
+import Actions from "./helper/Actions";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -79,38 +79,21 @@ const CardView = (props) => {
                             </StyledCardContent>
                             <StyledCardActions>
                                 <FlexBetween>
-                                    <FlexEvenly width={"100%"} gap={2}>
-                                        {actions
-                                            .filter((f) => !f.hide)
-                                            .map(({ name, enabled, onClick, icon, sx }) => (
-                                                <IconButton
-                                                    disabled={
-                                                        typeof enabled === "function"
-                                                            ? !enabled(row)
-                                                            : !enabled
-                                                    }
-                                                    key={name}
-                                                    sx={sx}
-                                                    onClick={() => onClick(row)}
-                                                >
-                                                    {icon || name}
-                                                </IconButton>
-                                            ))}
-                                    </FlexEvenly>
+                                    <Actions actions={actions} row={row} />
                                 </FlexBetween>
                             </StyledCardActions>
                         </StyledMotionCard>
                     );
                 })}
                 {data.length === 0 && <StyledCardContent>No Data Available</StyledCardContent>}
+                {hasMore && (
+                    <LoadMoreContainer>
+                        <LoadMoreButton onClick={handleLoadMore} variant="contained">
+                            Load More
+                        </LoadMoreButton>
+                    </LoadMoreContainer>
+                )}
             </StyledCardContainer>
-            {hasMore && (
-                <LoadMoreContainer>
-                    <LoadMoreButton onClick={handleLoadMore} variant="contained">
-                        Load More
-                    </LoadMoreButton>
-                </LoadMoreContainer>
-            )}
         </Box>
     );
 };

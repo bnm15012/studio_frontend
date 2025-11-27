@@ -77,8 +77,8 @@ const SentSMSHistory = ({ newHistory }) => {
             )}
             <FlexBetween p={2} flexDirection={"row-reverse"}>
                 <Pagination
-                    count={totalPage}
-                    page={page}
+                    count={totalPage ?? 0}
+                    page={page ?? 0}
                     onChange={handlePageChange}
                     color="primary"
                     size="small"

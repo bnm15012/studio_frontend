@@ -84,7 +84,6 @@ const TemplatesPage = () => {
                     <Add sx={{ padding: 0, margin: "auto" }} />
                 </Button>
             </FlexBetween>
-
             <Views
                 size={5}
                 tableName={"genericTemplate"}
@@ -94,6 +93,7 @@ const TemplatesPage = () => {
                 fieldsMeta={FIELD_META}
                 rootId={studio.studioId}
                 apiRef={api}
+                dialogProps={{ fullScreen: true }}
                 fields={FIELDS}
                 CardContentComponent={TemplateCard}
                 editMode={"DIALOG"}

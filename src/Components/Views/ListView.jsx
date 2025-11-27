@@ -150,7 +150,7 @@ const ListView = ({
             <FlexBetween m={1} flexDirection={"row-reverse"}>
                 <Pagination
                     page={tableState.currentPage ?? 0}
-                    count={Math.ceil(tableState.totalCount / tableState.pageSize)}
+                    count={Math.ceil(tableState.totalCount / tableState.pageSize) ?? 0}
                     onChange={(e, p) => handlePageChange(p)}
                     color="primary"
                     shape="rounded"

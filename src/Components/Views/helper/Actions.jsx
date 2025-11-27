@@ -7,7 +7,6 @@ const Actions = ({ actions, row }) => (
             .filter((a) => !a.hide)
             .map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled = typeof enabled === "function" ? enabled(row) : enabled;
-
                 return (
                     <IconButton
                         key={name}

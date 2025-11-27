@@ -17,6 +17,7 @@ import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import FlexEvenly from "../FlexEvenly";
+import Actions from "./helper/Actions";
 
 const FormView = (props) => {
     const {
@@ -75,22 +76,7 @@ const FormView = (props) => {
                 <Box>
                     {!editingId ? (
                         <FlexBetween gap={2}>
-                            {actions
-                                ?.filter((a) => !a.hide)
-                                .map(({ name, enabled, onClick, icon, sx }) => (
-                                    <IconButton
-                                        key={name}
-                                        disabled={
-                                            typeof enabled === "function"
-                                                ? !enabled(data)
-                                                : !enabled
-                                        }
-                                        sx={sx}
-                                        onClick={() => onClick(data)}
-                                    >
-                                        {icon || name}
-                                    </IconButton>
-                                ))}
+                            <Actions actions={actions} row={data} />
                             <IconButton>
                                 {loading ? (
                                     <CircularProgress size={24} />

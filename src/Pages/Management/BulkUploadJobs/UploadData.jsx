@@ -171,7 +171,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
 
                             <TablePagination
                                 component="div"
-                                count={parsedData.length}
+                                count={parsedData.length ?? 0}
                                 page={page}
                                 onPageChange={handleChangePage}
                                 rowsPerPage={rowsPerPage}

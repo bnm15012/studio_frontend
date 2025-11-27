@@ -7,7 +7,7 @@ import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../New/StyledField";
 
 export const DialogForm = (props) => {
-    const { data, fields, fieldsMeta, setClose, handleChange, handleSave } = props;
+    const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
     const id = data[fieldsMeta.primary];
     const visibleFields = fields.filter((f) => f.show !== false);
 
@@ -16,8 +16,8 @@ export const DialogForm = (props) => {
             open={true}
             onClose={setClose}
             closeIcon={true}
-            size={"xs"}
             title={id === "NEW" ? "Create Record" : "Edit Record"}
+            {...dialogProps}
         >
             <FlexBetween flexDirection={"column"} gap={2} mt={2}>
                 {visibleFields.map((field) => (
@@ -78,6 +78,7 @@ export const DialogForm = (props) => {
 DialogForm.propTypes = {
     data: PropTypes.object,
     fields: PropTypes.array,
+    dialogProps: PropTypes.object,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,
         root: PropTypes.string,

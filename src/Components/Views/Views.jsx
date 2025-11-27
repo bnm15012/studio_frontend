@@ -13,10 +13,12 @@ import { useMergedActions } from "./hooks/useMergedActions";
 import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
+import FlexEvenly from "../FlexEvenly";
 
 const Views = (props) => {
     const {
         formKey,
+        dialogProps,
         tableName,
         showAddButton = false,
         tableCruds,
@@ -164,7 +166,7 @@ const Views = (props) => {
         if (formKey && formKey !== "NEW") {
             setRecord(tableState.recordById[formKey] || {});
         }
-    }, [formKey, tableState.recordById]);
+    }, [formKey, setRecord, tableState.recordById]);
 
     return (
         <>
@@ -198,6 +200,7 @@ const Views = (props) => {
                         setClose={handleCancel}
                         {...commonProps}
                         {...commonStableProps}
+                        {...dialogProps}
                         data={data.find((d) => d[consts.current.primaryKey] === editingId)}
                     />
                 )}
@@ -232,7 +235,11 @@ const Views = (props) => {
                     )}
                 </StyledDialog>
             )}
-            {loading && <CircularProgress />}
+            {loading && (
+                <FlexEvenly>
+                    <CircularProgress />
+                </FlexEvenly>
+            )}
             {DeleteDialogComponent}
         </>
     );
@@ -253,6 +260,7 @@ Views.propTypes = {
     apiRef: PropTypes.shape({
         current: PropTypes.object,
     }),
+    dialogProps: PropTypes.object,
     beforeAdd: PropTypes.func,
     beforeUpdate: PropTypes.func,
     cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),

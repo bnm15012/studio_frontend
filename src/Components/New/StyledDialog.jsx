@@ -41,7 +41,6 @@ const StyledDialog = ({
     confirmText = "Confirm",
     cancelText = "Cancel",
     onConfirm,
-    size = "xs",
     confirmDisabled = false,
     actions = [],
     titleBgColor = "success",
@@ -56,7 +55,6 @@ const StyledDialog = ({
             onClose={onClose}
             slots={{ transition: isMobile ? Transition : undefined }}
             fullWidth
-            maxWidth={size}
             {...props}
         >
             <DialogTitle
