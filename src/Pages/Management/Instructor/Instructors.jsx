@@ -52,7 +52,11 @@ const FIELDS = [
         section: "Contact Details",
         name: "phone",
         label: "Phone",
-        validation: { required: true },
+        validation: {
+            required: true,
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
     },
     {
         show: true,

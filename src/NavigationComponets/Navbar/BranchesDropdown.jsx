@@ -24,7 +24,7 @@ const BranchesDropdown = () => {
 
     const handleBranchSelect = (branch) => {
         if (!branch.isActive) return;
-        dispatch(branchCruds.setSelectedBranch(branch));
+        dispatch(branchCruds.actions.setCurrentBranch(branch));
         dispatch(clearAllstate());
         dispatch(loadInitialDataAPI());
         navigate("/dashboard");

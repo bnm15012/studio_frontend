@@ -115,8 +115,8 @@ Field.propTypes = {
     type: PropTypes.string,
     variant: PropTypes.string,
     extraProp: PropTypes.shape({
-        min: PropTypes.number,
-        max: PropTypes.number,
+        min: PropTypes.any,
+        max: PropTypes.any,
         rows: PropTypes.number,
         getOptions: PropTypes.func,
     }),

@@ -88,7 +88,7 @@ const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTI
 
 const Students = ({ ID }) => {
     const navigate = useNavigate();
-    const { isMobile } = useUI();
+    const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { triggerSearch } = usePageSearch();
     const allActivities = useSelector((state) => state.activity.activities);
@@ -172,6 +172,11 @@ const Students = ({ ID }) => {
 
                 obj["batchTime"] = batchEntry?.["startTime"] + "-" + batchEntry?.["endTime"];
                 obj["activityAmount"] = batchEntry?.["price"];
+            } else if (fieldPath === "membershipStartDate") {
+                obj["membershipEndDate"] = getEndDateBySubscriptionPlan(
+                    value,
+                    obj["membershipType"],
+                );
             }
             return obj;
         },
@@ -368,21 +373,12 @@ const Students = ({ ID }) => {
                         name: "membershipEndDate",
                         label: "End Date",
                         type: "DATE",
-                        getValue: (value, row, isEdit) => {
-                            if (isEdit && row.membershipType) {
-                                return getEndDateBySubscriptionPlan(
-                                    row.membershipStartDate,
-                                    row.membershipType,
-                                );
-                            }
-                            return value;
-                        },
                         defaultValue: getCurrentDateTimeUTC(),
                         validation: { required: true },
                         extraProp: { min: getCurrentDateTimeUTC(), readOnly: true },
                     },
                     {
-                        show: true,
+                        show: isEnabled(FEATURE_KEYS.PAYMENT_DATE),
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",

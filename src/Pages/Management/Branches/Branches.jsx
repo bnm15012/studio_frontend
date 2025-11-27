@@ -63,7 +63,7 @@ const Branches = () => {
                         {
                             name: "users",
                             icon: <GroupIcon />,
-                            enabled: true,
+                            enabled: (row) => row.isActive,
                             sx: { color: "blue" },
                             onClick: (row) => {
                                 dispatch(branchCruds.actions.setSelectedBranch(row));

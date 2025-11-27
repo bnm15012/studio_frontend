@@ -31,7 +31,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     borderRadius: "8px",
     overflowX: "auto",
-    boxShadow: theme.shadows[7],
+    boxShadow: theme.shadows[2],
 }));
 
 export const StyledTable = styled(Table)(() => ({

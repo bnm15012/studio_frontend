@@ -22,6 +22,7 @@ import { logoutUser } from "../../state/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
 import { useNavigate } from "react-router-dom";
+import ToggleTheme from "./ToggleTheme";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
@@ -45,7 +46,7 @@ export const Navbar = ({ position = "fixed" }) => {
                 position={position}
                 sx={{
                     height: "3.2rem",
-                    boxShadow: theme.shadows[10],
+                    boxShadow: theme.shadows[5],
                     backgroundColor: "rgb(37,10,49)",
                     backdropFilter: "blur(50px)",
                     transition: "all 0.3s ease",
@@ -54,7 +55,16 @@ export const Navbar = ({ position = "fixed" }) => {
             >
                 <FlexBetween px={isMobile ? 0 : 2} my={"auto"}>
                     {/* Logo */}
-                    <Box mr={"auto"} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box
+                        mr={"auto"}
+                        sx={{
+                            cursor: "pointer",
+                            userSelect: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                        }}
+                    >
                         <ImageComponent size={"2.5rem"} value={"/logo.png"} isCircular={false} />
                         {!isMobile && (
                             <Typography
@@ -67,6 +77,9 @@ export const Navbar = ({ position = "fixed" }) => {
                             </Typography>
                         )}
                     </Box>
+
+                    <ToggleTheme />
+
                     {isNonMobileScreens && (
                         <FlexBetween gap={3}>
                             <MenuItems isNonMobileScreens={isNonMobileScreens} />

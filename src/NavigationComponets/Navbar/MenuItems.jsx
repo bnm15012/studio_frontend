@@ -8,7 +8,6 @@ const MenuItems = ({ isNonMobileScreens }) => {
     const location = useLocation();
     const isHomePage = location.pathname === "/";
     const user = useSelector((state) => state.auth.user);
-    
 
     const scrollTo = (target) => {
         const el = document.querySelector(target);

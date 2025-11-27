@@ -11,6 +11,7 @@ export const useDeleteHandler = ({
     tableName,
     consts,
     data,
+    formKey,
     fieldToDisplayOnDelete,
 }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -32,7 +33,7 @@ export const useDeleteHandler = ({
     const handleDeleteConfirm = useCallback(async () => {
         try {
             await dispatch(tableCruds.delete(deleteId, token, showAlert, setLoading));
-            navigate(`/management/${tableName}/`);
+            if (formKey) navigate(`/management/${tableName}`);
             showAlert(`${tableName} deleted successfully!`, "success");
         } catch (error) {
             console.error(error);
@@ -41,14 +42,15 @@ export const useDeleteHandler = ({
             closeDeleteDialog();
         }
     }, [
-        deleteId,
         dispatch,
-        navigate,
-        setLoading,
-        showAlert,
-        tableName,
         tableCruds,
+        deleteId,
         token,
+        showAlert,
+        setLoading,
+        formKey,
+        navigate,
+        tableName,
         closeDeleteDialog,
     ]);
 

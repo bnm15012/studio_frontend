@@ -48,8 +48,8 @@ export const DialogForm = (props) => {
                         <Button
                             size="small"
                             fullWidth
+                            variant="contained"
                             onClick={() => handleSave(id)}
-                            sx={{ backgroundColor: "green", color: "white" }}
                         >
                             Save
                         </Button>

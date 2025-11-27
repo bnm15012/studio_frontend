@@ -11,7 +11,13 @@ export const defaultActions = ({
     const base = [
         { name: "edit", icon: <Edit />, sx: { color: "blue" }, onClick: handleEdit },
         { name: "delete", icon: <Delete />, sx: { color: "red" }, onClick: handleDeleteClick },
-        { name: "form", icon: <OpenInNew />, sx: { color: "blue" }, onClick: openFormView },
+        {
+            name: "form",
+            icon: <OpenInNew />,
+            sx: { color: "blue" },
+            onClick: openFormView,
+            help: "Open form view",
+        },
     ];
 
     return base.map((a) => ({

@@ -92,6 +92,7 @@ const Views = (props) => {
         setLoading,
         dispatch,
         navigate,
+        formKey,
         tableName,
         consts,
         data,

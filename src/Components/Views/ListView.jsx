@@ -12,8 +12,9 @@ import Field from "../Fields/Field";
 import PropTypes from "prop-types";
 import { getNestedValue } from "../../utils/objectHelpers";
 import FlexEvenly from "../FlexEvenly";
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import FlexBetween from "../FlexBetween";
+import Actions from "./helper/Actions";
 
 const ListView = ({
     fields,
@@ -26,11 +27,14 @@ const ListView = ({
     handleCancel,
     tableState,
     handlePageChange,
-    addNewRow,
     handleViewOpen,
 }) => {
     const isEdit = (row, field) =>
         editingId === row[fieldsMeta.primary] && (field?.editable ? field.editable(row) : true);
+    const onClickRow = useCallback(
+        (row) => actions.find((a) => a.name === "form" && !a.hide).onClick(row),
+        [actions],
+    );
 
     return (
         <StyledTableContainer component={Paper}>
@@ -59,7 +63,11 @@ const ListView = ({
                 </TableHead>
                 <TableBody>
                     {data.map((row, rowIndex) => (
-                        <StyledTableRow key={row[fieldsMeta.primary]}>
+                        <StyledTableRow
+                            key={row[fieldsMeta.primary]}
+                            sx={{ cursor: onClickRow ? "pointer" : "auto" }}
+                            onClick={() => onClickRow(row)}
+                        >
                             <StyledTableCell>
                                 {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +
                                     rowIndex +
@@ -131,24 +139,7 @@ const ListView = ({
                                             </IconButton>
                                         </>
                                     ) : (
-                                        <>
-                                            {actions
-                                                .filter((a) => !a.hide)
-                                                .map(({ name, enabled, onClick, icon, sx }) => (
-                                                    <IconButton
-                                                        key={name}
-                                                        disabled={
-                                                            typeof enabled === "function"
-                                                                ? !enabled(row)
-                                                                : !enabled
-                                                        }
-                                                        sx={sx}
-                                                        onClick={() => onClick(row)}
-                                                    >
-                                                        {icon || name}
-                                                    </IconButton>
-                                                ))}
-                                        </>
+                                        <Actions actions={actions} row={row} />
                                     )}
                                 </FlexEvenly>
                             </StyledTableCell>
@@ -158,7 +149,7 @@ const ListView = ({
             </StyledTable>
             <FlexBetween m={1} flexDirection={"row-reverse"}>
                 <Pagination
-                    page={tableState.currentPage}
+                    page={tableState.currentPage ?? 0}
                     count={Math.ceil(tableState.totalCount / tableState.pageSize)}
                     onChange={(e, p) => handlePageChange(p)}
                     color="primary"
@@ -180,7 +171,6 @@ ListView.propTypes = {
     }),
     handleChange: PropTypes.func,
     handleSave: PropTypes.func,
-    addNewRow: PropTypes.func,
     handleCancel: PropTypes.func,
     handlePageChange: PropTypes.func,
     handleViewOpen: PropTypes.func,
@@ -190,7 +180,7 @@ ListView.propTypes = {
             onClick: PropTypes.func,
             icon: PropTypes.element,
             sx: PropTypes.object,
-            enabled: PropTypes.bool,
+            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
         }),
     ),
 };
