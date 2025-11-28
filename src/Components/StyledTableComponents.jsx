@@ -17,7 +17,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
         backgroundColor: theme.palette.background.paper,
     },
     "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.background.alt,
+        backgroundColor: theme.palette.background.odd,
     },
     "&:last-child td, &:last-child th": {
         border: 0,
@@ -30,8 +30,8 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     borderRadius: "8px",
-    overflowX: "auto",
-    boxShadow: theme.shadows[2],
+    overflow: "hidden",
+    boxShadow: theme.shadows[7],
 }));
 
 export const StyledTable = styled(Table)(() => ({

@@ -115,6 +115,7 @@ const Instructors = ({ ID }) => {
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const api = useRef({});
+    const apiInstructor = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
     const allActivities = useSelector((state) => state.activity.activities);
 
@@ -216,10 +217,16 @@ const Instructors = ({ ID }) => {
 
     return (
         <FlexBetweenColumn>
-            {!ID && <ActionBar api={api} filterOptions={filterOptions} tableName={"instructors"} />}
+            {!ID && (
+                <ActionBar
+                    api={apiInstructor}
+                    filterOptions={filterOptions}
+                    tableName={"instructors"}
+                />
+            )}
             <Views
                 formKey={ID}
-                apiRef={api}
+                apiRef={apiInstructor}
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
                 size={size}

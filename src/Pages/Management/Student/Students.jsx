@@ -89,6 +89,7 @@ const Students = ({ ID }) => {
     const [showInvoice, setShowInvoice] = useState(false);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const api = useRef({});
+    const apiStudent = useRef({});
 
     const awaitForDialog = useCallback(
         (paymentInit) =>
@@ -152,6 +153,10 @@ const Students = ({ ID }) => {
             } else if (fieldPath === "membershipType") {
                 obj["daysPerWeek"] = undefined;
                 obj["batchName"] = undefined;
+                obj["membershipEndDate"] = getEndDateBySubscriptionPlan(
+                    obj["membershipStartDate"],
+                    value,
+                );
             } else if (fieldPath === "daysPerWeek") {
                 obj["batchName"] = undefined;
             } else if (fieldPath === "batchName") {
@@ -456,7 +461,7 @@ const Students = ({ ID }) => {
         <FlexBetweenColumn>
             {!ID && (
                 <ActionBar
-                    api={api}
+                    api={apiStudent}
                     filterOptions={filterOptions}
                     qrProps={{ link: "student-form" }}
                     tableName={"students"}
@@ -465,7 +470,7 @@ const Students = ({ ID }) => {
             <Views
                 formKey={ID}
                 tableName={"students"}
-                apiRef={api}
+                apiRef={apiStudent}
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}

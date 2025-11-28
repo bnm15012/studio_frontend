@@ -73,7 +73,7 @@ const SentSMSHistory = ({ newHistory }) => {
             {isMobile ? (
                 <MessageHistoryCard onViewRecipients={setOpenDialog} history={history} />
             ) : (
-                <HistoryMessageTable showRecepients={setOpenDialog} history={history} />
+                <HistoryMessageTable onViewRecipients={setOpenDialog} history={history} />
             )}
             <FlexBetween p={2} flexDirection={"row-reverse"}>
                 <Pagination

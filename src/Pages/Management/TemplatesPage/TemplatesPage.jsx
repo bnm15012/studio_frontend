@@ -20,7 +20,7 @@ const FIELDS = [
         name: "templateType",
         label: "Template Type",
         type: "SELECT",
-        getValue: (value) => ({ key: value, value }),
+        getValue: (value) => value && { key: value, value },
         extraProp: {
             variant: "outlined",
             getOptions: async () => [...templateTypes].map((type) => ({ key: type, value: type })),
@@ -76,7 +76,7 @@ const TemplatesPage = () => {
                 fieldsMeta={FIELD_META}
                 rootId={studio.studioId}
                 apiRef={api}
-                dialogProps={{ fullScreen: true }}
+                dialogProps={{ fullScreen: isMobile, size: "md" }}
                 fields={FIELDS}
                 CardContentComponent={TemplateCard}
                 editMode={"DIALOG"}
