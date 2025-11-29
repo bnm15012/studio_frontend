@@ -120,7 +120,7 @@ const HtmlToPdfViewer = forwardRef(
                                         }}
                                     >
                                         {footer}
-                                        <Typography component="p" sx={{ fontSize: "9px", mt: 1 }}>
+                                        <Typography component="p" sx={{ fontSize: "12px", mt: 1 }}>
                                             Powered by Book & Manage
                                         </Typography>
                                     </Typography>

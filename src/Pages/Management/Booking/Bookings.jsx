@@ -38,7 +38,7 @@ const Bookings = ({ ID }) => {
     const [calendarAnchor, setCalendarAnchor] = useState(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState(false);
-    const api = useRef();
+    const api = useRef({});
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const getClientsByName = useCallback(

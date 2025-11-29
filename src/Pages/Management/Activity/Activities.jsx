@@ -193,6 +193,7 @@ const Activities = () => {
                     onClick={handleAddActivity}
                 >
                     <AddIcon />
+                    New Activity
                 </Button>
             </FlexBetween>
             <Box sx={{ py: 2 }}>

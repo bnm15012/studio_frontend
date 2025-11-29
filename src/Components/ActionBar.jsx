@@ -14,6 +14,7 @@ const ActionBar = ({
     qrProps,
     api,
     tableName,
+    addBtnText,
     add = true,
     refresh = true,
     children,
@@ -54,6 +55,7 @@ const ActionBar = ({
                             sx={{ fontWeight: "bold", padding: ".8rem" }}
                         >
                             <Add sx={{ padding: 0, margin: "auto" }} />
+                            {addBtnText}
                         </Button>
                     )}{" "}
                 </>
@@ -70,6 +72,7 @@ ActionBar.propTypes = {
     refresh: PropTypes.bool,
     search: PropTypes.bool,
     children: PropTypes.node,
+    addBtnText: PropTypes.string,
     qrProps: PropTypes.object,
     api: PropTypes.shape({
         current: PropTypes.object,

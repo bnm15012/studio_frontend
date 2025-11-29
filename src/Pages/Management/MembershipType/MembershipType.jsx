@@ -23,7 +23,7 @@ const MembershipType = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar search={false} api={api} />
+            <ActionBar search={false} api={api} addBtnText={"New Package"} />
             <Box>
                 <Views
                     tableName={"activityMembershipType"}

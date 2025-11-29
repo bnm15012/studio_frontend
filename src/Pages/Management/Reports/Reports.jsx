@@ -329,6 +329,7 @@ const Reports = () => {
                     borderRadius: "8px",
                     flexGrow: 1,
                     p: 1,
+                    px: isMobile ? 1 : 20,
                 }}
             >
                 {loading && <Loading />}

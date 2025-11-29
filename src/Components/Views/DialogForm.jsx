@@ -48,7 +48,7 @@ export const DialogForm = (props) => {
                         <Button
                             size="small"
                             fullWidth
-                            variant="contained"
+                            variant="save"
                             onClick={() => handleSave(id)}
                         >
                             Save

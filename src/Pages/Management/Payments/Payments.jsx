@@ -73,12 +73,13 @@ const FIELDS = [
 const Expenses = () => {
     const { isMobile } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const api = useRef();
+    const api = useRef({});
     return (
         <FlexBetweenColumn>
             <ActionBar api={api} add={false} />
             <Box>
                 <Views
+                    apiRef={api}
                     actions={[
                         { name: "delete", enabled: false, hide: true },
                         { name: "edit", enabled: (row) => row.status !== "COMPLETED" },

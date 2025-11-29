@@ -150,7 +150,6 @@ const DashBoard = () => {
                         sx={{
                             borderRadius: 4,
                             p: { xs: 2, md: 3 },
-                            mb: 3,
                             background: "linear-gradient(135deg,#2196F3 0%,#0D47A1 100%)",
                             color: "white",
                             animation: `${fadeInUp} .5s ease-out`,
@@ -247,7 +246,6 @@ const DashBoard = () => {
                                 sm: "repeat(2, 1fr)",
                                 lg: "repeat(4, 1fr)",
                             },
-                            mb: 3,
                         }}
                     >
                         {data?.map((item, index) => {

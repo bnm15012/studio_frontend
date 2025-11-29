@@ -278,7 +278,6 @@ export const themeSettings = (mode) => ({
                     boxShadow: "0 4px 15px rgba(139, 92, 246, 0.4)",
                     "&:hover": {
                         background: "linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)",
-                        // boxShadow: '0 8px 25px rgba(139, 92, 246, 0.6)',
                     },
                 },
                 outlined: {
@@ -293,16 +292,28 @@ export const themeSettings = (mode) => ({
                     fontSize: "1.125rem",
                 },
             },
+
+            variants: [
+                {
+                    props: { variant: "save" },
+                    style: {
+                        background: "linear-gradient(135deg, #1FBF3F 0%, #067A12 100%)",
+                        color: "#ffffff",
+                        boxShadow: "0 4px 5px rgba(105, 246, 92, 0.4)",
+                        "&:hover": {
+                            background: "linear-gradient(135deg, #55E07B 0%, #05630F 100%)",
+                        },
+                    },
+                },
+            ],
         },
         MuiCard: {
             styleOverrides: {
                 root: {
                     borderRadius: 16,
-                    // boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
                     transition: "all 0.3s ease",
                     "&:hover": {
                         transform: "translateY(-4px)",
-                        // boxShadow: '0 20px 40px rgba(139, 92, 246, 0.15)',
                     },
                 },
             },

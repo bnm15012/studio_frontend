@@ -22,7 +22,6 @@ import { logoutUser } from "../../state/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
 import { useNavigate } from "react-router-dom";
-import ToggleTheme from "./ToggleTheme";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
@@ -56,7 +55,6 @@ export const Navbar = ({ position = "fixed" }) => {
                 <FlexBetween px={isMobile ? 0 : 2} my={"auto"}>
                     {/* Logo */}
                     <Box
-                        mr={"auto"}
                         sx={{
                             cursor: "pointer",
                             userSelect: "none",
@@ -78,39 +76,40 @@ export const Navbar = ({ position = "fixed" }) => {
                         )}
                     </Box>
 
-                    <ToggleTheme />
+                    {/* <ToggleTheme /> */}
 
                     {isNonMobileScreens && (
                         <FlexBetween gap={3}>
                             <MenuItems isNonMobileScreens={isNonMobileScreens} />
                         </FlexBetween>
                     )}
-
-                    {!user ? (
-                        <Box display="flex" gap={1} mt={0}>
-                            <AuthButtons isNonMobileScreens={isNonMobileScreens} />
-                        </Box>
-                    ) : (
-                        <FlexBetween>
-                            <Notification />
-                            {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
-                                <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
-                            )}
-                            <UserProfileDropdown
-                                user={user}
-                                navigate={navigate}
-                                handleLogout={handleLogout}
-                            />
-                        </FlexBetween>
-                    )}
-                    {!isNonMobileScreens && !isMenuOpen && !user && (
-                        <IconButton
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            sx={{ mx: 1, color: "white" }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    )}
+                    <FlexBetween>
+                        {!user ? (
+                            <Box display="flex" gap={1} mt={0}>
+                                <AuthButtons isNonMobileScreens={isNonMobileScreens} />
+                            </Box>
+                        ) : (
+                            <FlexBetween>
+                                <Notification />
+                                {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
+                                    <BranchesDropdown isNonMobileScreens={isNonMobileScreens} />
+                                )}
+                                <UserProfileDropdown
+                                    user={user}
+                                    navigate={navigate}
+                                    handleLogout={handleLogout}
+                                />
+                            </FlexBetween>
+                        )}
+                        {!isNonMobileScreens && !isMenuOpen && !user && (
+                            <IconButton
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                sx={{ mx: 1, color: "white" }}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        )}
+                    </FlexBetween>
                 </FlexBetween>
                 <Drawer
                     anchor="right"
