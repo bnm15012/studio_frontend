@@ -111,8 +111,11 @@ const UserWidgets = ({ admin, studio }) => {
                 mb={3}
                 px={3}
                 py={2}
-                backgroundColor={"red"}
-                sx={{ borderTopLeftRadius: "35px", borderTopRightRadius: "35px" }}
+                sx={{
+                    background: `linear-gradient(135deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                    borderTopLeftRadius: "35px",
+                    borderTopRightRadius: "35px",
+                }}
             >
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={3}>
                     <ImageComponent
@@ -140,9 +143,9 @@ const UserWidgets = ({ admin, studio }) => {
                             setEditMode(!editMode);
                         }}
                         sx={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            "&:hover": { backgroundColor: theme.palette.primary.dark },
+                            backgroundColor: theme.palette.primary.light,
+                            color: "black",
+                            "&:hover": { backgroundColor: theme.palette.primary.main },
                         }}
                     >
                         {editMode ? <SaveIcon /> : <EditIcon />}

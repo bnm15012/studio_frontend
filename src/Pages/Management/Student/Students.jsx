@@ -143,43 +143,67 @@ const Students = ({ ID }) => {
         [awaitForDialog],
     );
 
+    const getBatchEntries = useCallback(
+        (activityName, membershipType, daysPerWeek, batchName) =>
+            allActivities
+                .find((a) => a.activityType === activityName)
+                ?.batchEntries?.filter(
+                    (b) =>
+                        (!membershipType || b.planType === membershipType) &&
+                        (!daysPerWeek || b.daysPerWeek === daysPerWeek) &&
+                        (!batchName || b.name === batchName),
+                ) || null,
+        [allActivities],
+    );
     const overRideOnChange = useCallback(
         (value, obj, fieldPath) => {
             if (!value) return obj;
+
+            const newObj = { ...obj };
+
             if (fieldPath === "activityName") {
-                obj["membershipType"] = undefined;
-                obj["daysPerWeek"] = undefined;
-                obj["batchName"] = undefined;
+                const entries = getBatchEntries(value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.membershipType = entry?.planType;
+                newObj.daysPerWeek = entry?.daysPerWeek;
+                newObj.batchName = entry?.name;
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
             } else if (fieldPath === "membershipType") {
-                obj["daysPerWeek"] = undefined;
-                obj["batchName"] = undefined;
-                obj["membershipEndDate"] = getEndDateBySubscriptionPlan(
-                    obj["membershipStartDate"],
+                const entries = getBatchEntries(newObj.activityName, value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.daysPerWeek = entry?.daysPerWeek;
+                newObj.batchName = entry?.name;
+                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
+                    newObj.membershipStartDate,
                     value,
                 );
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
             } else if (fieldPath === "daysPerWeek") {
-                obj["batchName"] = undefined;
+                const entries = getBatchEntries(newObj.activityName, newObj.membershipType, value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.batchName = entry?.name;
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
             } else if (fieldPath === "batchName") {
-                const batchEntry = allActivities
-                    .find((a) => a.activityType === obj["activityName"])
-                    ?.batchEntries?.find(
-                        (b) =>
-                            b.planType === obj["membershipType"] &&
-                            b.name === value &&
-                            b.daysPerWeek === obj["daysPerWeek"],
-                    );
-
-                obj["batchTime"] = batchEntry?.["startTime"] + "-" + batchEntry?.["endTime"];
-                obj["activityAmount"] = batchEntry?.["price"];
-            } else if (fieldPath === "membershipStartDate") {
-                obj["membershipEndDate"] = getEndDateBySubscriptionPlan(
+                const entry = getBatchEntries(
+                    newObj.activityName,
+                    newObj.membershipType,
+                    newObj.daysPerWeek,
                     value,
-                    obj["membershipType"],
+                )?.[0];
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
+            } else if (fieldPath === "membershipStartDate") {
+                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
+                    value,
+                    newObj.membershipType,
                 );
             }
-            return obj;
+            return newObj;
         },
-        [allActivities],
+        [getBatchEntries],
     );
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -282,7 +306,7 @@ const Students = ({ ID }) => {
                         validation: { required: true },
                     },
                     {
-                        show: true,
+                        show: isEnabled(FEATURE_KEYS.BATCH),
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
@@ -343,7 +367,7 @@ const Students = ({ ID }) => {
                         validation: { required: true },
                     },
                     {
-                        show: true,
+                        show: isEnabled(FEATURE_KEYS.BATCH),
                         name: "batchTime",
                         label: "Batch Time",
                         extraProp: { readOnly: true },
@@ -448,6 +472,7 @@ const Students = ({ ID }) => {
             },
         }),
         [
+            FEATURE_KEYS.BATCH,
             FEATURE_KEYS.PAYMENT_DATE,
             allActivities,
             beforeAdd,

@@ -76,7 +76,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const addBatch = () => {
         const newBatch = {
             batchId: "NEW" + String(Date.now()),
-            name: "Batch " + (formData.batchEntries.length + 1),
+            name: "New Batch",
             planType: "MONTHLY",
             daysPerWeek: 3,
             price: 0,
