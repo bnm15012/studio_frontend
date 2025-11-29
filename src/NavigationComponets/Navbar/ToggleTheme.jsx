@@ -8,7 +8,7 @@ const ToggleTheme = () => {
     const dispatch = useDispatch();
 
     return (
-        <IconButton onClick={() => dispatch(toggleMode())}>
+        <IconButton sx={{ color: "whitesmoke" }} onClick={() => dispatch(toggleMode())}>
             {mode === "light" ? <DarkMode /> : <LightMode />}
         </IconButton>
     );

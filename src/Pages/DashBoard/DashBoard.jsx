@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Typography, Box, Grid, Paper, keyframes } from "@mui/material";
+import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useNavigate } from "react-router-dom";
@@ -20,35 +20,34 @@ import ImageComponent from "../../Components/ImageComponent";
 import { convertUTCToLocal } from "../../utils/DateUtil";
 import { useUI } from "../../context/UIContext";
 
-// Define animations
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// Entrance animation (fade + up + subtle scale)
+const fadeInUp = keyframes`
+  from { opacity: 0; transform: translateY(18px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+// Gentle float for logo/hero visual
+const floatAnim = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
 `;
 
 const DashBoard = () => {
     const navigate = useNavigate();
     const { isAdmin } = useUI();
     const showAlert = useAlert();
+
     const user = useSelector((state) => state.auth.user);
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
-
+    const token = useSelector((state) => state.auth.token);
     const endDate = subscriptionPlan?.endDate
         ? new Date(convertUTCToLocal(subscriptionPlan.endDate))
         : new Date();
     const today = new Date();
-    const timeDiff = endDate - today;
-    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-    const token = useSelector((state) => state.auth.token);
+    const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
     const allActivities = useSelector((state) => state.activity.activities);
     const [loading, setLoading] = useState(false);
     const [data, setDashboardData] = useState(null);
@@ -60,77 +59,76 @@ const DashBoard = () => {
         setLoading(true);
         try {
             const response = await fetchDashBoardData({
-                token: token,
+                token,
                 branchId: currentBranch.branchId,
             });
+
             if (response.success) {
                 const tmp = response.data.data[0];
                 setLastMonthIncome(tmp.lastMonthRevenue);
                 setCurrentMonthIncome(tmp.currentMonthRevenue);
-                const summaryData = [
+                setDashboardData([
                     {
                         color: "#2196F3",
                         value: tmp.totalStudents,
                         label: "Total Students",
                         navigateTo: "/management/students",
-                        icon: <Group sx={{ fontSize: "40px" }} />,
+                        icon: <Group sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#4CAF50",
                         value: tmp.totalInstructors,
                         label: "Total Instructors",
                         navigateTo: "/management/instructors",
-                        icon: <SchoolIcon sx={{ fontSize: "40px" }} />,
+                        icon: <SchoolIcon sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#FF9800",
                         value: tmp.totalActiveMemberships,
                         label: "Active Memberships",
-                        icon: <CardMembershipRounded sx={{ fontSize: "40px" }} />,
+                        icon: <CardMembershipRounded sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#E91E63",
                         value: allActivities?.length,
                         label: "Total Activities",
                         navigateTo: "/management/activity",
-                        icon: <LocalActivityRounded sx={{ fontSize: "40px" }} />,
+                        icon: <LocalActivityRounded sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#9C27B0",
                         value: tmp.totalCurrentMonthPaymentAmount,
                         label: "Total Payment",
                         navigateTo: "/management/payments",
-                        icon: <CurrencyRupeeIcon sx={{ fontSize: "40px" }} />,
-                        // blur: !isAdmin,
+                        icon: <CurrencyRupeeIcon sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#795548",
                         value: tmp.totalCurrentMonthPaymentCount,
                         label: "Payment Count",
                         navigateTo: "/management/payments",
-                        icon: <Payment sx={{ fontSize: "40px" }} />,
+                        icon: <Payment sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#607D8B",
                         value: tmp.totalCurrentMonthExpenseAmount,
                         label: "Monthly Expenses",
                         navigateTo: "/management/expenses",
-                        icon: <MoneyIcon sx={{ fontSize: "40px" }} />,
+                        icon: <MoneyIcon sx={{ fontSize: 45 }} />,
                     },
                     {
                         color: "#009688",
                         value: tmp.totalCurrentMonthExpenseCount,
                         label: "Expense Count",
                         navigateTo: "/management/expenses",
-                        icon: <TrendingUp sx={{ fontSize: "40px" }} />,
+                        icon: <TrendingUp sx={{ fontSize: 45 }} />,
                     },
-                ];
-                setDashboardData(summaryData);
+                ]);
             } else {
                 showAlert(response.message, "error");
             }
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            console.error(e);
             showAlert("Failed to fetch dashboard data.", "error");
         } finally {
             setLoading(false);
@@ -148,124 +146,130 @@ const DashBoard = () => {
                 <>
                     {loading && <Loading />}
                     <Paper
-                        elevation={2}
+                        elevation={3}
                         sx={{
-                            boxShadow: `0px 4px 4px #1976D2 `,
-                            p: { xs: 1.5, md: 2 },
-                            mb: 2,
-                            borderRadius: 3,
-                            background: "linear-gradient(135deg, #2196F3 0%, #1976D2 100%)",
-                            animation: `${fadeIn} 0.6s ease-out`,
+                            borderRadius: 4,
+                            p: { xs: 2, md: 3 },
+                            mb: 3,
+                            background: "linear-gradient(135deg,#2196F3 0%,#0D47A1 100%)",
+                            color: "white",
+                            animation: `${fadeInUp} .5s ease-out`,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            gap: 2,
+                            flexWrap: "wrap",
                         }}
                     >
-                        <FlexBetween flexWrap="wrap" gap={1}>
-                            <FlexBetween
-                                gap={2}
-                                flexWrap={"wrap"}
-                                sx={{ justifyContent: "center" }}
-                            >
-                                <ImageComponent
-                                    size={"10rem"}
-                                    value={studio?.logo || "/assets/default_logo.png"}
-                                    isCircular={true}
-                                />
-                                <Typography
-                                    variant="h1"
-                                    sx={{
-                                        textAlign: "center",
-                                        justifyContent: "center",
-                                        fontWeight: 800,
-                                        fontSize: { xs: "2rem", sm: "2rem", md: "2.5rem" },
-                                        color: "white",
-                                        textShadow: "0px 2px 4px rgba(0,0,0,0.2)",
-                                        letterSpacing: 1,
-                                        my: "auto",
-                                    }}
-                                >
-                                    {studio?.studioName}
-                                </Typography>
-                            </FlexBetween>
-                            {isAdmin && (
-                                <Box
-                                    sx={{
-                                        background: "rgba(255,255,255,0.1)",
-                                        borderRadius: 2,
-                                        p: 2,
-                                        backdropFilter: "blur(5px)",
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            color: "white",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 1,
-                                            mb: 1,
-                                        }}
-                                    >
-                                        <Typography variant="h4" sx={{ fontWeight: 500 }}>
-                                            Current Month Revenue :
-                                        </Typography>
-                                        <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                                            ₹{currentMonthIncome}
-                                        </Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            color: "white",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 1,
-                                        }}
-                                    >
-                                        <Typography variant="h4" sx={{ fontWeight: 500 }}>
-                                            Last Month Revenue :
-                                        </Typography>
-                                        <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                                            ₹{lastMonthIncome}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            )}
-                        </FlexBetween>
-                    </Paper>
-                    <Box flexGrow={1}>
-                        {daysRemaining < 8 && (
+                        <FlexBetween gap={2} flexWrap="wrap">
                             <Box
                                 sx={{
-                                    color: "red",
-                                    p: 1,
-                                    mb: 2,
-                                    borderRadius: 2,
-                                    overflow: "hidden",
-                                    animation: "blink 1s infinite",
+                                    animation: `${floatAnim} 3.2s ease-in-out infinite`,
                                 }}
                             >
+                                <ImageComponent
+                                    size="9rem"
+                                    value={studio?.logo || "/assets/default_logo.png"}
+                                    isCircular
+                                />
+                            </Box>
+
+                            <Typography
+                                variant="h1"
+                                sx={{
+                                    my: "auto",
+                                    fontSize: { xs: "1.85rem", sm: "2.4rem", md: "3rem" },
+                                    fontWeight: 800,
+                                    textShadow: "0 4px 12px rgba(0,0,0,0.25)",
+                                }}
+                            >
+                                {studio?.studioName}
+                            </Typography>
+                        </FlexBetween>
+
+                        {isAdmin && (
+                            <Box
+                                sx={{
+                                    borderRadius: 3,
+                                    p: 2,
+                                    background: alpha("#fff", 0.08),
+                                    backdropFilter: "blur(6px)",
+                                    minWidth: { xs: "100%", sm: "260px" },
+                                }}
+                            >
+                                <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+                                    Current Month Revenue
+                                </Typography>
                                 <Typography
-                                    sx={{
-                                        fontWeight: "bold",
-                                        fontSize: "1.2rem",
-                                        "@keyframes blink": {
-                                            "0%": { opacity: 1 },
-                                            "50%": { opacity: 0 },
-                                            "100%": { opacity: 1 },
-                                        },
-                                    }}
+                                    variant="h5"
+                                    sx={{ fontWeight: 800, fontSize: "1.2rem" }}
                                 >
-                                    Note: Your {studio?.amcEnabled ? "AMC Service" : "Subscription"}{" "}
-                                    is{" "}
-                                    {daysRemaining === 0
-                                        ? "ended"
-                                        : `about to expire within ${daysRemaining} days`}
-                                    . Please renew to continue enjoying our services!
+                                    ₹{currentMonthIncome}
+                                </Typography>
+
+                                <Typography variant="subtitle1" sx={{ mt: 1, opacity: 0.9 }}>
+                                    Last Month
+                                </Typography>
+                                <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                                    ₹{lastMonthIncome}
                                 </Typography>
                             </Box>
                         )}
-                    </Box>
-                    <Box>
-                        <Grid container spacing={2}>
-                            {data?.map((item, index) => (
-                                <Grid item xs={12} sm={6} md={3} key={index}>
+                    </Paper>
+
+                    {daysRemaining < 8 && (
+                        <Box
+                            sx={{
+                                background: "#fff8e1",
+                                p: 2,
+                                mb: 3,
+                                borderRadius: 3,
+                                border: "1px solid #ffe0b2",
+                                animation: `${fadeInUp} .55s ease-out`,
+                            }}
+                        >
+                            <Typography sx={{ fontWeight: 700, color: "#bf360c" }}>
+                                Note: Your {studio?.amcEnabled ? "AMC Service" : "Subscription"}{" "}
+                                {daysRemaining === 0
+                                    ? "has ended"
+                                    : `will expire in ${daysRemaining} days`}
+                                . Please renew soon.
+                            </Typography>
+                        </Box>
+                    )}
+
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gap: 2,
+                            gridTemplateColumns: {
+                                xs: "repeat(1, 1fr)",
+                                sm: "repeat(2, 1fr)",
+                                lg: "repeat(4, 1fr)",
+                            },
+                            mb: 3,
+                        }}
+                    >
+                        {data?.map((item, index) => {
+                            const delay = 0.06 * index; // stagger
+                            return (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        animation: `${fadeInUp} .6s cubic-bezier(.2,.9,.2,1) ${delay}s both`,
+                                        transformOrigin: "center",
+                                        // hover / active micro-interaction
+                                        transition: "transform .18s ease, box-shadow .18s ease",
+                                        borderRadius: 2,
+                                        "&:hover": {
+                                            transform: "translateY(-6px) scale(1.02)",
+                                            boxShadow:
+                                                "0 10px 30px rgba(16,24,40,0.12), 0 2px 8px rgba(16,24,40,0.06)",
+                                        },
+                                        // touch devices: slightly scale when active (tap)
+                                        "&:active": { transform: "translateY(-2px) scale(1.01)" },
+                                    }}
+                                >
                                     <SummaryCard
                                         onShowMore={() =>
                                             item.navigateTo && navigate(item.navigateTo)
@@ -274,12 +278,13 @@ const DashBoard = () => {
                                         value={item.value}
                                         label={item.label}
                                         icon={item.icon}
-                                        delay={0.1 * index}
+                                        // pass delay to SummaryCard if it animates internally too
+                                        delay={delay}
                                         blurValue={item.blur}
                                     />
-                                </Grid>
-                            ))}
-                        </Grid>
+                                </Box>
+                            );
+                        })}
                     </Box>
                 </>
             }

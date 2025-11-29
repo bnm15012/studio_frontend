@@ -22,7 +22,7 @@ import { logoutUser } from "../../state/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useUI } from "../../context/UIContext";
 import { useNavigate } from "react-router-dom";
-// import ToggleTheme from "./ToggleTheme";
+import ToggleTheme from "./ToggleTheme";
 
 export const Navbar = ({ position = "fixed" }) => {
     const theme = useTheme();
@@ -78,7 +78,7 @@ export const Navbar = ({ position = "fixed" }) => {
                         )}
                     </Box>
 
-                    {/* <ToggleTheme /> */}
+                    <ToggleTheme />
 
                     {isNonMobileScreens && (
                         <FlexBetween gap={3}>
