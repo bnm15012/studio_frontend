@@ -96,10 +96,10 @@ const UserWidgets = ({ admin, studio }) => {
     return (
         <Paper
             sx={{
-                p: 4,
                 backgroundColor: theme.palette.background.paper,
                 maxWidth: "100%",
                 borderRadius: 3,
+                border: "1px solid blue",
             }}
         >
             {/* Header */}
@@ -109,6 +109,10 @@ const UserWidgets = ({ admin, studio }) => {
                 justifyContent="space-between"
                 flexWrap="wrap"
                 mb={3}
+                px={3}
+                py={2}
+                backgroundColor={"red"}
+                sx={{ borderTopLeftRadius: "35px", borderTopRightRadius: "35px" }}
             >
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={3}>
                     <ImageComponent
@@ -145,23 +149,17 @@ const UserWidgets = ({ admin, studio }) => {
                     </IconButton>
                 </Tooltip>
             </Box>
-
-            <Divider sx={{ mb: 3 }} />
-
             {/* Main Grid Layout */}
             <Box
                 display="grid"
                 gridTemplateColumns={isMobile ? "1fr" : "1.2fr 0.8fr"}
                 gap={4}
+                p={3}
+                pt={0}
                 alignItems="flex-start"
             >
                 {/* Left Column — Fields */}
-                <Box
-                    display="grid"
-                    gridTemplateColumns={isMobile ? "1fr" : "1fr 1fr"}
-                    columnGap={3}
-                    rowGap={2}
-                >
+                <Box display="grid" gridTemplateColumns={"1fr"} columnGap={3} rowGap={2}>
                     {/* Contact Info */}
                     <Box gridColumn="1 / -1">
                         <Typography variant="h6" mb={1}>
