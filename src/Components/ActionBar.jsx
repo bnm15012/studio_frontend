@@ -16,11 +16,12 @@ const ActionBar = ({
     tableName,
     add = true,
     refresh = true,
+    children,
 }) => {
     const navigate = useNavigate();
     const { triggerSearch } = usePageSearch();
     return (
-        <FlexBetween paddingBottom={2} gap={1}>
+        <FlexBetween paddingBottom={2} gap={1} height={"5.5rem"}>
             {search ? (
                 <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
             ) : (
@@ -57,6 +58,7 @@ const ActionBar = ({
                     )}{" "}
                 </>
             )}
+            {children}
         </FlexBetween>
     );
 };
@@ -67,6 +69,7 @@ ActionBar.propTypes = {
     add: PropTypes.bool,
     refresh: PropTypes.bool,
     search: PropTypes.bool,
+    children: PropTypes.node,
     qrProps: PropTypes.object,
     api: PropTypes.shape({
         current: PropTypes.object,

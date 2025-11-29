@@ -37,116 +37,120 @@ const ListView = ({
     );
 
     return (
-        <StyledTableContainer component={Paper}>
-            <StyledTable>
-                <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
-                    <StyledTableRow>
-                        <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                            S. No.
-                        </StyledTableCell>
-                        {fields
-                            .filter((f) => f.show || f.view)
-                            .map(({ label }) => (
-                                <StyledTableCell
-                                    key={label}
-                                    sx={{ fontWeight: "bold", color: "#1976d2" }}
-                                >
-                                    {label}
-                                </StyledTableCell>
-                            ))}
-                        <StyledTableCell
-                            sx={{ fontWeight: "bold", color: "#1976d2", textAlign: "center" }}
-                        >
-                            Actions
-                        </StyledTableCell>
-                    </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row, rowIndex) => (
-                        <StyledTableRow
-                            key={row[fieldsMeta.primary]}
-                            sx={{ cursor: onClickRow ? "pointer" : "auto" }}
-                            onClick={() => onClickRow(row)}
-                        >
-                            <StyledTableCell>
-                                {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +
-                                    rowIndex +
-                                    1}
+        <>
+            <StyledTableContainer component={Paper}>
+                <StyledTable>
+                    <TableHead sx={{ backgroundColor: "#f4f4f4" }}>
+                        <StyledTableRow>
+                            <StyledTableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                                S. No.
                             </StyledTableCell>
                             {fields
                                 .filter((f) => f.show || f.view)
-                                .map((field) => (
-                                    <StyledTableCell key={field.name}>
-                                        {field.view ? (
-                                            <Button
-                                                size="small"
-                                                variant="text"
-                                                color="primary"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleViewOpen(row);
-                                                }}
-                                            >
-                                                View
-                                            </Button>
-                                        ) : (
-                                            <Field
-                                                isEdit={isEdit(row, field)}
-                                                value={
-                                                    field?.getValue
-                                                        ? field.getValue(
-                                                              getNestedValue(row, field.name),
-                                                              row,
-                                                              isEdit(row, field),
-                                                          )
-                                                        : getNestedValue(row, field.name)
-                                                }
-                                                setValue={(v) => {
-                                                    handleChange(
-                                                        v,
-                                                        row[fieldsMeta.primary],
-                                                        field.name,
-                                                    );
-                                                }}
-                                                type={field.type}
-                                                extraProp={{
-                                                    ...field.extraProp,
-                                                    getOptions: async (search, page, limit) =>
-                                                        field.extraProp.getOptions(
-                                                            search,
-                                                            page,
-                                                            limit,
-                                                            row,
-                                                        ),
-                                                }}
-                                                validation={field.validation}
-                                            />
-                                        )}
+                                .map(({ label }) => (
+                                    <StyledTableCell
+                                        key={label}
+                                        sx={{ fontWeight: "bold", color: "#1976d2" }}
+                                    >
+                                        {label}
                                     </StyledTableCell>
                                 ))}
-
-                            <StyledTableCell>
-                                <FlexEvenly>
-                                    {editingId === row[fieldsMeta.primary] ? (
-                                        <>
-                                            <IconButton
-                                                onClick={() => handleSave(row[fieldsMeta.primary])}
-                                            >
-                                                <SaveIcon />
-                                            </IconButton>
-                                            <IconButton color="error" onClick={handleCancel}>
-                                                <CancelIcon />
-                                            </IconButton>
-                                        </>
-                                    ) : (
-                                        <Actions actions={actions} row={row} />
-                                    )}
-                                </FlexEvenly>
+                            <StyledTableCell
+                                sx={{ fontWeight: "bold", color: "#1976d2", textAlign: "center" }}
+                            >
+                                Actions
                             </StyledTableCell>
                         </StyledTableRow>
-                    ))}
-                </TableBody>
-            </StyledTable>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row, rowIndex) => (
+                            <StyledTableRow
+                                key={row[fieldsMeta.primary]}
+                                sx={{ cursor: onClickRow ? "pointer" : "auto" }}
+                                onClick={() => onClickRow(row)}
+                            >
+                                <StyledTableCell>
+                                    {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +
+                                        rowIndex +
+                                        1}
+                                </StyledTableCell>
+                                {fields
+                                    .filter((f) => f.show || f.view)
+                                    .map((field) => (
+                                        <StyledTableCell key={field.name}>
+                                            {field.view ? (
+                                                <Button
+                                                    size="small"
+                                                    variant="text"
+                                                    color="primary"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleViewOpen(row);
+                                                    }}
+                                                >
+                                                    View
+                                                </Button>
+                                            ) : (
+                                                <Field
+                                                    isEdit={isEdit(row, field)}
+                                                    value={
+                                                        field?.getValue
+                                                            ? field.getValue(
+                                                                  getNestedValue(row, field.name),
+                                                                  row,
+                                                                  isEdit(row, field),
+                                                              )
+                                                            : getNestedValue(row, field.name)
+                                                    }
+                                                    setValue={(v) => {
+                                                        handleChange(
+                                                            v,
+                                                            row[fieldsMeta.primary],
+                                                            field.name,
+                                                        );
+                                                    }}
+                                                    type={field.type}
+                                                    extraProp={{
+                                                        ...field.extraProp,
+                                                        getOptions: async (search, page, limit) =>
+                                                            field.extraProp.getOptions(
+                                                                search,
+                                                                page,
+                                                                limit,
+                                                                row,
+                                                            ),
+                                                    }}
+                                                    validation={field.validation}
+                                                />
+                                            )}
+                                        </StyledTableCell>
+                                    ))}
+
+                                <StyledTableCell>
+                                    <FlexEvenly>
+                                        {editingId === row[fieldsMeta.primary] ? (
+                                            <>
+                                                <IconButton
+                                                    onClick={() =>
+                                                        handleSave(row[fieldsMeta.primary])
+                                                    }
+                                                >
+                                                    <SaveIcon />
+                                                </IconButton>
+                                                <IconButton color="error" onClick={handleCancel}>
+                                                    <CancelIcon />
+                                                </IconButton>
+                                            </>
+                                        ) : (
+                                            <Actions actions={actions} row={row} />
+                                        )}
+                                    </FlexEvenly>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </StyledTable>
+            </StyledTableContainer>
             <FlexBetween m={1} flexDirection={"row-reverse"}>
                 <Pagination
                     page={tableState.currentPage ?? 0}
@@ -156,7 +160,7 @@ const ListView = ({
                     shape="rounded"
                 />
             </FlexBetween>
-        </StyledTableContainer>
+        </>
     );
 };
 

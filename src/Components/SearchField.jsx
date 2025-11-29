@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import FlexBetween from "./FlexBetween";
 import { SearchIcon } from "lucide-react";
-import { Close } from "@mui/icons-material";
 import Filter from "./Filter";
 
 const StyledSearchField = styled(Box)(({ theme }) => ({
@@ -20,8 +19,8 @@ const StyledSearchField = styled(Box)(({ theme }) => ({
 }));
 
 const ButtonProps = {
-    height: "2rem",
-    width: "2rem",
+    height: "3.3rem",
+    width: "3.3rem",
     minWidth: "unset",
     display: "flex",
     alignItems: "center",
@@ -55,12 +54,12 @@ const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search..
                     onChange={(e) => setSearchTerm(e.target.value)}
                     fullWidth
                     sx={{
-                        "& .MuiInputBase-root": { height: "1.7rem" },
+                        "& .MuiInputBase-root": { height: "2rem" },
                         "& .MuiInputBase-input": { padding: 1 },
                     }}
                 />
                 <FlexBetween gap={1} ml={2}>
-                    {searchTerm && (
+                    {/* {searchTerm && (
                         <Button
                             variant="contained"
                             onClick={() => {
@@ -71,7 +70,7 @@ const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search..
                         >
                             <Close />
                         </Button>
-                    )}
+                    )} */}
                     <Button
                         variant="contained"
                         onClick={() => handleSearch(searchTerm, filterKeys)}

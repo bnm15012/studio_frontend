@@ -1,16 +1,11 @@
 import { useState, useRef, useMemo, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Button, Popover } from "@mui/material";
-import SearchField from "../../../Components/SearchField";
-import FlexBetween from "../../../Components/FlexBetween";
-import AddIcon from "@mui/icons-material/Add";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import CalendarView from "./Celendar/CalendarView.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
-import { usePageSearch } from "../../../hooks/useSearch.js";
 import Views from "../../../Components/Views/Views.jsx";
 import PropTypes from "prop-types";
 import { bookingCruds } from "../../../api/all.api.js";
@@ -21,6 +16,7 @@ import { getCLientByNamesAPI } from "../Client/client.api.js";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import BookingInvoice from "./BookingInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import ActionBar from "../../../Components/ActionBar.jsx";
 
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];
@@ -36,14 +32,13 @@ const VIEWS = ["LIST", "CARD"];
 
 const Bookings = ({ ID }) => {
     const { isMobile } = useUI();
-    const navigate = useNavigate();
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [calendarAnchor, setCalendarAnchor] = useState(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState(false);
-    const { triggerSearch } = usePageSearch();
+    const api = useRef();
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const getClientsByName = useCallback(
@@ -251,8 +246,7 @@ const Bookings = ({ ID }) => {
     return (
         <FlexBetweenColumn>
             {!ID && (
-                <FlexBetween paddingBottom={2} gap={1}>
-                    <SearchField handleSearch={triggerSearch} />
+                <ActionBar api={api} tableName={"booking"}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -262,17 +256,7 @@ const Bookings = ({ ID }) => {
                     >
                         <CalendarMonthIcon sx={{ padding: 0, margin: "auto" }} />
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            navigate("/management/booking/NEW");
-                        }}
-                        sx={{ fontWeight: "bold", padding: ".8rem" }}
-                    >
-                        <AddIcon sx={{ padding: 0, margin: "auto" }} />
-                    </Button>
-                </FlexBetween>
+                </ActionBar>
             )}
             <Views
                 formKey={ID}
