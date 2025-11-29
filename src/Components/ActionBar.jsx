@@ -8,7 +8,15 @@ import { Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const ActionBar = ({ filterOptions, search = true, qrProps, api, tableName, add = true }) => {
+const ActionBar = ({
+    filterOptions,
+    search = true,
+    qrProps,
+    api,
+    tableName,
+    add = true,
+    refresh = true,
+}) => {
     const navigate = useNavigate();
     const { triggerSearch } = usePageSearch();
     return (
@@ -21,16 +29,18 @@ const ActionBar = ({ filterOptions, search = true, qrProps, api, tableName, add 
             {qrProps && <QrForm {...qrProps} />}
             {api && (
                 <>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            api.current?.refreshData();
-                        }}
-                        sx={{ fontWeight: "bold", padding: ".8rem" }}
-                    >
-                        <RefreshIcon sx={{ padding: 0, margin: "auto" }} />
-                    </Button>
+                    {refresh && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                api.current?.refreshData();
+                            }}
+                            sx={{ fontWeight: "bold", padding: ".8rem" }}
+                        >
+                            <RefreshIcon sx={{ padding: 0, margin: "auto" }} />
+                        </Button>
+                    )}
                     {add && (
                         <Button
                             variant="contained"
@@ -55,6 +65,7 @@ ActionBar.propTypes = {
     tableName: PropTypes.string,
     filterOptions: PropTypes.object,
     add: PropTypes.bool,
+    refresh: PropTypes.bool,
     search: PropTypes.bool,
     qrProps: PropTypes.object,
     api: PropTypes.shape({

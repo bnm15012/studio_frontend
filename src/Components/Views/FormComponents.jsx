@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 export const StyledFieldContainer = styled(Box)(({ theme }) => ({
     display: "grid",
     gap: theme.spacing(2),
-    gridTemplateColumns: "repeat(auto-fit, minmax(22em, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(25em, 1fr))",
 
     [theme.breakpoints.down("sm")]: {
         gap: theme.spacing(3),

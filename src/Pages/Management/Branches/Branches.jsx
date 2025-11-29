@@ -39,7 +39,7 @@ const Branches = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar search={false} api={api} />
+            <ActionBar search={false} api={api} refresh={false} />
             <Box>
                 <Views
                     tableName={"branch"}

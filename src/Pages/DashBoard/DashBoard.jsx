@@ -35,7 +35,7 @@ const floatAnim = keyframes`
 
 const DashBoard = () => {
     const navigate = useNavigate();
-    const { isAdmin } = useUI();
+    const { isAdmin, isMobile } = useUI();
     const showAlert = useAlert();
 
     const user = useSelector((state) => state.auth.user);
@@ -197,22 +197,22 @@ const DashBoard = () => {
                                     minWidth: { xs: "100%", sm: "260px" },
                                 }}
                             >
-                                <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-                                    Current Month Revenue
-                                </Typography>
-                                <Typography
-                                    variant="h5"
-                                    sx={{ fontWeight: 800, fontSize: "1.2rem" }}
-                                >
-                                    ₹{currentMonthIncome}
-                                </Typography>
-
-                                <Typography variant="subtitle1" sx={{ mt: 1, opacity: 0.9 }}>
-                                    Last Month
-                                </Typography>
-                                <Typography variant="h5" sx={{ fontWeight: 800 }}>
-                                    ₹{lastMonthIncome}
-                                </Typography>
+                                <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
+                                    <Typography variant="h4" sx={{ opacity: 0.9, my: "auto" }}>
+                                        Current Month Revenue
+                                    </Typography>
+                                    <Typography variant="h5" sx={{ fontWeight: 800, my: "auto" }}>
+                                        ₹{currentMonthIncome}
+                                    </Typography>
+                                </FlexBetween>
+                                <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
+                                    <Typography variant="h4" sx={{ opacity: 0.9, my: "auto" }}>
+                                        Last Month Revenue
+                                    </Typography>
+                                    <Typography variant="h5" sx={{ fontWeight: 800, my: "auto" }}>
+                                        ₹{lastMonthIncome}
+                                    </Typography>
+                                </FlexBetween>
                             </Box>
                         )}
                     </Paper>

@@ -11,6 +11,7 @@ export const FieldLabel = styled(Typography)(({ theme }) => ({
     margin: theme.spacing("auto", 0),
     fontWeight: "bolder",
     lineHeight: "3rem",
+    color: theme.palette.primary.main,
     textWrap: "nowrap",
     height: "2rem",
     textTransform: "uppercase",
