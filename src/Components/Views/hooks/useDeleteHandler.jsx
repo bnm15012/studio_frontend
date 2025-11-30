@@ -34,7 +34,6 @@ export const useDeleteHandler = ({
         try {
             await dispatch(tableCruds.delete(deleteId, token, showAlert, setLoading));
             if (formKey) navigate(`/management/${tableName}`);
-            showAlert(`${tableName} deleted successfully!`, "success");
         } catch (error) {
             console.error(error);
             showAlert(`Failed to delete ${tableName}!`, "error");

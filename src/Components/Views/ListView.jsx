@@ -24,6 +24,7 @@ const ListView = ({
     actions,
     handleChange,
     handleSave,
+    loading,
     handleCancel,
     tableState,
     handlePageChange,
@@ -148,6 +149,15 @@ const ListView = ({
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
+                        <StyledTableRow>
+                            <StyledTableCell
+                                colspan={2 + fields.filter((f) => f.show || f.view).length}
+                            >
+                                <FlexEvenly>
+                                    {data?.length === 0 && !loading && <>No data available</>}
+                                </FlexEvenly>
+                            </StyledTableCell>
+                        </StyledTableRow>
                     </TableBody>
                 </StyledTable>
             </StyledTableContainer>
@@ -168,6 +178,7 @@ ListView.propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     tableState: PropTypes.object,
     fields: PropTypes.array,
+    loading: PropTypes.bool,
     editingId: PropTypes.any,
     fieldsMeta: PropTypes.shape({
         primary: PropTypes.string,

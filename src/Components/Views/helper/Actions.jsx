@@ -12,7 +12,10 @@ const Actions = ({ actions, row }) => (
                         key={name}
                         disabled={!isEnabled}
                         sx={sx}
-                        onClick={() => onClick(row)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClick(row);
+                        }}
                     >
                         {icon || name}
                     </IconButton>

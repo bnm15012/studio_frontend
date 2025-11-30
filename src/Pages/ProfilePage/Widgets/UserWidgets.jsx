@@ -259,9 +259,6 @@ const UserWidgets = ({ admin, studio }) => {
                     flexDirection="column"
                     gap={2}
                 >
-                    <Typography variant="h6" mb={1}>
-                        Studio Logo
-                    </Typography>
                     <ImageComponent
                         dirName="studio"
                         size={isMobile ? "150px" : "200px"}

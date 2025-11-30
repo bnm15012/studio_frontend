@@ -406,6 +406,7 @@ const Students = ({ ID }) => {
                         label: "Payment Date",
                         type: "DATE",
                         editable: (row) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
+                        defaultValue: getCurrentDateTimeUTC(),
                     },
                     {
                         show: false,

@@ -260,6 +260,7 @@ const Bookings = ({ ID }) => {
             )}
             <Views
                 formKey={ID}
+                apiRef={api}
                 tableName={"booking"}
                 tableCruds={bookingCruds}
                 size={LIMIT}
