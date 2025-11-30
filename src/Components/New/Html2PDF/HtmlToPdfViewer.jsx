@@ -25,7 +25,7 @@ const HtmlToPdfViewer = forwardRef(
             filename: `${fileName}.pdf`,
             margin: [10, 10, 10, 10],
             image: { type: "jpeg", quality: 0.01 },
-            html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+            html2canvas: { scale: 5, useCORS: true, letterRendering: true },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compressPDF: true },
         };
 

@@ -1,4 +1,12 @@
-import { TableBody, TableHead, Paper, IconButton, Button, Pagination } from "@mui/material";
+import {
+    TableBody,
+    TableHead,
+    Paper,
+    IconButton,
+    Button,
+    Pagination,
+    Typography,
+} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 
@@ -149,15 +157,17 @@ const ListView = ({
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
-                        <StyledTableRow>
-                            <StyledTableCell
-                                colspan={2 + fields.filter((f) => f.show || f.view).length}
-                            >
-                                <FlexEvenly>
-                                    {data?.length === 0 && !loading && <>No data available</>}
-                                </FlexEvenly>
-                            </StyledTableCell>
-                        </StyledTableRow>
+                        {data?.length === 0 && !loading && (
+                            <StyledTableRow>
+                                <StyledTableCell
+                                    colspan={2 + fields.filter((f) => f.show || f.view).length}
+                                >
+                                    <FlexEvenly>
+                                        <Typography>No data available</Typography>
+                                    </FlexEvenly>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        )}
                     </TableBody>
                 </StyledTable>
             </StyledTableContainer>

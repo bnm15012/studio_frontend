@@ -20,8 +20,9 @@ const StudentInvoice = ({ open, onClose, activityData }) => {
     const [studentData, setStudentData] = useState();
 
     useEffect(() => {
-        studentData && setStudentData(tableState.recordById[activityData.studentId] || {});
+        !studentData && setStudentData(tableState.recordById[activityData.studentId] || {});
     }, [activityData.studentId, studentData, tableState.recordById]);
+
     return (
         <StyledDialog
             open={open}

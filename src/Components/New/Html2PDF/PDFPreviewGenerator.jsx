@@ -17,9 +17,12 @@ const PDFPreviewGenerator = ({ children }) => {
         setPageImages([]);
 
         const canvas = await html2canvas(contentRef.current, {
-            scale: 3,
+            scale: window.devicePixelRatio > 1 ? 1.5 : 2,
             useCORS: true,
-            letterRendering: true,
+            letterRendering: false,
+            allowTaint: true,
+            removeContainer: true,
+            willReadFrequently: true,
         });
 
         const contentHeight = canvas.height;
@@ -65,8 +68,7 @@ const PDFPreviewGenerator = ({ children }) => {
                 ref={contentRef}
                 sx={{
                     position: "absolute",
-                    top: "-9999px",
-                    left: "-9999px",
+                    zIndex: -1,
                     width: "210mm",
                     bgcolor: "white",
                     p: 4,
