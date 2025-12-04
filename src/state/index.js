@@ -11,7 +11,6 @@ import activitySlice from "./activitySlice";
 import analysisSlice from "./analysisSlice";
 
 import {
-    activityMembershipTypeCruds,
     bookingCruds,
     branchCruds,
     clientCruds,
@@ -20,6 +19,7 @@ import {
     genericTemplateCruds,
     instructorsAssignmentsCruds,
     instructorsCruds,
+    membershipPackageCruds,
     paymentCruds,
     studentsAssignmentsCruds,
     studentsCruds,
@@ -42,7 +42,7 @@ const rootReducer = combineReducers({
     analysis: analysisSlice,
     dialog: dialogSlice,
     notifications: notificationSlice,
-    activityMembershipType: activityMembershipTypeCruds.reducer,
+    membershipPackages: membershipPackageCruds.reducer,
     enquiries: enquiryCruds.reducer,
     genericTemplate: genericTemplateCruds.reducer,
 });

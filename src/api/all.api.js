@@ -22,10 +22,7 @@ export const bookingCruds = createCrud({ route: "booking" });
 
 export const expenseCruds = createCrud({ route: "expenses", idKey: "expenseId" });
 
-export const activityMembershipTypeCruds = createCrud({
-    route: "activityMembershipType",
-    idKey: "activityMembershipTypeId",
-});
+export const membershipPackageCruds = createCrud({ route: "membershipPackages" });
 
 export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" });
 

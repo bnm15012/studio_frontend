@@ -1,11 +1,11 @@
 import {
-    activityMembershipTypeCruds,
     bookingCruds,
     branchCruds,
     clientCruds,
     enquiryCruds,
     expenseCruds,
     instructorsCruds,
+    membershipPackageCruds,
     paymentCruds,
 } from "../api/all.api";
 import { clearActivities } from "./activitySlice";
@@ -27,7 +27,7 @@ export const clearAllstate = () => (dispatch) => {
     dispatch(bookingCruds.removeAll());
     dispatch(paymentCruds.removeAll());
     dispatch(expenseCruds.removeAll());
-    dispatch(activityMembershipTypeCruds.removeAll());
+    dispatch(membershipPackageCruds.removeAll());
     dispatch(instructorsCruds.removeAll());
     dispatch(enquiryCruds.removeAll());
 };

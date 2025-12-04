@@ -24,7 +24,7 @@ import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
 import StyledDialog from "../../../Components/New/StyledDialog";
 import Field from "../../../Components/Fields/Field";
-import { activityMembershipTypeCruds } from "../../../api/all.api";
+import { membershipPackageCruds } from "../../../api/all.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
@@ -38,14 +38,14 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const [loading, setLoading] = useState(false);
     const studio = useSelector((state) => state.auth.studio);
     const token = useSelector((state) => state.auth.token);
-    const cachedMembershipTypes = useSelector((state) => state.activityMembershipType.items);
+    const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
     const membershipTypes = isMembershipTableEnabled
         ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)]
         : [];
 
     const fetchMembershipTypesData = useCallback(async () => {
         dispatch(
-            activityMembershipTypeCruds.getAll(
+            membershipPackageCruds.getAll(
                 showAlert,
                 setLoading,
                 token,
