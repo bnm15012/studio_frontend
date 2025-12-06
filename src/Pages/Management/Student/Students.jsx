@@ -343,7 +343,7 @@ const Students = ({ ID }) => {
                         label: "Amount",
                         getValue: (v, row, isEdit) => {
                             if (!isEdit) {
-                                if (!row) return null;
+                                if (!row || !row.paymentEntry) return null;
                                 return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
                                     <>
                                         Rs. {row.paymentEntry.amount}{" "}

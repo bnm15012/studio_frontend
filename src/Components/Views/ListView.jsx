@@ -41,7 +41,7 @@ const ListView = ({
     const isEdit = (row, field) =>
         editingId === row[fieldsMeta.primary] && (field?.editable ? field.editable(row) : true);
     const onClickRow = useCallback(
-        (row) => actions.find((a) => a.name === "form" && !a.hide).onClick(row),
+        (row) => actions.find((a) => a.name === "form" && !a.hide)?.onClick(row),
         [actions],
     );
 
@@ -76,7 +76,7 @@ const ListView = ({
                             <StyledTableRow
                                 key={row[fieldsMeta.primary]}
                                 sx={{ cursor: onClickRow ? "pointer" : "auto" }}
-                                onClick={() => onClickRow(row)}
+                                onClick={() => onClickRow && onClickRow(row)}
                             >
                                 <StyledTableCell>
                                     {(parseInt(tableState.currentPage) - 1) * tableState.pageSize +

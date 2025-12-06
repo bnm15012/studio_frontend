@@ -188,7 +188,7 @@ const FormView = (props) => {
                                 </Box>
                             ),
                         )}
-                        <component.CustomComponent data={data} field={component} />
+                        {component && <component.CustomComponent data={data} field={component} />}
                     </FlexBetweenColumn>
                 </FlexBetween>
             )}
