@@ -26,7 +26,7 @@ export const membershipPackageCruds = createCrud({ route: "membershipPackages" }
 
 export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" });
 
-export const paymentCruds = createCrud({ route: "payments", idKey: "paymentId" });
+export const paymentCruds = createCrud({ route: "payments" });
 
 export const genericTemplateCruds = createCrud({ route: "genericTemplate" });
 

@@ -14,7 +14,7 @@ const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 8;
 const STATUS = ["PENDING", "COMPLETED"];
 
-const FIELD_META = { primary: "paymentId", root: "branchId" };
+const FIELD_META = { primary: "id", root: "branchId" };
 
 const VIEWS = ["LIST", "CARD"];
 
@@ -23,10 +23,8 @@ const FIELDS = [
     // TODO: need to change for client too.
     {
         show: true,
-        name: "studentEntry",
+        name: "payeeName",
         label: "Payee Name",
-        type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value?.studentId, value: value?.name || "-" }),
         extraProp: { readOnly: true },
     },
     {

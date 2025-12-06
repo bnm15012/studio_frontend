@@ -44,6 +44,7 @@ const Bookings = ({ ID }) => {
     const getClientsByName = useCallback(
         async (params) => {
             const { success, data, message } = await getCLientByNamesAPI({
+                branchId: currentBranch.branchId,
                 token,
                 params,
             });
@@ -51,9 +52,10 @@ const Bookings = ({ ID }) => {
                 return data?.map((c) => ({ value: c.pocName, key: c.clientId })) || [];
             } else {
                 showAlert(message, "error");
+                return [];
             }
         },
-        [showAlert, token],
+        [currentBranch.branchId, showAlert, token],
     );
 
     const awaitForDialog = useCallback(
@@ -103,12 +105,13 @@ const Bookings = ({ ID }) => {
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
                 branchId: currentBranch.branchId,
+                paymentDate: getCurrentDateTimeUTC(),
             };
 
             const paymentData = await awaitForDialog(paymentInit);
 
             if (paymentData) {
-                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+                modifiedData.paymentEntries = [{ ...row.paymentEntry, ...paymentData }];
             } else {
                 throw new Error("Payment cancelled");
             }
@@ -167,9 +170,9 @@ const Bookings = ({ ID }) => {
             },
             {
                 show: false,
-                name: "advanceAmount",
-                label: "Advance Amount",
-                section: "Advance Payment Details",
+                name: "paidAmount",
+                label: "Paid Amount",
+                section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 defaultValue: 10,
             },
@@ -188,55 +191,6 @@ const Bookings = ({ ID }) => {
                 label: "End Time",
                 type: "DATETIME",
                 defaultValue: getCurrentDateTimeUTC(),
-            },
-            {
-                show: false,
-                name: "advanceDate",
-                section: "Advance Payment Details",
-                label: "Advance Date",
-                type: "DATETIME",
-                defaultValue: getCurrentDateTimeUTC(),
-            },
-            {
-                show: false,
-                name: "advanceMode",
-                label: "Advance Mode",
-                section: "Advance Payment Details",
-                type: "SELECT",
-                defaultValue: paymentTypes[0],
-                getValue: (value) => value && { value, key: value },
-                extraProp: {
-                    addValue: false,
-                    getOptions: (s, p, l) => paymentTypes.map((value) => ({ value, key: value })),
-                },
-            },
-            {
-                show: false,
-                name: "paymentMode",
-                label: "Payment Mode",
-                section: "Payment Details",
-                type: "SELECT",
-                addValue: false,
-                defaultValue: paymentTypes[0],
-                getValue: (value) => value && { value, key: value },
-                extraProp: {
-                    getOptions: (s, p, l) => paymentTypes.map((value) => ({ value, key: value })),
-                },
-            },
-            {
-                show: false,
-                name: "finalPaymentDate",
-                section: "Payment Details",
-                label: "Final Payment Date",
-                type: "DATETIME",
-            },
-            {
-                show: false,
-                name: "balanceAmount",
-                section: "Payment Details",
-                label: "Balance Amount",
-                type: FIELD_TYPES.NUMBER,
-                defaultValue: 10,
             },
             { show: false, section: "Booking Details", name: "notes", label: "Notes" },
         ],

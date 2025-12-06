@@ -36,9 +36,9 @@ export const getAllClientsAPI = async ({ branchId, page, size, token, searchTerm
     }
 };
 
-export const getCLientByNamesAPI = async ({ token, params }) => {
+export const getCLientByNamesAPI = async ({ branchId, token, params }) => {
     try {
-        const response = await api.get(`/clients/search`, getHeaders(token), params);
+        const response = await api.get(`/clients/search/${branchId}`, getHeaders(token), params);
         const { data, status } = response.data;
         return {
             data: data,
