@@ -17,6 +17,7 @@ import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import BookingInvoice from "./BookingInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import ActionBar from "../../../Components/ActionBar.jsx";
+import PaymentList from "./PaymentList.jsx";
 
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];
@@ -193,6 +194,14 @@ const Bookings = ({ ID }) => {
                 defaultValue: getCurrentDateTimeUTC(),
             },
             { show: false, section: "Booking Details", name: "notes", label: "Notes" },
+            {
+                show: false,
+                section: "Payments",
+                name: "paymentEntries",
+                label: "Payments",
+                type: "COMPONENT",
+                CustomComponent: PaymentList,
+            },
         ],
         [getClientsByName],
     );

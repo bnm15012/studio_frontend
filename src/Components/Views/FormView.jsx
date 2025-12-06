@@ -38,10 +38,11 @@ const FormView = (props) => {
     const { isMobile } = useUI();
     const theme = useTheme();
 
-    const normalFields = fields.filter((f) => !["IMAGE", "VIEW"].includes(f.type));
+    const normalFields = fields.filter((f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type));
 
     const imageField = fields.find((f) => f.type === "IMAGE");
     const viewFields = fields.filter((f) => f.type === "VIEW");
+    const component = fields.find((f) => f.type === "COMPONENT");
 
     const groupedFields = normalFields.reduce((acc, field) => {
         const section = field.section || "General";
@@ -187,6 +188,7 @@ const FormView = (props) => {
                                 </Box>
                             ),
                         )}
+                        <component.CustomComponent data={data} field={component} />
                     </FlexBetweenColumn>
                 </FlexBetween>
             )}

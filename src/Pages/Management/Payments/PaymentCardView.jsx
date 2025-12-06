@@ -5,7 +5,7 @@ import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader"
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 
 const PaymentCard = ({ row }) => {
-    const { payeeType, status, paymentDate, paymentType, amount, studentEntry, clientEntry } = row;
+    const { payeeType, status, paymentDate, paymentType, amount, payeeName } = row;
 
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
@@ -26,9 +26,7 @@ const PaymentCard = ({ row }) => {
                 badgeSx={{ background: getStatusColor(status) }}
             />
             <CardChip
-                value={
-                    (studentEntry?.name || clientEntry?.groupName || "N/A") + " (" + payeeType + ")"
-                }
+                value={(payeeName || "N/A") + " (" + payeeType + ")"}
                 ChipIcon={User2}
                 label={"Payee Name"}
             />
@@ -49,12 +47,7 @@ PaymentCard.propTypes = {
         paymentDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
         paymentType: PropTypes.string,
         amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        studentEntry: PropTypes.shape({
-            name: PropTypes.string,
-        }),
-        clientEntry: PropTypes.shape({
-            groupName: PropTypes.string,
-        }),
+        payeeName: PropTypes.string,
     }).isRequired,
 };
 
