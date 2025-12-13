@@ -130,7 +130,7 @@ const Instructors = ({ ID }) => {
                 apiRef: api,
                 tableCruds: instructorsAssignmentsCruds,
                 tableName: "instructorActivities",
-                size: 2,
+                size: 3,
                 showAddButton: true,
                 actions: [
                     {

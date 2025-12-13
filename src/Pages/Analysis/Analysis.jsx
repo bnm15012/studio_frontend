@@ -96,6 +96,7 @@ const Analysis = () => {
     const loadDashboardData = useCallback(
         async (year) => {
             try {
+                setLoading(true);
                 let response;
                 if ("success" in analysisData && year === years[years.length - 1]) {
                     response = analysisData;
@@ -109,7 +110,6 @@ const Analysis = () => {
                         dispatch(setAnalysisData(response));
                     }
                 }
-                setLoading(true);
                 if (response.success) {
                     setExpenseData(response.data.expenseData);
                     setPaymentData(response.data.paymentData);
@@ -123,7 +123,7 @@ const Analysis = () => {
                 setLoading(false);
             }
         },
-        [years, token, currentBranch.branchId, dispatch],
+        [analysisData, years, token, currentBranch.branchId, dispatch],
     );
 
     useEffect(() => {

@@ -169,6 +169,9 @@ const Students = ({ ID }) => {
                 newObj.batchName = entry?.name;
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
+                newObj.membershipEndDate =
+                    entry?.planType &&
+                    getEndDateBySubscriptionPlan(newObj.membershipStartDate, entry?.planType);
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(newObj.activityName, value);
                 const entry = entries?.length === 1 ? entries[0] : undefined;
@@ -219,7 +222,7 @@ const Students = ({ ID }) => {
                 tableName: "studentActivities",
                 beforeAdd,
                 overRideOnChange,
-                size: 3,
+                size: 4,
                 actions: [
                     {
                         name: "Document",

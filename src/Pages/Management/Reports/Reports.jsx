@@ -138,7 +138,7 @@ const Reports = () => {
                         return [
                             index + 1,
                             entry.payeeType,
-                            entry.clientEntry?.groupName || entry.studentEntry?.name,
+                            entry?.payeeName,
                             `₹${entry.amount}`,
                             entry.paymentType,
                             entry.status,
@@ -218,15 +218,16 @@ const Reports = () => {
                             ))}
                         </tr>
                     ))}
-                    {data.length === 0 && (
-                        <tr>
-                            <td colSpan={headers.length} style={styles.td}>
-                                No data available!
-                            </td>
-                        </tr>
-                    )}
                 </tbody>
             </table>
+            {data.length}
+            {data.length === 0 && (
+                <div>
+                    <div colSpan={headers.length} style={styles.td}>
+                        No data available!
+                    </div>
+                </div>
+            )}
         </Box>
     );
 
