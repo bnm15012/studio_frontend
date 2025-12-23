@@ -75,7 +75,7 @@ const HtmlToPdfViewer = forwardRef(
         return (
             <>
                 {loading && <Loading />}
-                <PDFPreviewGenerator>
+                <PDFPreviewGenerator pdfOptions={pdfOptions}>
                     <FlexBetween
                         flexDirection={"column"}
                         ref={contentRef}

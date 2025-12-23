@@ -220,7 +220,6 @@ const Reports = () => {
                     ))}
                 </tbody>
             </table>
-            {data.length}
             {data.length === 0 && (
                 <div>
                     <div colSpan={headers.length} style={styles.td}>

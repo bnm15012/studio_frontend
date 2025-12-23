@@ -1,74 +1,87 @@
-import { CircularProgress, Box } from "@mui/material";
-import html2canvas from "html2canvas";
+import { Box } from "@mui/material";
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
-const A4_WIDTH_PX = 794; // 210mm at 96 DPI
-const A4_HEIGHT_PX = 1100; // 297mm at 96 DPI
+// const A4_WIDTH_PX = 794; // 210mm at 96 DPI
+// const A4_HEIGHT_PX = 1100; // 297mm at 96 DPI
 
-const PDFPreviewGenerator = ({ children }) => {
+const PDFPreviewGenerator = ({ children, pdfOptions }) => {
     const contentRef = useRef(null);
-    const [pageImages, setPageImages] = useState([]);
-    const [loading, setLoading] = useState(false);
+    // const [pageImages, setPageImages] = useState([]);
+    // const [loading, setLoading] = useState(false);
 
-    const generatePdfPreview = async () => {
-        if (!contentRef.current) return;
-        setLoading(true);
-        setPageImages([]);
+    // const generatePdfPreview = async () => {
+    //     if (!contentRef.current) return;
+    //     setLoading(true);
+    //     setPageImages([]);
 
-        const canvas = await html2canvas(contentRef.current, {
-            scale: window.devicePixelRatio > 1 ? 1.5 : 2,
-            useCORS: true,
-            letterRendering: false,
-            allowTaint: true,
-            removeContainer: true,
-            willReadFrequently: true,
-        });
+    //     const canvas = await window
+    //         .html2pdf()
+    //         .set(pdfOptions)
+    //         .from(contentRef.current)
+    //         .outputPdf("blob")
+    //         .then(async (pdfBlob) => {
+    //             const pdf = await pdfjsLib.getDocument({ data: await pdfBlob.arrayBuffer() })
+    //                 .promise;
+    //             const firstPage = await pdf.getPage(1);
+    //             const viewport = firstPage.getViewport({ scale: 1.5 });
+    //             const tempCanvas = document.createElement("canvas");
+    //             const context = tempCanvas.getContext("2d");
+    //             tempCanvas.width = viewport.width;
+    //             tempCanvas.height = viewport.height;
+    //             await firstPage.render({ canvasContext: context, viewport }).promise;
+    //             return tempCanvas;
+    //         });
 
-        const contentHeight = canvas.height;
-        const contentWidth = canvas.width;
-        const pageHeight = (A4_HEIGHT_PX * contentWidth) / A4_WIDTH_PX;
+    //     const contentHeight = canvas.height;
+    //     const contentWidth = canvas.width;
+    //     const pageHeight = (A4_HEIGHT_PX * contentWidth) / A4_WIDTH_PX;
 
-        const pages = [];
-        let position = 0;
+    //     const pages = [];
+    //     let position = 0;
 
-        while (position < contentHeight) {
-            const pageCanvas = document.createElement("canvas");
-            pageCanvas.width = contentWidth;
-            pageCanvas.height = pageHeight;
+    //     while (position < contentHeight) {
+    //         const pageCanvas = document.createElement("canvas");
+    //         pageCanvas.width = contentWidth;
+    //         pageCanvas.height = pageHeight;
 
-            const pageCtx = pageCanvas.getContext("2d");
-            pageCtx.drawImage(
-                canvas,
-                0,
-                position,
-                contentWidth,
-                pageHeight,
-                0,
-                0,
-                contentWidth,
-                pageHeight,
-            );
+    //         const pageCtx = pageCanvas.getContext("2d");
+    //         pageCtx.drawImage(
+    //             canvas,
+    //             0,
+    //             position,
+    //             contentWidth,
+    //             pageHeight,
+    //             0,
+    //             0,
+    //             contentWidth,
+    //             pageHeight,
+    //         );
 
-            pages.push(pageCanvas.toDataURL("image/png"));
-            position += pageHeight;
-        }
+    //         pages.push(pageCanvas.toDataURL("image/png"));
+    //         position += pageHeight;
+    //     }
 
-        setPageImages(pages);
-        setLoading(false);
-    };
+    //     setPageImages(pages);
+    //     setLoading(false);
+    // };
 
-    useEffect(() => {
-        generatePdfPreview();
-    }, [children]);
+    // useEffect(() => {
+    //     generatePdfPreview();
+    // }, [children]);
 
     return (
-        <Box sx={{ width: "100%", height: "100%" }}>
+        <Box
+            sx={{
+                width: "100%",
+                height: "100%",
+            }}
+        >
             <Box
                 ref={contentRef}
                 sx={{
-                    position: "absolute",
-                    zIndex: -1,
+                    // position: "absolute",
+                    // zIndex: -1,
                     width: "210mm",
                     bgcolor: "white",
                     p: 4,
@@ -77,7 +90,7 @@ const PDFPreviewGenerator = ({ children }) => {
             >
                 {children}
             </Box>
-            <Box
+            {/* <Box
                 sx={{
                     mt: 3,
                     display: "flex",
@@ -105,12 +118,13 @@ const PDFPreviewGenerator = ({ children }) => {
                             }}
                         />
                     ))}
-            </Box>
+            </Box> */}
         </Box>
     );
 };
 
 PDFPreviewGenerator.propTypes = {
+    pdfOptions: PropTypes.object,
     children: PropTypes.node.isRequired,
 };
 
