@@ -18,16 +18,25 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
 
     const downloadPDF = () => {
         if (!contentRef.current) return;
-        window.html2pdf().set(pdfOptions).from(contentRef.current).save();
+        setLoading(true);
+        window.html2pdf().set(pdfOptions).from(contentRef.current).toPdf().save();
+        setLoading(false);
     };
 
     const printPDF = async () => {
         try {
-            const blob = await createPdfBlob();
-            const blobUrl = URL.createObjectURL(blob);
-            const printWindow = window.open(blobUrl, "_blank");
-            if (printWindow) printWindow.print();
-            else showAlert("Popup blocked. Allow popups and try again.", "warning");
+            if (!contentRef.current) throw new Error("Content ref is empty");
+            window
+                .html2pdf()
+                .set(pdfOptions)
+                .from(contentRef.current)
+                .toPdf()
+                .get("pdf")
+                .then((pdf) => {
+                    contentRef.current.classList.remove("generating-pdf");
+                    pdf.autoPrint();
+                    window.open(pdf.output("bloburl"), "_blank");
+                });
         } catch (err) {
             console.error(err);
             showAlert("Failed to print PDF", "error");

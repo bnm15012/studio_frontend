@@ -7,69 +7,6 @@ import { useRef } from "react";
 
 const PDFPreviewGenerator = ({ children, pdfOptions }) => {
     const contentRef = useRef(null);
-    // const [pageImages, setPageImages] = useState([]);
-    // const [loading, setLoading] = useState(false);
-
-    // const generatePdfPreview = async () => {
-    //     if (!contentRef.current) return;
-    //     setLoading(true);
-    //     setPageImages([]);
-
-    //     const canvas = await window
-    //         .html2pdf()
-    //         .set(pdfOptions)
-    //         .from(contentRef.current)
-    //         .outputPdf("blob")
-    //         .then(async (pdfBlob) => {
-    //             const pdf = await pdfjsLib.getDocument({ data: await pdfBlob.arrayBuffer() })
-    //                 .promise;
-    //             const firstPage = await pdf.getPage(1);
-    //             const viewport = firstPage.getViewport({ scale: 1.5 });
-    //             const tempCanvas = document.createElement("canvas");
-    //             const context = tempCanvas.getContext("2d");
-    //             tempCanvas.width = viewport.width;
-    //             tempCanvas.height = viewport.height;
-    //             await firstPage.render({ canvasContext: context, viewport }).promise;
-    //             return tempCanvas;
-    //         });
-
-    //     const contentHeight = canvas.height;
-    //     const contentWidth = canvas.width;
-    //     const pageHeight = (A4_HEIGHT_PX * contentWidth) / A4_WIDTH_PX;
-
-    //     const pages = [];
-    //     let position = 0;
-
-    //     while (position < contentHeight) {
-    //         const pageCanvas = document.createElement("canvas");
-    //         pageCanvas.width = contentWidth;
-    //         pageCanvas.height = pageHeight;
-
-    //         const pageCtx = pageCanvas.getContext("2d");
-    //         pageCtx.drawImage(
-    //             canvas,
-    //             0,
-    //             position,
-    //             contentWidth,
-    //             pageHeight,
-    //             0,
-    //             0,
-    //             contentWidth,
-    //             pageHeight,
-    //         );
-
-    //         pages.push(pageCanvas.toDataURL("image/png"));
-    //         position += pageHeight;
-    //     }
-
-    //     setPageImages(pages);
-    //     setLoading(false);
-    // };
-
-    // useEffect(() => {
-    //     generatePdfPreview();
-    // }, [children]);
-
     return (
         <Box
             sx={{
@@ -78,10 +15,9 @@ const PDFPreviewGenerator = ({ children, pdfOptions }) => {
             }}
         >
             <Box
+                className="main-pdf-content"
                 ref={contentRef}
                 sx={{
-                    // position: "absolute",
-                    // zIndex: -1,
                     width: "210mm",
                     bgcolor: "white",
                     p: 4,

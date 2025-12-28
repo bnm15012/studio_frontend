@@ -1,20 +1,19 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Box, Divider, Typography } from "@mui/material";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import Loading from "../../Loading/Loading";
-import FlexBetween from "../../FlexBetween";
-import FlexEvenly from "../../FlexEvenly";
 import { usePdfActions } from "./usePdfActions";
 import { useSelector } from "react-redux";
-import PDFPreviewGenerator from "./PDFPreviewGenerator";
+import { paginate } from "./html2pdf.util";
+import "./html2pdf.css";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const indianMobileRegex = /^[6-9]\d{9}$/;
 
 const HtmlToPdfViewer = forwardRef(
     ({ content, header, fileName = "document", footer, remainingPayload = {} }, ref) => {
-        const contentRef = useRef();
+        const previewRef = useRef(null);
+        const sourceRef = useRef(null);
         const studio = useSelector((s) => s.auth.studio);
         const [dialogOpen, setDialogOpen] = useState(false);
         const [dialogType, setDialogType] = useState("");
@@ -23,14 +22,14 @@ const HtmlToPdfViewer = forwardRef(
 
         const pdfOptions = {
             filename: `${fileName}.pdf`,
-            margin: [10, 10, 10, 10],
+            margin: [0, 0, 0, 0],
             image: { type: "jpeg", quality: 0.01 },
-            html2canvas: { scale: 5, useCORS: true, letterRendering: true },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compressPDF: true },
+            html2canvas: { scale: 5, useCORS: true },
+            jsPDF: { unit: "mm", format: "a4" },
         };
 
         const { loading, downloadPDF, printPDF, sendMail, sendWhatsApp } = usePdfActions({
-            contentRef,
+            contentRef: previewRef,
             pdfOptions,
             fileName,
             remainingPayload,
@@ -72,63 +71,40 @@ const HtmlToPdfViewer = forwardRef(
             setInputError(validateInput(dialogType, inputValue));
         }, [inputValue, dialogType, dialogOpen]);
 
+        useEffect(() => {
+            paginate(previewRef.current, sourceRef.current);
+        }, [content]);
+
         return (
             <>
                 {loading && <Loading />}
-                <PDFPreviewGenerator pdfOptions={pdfOptions}>
-                    <FlexBetween
-                        flexDirection={"column"}
-                        ref={contentRef}
-                        className="pdf-text"
-                        gap={2}
-                    >
-                        <Box className="pdf-page">
-                            <FlexBetween sx={{ mb: 3 }}>
-                                <FlexBetween gap={1}>
-                                    {studio?.logo && (
-                                        <img
-                                            src={studio.logo}
-                                            alt="Studio Logo"
-                                            style={{ width: 100, height: 100, margin: "auto" }}
-                                            crossOrigin="anonymous"
-                                        />
-                                    )}
-                                    <Typography variant="h5" sx={{ my: "auto", textWrap: "wrap" }}>
-                                        {studio?.studioName}
-                                    </Typography>
-                                </FlexBetween>
-                                <Box sx={{ textAlign: "right", flexGrow: 1 }}>{header}</Box>
-                            </FlexBetween>
-                            <Divider sx={{ my: 2 }} />
-                        </Box>
+                <div id="main" ref={sourceRef} style={{ display: "none" }}>
+                    <div>
+                        <div className="header-container">
+                            <div className="left-section">
+                                <img src={studio.logo} alt="Studio Logo" className="studio-logo" />
 
-                        {/* Content Section */}
-                        <Box className="pdf-page" sx={{ flexGrow: 1 }}>
-                            {content}
-                        </Box>
+                                <h2 className="studio-name">{studio.studioName}</h2>
+                            </div>
 
-                        {/* Footer Section */}
-                        <Box>
-                            <FlexEvenly>
-                                <Box>
-                                    <Typography
-                                        textAlign="center"
-                                        sx={{
-                                            marginTop: "5mm",
-                                            fontSize: "10px",
-                                            color: "#555",
-                                        }}
-                                    >
-                                        {footer}
-                                        <Typography component="p" sx={{ fontSize: "12px", mt: 1 }}>
-                                            Powered by Book & Manage
-                                        </Typography>
-                                    </Typography>
-                                </Box>
-                            </FlexEvenly>
-                        </Box>
-                    </FlexBetween>
-                </PDFPreviewGenerator>
+                            <div className="right-section">{header}</div>
+                        </div>
+
+                        <hr className="divider" />
+                    </div>
+                    {content}
+                    <div className="footer-wrapper">
+                        <div className="footer-flex">
+                            <div className="footer-content">
+                                <p className="footer-text">{footer}</p>
+
+                                <p className="footer-powered">Powered by Book &amp; Manage</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="preview" ref={previewRef}></div>
 
                 <ConfirmationDialog
                     type={dialogType}
