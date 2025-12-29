@@ -72,7 +72,40 @@ const HtmlToPdfViewer = forwardRef(
         }, [inputValue, dialogType, dialogOpen]);
 
         useEffect(() => {
-            paginate(previewRef.current, sourceRef.current);
+            const previewElement = previewRef.current;
+            const sourceElement = sourceRef.current;
+
+            if (!previewElement || !sourceElement) return;
+
+            // First, paginate the content into the preview element
+            paginate(previewElement, sourceElement);
+
+            // Then, adjust the scale of the preview to fit its container
+            const adjustPreviewScale = () => {
+                // Ensure content is rendered before attempting to measure
+                // Assuming `paginate` creates page elements as direct children within previewElement
+                if (!previewElement.firstChild) return;
+
+                const firstPage = previewElement.firstChild;
+                const contentNaturalWidth = firstPage.offsetWidth + 30; // Get the natural width of a single page (e.g., A4 width)
+
+                const containerWidth = previewElement.parentElement.clientWidth; // Get the width of the parent container of #preview
+
+                if (contentNaturalWidth > 0 && containerWidth > 0) {
+                    let newScale = containerWidth / contentNaturalWidth;
+                    if (newScale > 1) newScale = 1; // Max scale is 1
+
+                    previewElement.style.transform = `scale(${newScale})`;
+                    previewElement.style.transformOrigin = "top left";
+                }
+            };
+            // Use a small delay to ensure DOM is updated after paginate has rendered content
+            const timeoutId = setTimeout(adjustPreviewScale, 50);
+            window.addEventListener("resize", adjustPreviewScale);
+            return () => {
+                clearTimeout(timeoutId);
+                window.removeEventListener("resize", adjustPreviewScale);
+            };
         }, [content]);
 
         return (
