@@ -11,36 +11,78 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
-    const createPdfBlob = async () => {
-        if (!contentRef.current) throw new Error("Content ref is empty");
-        return await window.html2pdf().set(pdfOptions).from(contentRef.current).outputPdf("blob");
+    // Helper function to get the html2pdf instance with common settings
+    const getPdfInstance = () => {
+        if (!contentRef.current) {
+            throw new Error("Content ref is empty. Cannot generate PDF.");
+        }
+        // contentRef.current.classList.add("generating-pdf");
+        return window.html2pdf().set(pdfOptions).from(contentRef.current);
     };
 
-    const downloadPDF = () => {
-        if (!contentRef.current) return;
+    // New helper to temporarily reset scale before PDF generation
+    const withTemporaryScaleReset = async (pdfAction) => {
+        if (!contentRef.current) {
+            showAlert("Content not available for PDF generation.", "error");
+            return;
+        }
+
+        const originalTransform = contentRef.current.style.transform;
+        const originalTransformOrigin = contentRef.current.style.transformOrigin;
+
+        try {
+            // Reset scale to 1 for accurate PDF generation
+            contentRef.current.style.transform = "scale(1)";
+            contentRef.current.style.transformOrigin = "top left"; // Ensure origin is consistent
+
+            return await pdfAction();
+        } finally {
+            // Restore original scale after PDF generation
+            contentRef.current.style.transform = originalTransform;
+            contentRef.current.style.transformOrigin = originalTransformOrigin;
+        }
+    };
+
+    const createPdfBlob = async () =>
+        await withTemporaryScaleReset(async () => getPdfInstance().outputPdf("blob"));
+
+    const downloadPDF = async () => {
+        // Made async to await withTemporaryScaleReset
         setLoading(true);
-        window.html2pdf().set(pdfOptions).from(contentRef.current).toPdf().save();
-        setLoading(false);
+        await withTemporaryScaleReset(async () => {
+            try {
+                await getPdfInstance().toPdf().save();
+            } catch (error) {
+                console.error(error);
+                showAlert("Failed to download PDF", "error");
+            } finally {
+                setLoading(false);
+            }
+        });
     };
 
     const printPDF = async () => {
-        try {
-            if (!contentRef.current) throw new Error("Content ref is empty");
-            window
-                .html2pdf()
-                .set(pdfOptions)
-                .from(contentRef.current)
-                .toPdf()
-                .get("pdf")
-                .then((pdf) => {
-                    contentRef.current.classList.remove("generating-pdf");
-                    pdf.autoPrint();
-                    window.open(pdf.output("bloburl"), "_blank");
-                });
-        } catch (err) {
-            console.error(err);
-            showAlert("Failed to print PDF", "error");
-        }
+        setLoading(true);
+        await withTemporaryScaleReset(async () => {
+            // Await the wrapper
+            try {
+                await getPdfInstance()
+                    .toPdf()
+                    .get("pdf")
+                    .then((pdf) => {
+                        if (contentRef.current) {
+                            contentRef.current.classList.remove("generating-pdf");
+                        }
+                        pdf.autoPrint();
+                        window.open(pdf.output("bloburl"), "_blank");
+                    });
+            } catch (err) {
+                console.error(err);
+                showAlert("Failed to print PDF", "error");
+            } finally {
+                setLoading(false);
+            }
+        });
     };
 
     const sendFile = async ({ type, contentLabel }) => {

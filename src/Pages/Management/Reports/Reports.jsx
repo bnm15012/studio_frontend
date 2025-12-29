@@ -324,6 +324,8 @@ const Reports = () => {
             {/* Report Display */}
             <Box
                 sx={{
+                    overflow: "auto",
+                    height: isMobile ? "auto" : "89vh",
                     boxShadow: theme.shadows[7],
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: "8px",

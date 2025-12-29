@@ -21,6 +21,7 @@
 }
 
 .generating-pdf .pdf-page {
+  scale: 1 !important;
   margin: 0 auto !important;
   box-shadow: none !important;
 }
