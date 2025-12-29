@@ -89,14 +89,14 @@ const StudentInvoice = ({ open, onClose, activityData }) => {
                         >
                             <div>
                                 {/* Invoice Details */}
-                                <div
+                                <p
                                     style={{
                                         display: "flex",
                                         justifyContent: "space-between",
                                         marginTop: "2mm",
                                     }}
                                 >
-                                    <div>
+                                    <p>
                                         <p style={{ margin: 0, textWrap: "wrap" }}>
                                             {currentBranch?.address}
                                         </p>
@@ -109,16 +109,16 @@ const StudentInvoice = ({ open, onClose, activityData }) => {
                                         {studio?.gstNumber && (
                                             <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
                                         )}
-                                    </div>
-                                    <div style={{ textAlign: "right" }}>
+                                    </p>
+                                    <p style={{ textAlign: "right" }}>
                                         <div>
                                             <strong>Bill To</strong>:
                                         </div>
                                         <div>{studentData?.name}</div>
                                         <div>{studentData?.phone}</div>
                                         <div>{studentData?.email}</div>
-                                    </div>
-                                </div>
+                                    </p>
+                                </p>
                                 {/* Table */}
                                 <table
                                     border={1}

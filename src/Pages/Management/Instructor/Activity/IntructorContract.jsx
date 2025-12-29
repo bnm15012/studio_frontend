@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "../../../../utils/DateUtil";
 import Loading from "../../../../Components/Loading/Loading";
-import { Typography } from "@mui/material";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
 import { useAlert } from "../../../../utils/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
@@ -101,7 +100,7 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                     fileName={`Instructor-Contract-${instructorData.name}.pdf`}
                     ref={pdfViewerRef}
                     header={
-                        <>
+                        <p>
                             <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
                             <p style={{ margin: 0 }}>
                                 {currentBranch?.city}, {currentBranch?.state}{" "}
@@ -109,52 +108,40 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                             </p>
                             <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
                             <p style={{ margin: 0 }}>{studio?.email}</p>
-                        </>
+                        </p>
                     }
                     content={
-                        <>
+                        <p>
                             {/* Personal Details */}
-                            <h3>Instructor Personal Details</h3>
-                            <table
-                                style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                    fontSize: "12px",
-                                    marginTop: "10px",
-                                }}
-                            >
-                                <tbody>
-                                    {[
-                                        ["Name", instructorData?.name],
-                                        ["Date of Birth", getLocalDateTime(instructorData?.dob)],
-                                        ["Email", instructorData?.email],
-                                        ["Mobile", instructorData?.phone],
-                                        [
-                                            "Emergency Contact",
-                                            instructorData?.emergencyContactNumber,
-                                        ],
-                                        ["Address", instructorData?.address],
-                                    ].map(([label, value], idx) => (
-                                        <tr key={idx}>
-                                            <td
-                                                style={{
-                                                    padding: "6px 10px",
-                                                    borderBottom: "1px solid #ddd",
-                                                    textAlign: "left",
-                                                }}
-                                            >
-                                                <strong>{label}:</strong> {value || "-"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
+                            <p>Instructor Personal Details</p>
+                            <table>
+                                {[
+                                    ["Name", instructorData?.name],
+                                    ["Date of Birth", getLocalDateTime(instructorData?.dob)],
+                                    ["Email", instructorData?.email],
+                                    ["Mobile", instructorData?.phone],
+                                    ["Emergency Contact", instructorData?.emergencyContactNumber],
+                                    ["Address", instructorData?.address],
+                                ].map(([label, value], idx) => (
+                                    <tr key={idx}>
+                                        <td
+                                            style={{
+                                                padding: "6px 10px",
+                                                borderBottom: "1px solid #ddd",
+                                                textAlign: "left",
+                                            }}
+                                        >
+                                            <strong>{label}:</strong> {value || "-"}
+                                        </td>
+                                    </tr>
+                                ))}
                             </table>
                             {/* Terms and Conditions */}
-                            <div style={{ marginTop: "5mm" }}>
-                                <Typography fontWeight={"bolder"}>Terms and Conditions</Typography>
+                            <p fontWeight={"bolder"}>Terms and Conditions</p>
+                            <p style={{ marginTop: "5mm" }}>
                                 {preparedDescription ? (
-                                    <>
-                                        <Typography
+                                    <p>
+                                        {/* <p
                                             variant="body2"
                                             sx={{ textAlign: "justify", whiteSpace: "pre-wrap" }}
                                             dangerouslySetInnerHTML={{
@@ -163,14 +150,13 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                                                     "<br />",
                                                 ),
                                             }}
-                                        />
+                                        /> */}
                                         I confirm that the personal details provided above are true
                                         and accurate to the best of my knowledge.
-                                    </>
+                                    </p>
                                 ) : (
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
+                                    <p
+                                        style={{
                                             color: "red",
                                             fontWeight: "bold",
                                             textAlign: "center",
@@ -178,31 +164,31 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                                         }}
                                     >
                                         No Contract Template Created.
-                                    </Typography>
+                                    </p>
                                 )}
-                            </div>
+                            </p>
 
                             {/* Signature Section */}
-                            <div
+                            <p
                                 style={{
                                     display: "flex",
                                     justifyContent: "space-between",
                                     marginTop: "5mm",
                                 }}
                             >
-                                <div>
+                                <p>
                                     <p>_________________________</p>
                                     <p>Instructor Name & Signature</p>
                                     <p>Date: ____________</p>
-                                </div>
-                                <div style={{ textAlign: "right" }}>
+                                </p>
+                                <p style={{ textAlign: "right" }}>
                                     <p>_________________________</p>
                                     <p>Authorized Studio Representative</p>
                                     <p>{studio?.studioName}</p>
                                     <p>{currentBranch?.name}</p>
-                                </div>
-                            </div>
-                        </>
+                                </p>
+                            </p>
+                        </p>
                     }
                 />
             </DialogContent>
