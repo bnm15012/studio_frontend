@@ -391,7 +391,7 @@ const Reports = () => {
                                     "Amount",
                                     "MODE",
                                     "Status",
-                                    "Date",
+                                    "Date", 
                                 ])}
 
                             {/* Summary Section */}
