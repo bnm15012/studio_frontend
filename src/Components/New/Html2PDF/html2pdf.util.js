@@ -7,7 +7,7 @@ export const getA4Dimensions = () => {
     const dpi = div.getBoundingClientRect().width;
     document.body.removeChild(div);
     const width = (210 * dpi) / 25.4;
-    const height = (297 * dpi) / 25.4;
+    const height = (297 * dpi) / 25.6;
     return { width, height };
 };
 

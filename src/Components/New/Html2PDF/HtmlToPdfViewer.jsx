@@ -25,7 +25,6 @@ const HtmlToPdfViewer = forwardRef(
             margin: [0, 0, 0, 0],
             image: { type: "jpeg", quality: 0.01 },
             html2canvas: { scale: 5, useCORS: true },
-            pagebreak: { mode: ["css"], after: ".pdf-page" }, // Instruct html2pdf.js to respect .pdf-page for page breaks
             jsPDF: { unit: "mm", format: "a4" },
         };
 
@@ -137,6 +136,7 @@ const HtmlToPdfViewer = forwardRef(
                         </div>
                     </div>
                 </div>
+
                 <div id="preview" ref={previewRef}></div>
 
                 <ConfirmationDialog
