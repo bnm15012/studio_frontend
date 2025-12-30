@@ -16,8 +16,8 @@
 .pdf-page th,
 .pdf-page td {
   border: 1px solid #000;
-  padding: 4px;
   font-size: 12px;
+  text-align: center;
 }
 
 .generating-pdf .pdf-page {

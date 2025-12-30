@@ -111,7 +111,7 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                         </p>
                     }
                     content={
-                        <p>
+                        <>
                             {/* Personal Details */}
                             <p>Instructor Personal Details</p>
                             <table>
@@ -127,7 +127,6 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                                         <td
                                             style={{
                                                 padding: "6px 10px",
-                                                borderBottom: "1px solid #ddd",
                                                 textAlign: "left",
                                             }}
                                         >
@@ -141,16 +140,6 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                             <p style={{ marginTop: "5mm" }}>
                                 {preparedDescription ? (
                                     <p>
-                                        {/* <p
-                                            variant="body2"
-                                            sx={{ textAlign: "justify", whiteSpace: "pre-wrap" }}
-                                            dangerouslySetInnerHTML={{
-                                                __html: preparedDescription.replace(
-                                                    /\n/g,
-                                                    "<br />",
-                                                ),
-                                            }}
-                                        /> */}
                                         I confirm that the personal details provided above are true
                                         and accurate to the best of my knowledge.
                                     </p>
@@ -188,7 +177,7 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                                     <p>{currentBranch?.name}</p>
                                 </p>
                             </p>
-                        </p>
+                        </>
                     }
                 />
             </DialogContent>

@@ -169,65 +169,63 @@ const Reports = () => {
     };
 
     const renderTable = (title, data, headers) => (
-        <Box mt={3}>
-            <Typography variant="h6" gutterBottom>
-                {title}
-            </Typography>
-            <table
-                style={{
-                    ...styles.table,
-                    pageBreakInside: "auto",
-                    borderCollapse: "collapse",
-                    width: "100%",
-                }}
-            >
-                <thead style={{ display: "table-header-group" }}>
-                    <tr>
-                        {headers.map((h, i) => (
-                            <th
-                                key={i}
-                                style={{
-                                    ...styles.th,
-                                    textAlign: headers.length - 1 === i ? "right" : "left",
-                                }}
-                            >
-                                {h}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((row, i) => (
-                        <tr
-                            key={i}
-                            style={{
-                                backgroundColor: i % 2 === 0 ? "#f9f9f9" : "#fff",
-                                pageBreakInside: "avoid",
-                            }}
-                        >
-                            {row.map((cell, j) => (
-                                <td
-                                    key={j}
+        <>
+            <p style={{ fontSize: 18, marginBottom: 10 }}> {title}</p>
+            <div>
+                <table
+                    style={{
+                        ...styles.table,
+                        pageBreakInside: "auto",
+                        borderCollapse: "collapse",
+                        width: "100%",
+                    }}
+                >
+                    <thead style={{ display: "table-header-group" }}>
+                        <tr>
+                            {headers.map((h, i) => (
+                                <th
+                                    key={i}
                                     style={{
-                                        ...styles.td,
-                                        textAlign: j === row.length - 1 ? "right" : "left",
+                                        ...styles.th,
+                                        textAlign: headers.length - 1 === i ? "right" : "left",
                                     }}
                                 >
-                                    {cell}
-                                </td>
+                                    {h}
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            {data.length === 0 && (
-                <div>
-                    <div colSpan={headers.length} style={styles.td}>
+                    </thead>
+                    <tbody>
+                        {data.map((row, i) => (
+                            <tr
+                                key={i}
+                                style={{
+                                    backgroundColor: i % 2 === 0 ? "#f9f9f9" : "#fff",
+                                    pageBreakInside: "avoid",
+                                }}
+                            >
+                                {row.map((cell, j) => (
+                                    <td
+                                        key={j}
+                                        style={{
+                                            ...styles.td,
+                                            textAlign: j === row.length - 1 ? "right" : "left",
+                                        }}
+                                    >
+                                        {cell}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {data.length === 0 && (
+                    <p colSpan={headers.length} style={styles.td}>
                         No data available!
-                    </div>
-                </div>
-            )}
-        </Box>
+                    </p>
+                )}{" "}
+            </div>
+        </>
     );
 
     const formattedDateRange = () =>
@@ -348,7 +346,7 @@ const Reports = () => {
                         </>
                     }
                     content={
-                        <div>
+                        <>
                             {eiData?.income &&
                                 renderTable("Income", eiData.income, [
                                     "No.",
@@ -397,11 +395,9 @@ const Reports = () => {
                             {/* Summary Section */}
                             {eiData && (
                                 <>
-                                    <Box mt={4}>
+                                    <p style={{ marginTop: 10 }}>
                                         <Divider sx={{ mb: 2 }} />
-                                        <Typography variant="h6" gutterBottom>
-                                            Summary
-                                        </Typography>
+                                        <p style={{ fontSize: 18, marginBottom: 10 }}>Summary</p>
                                         <table style={{ width: "100%", fontSize: 16 }}>
                                             <tbody>
                                                 {eiData?.totalIncome != null && (
@@ -470,10 +466,10 @@ const Reports = () => {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </Box>
+                                    </p>
                                 </>
                             )}
-                        </div>
+                        </>
                     }
                 />
             </Box>
@@ -494,7 +490,7 @@ const styles = {
         fontWeight: "bold",
     },
     td: {
-        padding: "10px",
+        padding: "2px",
     },
 };
 

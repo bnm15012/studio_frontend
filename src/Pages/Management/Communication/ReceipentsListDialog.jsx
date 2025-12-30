@@ -95,7 +95,7 @@ const ReceipentsListDialog = ({ onClose, messageId }) => {
                                 ) : recipient.status === "PENDING" ? (
                                     <CircularProgress />
                                 ) : (
-                                    <Close sx={{ color: "green", my: "auto", mr: 1 }} />
+                                    <Close sx={{ color: "red", my: "auto", mr: 1 }} />
                                 )}
                             </Box>
                         ))}

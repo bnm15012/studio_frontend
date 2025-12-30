@@ -160,7 +160,7 @@ const DashBoard = () => {
                             flexWrap: "wrap",
                         }}
                     >
-                        <FlexBetween gap={2} flexWrap="wrap">
+                        <FlexBetween gap={2}>
                             <Box
                                 sx={{
                                     animation: `${floatAnim} 3.2s ease-in-out infinite`,
@@ -187,13 +187,15 @@ const DashBoard = () => {
                         </FlexBetween>
 
                         {isAdmin && (
-                            <Box
+                            <FlexBetween
+                                flexDirection={!isMobile ? "column" : "row"}
+                                width={isMobile ? "100%" : "auto"}
+                                flexWrap="wrap"
                                 sx={{
                                     borderRadius: 3,
                                     p: 2,
                                     background: alpha("#fff", 0.08),
                                     backdropFilter: "blur(6px)",
-                                    minWidth: { xs: "100%", sm: "260px" },
                                 }}
                             >
                                 <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
@@ -212,7 +214,7 @@ const DashBoard = () => {
                                         ₹{lastMonthIncome}
                                     </Typography>
                                 </FlexBetween>
-                            </Box>
+                            </FlexBetween>
                         )}
                     </Paper>
 
@@ -221,6 +223,7 @@ const DashBoard = () => {
                             sx={{
                                 background: "#fff8e1",
                                 p: 2,
+                                mt: 2,
                                 mb: 3,
                                 borderRadius: 3,
                                 border: "1px solid #ffe0b2",
