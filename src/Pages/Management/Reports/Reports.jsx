@@ -3,7 +3,6 @@ import {
     Button,
     TextField,
     Typography,
-    Divider,
     MenuItem,
     Select,
     InputLabel,
@@ -187,7 +186,12 @@ const Reports = () => {
                                     key={i}
                                     style={{
                                         ...styles.th,
-                                        textAlign: headers.length - 1 === i ? "right" : "left",
+                                        textAlign:
+                                            i === 0
+                                                ? "center"
+                                                : headers.length - 1 === i
+                                                  ? "right"
+                                                  : "left",
                                     }}
                                 >
                                     {h}
@@ -209,7 +213,12 @@ const Reports = () => {
                                         key={j}
                                         style={{
                                             ...styles.td,
-                                            textAlign: j === row.length - 1 ? "right" : "left",
+                                            textAlign:
+                                                j == 0
+                                                    ? "center"
+                                                    : j === row.length - 1
+                                                      ? "right"
+                                                      : "left",
                                         }}
                                     >
                                         {cell}
@@ -395,78 +404,75 @@ const Reports = () => {
                             {/* Summary Section */}
                             {eiData && (
                                 <>
-                                    <p style={{ marginTop: 10 }}>
-                                        <Divider sx={{ mb: 2 }} />
-                                        <p style={{ fontSize: 18, marginBottom: 10 }}>Summary</p>
-                                        <table style={{ width: "100%", fontSize: 16 }}>
-                                            <tbody>
-                                                {eiData?.totalIncome != null && (
+                                    <p style={{ fontSize: 18, marginBottom: 10 }}>Summary</p>
+                                    <table style={{ width: "100%", fontSize: 16 }}>
+                                        <tbody>
+                                            {eiData?.totalIncome != null && (
+                                                <tr>
+                                                    <td style={{ textAlign: "left" }}>
+                                                        <strong>Total Income</strong>
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        ₹
+                                                        {eiData?.totalIncome?.toLocaleString(
+                                                            "en-IN",
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            {eiData?.totalExpense != null && (
+                                                <tr>
+                                                    <td style={{ textAlign: "left" }}>
+                                                        <strong>Total Expense</strong>
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        ₹
+                                                        {eiData?.totalExpense?.toLocaleString(
+                                                            "en-IN",
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            {eiData?.totalExpense != null &&
+                                                eiData?.totalIncome != null && (
                                                     <tr>
-                                                        <td>
-                                                            <strong>Total Income</strong>
+                                                        <td style={{ textAlign: "left" }}>
+                                                            <strong>Net Balance</strong>
                                                         </td>
                                                         <td style={{ textAlign: "right" }}>
                                                             ₹
-                                                            {eiData?.totalIncome?.toLocaleString(
+                                                            {(
+                                                                eiData?.totalIncome -
+                                                                eiData?.totalExpense
+                                                            )?.toLocaleString("en-IN")}
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            {(eiData?.totalCompletedPayment != null ||
+                                                eiData?.totalPendingPayment != null) && (
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            Total{" "}
+                                                            {eiData?.totalPendingPayment != null
+                                                                ? "pending"
+                                                                : "completd"}{" "}
+                                                            amount
+                                                        </strong>
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        ₹
+                                                        {eiData?.totalPendingPayment?.toLocaleString(
+                                                            "en-IN",
+                                                        ) ||
+                                                            eiData?.totalCompletedPayment?.toLocaleString(
                                                                 "en-IN",
                                                             )}
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                                {eiData?.totalExpense != null && (
-                                                    <tr>
-                                                        <td>
-                                                            <strong>Total Expense</strong>
-                                                        </td>
-                                                        <td style={{ textAlign: "right" }}>
-                                                            ₹
-                                                            {eiData?.totalExpense?.toLocaleString(
-                                                                "en-IN",
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                                {eiData?.totalExpense != null &&
-                                                    eiData?.totalIncome != null && (
-                                                        <tr>
-                                                            <td>
-                                                                <strong>Net Balance</strong>
-                                                            </td>
-                                                            <td style={{ textAlign: "right" }}>
-                                                                ₹
-                                                                {(
-                                                                    eiData?.totalIncome -
-                                                                    eiData?.totalExpense
-                                                                )?.toLocaleString("en-IN")}
-                                                            </td>
-                                                        </tr>
-                                                    )}
-                                                {(eiData?.totalCompletedPayment != null ||
-                                                    eiData?.totalPendingPayment != null) && (
-                                                    <tr>
-                                                        <td>
-                                                            <strong>
-                                                                Total{" "}
-                                                                {eiData?.totalPendingPayment != null
-                                                                    ? "pending"
-                                                                    : "completd"}{" "}
-                                                                amount
-                                                            </strong>
-                                                        </td>
-                                                        <td style={{ textAlign: "right" }}>
-                                                            ₹
-                                                            {eiData?.totalPendingPayment?.toLocaleString(
-                                                                "en-IN",
-                                                            ) ||
-                                                                eiData?.totalCompletedPayment?.toLocaleString(
-                                                                    "en-IN",
-                                                                )}
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </p>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </>
                             )}
                         </>
@@ -486,10 +492,10 @@ const styles = {
     th: {
         backgroundColor: "#f1f1f1",
         padding: "10px",
-        textAlign: "left",
         fontWeight: "bold",
     },
     td: {
+        textAlign: "center",
         padding: "2px",
     },
 };

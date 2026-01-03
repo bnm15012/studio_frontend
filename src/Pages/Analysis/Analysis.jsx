@@ -10,7 +10,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { Bar, Line, Pie } from "react-chartjs-2";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -81,7 +81,10 @@ const chartOptions = {
 const Analysis = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const years = Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i);
+    const years = useMemo(
+        () => Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i),
+        [],
+    );
     const [selectedYear, setSelectedYear] = useState(years[years.length - 1]);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const token = useSelector((state) => state.auth.token);
@@ -128,7 +131,7 @@ const Analysis = () => {
 
     useEffect(() => {
         loadDashboardData(selectedYear);
-    }, [selectedYear, loadDashboardData]);
+    }, [selectedYear]);
 
     return (
         <WidgetsOnPage
