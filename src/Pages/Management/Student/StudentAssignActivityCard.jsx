@@ -17,7 +17,6 @@ const StudentAssignActivityCard = ({ row }) => {
         membershipEndDate,
         membershipType,
         membershipStatus,
-        activityAmount,
         daysPerWeek,
         paymentEntry,
     } = row;
@@ -39,7 +38,22 @@ const StudentAssignActivityCard = ({ row }) => {
                 label="Registration Date"
                 ChipIcon={Calendar}
             />
-            <CardChip value={`₹${activityAmount}`} label="Amount" ChipIcon={Wallet} />
+            <CardChip value={paymentEntry?.amount !== paymentEntry?.actualAmount ? (
+                    <>
+                        Rs. {paymentEntry?.amount}{" "}
+                        <span
+                            style={{
+                                textDecoration: "line-through",
+                                color: "red",
+                            }}
+                        >
+                            Rs. {paymentEntry?.actualAmount}
+                        </span>
+                    </>
+                ) : (
+                    `Rs. ${paymentEntry?.amount}`
+                )
+                } label="Amount" ChipIcon={Wallet} />
             <CardChip value={daysPerWeek} label="Days Per Week" ChipIcon={Calendar} />
             <ShowMoreDialog title={"More Activity Details"}>
                 <CardChip value={batchTime} label="Batch Time" ChipIcon={Clock1} />
