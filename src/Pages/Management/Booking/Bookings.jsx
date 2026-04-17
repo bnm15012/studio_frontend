@@ -5,7 +5,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useSelector } from "react-redux";
 import CalendarView from "./Celendar/CalendarView.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import PropTypes from "prop-types";
 import { bookingCruds } from "../../../api/all.api.js";
@@ -106,7 +106,7 @@ const Bookings = ({ ID }) => {
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
                 branchId: currentBranch.branchId,
-                paymentDate: getCurrentDateTimeUTC(),
+                paymentDate: getCurrentDateTimeLocal(),
             };
 
             const paymentData = await awaitForDialog(paymentInit);
@@ -167,7 +167,7 @@ const Bookings = ({ ID }) => {
                 label: "Booking Date",
                 section: "Booking Details",
                 type: "DATETIME",
-                defaultValue: getCurrentDateTimeUTC(),
+                defaultValue: getCurrentDateTimeLocal(),
             },
             {
                 show: false,
@@ -183,7 +183,7 @@ const Bookings = ({ ID }) => {
                 name: "startTime",
                 label: "Start Time",
                 type: "DATETIME",
-                defaultValue: getCurrentDateTimeUTC(),
+                defaultValue: getCurrentDateTimeLocal(),
             },
             {
                 show: true,
@@ -191,7 +191,7 @@ const Bookings = ({ ID }) => {
                 name: "endTime",
                 label: "End Time",
                 type: "DATETIME",
-                defaultValue: getCurrentDateTimeUTC(),
+                defaultValue: getCurrentDateTimeLocal(),
             },
             { show: false, section: "Booking Details", name: "notes", label: "Notes" },
             {

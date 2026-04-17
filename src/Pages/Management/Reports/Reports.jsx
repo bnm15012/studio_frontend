@@ -15,7 +15,7 @@ import FlexBetween from "../../../Components/FlexBetween";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useSelector } from "react-redux";
-import { formatDate, getCurrentDateTimeUTC, getLocalDateTime } from "../../../utils/DateUtil";
+import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "../../../utils/DateUtil";
 import { useAlert } from "../../../utils/Alert";
 import Loading from "../../../Components/Loading/Loading";
 import { reportsAPi } from "./reports.api";
@@ -350,7 +350,7 @@ const Reports = () => {
                             {/* <Typography variant="h6">{eiData?.income && eiData?.expenses ? <>INCOME & EXPENSE </> : <>PAYMENT</>} REPORT</Typography> */}
                             <Typography variant="body2">{formattedDateRange()}</Typography>
                             <Typography variant="body2">
-                                Generated on: {getLocalDateTime(getCurrentDateTimeUTC())}
+                                Generated on: {getLocalDateTime(getCurrentDateTimeLocal())}
                             </Typography>
                         </>
                     }

@@ -6,7 +6,7 @@ import { createOrder, verifyPayment } from "./RazorPay.api";
 import PropTypes from "prop-types";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
-import { getCurrentDateTimeUTC, getLocalDateTime } from "../../utils/DateUtil";
+import { getCurrentDateTimeLocal, getLocalDateTime } from "../../utils/DateUtil";
 import StyledDialog from "../../Components/New/StyledDialog";
 
 const PaymentDialog = ({ open, onClose, plan }) => {
@@ -143,7 +143,7 @@ const PaymentDialog = ({ open, onClose, plan }) => {
                             getEndDateBySubscriptionPlan(
                                 subscriptionPlan?.endDate
                                     ? subscriptionPlan.endDate
-                                    : getCurrentDateTimeUTC(),
+                                    : getCurrentDateTimeLocal(),
                                 plan.planType,
                             ),
                         )}

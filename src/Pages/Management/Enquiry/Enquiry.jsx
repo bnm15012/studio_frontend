@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil.js";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
@@ -25,7 +25,7 @@ const FIELDS = [
         label: "Date",
         show: true,
         type: FIELD_TYPES.DATE,
-        defaultValue: getCurrentDateTimeUTC(),
+        defaultValue: getCurrentDateTimeLocal(),
     },
     { name: "name", label: "Name", show: true },
     { name: "contact", label: "Contact", show: true, type: FIELD_TYPES.NUMBER },

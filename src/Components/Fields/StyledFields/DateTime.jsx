@@ -4,9 +4,23 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { convertUTCToLocal } from "../../../utils/DateUtil";
 import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
+
+const parseDateTime = (str) => {
+    if (!str) return null;
+
+    const [datePart, timePart = "00:00:00"] = str.split(" ");
+    const [y, m, d] = datePart.split("-").map(Number);
+    const [h = 0, min = 0, s = 0] = timePart.split(":").map(Number);
+
+    return new Date(y, m - 1, d, h, min, s);
+};
+
+const formatDateTime = (date) => {
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
 
 const DateTime = ({
     value,
@@ -17,6 +31,7 @@ const DateTime = ({
     readOnly = false,
     format = "DATETIME",
     variant = "standard",
+    includeCurrentTime = true,
     placeholder = "Select date and time",
 }) => {
     const theme = useTheme();
@@ -24,43 +39,53 @@ const DateTime = ({
 
     useEffect(() => {
         if (value) {
-            const localStr = convertUTCToLocal(value);
-            const date = new Date(localStr.replace(" ", "T"));
-            setLocalDateTime(date);
+            setLocalDateTime(parseDateTime(value));
+        } else {
+            setLocalDateTime(null);
         }
     }, [value]);
 
     const handleChange = (date) => {
-        if (date) {
-            setLocalDateTime(date);
-            const formatted = date.toISOString().slice(0, 19).replace("T", " ");
+        if (!date) {
+            setLocalDateTime(null);
+            setValue(null);
+            return;
+        }
+
+        setLocalDateTime(date);
+
+        if (format === "DATE") {
+            const pad = (n) => String(n).padStart(2, "0");
+            let formatted = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+            if (includeCurrentTime) {
+                const now = new Date();
+                formatted += ` ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+            }
             setValue(formatted);
         } else {
-            setValue(null);
+            setValue(formatDateTime(date));
         }
     };
 
-    const minDate = minVal ? new Date(convertUTCToLocal(minVal).replace(" ", "T")) : undefined;
-    const maxDate = maxVal ? new Date(convertUTCToLocal(maxVal).replace(" ", "T")) : undefined;
+    const minDate = minVal ? parseDateTime(minVal) : undefined;
+    const maxDate = maxVal ? parseDateTime(maxVal) : undefined;
 
     const commonProps = {
         value: localDateTime,
-        label: label,
+        label,
         disabled: readOnly,
         onChange: handleChange,
-        ampm: "true",
+        ampm: true,
         format: format === "DATE" ? "dd/MM/yyyy" : "dd/MM/yyyy, hh:mm a",
-        minutesstep: 5,
+        minutesStep: 5,
         slotProps: {
             textField: {
-                variant: variant,
+                variant,
                 size: "small",
                 fullWidth: true,
-                placeholder: placeholder
-                    ? placeholder
-                    : format === "DATE"
-                      ? "Select date"
-                      : "Select date and time",
+                placeholder:
+                    placeholder ||
+                    (format === "DATE" ? "Select date" : "Select date and time"),
                 sx: {
                     borderRadius: 2,
                     "& .MuiOutlinedInput-root": {
@@ -84,21 +109,15 @@ const DateTime = ({
         <>
             <GlobalStyles
                 styles={{
-                    // Style the picker popper/panel background
                     ".MuiPickersPopper-root .MuiPaper-root": {
                         borderRadius: 12,
                         backgroundColor: theme.palette.background.paper,
                         boxShadow: theme.shadows[2],
                         padding: "8px",
                     },
-
-                    // Style the clock face
                     ".MuiClock-root": {
-                        // borderRadius: "50%",
                         padding: "2rem",
                     },
-
-                    // Style clock numbers
                     ".MuiClockNumber-root": {
                         color: "#1976d2",
                         fontWeight: 500,
@@ -107,13 +126,10 @@ const DateTime = ({
                             color: "#fff",
                         },
                     },
-
-                    // Style the AM/PM buttons
                     ".MuiClock-pmButton, .MuiClock-amButton": {
                         borderRadius: "16px !important",
                         fontWeight: "bolder !important",
                         fontSize: "1rem !important",
-                        // margin: "4px",
                         "&.Mui-selected": {
                             backgroundColor: "primary",
                             color: "#fff",
@@ -127,7 +143,11 @@ const DateTime = ({
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {format === "DATE" ? (
-                    <DatePicker {...commonProps} minDate={minDate} maxDate={maxDate} />
+                    <DatePicker
+                        {...commonProps}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                    />
                 ) : (
                     <DateTimePicker
                         {...commonProps}
@@ -152,6 +172,7 @@ DateTime.propTypes = {
     format: PropTypes.oneOf(["DATE", "DATETIME"]),
     minVal: PropTypes.string,
     maxVal: PropTypes.string,
+    includeCurrentTime: PropTypes.bool,
     placeholder: PropTypes.string,
     readOnly: PropTypes.bool,
 };

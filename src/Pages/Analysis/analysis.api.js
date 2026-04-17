@@ -1,10 +1,9 @@
 import api from "../../utils/api";
-import { getCurrentDateTimeUTC } from "../../utils/DateUtil";
 
 export const fetchReportData = async ({
     token,
     branchId,
-    year = getCurrentDateTimeUTC().substring(0, 4),
+    year = new Date().getFullYear(),
 }) => {
     try {
         const response = await api.get(`/analysis/${year}/${branchId}`, {

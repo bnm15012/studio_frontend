@@ -2,7 +2,7 @@ import { useRef } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
@@ -36,8 +36,7 @@ const FIELDS = [
         label: "Expense Date",
         type: FIELD_TYPES.DATE,
         validation: { required: true },
-
-        defaultValue: getCurrentDateTimeUTC(),
+        defaultValue: getCurrentDateTimeLocal(),
     },
     {
         show: true,

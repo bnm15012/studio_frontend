@@ -7,7 +7,7 @@ import StudentCard from "./StudentCard.jsx";
 import { useUI } from "../../../context/UIContext";
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
 import StudentInvoice from "./StudentInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
@@ -52,6 +52,7 @@ const FIELDS = [
         name: "dob",
         label: "Date of Birth",
         type: "DATE",
+        extraProp: { includeCurrentTime: false }
     },
     {
         show: true,
@@ -382,7 +383,7 @@ const Students = ({ ID }) => {
                         label: "Registration Date",
                         type: "DATE",
                         extraProp: { readOnly: true },
-                        defaultValue: getCurrentDateTimeUTC(),
+                        defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
                     },
                     {
@@ -390,18 +391,18 @@ const Students = ({ ID }) => {
                         name: "membershipStartDate",
                         label: "Start Date",
                         type: "DATE",
-                        defaultValue: getCurrentDateTimeUTC(),
+                        defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
-                        extraProp: { min: getCurrentDateTimeUTC() },
+                        extraProp: { min: getCurrentDateTimeLocal() },
                     },
                     {
                         show: true,
                         name: "membershipEndDate",
                         label: "End Date",
                         type: "DATE",
-                        defaultValue: getCurrentDateTimeUTC(),
+                        defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
-                        extraProp: { min: getCurrentDateTimeUTC(), readOnly: true },
+                        extraProp: { min: getCurrentDateTimeLocal(), readOnly: true },
                     },
                     {
                         show: isEnabled(FEATURE_KEYS.PAYMENT_DATE),
@@ -409,7 +410,7 @@ const Students = ({ ID }) => {
                         label: "Payment Date",
                         type: "DATE",
                         editable: (row) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
-                        defaultValue: getCurrentDateTimeUTC(),
+                        defaultValue: getCurrentDateTimeLocal(),
                     },
                     {
                         show: false,

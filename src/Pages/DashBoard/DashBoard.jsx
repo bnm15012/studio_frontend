@@ -17,7 +17,6 @@ import Payment from "@mui/icons-material/Payment";
 import TrendingUp from "@mui/icons-material/TrendingUp";
 import SummaryCard from "./SummaryCard";
 import ImageComponent from "../../Components/ImageComponent";
-import { convertUTCToLocal } from "../../utils/DateUtil";
 import { useUI } from "../../context/UIContext";
 
 // Entrance animation (fade + up + subtle scale)
@@ -44,7 +43,7 @@ const DashBoard = () => {
     const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
     const token = useSelector((state) => state.auth.token);
     const endDate = subscriptionPlan?.endDate
-        ? new Date(convertUTCToLocal(subscriptionPlan.endDate))
+        ? new Date(subscriptionPlan.endDate)
         : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));

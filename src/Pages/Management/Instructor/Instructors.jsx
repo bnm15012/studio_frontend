@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
 import ActionBar from "../../../Components/ActionBar";
 
@@ -60,6 +60,7 @@ const FIELDS = [
         name: "dob",
         label: "Date of Birth",
         type: "DATE",
+        extraProp: { includeCurrentTime: false }
     },
     {
         show: true,
@@ -168,7 +169,7 @@ const Instructors = ({ ID }) => {
                         label: "Assigned Date",
                         type: "DATE",
                         extraProp: { readOnly: true },
-                        defaultValue: getCurrentDateTimeUTC(),
+                        defaultValue: getCurrentDateTimeLocal(),
                     },
                     {
                         show: true,

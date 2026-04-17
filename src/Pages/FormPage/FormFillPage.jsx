@@ -3,7 +3,7 @@ import FormBuilder from "../../Components/FormBuilder";
 import { addStudentAPI } from "../Management/Student/Student.api";
 import { useEffect } from "react";
 import { addEnquiryAPI } from "../../api/enquiry.api";
-import { getCurrentDateTimeUTC } from "../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../utils/DateUtil";
 
 const formData = [
     {
@@ -38,6 +38,9 @@ const formData = [
                 label: "Date of Birth",
                 validation: {
                     required: true,
+                },
+                extraProp: {
+                    includeCurrentTime: false,
                 },
             },
             {
@@ -86,7 +89,7 @@ const formData = [
                 extraProp: {
                     readOnly: true,
                 },
-                defaultValue: getCurrentDateTimeUTC(),
+                defaultValue: getCurrentDateTimeLocal(),
             },
         ],
     },

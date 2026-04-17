@@ -1,7 +1,7 @@
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCurrentDateTimeUTC } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
@@ -45,7 +45,7 @@ const FIELDS = [
         name: "paymentDate",
         label: "Payment Date",
         type: FIELD_TYPES.DATE,
-        defaultValue: getCurrentDateTimeUTC(),
+        defaultValue: getCurrentDateTimeLocal(),
     },
     {
         show: true,
