@@ -102,7 +102,7 @@ const Bookings = ({ ID }) => {
 
             const paymentInit = {
                 actualAmount: 0,
-                amount: 0,
+                amount: row.totalAmount,
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
                 branchId: currentBranch.branchId,
@@ -145,7 +145,6 @@ const Bookings = ({ ID }) => {
                 name: "totalAmount",
                 label: "Total Amount",
                 type: FIELD_TYPES.NUMBER,
-                defaultValue: 20,
             },
             {
                 show: true,
@@ -175,7 +174,17 @@ const Bookings = ({ ID }) => {
                 label: "Paid Amount",
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
-                defaultValue: 10,
+                extraProp: { readOnly: true },
+                getValue: (obj, row) => row.paymentEntries && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b)) || 0,
+            },
+            {
+                show: false,
+                name: "dueAmount",
+                label: "Due Amount",
+                section: "Payment Details",
+                type: FIELD_TYPES.NUMBER,
+                extraProp: { readOnly: true },
+                getValue: (obj, row) => (row.totalAmount || 0) - (row.paymentEntries ? (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b)) : 0),
             },
             {
                 show: true,

@@ -33,7 +33,11 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
             fullWidth
         >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3, py: 2 }}>
-                <Typography fontWeight="bolder">Actual Amount: {formData.actualAmount}</Typography>
+                {!!formData.actualAmount && (
+                    <Typography fontWeight="bolder" variant="h6">
+                        Actual Amount: {formData.actualAmount}
+                    </Typography>
+                )}
 
                 <TextField
                     label="Final Amount"
