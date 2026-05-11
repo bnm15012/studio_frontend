@@ -93,7 +93,8 @@ const Bookings = ({ ID }) => {
     const beforeAdd = useCallback(
         async (row) => {
             const modifiedData = { ...row };
-
+            delete modifiedData.dueAmount;
+            delete modifiedData.paidAmount;
             const clientEntry = modifiedData.clientEntry;
 
             if (Object.keys(clientEntry).includes("key")) {

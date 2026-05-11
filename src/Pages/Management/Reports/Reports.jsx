@@ -81,7 +81,7 @@ const Reports = () => {
                         index + 1,
                         entry.studentName,
                         entry.paymentMode,
-                        `${entry.activityName} (${entry.membershipType})`,
+                        `${entry.activityName} ${entry.membershipType ? "(" + entry.membershipType + ")" : ""}`,
                         getLocalDateTime(entry.paymenDate),
                         `₹${entry.amount}`,
                     ]);
