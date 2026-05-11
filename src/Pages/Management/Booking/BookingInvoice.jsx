@@ -72,10 +72,10 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-              studio,
-              branch: currentBranch,
-              getLocalDateTime,
-          })
+            studio,
+            branch: currentBranch,
+            getLocalDateTime,
+        })
         : "";
 
     return (
@@ -140,27 +140,25 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         </>
                     }
                     content={
-                        <div>
+                        <>
                             {/* Invoice Info */}
-                            <FlexBetween gap={1} my={2}>
-                                <div>
-                                    <p style={{ margin: 0, textWrap: "wrap" }}>
-                                        {currentBranch?.address}
-                                    </p>
-                                    <p style={{ margin: 0 }}>
-                                        {currentBranch?.city}, {currentBranch?.state}{" "}
-                                        {currentBranch?.pincode}
-                                    </p>
-                                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                                    <p style={{ margin: 0 }}>{studio?.email}</p>
-                                </div>
-                                <div style={{ textAlign: "right" }}>
-                                    <strong>Bill To</strong>:
-                                    <div>{bookingData?.clientEntry?.pocName}</div>
-                                    <div>{bookingData?.clientEntry?.pocPhone}</div>
-                                    <div>{bookingData?.clientEntry?.pocEmail}</div>
-                                </div>
-                            </FlexBetween>
+                            <p>
+                                <p style={{ margin: 0, textWrap: "wrap" }}>
+                                    {currentBranch?.address}
+                                </p>
+                                <p style={{ margin: 0 }}>
+                                    {currentBranch?.city}, {currentBranch?.state}{" "}
+                                    {currentBranch?.pincode}
+                                </p>
+                                <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
+                                <p style={{ margin: 0 }}>{studio?.email}</p>
+                            </p>
+                            <p style={{ textAlign: "right" }}>
+                                <strong>Bill To</strong>:
+                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocName}</p>
+                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocPhone}</p>
+                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocEmail}</p>
+                            </p>
 
                             {/* Booking Table */}
                             <table border={1} style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -169,9 +167,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                         <th style={tableHeaderStyle}>Purpose</th>
                                         <th style={tableHeaderStyle}>Start Time</th>
                                         <th style={tableHeaderStyle}>End Time</th>
-                                        <th style={tableHeaderStyle}>Amount</th>
-                                        <th style={tableHeaderStyle}>Advance</th>
-                                        <th style={tableHeaderStyle}>Balance</th>
+                                        <th style={tableHeaderStyle}>Total Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -186,25 +182,40 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                         <td style={tableCellStyle}>
                                             {bookingData?.totalAmount?.toFixed(2)}
                                         </td>
-                                        <td style={tableCellStyle}>
-                                            {bookingData?.advanceAmount?.toFixed(2)}
-                                        </td>
-                                        <td style={tableCellStyle}>
-                                            {bookingData?.balanceAmount?.toFixed(2)}
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            {/* Payment Status */}
-                            <div style={{ marginTop: "10px" }}>
-                                <p>
-                                    <strong>Payment Status:</strong> {bookingData?.paymentStatus}
-                                </p>
-                                <p>
-                                    <strong>Payment Mode:</strong> {bookingData?.paymentMode}
-                                </p>
-                            </div>
+                            <table
+                                border={1}
+                                style={{ width: "100%", borderCollapse: "collapse", marginTop: "2mm" }}
+                            >
+                                <thead>
+                                    <tr>
+                                        <th style={tableHeaderStyle}>Amount</th>
+                                        <th style={tableHeaderStyle}>Date</th>
+                                        <th style={tableHeaderStyle}>Payment Mode</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {bookingData?.paymentEntries?.map((paymentEntry) => {
+                                        return <tr key={paymentEntry?.id}>
+                                            <td style={tableCellStyle}>
+                                                {paymentEntry?.amount?.toFixed(2)}
+                                            </td>
+                                            <td style={tableCellStyle}>
+                                                {getLocalDateTime(
+                                                    paymentEntry?.paymentDate,
+                                                )}
+                                            </td>
+                                            <td style={tableCellStyle}>
+                                                {paymentEntry?.paymentType}
+                                            </td>
+                                        </tr>
+                                    })}
+                                </tbody>
+                            </table>
+
                             <div style={sectionTitle}>
                                 <h3>Terms and Conditions</h3>
                                 {preparedDescription ? (
@@ -232,7 +243,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                                     </Typography>
                                 )}
                             </div>
-                        </div>
+                        </>
                     }
                 />
             </DialogContent>
@@ -248,15 +259,9 @@ BookingInvoice.propTypes = {
         branchId: PropTypes.number.isRequired,
         purpose: PropTypes.string.isRequired,
         totalAmount: PropTypes.number.isRequired,
-        paymentStatus: PropTypes.string.isRequired,
-        advanceAmount: PropTypes.number,
-        balanceAmount: PropTypes.number,
         bookingDate: PropTypes.string,
         startTime: PropTypes.string,
         endTime: PropTypes.string,
-        advanceDate: PropTypes.string,
-        advanceMode: PropTypes.string,
-        paymentMode: PropTypes.string,
         notes: PropTypes.string,
         clientEntry: PropTypes.shape({
             clientId: PropTypes.number,
@@ -265,6 +270,11 @@ BookingInvoice.propTypes = {
             pocEmail: PropTypes.string,
             groupName: PropTypes.string,
             clientType: PropTypes.string,
+        }),
+        paymentEntry: PropTypes.shape({
+            amount: PropTypes.number,
+            paymentDate: PropTypes.string,
+            paymentMode: PropTypes.string,
         }),
     }).isRequired,
 };
