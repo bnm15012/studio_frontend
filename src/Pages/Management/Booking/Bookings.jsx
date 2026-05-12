@@ -176,7 +176,7 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) => row.paymentEntries && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b)) || 0,
+                getValue: (obj, row) => Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0,
             },
             {
                 show: false,
@@ -185,7 +185,7 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) => (row.totalAmount || 0) - (row.paymentEntries ? (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b)) : 0),
+                getValue: (obj, row) => (row.totalAmount || 0) - (Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0),
             },
             {
                 show: true,
