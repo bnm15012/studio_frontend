@@ -1,20 +1,21 @@
 import PropTypes from "prop-types";
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, IconButton } from "@mui/material";
 import {
+    StyledCardActions,
     StyledCardContainer,
     StyledCardContent,
     StyledMotionCard,
 } from "../../../Components/New/StyledCard";
 import PaymentCard from "../Payments/PaymentCardView";
 import FlexBetween from "../../../Components/FlexBetween";
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
-import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
 import { useState } from "react";
 import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
+import DialogForm from "../../../Components/Views/DialogForm";
 
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];
@@ -28,6 +29,7 @@ const PaymentList = ({ data, field }) => {
     const token = useSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const [paymentFormData, setPaymentFormData] = useState();
 
     if (!value.length) {
         return (
@@ -42,22 +44,27 @@ const PaymentList = ({ data, field }) => {
         );
     }
 
-    const addPayment = async (paymentData) => {
-        dispatch(paymentCruds.add({
-            payeeType: "BOOKING",
-            amount: paymentData.amount,
-            paymentDate: paymentData.paymentDate,
-            status: paymentData.status,
-            paymentType: paymentTypes[0],
-            branchId: data.branchId,
-            payeeId: data.id,
-        }, token, showAlert, setLoading, true));
+    const handleSave = async () => {
+        if (paymentFormData.id !== "NEW") {
+            dispatch(paymentCruds.update(paymentFormData.id, paymentFormData, token, showAlert, setLoading, true));
+        } else {
+            dispatch(paymentCruds.add({
+                payeeType: "BOOKING",
+                amount: paymentFormData.amount,
+                paymentDate: paymentFormData.paymentDate,
+                status: paymentFormData.status,
+                paymentType: paymentTypes[0],
+                branchId: data.branchId,
+                payeeId: data.id,
+            }, token, showAlert, setLoading, true));
+        }
         if (!loading) {
             setTimeout(() => {
                 dispatch(bookingCruds.getById(data.id, token, showAlert, setLoading, { forceRefresh: true }))
-            }, 2000);
+            }, 1000);
         }
         setOpenPaymentDialog(false);
+        setPaymentFormData(null);
     }
     return (
         <Box sx={{ mt: 1 }}>
@@ -66,7 +73,16 @@ const PaymentList = ({ data, field }) => {
                 <Typography variant="h6" sx={{ fontWeight: 600, my: "auto" }}>
                     {title}
                 </Typography>
-                <Button startIcon={<AddCircleOutline />} onClick={() => setOpenPaymentDialog(true)} disabled={data.totalAmount === paidAmount} variant="contained" size="small" >
+                <Button startIcon={<AddCircleOutline />} onClick={() => {
+                    setOpenPaymentDialog(true);
+                    setPaymentFormData({
+                        id: "NEW",
+                        amount: data.totalAmount - paidAmount,
+                        paymentDate: getCurrentDateTimeLocal(),
+                        status: paymentStatusTypes[0],
+                        paymentType: paymentTypes[0]
+                    });
+                }} disabled={data.totalAmount === paidAmount} variant="contained" size="small" >
                     Add Payment
                 </Button>
             </FlexBetween>
@@ -77,17 +93,62 @@ const PaymentList = ({ data, field }) => {
                         <StyledCardContent>
                             <PaymentCard row={m} />
                         </StyledCardContent>
+                        <StyledCardActions>
+                            <IconButton onClick={() => { setOpenPaymentDialog(true); setPaymentFormData(m); }}>
+                                <Edit />
+                            </IconButton>
+                        </StyledCardActions>
                     </StyledMotionCard>
                 ))}
             </StyledCardContainer>
             {openPaymentDialog && (
-                <PaymentEntryDialog
-                    open={true}
-                    onSave={addPayment}
-                    onClose={() => setOpenPaymentDialog(false)}
-                    initialData={{ amount: data.totalAmount - paidAmount, paymentDate: getCurrentDateTimeLocal(), status: paymentStatusTypes[0], paymentType: paymentTypes[0] }}
-                    paymentStatus={paymentStatusTypes.map((ps) => ({ label: ps, value: ps }))}
-                    paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
+                <DialogForm
+                    data={paymentFormData}
+                    fieldsMeta={{ primary: "id", root: "branchId" }}
+                    fields={[
+                        {
+                            name: "amount",
+                            label: "Amount",
+                            type: "NUMBER",
+                        },
+                        {
+                            name: "paymentDate",
+                            label: "Payment Date",
+                            type: "DATE",
+                        },
+                        {
+                            name: "status",
+                            label: "Status",
+                            type: "SELECT",
+                            getValue: (value) => value && ({ key: value, value }),
+                            extraProp: {
+                                getOptions: async (search, page, limit) =>
+                                    ["PENDING", "COMPLETED"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                        .slice(page * limit, (page + 1) * limit)
+                                        .map((a) => ({ key: a, value: a })),
+                            },
+                        },
+                        {
+                            name: "paymentType",
+                            label: "Payment Category",
+                            type: "SELECT",
+                            getValue: (value) => value && ({ key: value, value }),
+                            extraProp: {
+                                getOptions: async (search, page, limit) =>
+                                    ["CASH", "UPI"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                        .slice(page * limit, (page + 1) * limit)
+                                        .map((a) => ({ key: a, value: a })),
+                            },
+                        },
+                    ]}
+                    handleChange={(value, _, fieldName) => {
+                        setPaymentFormData((prev) => ({
+                            ...prev,
+                            [fieldName]: value,
+                        }));
+                    }}
+                    handleSave={handleSave}
+                    setClose={() => setOpenPaymentDialog(false)}
                 />
             )}
         </Box>
