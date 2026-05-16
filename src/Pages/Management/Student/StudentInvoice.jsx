@@ -68,8 +68,7 @@ const StudentInvoice = ({ open, onClose, activityData }) => {
                                 <h2>INVOICE</h2>
                                 <div>
                                     <strong>Invoice #</strong>: INV-
-                                    {activityData?.paymentEntry?.invoiceId ||
-                                        Math.floor(1000 + Math.random() * 9000)}
+                                    {activityData?.paymentEntry?.id}
                                 </div>
                                 <div>
                                     <strong>Invoice Date</strong>:{" "}
