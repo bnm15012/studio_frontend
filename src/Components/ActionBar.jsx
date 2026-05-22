@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 
 const ActionBar = ({
     filterOptions,
+    handleFilterKeys,
     search = true,
     qrProps,
     api,
@@ -24,7 +25,7 @@ const ActionBar = ({
     return (
         <FlexBetween paddingBottom={2} gap={1} height={"5.5rem"}>
             {search ? (
-                <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} />
+                <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} handleFilterKeys={handleFilterKeys} />
             ) : (
                 <Box flexGrow={1} />
             )}

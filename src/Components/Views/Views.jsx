@@ -30,6 +30,8 @@ const Views = (props) => {
         CardContentComponent,
         actions = [],
         editMode = "INLINE",
+        multi = false,
+        defaultParams = {}
     } = props;
 
     const consts = useRef({
@@ -269,6 +271,7 @@ Views.propTypes = {
     showAddButton: PropTypes.bool,
     CardContentComponent: PropTypes.elementType,
     actions: PropTypes.arrayOf(Object),
+    multi: PropTypes.bool,
     editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),
 };
 export default Views;

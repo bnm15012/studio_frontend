@@ -4,7 +4,7 @@ import api from "../utils/api";
 export function createCrud({
     route,
     idKey = "id",
-    extraCruds = {},
+    extraCruds = () => { },
     extraState = {},
     extraReducers = {},
 }) {
@@ -93,110 +93,117 @@ export function createCrud({
 
         getAll:
             (showAlert, setLoading, token, params, rootId, infinite) =>
-            async (dispatch, getState) => {
-                try {
-                    const state = getState()[route];
-                    if (rootId === "NEW") return;
-                    if (
-                        state.rootId === rootId &&
-                        state.currentPage === params?.page &&
-                        params?.searchTerm === state.searchTerm &&
-                        JSON.stringify(params) === JSON.stringify(state.filterKeys)
-                    )
-                        return;
-                    if (!params?.page && state.items.length) return;
-                    setLoading(true);
+                async (dispatch, getState) => {
+                    try {
+                        const state = getState()[route];
+                        if (rootId === "NEW") return;
+                        if (
+                            state.rootId === rootId &&
+                            state.currentPage === params?.page &&
+                            params?.searchTerm === state.searchTerm &&
+                            JSON.stringify(params) === JSON.stringify(state.filterKeys)
+                        )
+                            return;
+                        if (!params?.page && state.items.length) return;
+                        setLoading(true);
 
-                    const {
-                        data: { data, status },
-                    } = await api.get(`/${route}/getAll/${rootId}`, {
-                        ...getHeader(token),
-                        params,
-                    });
+                        const {
+                            data: { data, status },
+                        } = await api.get(`/${route}/getAll/${rootId}`, {
+                            ...getHeader(token),
+                            params,
+                        });
 
-                    if (infinite && params?.searchTerm === state.searchTerm) {
-                        dispatch(actions.appendItems({ data, rootId }));
-                    } else {
-                        dispatch(actions.setItems({ data, rootId }));
+                        if (infinite && params?.searchTerm === state.searchTerm) {
+                            dispatch(actions.appendItems({ data, rootId }));
+                        } else {
+                            dispatch(actions.setItems({ data, rootId }));
+                        }
+
+                        dispatch(
+                            actions.setInfo({
+                                currentPage: params?.page,
+                                pageSize: params?.size,
+                                searchTerm: params?.searchTerm,
+                                filterKeys: params,
+                                totalCount: status.totalCount,
+                            }),
+                        );
+                    } catch (err) {
+                        console.error(err);
+                        showAlert(
+                            err?.response?.data?.status?.statusMessage || `Failed to fetch ${route}`,
+                            "error",
+                        );
+                    } finally {
+                        setLoading(false);
                     }
-
-                    dispatch(
-                        actions.setInfo({
-                            currentPage: params?.page,
-                            pageSize: params?.size,
-                            searchTerm: params?.searchTerm,
-                            filterKeys: params,
-                            totalCount: status.totalCount,
-                        }),
-                    );
-                } catch (err) {
-                    console.error(err);
-                    showAlert(
-                        err?.response?.data?.status?.statusMessage || `Failed to fetch ${route}`,
-                        "error",
-                    );
-                } finally {
-                    setLoading(false);
-                }
-            },
+                },
 
         getById:
             (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
-            async (dispatch, getState) => {
-                try {
-                    if (id === "NEW") return;
+                async (dispatch, getState) => {
+                    try {
+                        if (id === "NEW") return;
 
-                    const state = getState()[route];
-                    const cached = state.recordById[id];
+                        const state = getState()[route];
+                        const cached = state.recordById[id];
 
-                    if (cached && !forceRefresh) {
-                        return cached;
-                    }
+                        if (cached && !forceRefresh) {
+                            return cached;
+                        }
 
-                    setLoading(true);
-                    const {
-                        data: { data },
-                    } = await api.get(`/${route}/get/${id}`, getHeader(token));
+                        setLoading(true);
+                        const {
+                            data: { data },
+                        } = await api.get(`/${route}/get/${id}`, getHeader(token));
 
-                    const record = data[0];
-                    dispatch(actions.setRecord(record));
-                    return record;
-                } catch (err) {
-                    console.error(err);
-                    showAlert(
-                        err?.response?.data?.status?.statusMessage ||
+                        const record = data[0];
+                        dispatch(actions.setRecord(record));
+                        return record;
+                    } catch (err) {
+                        console.error(err);
+                        showAlert(
+                            err?.response?.data?.status?.statusMessage ||
                             `Failed to fetch ${route} by ID`,
-                        "error",
-                    );
-                    return null;
-                } finally {
-                    setLoading(false);
-                }
-            },
+                            "error",
+                        );
+                        return null;
+                    } finally {
+                        setLoading(false);
+                    }
+                },
 
         refresh:
             (showAlert, setLoading, token, infinite = false) =>
-            async (dispatch, getState) => {
-                const state = getState()[route];
-                dispatch(actions.clearData());
+                async (dispatch, getState) => {
+                    const state = getState()[route];
+                    dispatch(actions.clearData());
 
-                return dispatch(
-                    baseCrud.getAll(
-                        showAlert,
-                        setLoading,
-                        token,
-                        {
-                            page: 1,
-                            size: state.pageSize,
-                            searchTerm: state.searchTerm,
-                            ...state.filterKeys,
-                        },
-                        state.rootId,
-                        state.infinite,
-                    ),
-                );
-            },
+                    return dispatch(
+                        baseCrud.getAll(
+                            showAlert,
+                            setLoading,
+                            token,
+                            {
+                                page: 1,
+                                size: state.pageSize,
+                                searchTerm: state.searchTerm,
+                                ...state.filterKeys,
+                            },
+                            state.rootId,
+                            state.infinite,
+                        ),
+                    );
+                },
     };
 
-    return { ...baseCrud, ...extraCruds };
+    return {
+        ...baseCrud,
+        ...extraCruds({
+            actions,
+            getHeader,
+            route,
+        })
+    };
 }

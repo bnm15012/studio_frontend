@@ -66,6 +66,24 @@ export function createGenericSlice(options) {
                     );
                 }
             },
+            updateItems(state, action) {
+                if ("predicate" in action.payload) {
+                    const { predicate, data } = action.payload;
+                    state.items = state.items.map((item) =>
+                        predicate(item)
+                            ? { ...item, ...data }
+                            : item
+                    );
+                    return;
+                }
+
+                const updatedItems = action.payload;
+                const updatedMap = new Map(updatedItems.map((item) => [item[options.idKey], item]));
+                state.items = state.items.map((item) => {
+                    const updatedItem = updatedMap.get(item[options.idKey]);
+                    return updatedItem ? { ...item, ...updatedItem } : item;
+                });
+            },
             removeItem(state, action) {
                 if (typeof action.payload === "function") {
                     state.items = state.items.filter((item) => !action.payload(item));

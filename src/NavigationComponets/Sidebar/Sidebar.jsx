@@ -21,6 +21,7 @@ import { BookTemplate, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Close, GridView } from "@mui/icons-material";
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 const Sidebar = ({ sidebarOpen }) => {
     const navigate = useNavigate();
@@ -80,6 +81,13 @@ const Sidebar = ({ sidebarOpen }) => {
             icon: <SchoolIcon />,
         },
         {
+            path: "/management/attendance",
+            label: "Attendance",
+            show: isEnabled(FEATURE_KEYS.ATTENDANCE),
+            showOnBottomBar: isEnabled(FEATURE_KEYS.ATTENDANCE) && false,
+            icon: <AccessTimeFilledIcon />,
+        },
+        {
             path: "/management/students",
             label: "Students",
             show: isEnabled(FEATURE_KEYS.STUDENT),
@@ -96,8 +104,8 @@ const Sidebar = ({ sidebarOpen }) => {
         {
             path: "/management/type",
             label: "Packages",
-            show: isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE),
-            showOnBottomBar: isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE) && false,
+            show: isEnabled(FEATURE_KEYS.PACKAGE),
+            showOnBottomBar: isEnabled(FEATURE_KEYS.PACKAGE) && false,
             icon: <TypeSpecimen />,
         },
         {

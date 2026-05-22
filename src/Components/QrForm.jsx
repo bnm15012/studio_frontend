@@ -6,11 +6,11 @@ import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import StyledDialog from "./New/StyledDialog";
 
-const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contained" }) => {
+const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contained", qrValue = false }) => {
     const [open, setOpen] = useState(false);
     const qrRef = useRef(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-    const qrLink = `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
+    const qrLink = qrValue ? qrValue : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -20,7 +20,7 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
         window
             .html2pdf()
             .set({
-                filename: `QRCode-${link}.pdf`,
+                filename: `QRCode-${link || qrValue}.pdf`,
                 image: { type: "jpeg", quality: 1 },
                 html2canvas: { scale: 4, useCORS: true },
                 jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -92,7 +92,8 @@ const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contai
 };
 
 QrForm.propTypes = {
-    link: PropTypes.string.isRequired,
+    link: PropTypes.string,
+    qrValue: PropTypes.string,
     title: PropTypes.string,
     qrSize: PropTypes.number,
     buttonVariant: PropTypes.string,

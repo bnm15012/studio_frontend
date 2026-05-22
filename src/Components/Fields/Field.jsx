@@ -7,6 +7,7 @@ import { getLocalDateTime } from "../../utils/DateUtil";
 import TemplateEditor from "../../Pages/Management/TemplatesPage/TemplateEditor";
 import ImageComponent from "../ImageComponent";
 import ImageDialog from "../Views/ImageDialog";
+import StyledCheckbox from "./StyledFields/StyledCheckbox";
 
 const Field = ({
     value,
@@ -76,6 +77,8 @@ const Field = ({
         switch (type) {
             case "BOOL":
                 return <StyledSwitch {...commonProps} readOnly={true} />;
+            case "CHECK":
+                return <StyledCheckbox {...commonProps} readOnly={true} />;
             case "SELECT":
                 return value?.value;
             case "DATE":

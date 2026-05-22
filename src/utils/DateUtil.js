@@ -1,5 +1,5 @@
 // ✅ Parse "YYYY-MM-DD HH:mm:ss" → Date (LOCAL)
-const parseDateTime = (str) => {
+export const parseDateTime = (str) => {
     if (!str) return null;
 
     const [d, t = "00:00:00"] = str.split(" ");
@@ -54,6 +54,8 @@ export const isPast = (dateString) => {
 
 // ✅ Current local datetime
 export const getCurrentDateTimeLocal = () => formatDateTime(new Date());
+
+export const getCurrentDateLocal = () => formatDate(new Date(), "YYYY-MM-DD");
 
 // ✅ Generic formatter
 export const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
@@ -114,4 +116,22 @@ export const getTimePassed = (dateString) => {
     if (minutes < 60) return `${minutes} min ago`;
     if (hours < 24) return `${hours} hr ago`;
     return `${days} days ago`;
+};
+
+
+export const getDateRangeLocal = (startDate, endDate) => {
+    const dates = [];
+
+    const current = parseDateTime(startDate);
+    const end = parseDateTime(endDate);
+
+    current.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    while (current <= end) {
+        dates.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+    }
+
+    return dates;
 };

@@ -15,7 +15,7 @@ const FIELD_META = {
 
 const VIEWS = ["LIST"];
 
-const FIELDS = [{ show: true, name: "membershipPackage", label: "Membership Type" }];
+const FIELDS = [{ show: true, name: "membershipPackage", label: "Membership Type" }, { show: true, name: "days", label: "Days" }];
 
 const MembershipType = () => {
     const api = useRef({});

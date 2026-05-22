@@ -28,7 +28,7 @@ const ButtonProps = {
     p: 0,
 };
 
-const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search..." }) => {
+const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search...", handleFilterKeys = () => { } }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterKeys, setFilterKeys] = useState({});
 
@@ -85,6 +85,7 @@ const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search..
                     filterOptions={filterOptions}
                     onChange={(o) => {
                         setFilterKeys(o);
+                        handleFilterKeys(o);
                         handleSearch(searchTerm, o);
                     }}
                 />

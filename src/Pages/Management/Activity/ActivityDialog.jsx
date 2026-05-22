@@ -31,7 +31,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const dispatch = useDispatch();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
-    const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.MEMBERSHIP_PLAN_TABLE);
+    const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
 
     const [formData, setFormData] = useState({});
 
@@ -40,7 +40,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const token = useSelector((state) => state.auth.token);
     const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
     const membershipTypes = isMembershipTableEnabled
-        ? [...cachedMembershipTypes.map(({ activityMembershipType }) => activityMembershipType)]
+        ? [...cachedMembershipTypes.map(({ membershipPackage }) => membershipPackage)]
         : [];
 
     const fetchMembershipTypesData = useCallback(async () => {

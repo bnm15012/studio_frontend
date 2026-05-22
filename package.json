@@ -21,6 +21,7 @@
     "date-fns": "^2.30.0",
     "framer-motion": "^12.23.22",
     "html2canvas": "^1.4.1",
+    "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.536.0",
     "papaparse": "^5.5.3",
     "prop-types": "^15.8.1",

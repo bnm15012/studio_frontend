@@ -14,6 +14,9 @@ import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import StudentAssignActivityCard from "./StudentAssignActivityCard.jsx";
 import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil.js";
 import ActionBar from "../../../Components/ActionBar.jsx";
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import StudentAttendence from "./StudentAttendence.jsx";
+import MarkPresentDialog from "./MarkPresent.jsx";
 
 const size = 7;
 
@@ -87,7 +90,10 @@ const Students = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const allActivities = useSelector((state) => state.activity.activities);
+
+    const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
     const [showInvoice, setShowInvoice] = useState(false);
+    const [showAttendence, setShowAttendence] = useState(false);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const api = useRef({});
     const apiStudent = useRef({});
@@ -180,7 +186,7 @@ const Students = ({ ID }) => {
                 newObj.batchName = entry?.name;
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     newObj.membershipStartDate,
-                    value,
+                    value, cachedMembershipTypes
                 );
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
@@ -202,7 +208,7 @@ const Students = ({ ID }) => {
             } else if (fieldPath === "membershipStartDate") {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     value,
-                    newObj.membershipType,
+                    newObj.membershipType, cachedMembershipTypes
                 );
             }
             return newObj;
@@ -232,6 +238,16 @@ const Students = ({ ID }) => {
                         sx: { color: "blue" },
                         onClick: (row) => {
                             setShowInvoice(row);
+                        },
+                    },
+                    {
+                        hide: !isEnabled(FEATURE_KEYS.ATTENDANCE),
+                        name: "Attendance",
+                        icon: <HowToRegIcon />,
+                        enabled: (row) => true,
+                        sx: { color: "blue" },
+                        onClick: (row) => {
+                            setShowAttendence(row);
                         },
                     },
                 ],
@@ -527,6 +543,13 @@ const Students = ({ ID }) => {
                     initialData={openPaymentDialog.paymentInit}
                     paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
                     paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
+                />
+            )}
+            {showAttendence && (
+                <StudentAttendence
+                    open={true}
+                    onClose={() => setShowAttendence(false)}
+                    activityData={showAttendence}
                 />
             )}
         </FlexBetweenColumn>

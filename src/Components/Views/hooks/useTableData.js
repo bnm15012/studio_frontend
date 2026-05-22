@@ -11,6 +11,7 @@ export const useTableData = ({
     rootId,
     currentView,
     setLoading,
+    defaultParams = {}
 }) => {
     const dispatch = useDispatch();
     const tableState = useSelector((state) => state[tableName]);
@@ -28,7 +29,7 @@ export const useTableData = ({
                 showAlert,
                 setLoading,
                 token,
-                { page, searchTerm, size, ...filterKeys },
+                { page, searchTerm, size, ...defaultParams, ...filterKeys },
                 rootId,
                 currentView === "CARD",
             ),

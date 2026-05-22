@@ -11,11 +11,21 @@ import {
     Typography,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import DateTime from "./Fields/StyledFields/DateTime";
+import { getCurrentDateLocal } from "../utils/DateUtil";
+
 
 const Filter = ({ filterOptions = [], onChange }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const [selected, setSelected] = useState({});
-    const [tempSelected, setTempSelected] = useState({});
+
+    const defaultSelected = Object.fromEntries(
+        filterOptions
+            .filter((f) => f.key === "date")
+            .map((f) => [f.key, getCurrentDateLocal()]),
+    );
+
+    const [selected, setSelected] = useState(defaultSelected);
+    const [tempSelected, setTempSelected] = useState(defaultSelected);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -33,19 +43,35 @@ const Filter = ({ filterOptions = [], onChange }) => {
         }));
     };
 
+    const handleDateChange = (value) => {
+        setTempSelected((prev) => ({
+            ...prev,
+            ["date"]: value,
+        }));
+    };
+
     const handleApply = () => {
         setSelected(tempSelected);
+
         const activeFilters = Object.fromEntries(
             Object.entries(tempSelected).filter(([, value]) => value),
         );
+
         onChange?.(activeFilters);
         handleClose();
     };
 
     const handleClear = () => {
-        setSelected({});
-        setTempSelected({});
-        onChange?.({});
+        const cleared = Object.fromEntries(
+            filterOptions
+                .filter((f) => f.key === "date")
+                .map((f) => [f.key, getCurrentDateLocal()]),
+        );
+
+        setSelected(cleared);
+        setTempSelected(cleared);
+
+        onChange?.(cleared);
         handleClose();
     };
 
@@ -54,6 +80,7 @@ const Filter = ({ filterOptions = [], onChange }) => {
             <Button variant="contained" onClick={handleClick}>
                 <FilterAltIcon />
             </Button>
+
             <Menu
                 anchorEl={anchorEl}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -61,29 +88,59 @@ const Filter = ({ filterOptions = [], onChange }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <Box px={2} py={1} minWidth={200}>
+                <Box px={2} py={1} minWidth={250} maxHeight={500}>
                     {filterOptions.map(({ name, key, values }) => (
                         <Box key={key} mb={2}>
-                            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                            <Typography
+                                variant="subtitle2"
+                                fontWeight="bold"
+                                gutterBottom
+                            >
                                 {name}
                             </Typography>
-                            <RadioGroup
-                                value={tempSelected[key] || ""}
-                                onChange={handleRadioChange(key)}
-                            >
-                                {values.map((value) => (
-                                    <FormControlLabel
-                                        key={value}
-                                        value={value}
-                                        control={<Radio />}
-                                        label={value}
-                                    />
-                                ))}
-                            </RadioGroup>
+                            {key === "date" ? (
+                                <DateTime
+                                    label="Filter Date"
+                                    value={tempSelected[key] || getCurrentDateLocal()}
+                                    setValue={handleDateChange}
+                                    format={"DATE"}
+                                    showTitle={false}
+                                    variant="outlined"
+                                    includeCurrentTime={false}
+                                />
+                            ) : (
+                                <RadioGroup
+                                    sx={{
+                                        display: "grid",
+                                        gridTemplateColumns: {
+                                            xs: "1fr",
+                                            sm: "1fr 1fr",
+                                        },
+                                    }}
+                                    value={tempSelected[key] || ""}
+                                    onChange={handleRadioChange(key)}
+                                >
+                                    {values.map((value) => (
+                                        <FormControlLabel
+                                            key={value}
+                                            value={value}
+                                            control={<Radio />}
+                                            label={value}
+                                        />
+                                    ))}
+                                </RadioGroup>
+                            )}
                         </Box>
                     ))}
+
                     <Divider />
-                    <Box display="flex" justifyContent="space-between" mt={1} gap={1}>
+
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        p={2}
+                        gap={1}
+                    >
                         <Button
                             variant="outlined"
                             sx={{ color: "red" }}
@@ -92,7 +149,13 @@ const Filter = ({ filterOptions = [], onChange }) => {
                         >
                             Clear
                         </Button>
-                        <Button variant="contained" color="primary" fullWidth onClick={handleApply}>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={handleApply}
+                        >
                             Apply
                         </Button>
                     </Box>
@@ -107,7 +170,7 @@ Filter.propTypes = {
         PropTypes.shape({
             name: PropTypes.string.isRequired,
             key: PropTypes.string.isRequired,
-            values: PropTypes.arrayOf(PropTypes.string).isRequired,
+            values: PropTypes.arrayOf(PropTypes.string),
         }),
     ),
     onChange: PropTypes.func,
