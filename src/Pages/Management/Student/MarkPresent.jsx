@@ -16,6 +16,7 @@ import StyledDialog from "../../../Components/New/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../../utils/Alert";
 import { useUI } from "../../../context/UIContext";
+import { studentsAssignmentsCruds } from "../../../api/all.api";
 
 const MarkPresentDialog = () => {
     const showAlert = useAlert();
@@ -30,19 +31,21 @@ const MarkPresentDialog = () => {
 
     const scannerRef = useRef(null);
     const timeOutRef = useRef(null);
+    const isProcessingRef = useRef(false);
 
     useEffect(() => {
+        let isMounted = true;
         if (!open) return;
 
-        let html5QrCode;
-
         const initScanner = async () => {
-            let isProcessing = false;
             try {
+                if (!isMounted) return;
                 setScanStatus(null);
                 setMessage("");
+                isProcessingRef.current = false;
 
-                await new Promise((resolve) => setTimeout(resolve, 500));
+                // Ensure DOM is ready
+                await new Promise((resolve) => setTimeout(resolve, 100));
 
                 const element = document.getElementById("qr-reader");
 
@@ -51,44 +54,54 @@ const MarkPresentDialog = () => {
                     return;
                 }
 
-                html5QrCode = new Html5Qrcode("qr-reader");
-                scannerRef.current = html5QrCode;
+                if (!scannerRef.current) {
+                    scannerRef.current = new Html5Qrcode("qr-reader");
+                }
 
-                await html5QrCode.start(
-                    {
-                        facingMode: "environment",
-                    },
+                await scannerRef.current.start(
+                    { facingMode: "environment" },
                     {
                         fps: 10,
-                        qrbox: 250,
+                        qrbox: { width: 250, height: 250 },
                     },
                     async (decodedText) => {
-                        if (isProcessing) return;
-                        isProcessing = true;
+                        if (isProcessingRef.current) return;
+                        isProcessingRef.current = true;
 
                         setScanResult(decodedText);
 
                         const parts = decodedText.split("/");
                         const assignmentId = parts[1];
 
-                        await html5QrCode.stop();
+                        try {
+                            if (scannerRef.current) {
+                                await scannerRef.current.stop();
+                            }
+                        } catch (e) {}
 
                         if (!assignmentId) {
-                            setScanStatus("fail");
-                            setMessage("Invalid QR");
+                            if (isMounted) {
+                                setScanStatus("fail");
+                                setMessage("Invalid QR");
+                                timeOutRef.current = setTimeout(() => {
+                                    if (isMounted) initScanner();
+                                }, 3000);
+                            }
                             return;
                         }
 
                         await markPresent(assignmentId);
+                        
                         timeOutRef.current = setTimeout(() => {
-                            setScanStatus(null);
-                            setMessage("");
-                            initScanner();
+                            if (isMounted) {
+                                initScanner();
+                            }
                         }, 3000);
                     }
                 );
             } catch (err) {
                 console.error("Scanner Error:", err);
+                if (!isMounted) return;
 
                 setScanStatus("fail");
 
@@ -103,25 +116,26 @@ const MarkPresentDialog = () => {
         initScanner();
 
         return () => {
-            try {
-                if (html5QrCode) {
-                    html5QrCode
-                        .stop()
-                        .catch(() => { });
-                }
-
-                if (timeOutRef.current) {
-                    clearTimeout(timeOutRef.current);
-                }
-            } catch (error) {
-
+            isMounted = false;
+            isProcessingRef.current = true; // prevent any pending callback from executing
+            
+            if (timeOutRef.current) {
+                clearTimeout(timeOutRef.current);
+            }
+            
+            if (scannerRef.current) {
+                scannerRef.current.stop().then(() => {
+                    scannerRef.current.clear();
+                }).catch(() => {});
             }
         };
     }, [open]);
 
     const markPresent = async (assignmentId) => {
         try {
-            dispatch(studentsAssignmentsCruds.markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
+            await dispatch(studentsAssignmentsCruds.markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
+            setScanStatus("success");
+            setMessage("Attendance Marked");
         } catch (error) {
             setScanStatus("fail");
             setMessage(
@@ -133,6 +147,18 @@ const MarkPresentDialog = () => {
     };
 
     const handleClose = async () => {
+        if (timeOutRef.current) {
+            clearTimeout(timeOutRef.current);
+        }
+        
+        if (scannerRef.current) {
+            try {
+                await scannerRef.current.stop();
+                scannerRef.current.clear();
+            } catch (err) {}
+            scannerRef.current = null;
+        }
+
         setOpen(false);
         setScanResult(null);
         setScanStatus(null);
@@ -165,25 +191,27 @@ const MarkPresentDialog = () => {
                         gap={2}
                         minHeight={400}
                     >
-                        {!scanStatus && (
-                            <>
-                                <Typography variant="h6">
-                                    Scan Attendance QR
-                                </Typography>
+                        {/* Always keep qr-reader in DOM to avoid Html5Qrcode crashing when unmounted */}
+                        <Box sx={{ display: scanStatus ? "none" : "block", width: "100%", maxWidth: 350 }}>
+                            <Typography variant="h6" align="center" gutterBottom>
+                                Scan Attendance QR
+                            </Typography>
 
-                                <Box
-                                    id="qr-reader"
-                                    sx={{
-                                        width: "100%",
-                                        maxWidth: 350,
-                                        overflow: "hidden",
-                                        borderRadius: 3,
-                                    }}
-                                />
+                            <Box
+                                id="qr-reader"
+                                sx={{
+                                    width: "100%",
+                                    overflow: "hidden",
+                                    borderRadius: 3,
+                                }}
+                            />
 
-                                {loading && <CircularProgress />}
-                            </>
-                        )}
+                            {loading && (
+                                <Box display="flex" justifyContent="center" mt={2}>
+                                    <CircularProgress />
+                                </Box>
+                            )}
+                        </Box>
 
                         {scanStatus === "success" && (
                             <>
@@ -199,7 +227,7 @@ const MarkPresentDialog = () => {
                                     color="success.main"
                                     fontWeight="bold"
                                 >
-                                    Attendance Marked
+                                    Success
                                 </Typography>
 
                                 <Typography variant="body1">

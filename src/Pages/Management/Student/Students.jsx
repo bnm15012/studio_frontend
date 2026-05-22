@@ -398,7 +398,7 @@ const Students = ({ ID }) => {
                         name: "registrationDate",
                         label: "Registration Date",
                         type: "DATE",
-                        extraProp: { readOnly: true },
+                        // extraProp: { readOnly: true },
                         defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
                     },
@@ -409,7 +409,7 @@ const Students = ({ ID }) => {
                         type: "DATE",
                         defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
-                        extraProp: { min: getCurrentDateTimeLocal() },
+                        // extraProp: { min: getCurrentDateTimeLocal() },
                     },
                     {
                         show: true,

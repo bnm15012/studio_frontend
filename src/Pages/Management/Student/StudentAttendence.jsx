@@ -147,7 +147,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
             )
         );
     };
-    debugger
+
     return (
         <>
             <StyledDialog
