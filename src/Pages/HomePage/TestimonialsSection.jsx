@@ -28,12 +28,12 @@ export function TestimonialsSection() {
             image: "assets/urban_beats.png",
         },
         {
-            name: "Rajiv",
-            role: "Owner, Gymnastics Terminal",
+            name: "Bhavesh",
+            role: "Owner, House of Happiness",
             content:
                 "The member management features help us provide personalized experiences. Our retention rate has improved significantly since we started using Book & Manage.",
             rating: 5,
-            image: "assets/gymnastics_terminal.jpg",
+            image: "assets/house_of_happiness.jpeg",
         },
     ];
 
