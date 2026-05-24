@@ -23,4 +23,7 @@ export const FEATURE_KEYS = {
     ENQUIRY: "ENQUIRY",
     TEMPLATES: "TEMPLATES",
     PACKAGE: "PACKAGE",
+
+    // temp
+    ENROLMENT: "ENROLMENT",
 };

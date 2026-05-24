@@ -16,7 +16,7 @@ import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUti
 import ActionBar from "../../../Components/ActionBar.jsx";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import StudentAttendence from "./StudentAttendence.jsx";
-import MarkPresentDialog from "./MarkPresent.jsx";
+import OtherInfo from "./OtherInfo.jsx";
 
 const size = 7;
 
@@ -58,7 +58,7 @@ const FIELDS = [
         extraProp: { includeCurrentTime: false }
     },
     {
-        show: true,
+        show: false,
         section: "Personal Details",
         name: "age",
         label: "Age",
@@ -93,13 +93,14 @@ const FIELDS = [
         extraProp: { readOnly: true },
     },
     {
-        show: true,
+        show: false,
         section: "Personal Details",
         name: "gender",
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
         getValue: (value) => value && { key: value, value },
+        defaultValue: "MALE",
         extraProp: {
             getOptions: async (search, page, limit) =>
                 ["MALE", "FEMALE", "NOT_TO_SAY"]
@@ -119,6 +120,13 @@ const FIELDS = [
             message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
         },
     },
+    {
+        show: false,
+        name: "otherinfo",
+        label: "Other Info",
+        type: "COMPONENT",
+        CustomComponent: OtherInfo
+    }
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];
 
@@ -553,6 +561,16 @@ const Students = ({ ID }) => {
             )}
             <Views
                 formKey={ID}
+                beforeAdd={(row) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                beforeUpdate={async (row) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
