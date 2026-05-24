@@ -60,6 +60,28 @@ const FIELDS = [
     {
         show: true,
         section: "Personal Details",
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        getValue: (_, row) => {
+            if (!row.dob) return null;
+
+            const dob = new Date(row.dob);
+            const today = new Date();
+
+            const hasBirthdayPassed =
+                today.getMonth() > dob.getMonth() ||
+                (today.getMonth() === dob.getMonth() &&
+                    today.getDate() >= dob.getDate());
+
+            const age = today.getFullYear() - dob.getFullYear();
+            return hasBirthdayPassed ? age : age - 1;
+        },
+        extraProp: { readOnly: true }
+    },
+    {
+        show: true,
+        section: "Personal Details",
         name: "membershipStatus",
         label: "Status",
         getValue: (value) => (
@@ -69,6 +91,22 @@ const FIELDS = [
         ),
         defaultValue: "ACTIVE",
         extraProp: { readOnly: true },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "gender",
+        label: "Gender",
+        type: "SELECT",
+        validation: { required: true },
+        getValue: (value) => value && { key: value, value },
+        extraProp: {
+            getOptions: async (search, page, limit) =>
+                ["MALE", "FEMALE", "NOT_TO_SAY"]
+                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                    .slice(page * limit, (page + 1) * limit)
+                    .map((a) => ({ key: a, value: a })),
+        },
     },
     { show: false, section: "Contact Details", name: "address", label: "Address" },
     {
