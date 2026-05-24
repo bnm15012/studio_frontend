@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,9 +18,12 @@ const ImageComponent = ({
     const theme = useTheme();
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
-
     const [previewUrl, setPreviewUrl] = useState(value || "/assets/defaultUserPic.png");
     const [uploading, setUploading] = useState(false);
+
+    useEffect(() => {
+        setPreviewUrl(value || "/assets/defaultUserPic.png");
+    }, [value]);
 
     const handleDrop = async (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
