@@ -15,6 +15,7 @@ import Field from "./Fields/Field";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
+import { getNestedValue } from "../utils/objectHelpers";
 
 // ==============================
 // Styled Components
@@ -33,11 +34,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             ? `linear-gradient(135deg, ${theme.palette.background.paper} 0%, rgba(30,30,40,0.95) 100%)`
             : `linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)`,
 
-    border: `1px solid ${
-        theme.palette.mode === "dark"
-            ? "rgba(255,255,255,0.06)"
-            : "rgba(0,0,0,0.06)"
-    }`,
+    border: `1px solid ${theme.palette.mode === "dark"
+        ? "rgba(255,255,255,0.06)"
+        : "rgba(0,0,0,0.06)"
+        }`,
 
     boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
 
@@ -277,7 +277,7 @@ const FormBuilder = ({ form, branchId }) => {
 
             showAlert(
                 error?.message ||
-                    "Failed to submit form",
+                "Failed to submit form",
                 "error"
             );
         }
@@ -391,7 +391,7 @@ const FormBuilder = ({ form, branchId }) => {
                                         xs={12}
                                         sm={
                                             field.type ===
-                                            "textarea"
+                                                "textarea"
                                                 ? 12
                                                 : 6
                                         }
@@ -403,37 +403,30 @@ const FormBuilder = ({ form, branchId }) => {
 
                                                 {field.validation
                                                     ?.required && (
-                                                    <span className="required">
-                                                        *
-                                                    </span>
-                                                )}
+                                                        <span className="required">
+                                                            *
+                                                        </span>
+                                                    )}
                                             </FieldLabel>
 
                                             <FieldContainer>
                                                 <Field
+                                                    isEdit={field?.editable ? field.editable(formState) : true}
                                                     value={
-                                                        formState[
-                                                            field
-                                                                .name
-                                                        ]
+                                                        field?.getValue
+                                                            ? field.getValue(getNestedValue(formState, field.name), formState, true)
+                                                            : getNestedValue(formState, field.name)
                                                     }
-                                                    setValue={(
-                                                        v
-                                                    ) =>
-                                                        handleChange(
-                                                            field.name,
-                                                            v
-                                                        )
-                                                    }
-                                                    type={
-                                                        field.type
-                                                    }
-                                                    extraProp={
-                                                        field.extraProp
-                                                    }
-                                                    validation={
-                                                        field.validation
-                                                    }
+                                                    setValue={(v) => {
+                                                        handleChange(field.name, v);
+                                                    }}
+                                                    type={field.type}
+                                                    extraProp={{
+                                                        ...field.extraProp,
+                                                        getOptions: async (search, page, limit) =>
+                                                            field.extraProp.getOptions(search, page, limit, formState),
+                                                    }}
+                                                    validation={field.validation}
                                                 />
                                             </FieldContainer>
                                         </FieldWrapper>
@@ -451,11 +444,10 @@ const FormBuilder = ({ form, branchId }) => {
                         justifyContent: "flex-end",
                         mt: 6,
                         pt: 3,
-                        borderTop: `1px solid ${
-                            theme.palette.mode === "dark"
-                                ? "rgba(255,255,255,0.06)"
-                                : "rgba(0,0,0,0.06)"
-                        }`,
+                        borderTop: `1px solid ${theme.palette.mode === "dark"
+                            ? "rgba(255,255,255,0.06)"
+                            : "rgba(0,0,0,0.06)"
+                            }`,
                     }}
                 >
                     <SubmitButton

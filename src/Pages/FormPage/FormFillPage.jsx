@@ -70,17 +70,34 @@ const FormFillPage = () => {
                         required: true,
                     },
                 },
-                ...(isEnabled(FEATURE_KEYS.ENROLMENT) ?
-                    [{ name: "parentName", section: "Parent Info", label: "Parent Name", validation: { required: true } },
-                    { name: "parentPhone", section: "Parent Info", label: "Parent Phone", validation: { required: true } },
-                    { name: "parentAddress", section: "Parent Info", label: "Parent Address", validation: { required: true } },
-                    { name: "parentRelation", section: "Parent Info", label: "Parent Relation", validation: { required: true } },
-                    { name: "anyPastExperience", section: "Other Info", label: "Any Past Experience" },
-                    { name: "whereYouHereAboutUs", section: "Other Info", label: "How You Heard About Us" },
-                    { name: "hobbiesInterests", section: "Other Info", label: "Hobbies Interests" },
-                    { name: "medicalInfo", section: "Medical Info", label: "Please give details of any medical condition which you feel school should be aware of." }]
-                    : [])
-                ,
+                {
+                    show: false,
+                    section: "Basic Info",
+                    name: "gender",
+                    label: "Gender",
+                    type: "SELECT",
+                    validation: { required: true },
+                    getValue: (value) => value && { key: value, value },
+                    defaultValue: "MALE",
+                    extraProp: {
+                        getOptions: async (search, page, limit) =>
+                            ["MALE", "FEMALE", "NOT_TO_SAY"]
+                                .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                .slice(page * limit, (page + 1) * limit)
+                                .map((a) => ({ key: a, value: a })),
+                    },
+                },
+                // ...(isEnabled(FEATURE_KEYS.ENROLMENT) ?
+                //     [{ name: "parentName", section: "Parent Info", label: "Parent Name", validation: { required: true } },
+                //     { name: "parentPhone", section: "Parent Info", label: "Parent Phone", validation: { required: true } },
+                //     { name: "parentAddress", section: "Parent Info", label: "Parent Address", validation: { required: true } },
+                //     { name: "parentRelation", section: "Parent Info", label: "Parent Relation", validation: { required: true } },
+                //     { name: "anyPastExperience", section: "Other Info", label: "Any Past Experience" },
+                //     { name: "whereYouHereAboutUs", section: "Other Info", label: "How You Heard About Us" },
+                //     { name: "hobbiesInterests", section: "Other Info", label: "Hobbies Interests" },
+                //     { name: "medicalInfo", section: "Medical Info", label: "Please give details of any medical condition which you feel school should be aware of." }]
+                //     : [])
+                // ,
             ],
         },
         {

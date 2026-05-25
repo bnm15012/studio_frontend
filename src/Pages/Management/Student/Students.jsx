@@ -120,15 +120,6 @@ const FIELDS = [
             message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
         },
     },
-    {
-        show: false,
-        name: "additionalData",
-        label: "Other Info",
-        type: "CUSTOME",
-        extraProp: {
-            CustomComponent: OtherInfo
-        }
-    }
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];
 
@@ -145,6 +136,21 @@ const Students = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const api = useRef({});
     const apiStudent = useRef({});
+    let extraField = []
+    if (isEnabled(FEATURE_KEYS.ENROLMENT)) {
+        extraField = [
+            {
+                show: false,
+                section: "Additional Info",
+                name: "additionalData",
+                label: "",
+                type: "CUSTOME",
+                extraProp: {
+                    CustomComponent: OtherInfo
+                }
+            }
+        ]
+    }
 
     const awaitForDialog = useCallback(
         (paymentInit) =>
@@ -578,7 +584,7 @@ const Students = ({ ID }) => {
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}
-                fields={[...FIELDS, ASSIGNMENT_FIELD]}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
