@@ -1,70 +1,212 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Box,
     Button,
     Dialog,
     DialogContent,
     DialogTitle,
+    Divider,
     Grid,
     IconButton,
+    Paper,
+    TextField,
     Typography,
-    Divider,
 } from "@mui/material";
 
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
 import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
 
-const FIELD_CONFIG = [
-    {
-        section: "Parent Details",
-        fields: [
-            { key: "parentName", label: "Parent Name" },
-            { key: "parentPhone", label: "Parent Phone" },
-            { key: "parentAddress", label: "Parent Address" },
-            { key: "parentRelation", label: "Parent Relation" },
-        ],
-    },
-    {
-        section: "Other Details",
-        fields: [
-            { key: "anyPastExperience", label: "Past Experience" },
-            { key: "whereYouHereAboutUs", label: "How You Heard About Us" },
-            { key: "hobbiesInterests", label: "Hobbies & Interests" },
-            { key: "medicalInfo", label: "Medical Information" },
-        ],
-    },
-];
+const createEmptyField = () => ({
+    key: "",
+    value: "",
+});
 
-const OtherInfo = ({ data }) => {
-    const [open, setOpen] = useState(false);
+const createEmptySection = () => ({
+    section: "",
+    fields: [createEmptyField()],
+});
+
+const parseData = (value) => {
+    try {
+        if (!value) return {};
+
+        if (typeof value === "string") {
+            return JSON.parse(value);
+        }
+
+        return value;
+    } catch {
+        return {};
+    }
+};
+
+const objectToSections = (obj) => {
+    if (!obj || typeof obj !== "object") {
+        return [createEmptySection()];
+    }
+
+    const sections = Object.entries(obj).map(([sectionName, values]) => ({
+        section: sectionName,
+        fields:
+            typeof values === "object" && values !== null
+                ? Object.entries(values).map(([key, value]) => ({
+                    key,
+                    value: value ?? "",
+                }))
+                : [createEmptyField()],
+    }));
+
+    return sections.length > 0 ? sections : [createEmptySection()];
+};
+
+const sectionsToObject = (sections) => {
+    const result = {};
+
+    sections.forEach((section) => {
+        if (!section.section?.trim()) return;
+
+        const sectionData = {};
+
+        section.fields.forEach((field) => {
+            if (!field.key?.trim()) return;
+
+            sectionData[field.key] = field.value;
+        });
+
+        if (Object.keys(sectionData).length > 0) {
+            result[section.section] = sectionData;
+        }
+    });
+
+    return result;
+};
+
+const OtherInfo = (props) => {
+    const { value, setValue, isEdit } = props;
+    debugger;
     const { isEnabled, FEATURE_KEYS } = useUI();
+    console.log("props", props);
+
+    const [open, setOpen] = useState(false);
 
     const parsedData = useMemo(() => {
-        if (!data) return {};
+        return parseData(value);
+    }, [value]);
 
-        try {
-            return typeof data === "string"
-                ? JSON.parse(data)
-                : data;
-        } catch {
-            return {};
-        }
-    }, [data]);
-
-    const hasData = Object.values(parsedData).some(
-        (v) => v !== null && v !== undefined && v !== ""
+    const [sections, setSections] = useState(
+        objectToSections(parsedData)
     );
 
-    if (!hasData) return null;
+    useEffect(() => {
+        setSections(objectToSections(parsedData));
+    }, [parsedData]);
 
-    return (<>
-        {isEnabled(FEATURE_KEYS.ENROLMENT) && (
+    useEffect(() => {
+        const json = JSON.stringify(
+            sectionsToObject(sections)
+        );
+
+        setValue(json);
+    }, [sections]);
+
+    const addSection = () => {
+        setSections((prev) => [
+            ...prev,
+            createEmptySection(),
+        ]);
+    };
+
+    const removeSection = (sectionIndex) => {
+        setSections((prev) =>
+            prev.filter((_, i) => i !== sectionIndex)
+        );
+    };
+
+    const updateSectionName = (sectionIndex, value) => {
+        setSections((prev) =>
+            prev.map((section, i) =>
+                i === sectionIndex
+                    ? {
+                        ...section,
+                        section: value,
+                    }
+                    : section
+            )
+        );
+    };
+
+    const addField = (sectionIndex) => {
+        setSections((prev) =>
+            prev.map((section, i) =>
+                i === sectionIndex
+                    ? {
+                        ...section,
+                        fields: [
+                            ...section.fields,
+                            createEmptyField(),
+                        ],
+                    }
+                    : section
+            )
+        );
+    };
+
+    const removeField = (sectionIndex, fieldIndex) => {
+        setSections((prev) =>
+            prev.map((section, i) =>
+                i === sectionIndex
+                    ? {
+                        ...section,
+                        fields: section.fields.filter(
+                            (_, idx) => idx !== fieldIndex
+                        ),
+                    }
+                    : section
+            )
+        );
+    };
+
+    const updateField = (
+        sectionIndex,
+        fieldIndex,
+        key,
+        value
+    ) => {
+        setSections((prev) =>
+            prev.map((section, i) => {
+                if (i !== sectionIndex) return section;
+
+                return {
+                    ...section,
+                    fields: section.fields.map((field, idx) =>
+                        idx === fieldIndex
+                            ? {
+                                ...field,
+                                [key]: value,
+                            }
+                            : field
+                    ),
+                };
+            })
+        );
+    };
+
+    const hasData = Object.keys(parsedData || {}).length > 0;
+
+    if (!isEnabled(FEATURE_KEYS.ENROLMENT)) {
+        return null;
+    }
+
+    return (
+        <>
             <FlexBetween>
                 <Button
                     size="small"
-
                     variant="outlined"
                     startIcon={<InfoOutlinedIcon />}
                     onClick={() => setOpen(true)}
@@ -74,123 +216,248 @@ const OtherInfo = ({ data }) => {
                         fontWeight: 600,
                     }}
                 >
-                    Additional Info
+                    {isEdit
+                        ? "Manage Additional Info"
+                        : "Additional Info"}
                 </Button>
+            </FlexBetween>
 
-                <Dialog
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    fullWidth
-                    maxWidth="md"
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                fullWidth
+                maxWidth="md"
+            >
+                <DialogTitle
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        fontWeight: 700,
+                    }}
                 >
-                    <DialogTitle
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            fontWeight: 700,
-                        }}
+                    Additional Information
+
+                    <IconButton
+                        onClick={() => setOpen(false)}
                     >
-                        Additional Information
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
 
-                        <IconButton onClick={() => setOpen(false)}>
-                            <CloseIcon />
-                        </IconButton>
-                    </DialogTitle>
+                <DialogContent dividers>
+                    {!isEdit && !hasData && (
+                        <Typography>
+                            No information available
+                        </Typography>
+                    )}
 
-                    <DialogContent dividers>
-                        {FIELD_CONFIG.map((section) => {
-                            const visibleFields = section.fields.filter(
-                                ({ key }) =>
-                                    parsedData[key] !== null &&
-                                    parsedData[key] !== undefined &&
-                                    parsedData[key] !== ""
-                            );
-
-                            if (visibleFields.length === 0) {
-                                return <Box key={section.section} sx={{ mb: 4 }}>
+                    {sections.map((section, sectionIndex) => (
+                        <Paper
+                            key={sectionIndex}
+                            elevation={0}
+                            sx={{
+                                p: 2,
+                                mb: 3,
+                                border: "1px solid",
+                                borderColor: "divider",
+                                borderRadius: 2,
+                            }}
+                        >
+                            <FlexBetween>
+                                {isEdit ? (
+                                    <TextField
+                                        fullWidth
+                                        label="Section Name"
+                                        value={section.section}
+                                        onChange={(e) =>
+                                            updateSectionName(
+                                                sectionIndex,
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                ) : (
                                     <Typography
                                         variant="h6"
-                                        sx={{
-                                            mb: 2,
-                                            fontWeight: 700,
-                                        }}
+                                        fontWeight={700}
                                     >
                                         {section.section}
                                     </Typography>
+                                )}
 
-                                    <Typography
-                                        variant="body1"
-                                        sx={{
-                                            mt: 1,
-                                            wordBreak: "break-word",
-                                        }}
+                                {isEdit && (
+                                    <IconButton
+                                        color="error"
+                                        onClick={() =>
+                                            removeSection(
+                                                sectionIndex
+                                            )
+                                        }
                                     >
-                                        No information available
-                                    </Typography>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                )}
+                            </FlexBetween>
 
-                                </Box>;
-                            }
+                            <Grid
+                                container
+                                spacing={2}
+                                sx={{ mt: 1 }}
+                            >
+                                {section.fields.map(
+                                    (item, fieldIndex) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            key={fieldIndex}
+                                        >
+                                            {isEdit ? (
+                                                <Grid
+                                                    container
+                                                    spacing={2}
+                                                    alignItems="center"
+                                                >
+                                                    <Grid
+                                                        item
+                                                        xs={12}
+                                                        md={4}
+                                                    >
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Key"
+                                                            value={
+                                                                item.key
+                                                            }
+                                                            onChange={(
+                                                                e
+                                                            ) =>
+                                                                updateField(
+                                                                    sectionIndex,
+                                                                    fieldIndex,
+                                                                    "key",
+                                                                    e
+                                                                        .target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    </Grid>
 
-                            return (
-                                <Box key={section.section} sx={{ mb: 4 }}>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            mb: 2,
-                                            fontWeight: 700,
-                                        }}
-                                    >
-                                        {section.section}
-                                    </Typography>
+                                                    <Grid
+                                                        item
+                                                        xs={12}
+                                                        md={7}
+                                                    >
+                                                        <TextField
+                                                            fullWidth
+                                                            label="Value"
+                                                            value={
+                                                                item.value
+                                                            }
+                                                            onChange={(
+                                                                e
+                                                            ) =>
+                                                                updateField(
+                                                                    sectionIndex,
+                                                                    fieldIndex,
+                                                                    "value",
+                                                                    e
+                                                                        .target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    </Grid>
 
-                                    <Grid container spacing={2}>
-                                        {visibleFields.map(({ key, label }) => (
-                                            <Grid item xs={12} sm={6} key={key}>
+                                                    <Grid
+                                                        item
+                                                        xs={12}
+                                                        md={1}
+                                                    >
+                                                        <IconButton
+                                                            color="error"
+                                                            onClick={() =>
+                                                                removeField(
+                                                                    sectionIndex,
+                                                                    fieldIndex
+                                                                )
+                                                            }
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </Grid>
+                                                </Grid>
+                                            ) : (
                                                 <Box
                                                     sx={{
                                                         p: 2,
                                                         borderRadius: 2,
-                                                        border: "1px solid",
-                                                        borderColor: "divider",
-                                                        height: "100%",
+                                                        border:
+                                                            "1px solid",
+                                                        borderColor:
+                                                            "divider",
                                                     }}
                                                 >
                                                     <Typography
                                                         variant="caption"
                                                         color="text.secondary"
                                                         sx={{
-                                                            textTransform: "uppercase",
+                                                            textTransform:
+                                                                "uppercase",
                                                             fontWeight: 700,
-                                                            letterSpacing: 0.5,
                                                         }}
                                                     >
-                                                        {label}
+                                                        {item.key}
                                                     </Typography>
 
                                                     <Typography
                                                         variant="body1"
                                                         sx={{
                                                             mt: 1,
-                                                            wordBreak: "break-word",
+                                                            wordBreak:
+                                                                "break-word",
                                                         }}
                                                     >
-                                                        {parsedData[key]}
+                                                        {item.value}
                                                     </Typography>
                                                 </Box>
-                                            </Grid>
-                                        ))}
-                                    </Grid>
+                                            )}
+                                        </Grid>
+                                    )
+                                )}
+                            </Grid>
 
-                                    <Divider sx={{ mt: 3 }} />
-                                </Box>
-                            );
-                        })}
-                    </DialogContent>
-                </Dialog>
-            </FlexBetween>
-        )}
-    </>
+                            {isEdit && (
+                                <Button
+                                    startIcon={<AddIcon />}
+                                    sx={{ mt: 2 }}
+                                    onClick={() =>
+                                        addField(sectionIndex)
+                                    }
+                                >
+                                    Add Field
+                                </Button>
+                            )}
+                        </Paper>
+                    ))}
+
+                    {isEdit && (
+                        <>
+                            <Divider sx={{ mb: 2 }} />
+
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                onClick={addSection}
+                            >
+                                Add Section
+                            </Button>
+                        </>
+                    )}
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };
 

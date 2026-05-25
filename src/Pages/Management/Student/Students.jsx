@@ -122,10 +122,12 @@ const FIELDS = [
     },
     {
         show: false,
-        name: "otherinfo",
+        name: "additionalData",
         label: "Other Info",
-        type: "COMPONENT",
-        CustomComponent: OtherInfo
+        type: "CUSTOME",
+        extraProp: {
+            CustomComponent: OtherInfo
+        }
     }
 ];
 const VIEWS = ["LIST", "CARD", "FORM"];
