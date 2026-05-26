@@ -1,402 +1,362 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
 import {
     Box,
     Button,
     Chip,
-    Grid,
-    IconButton,
+    Divider,
     Paper,
     Stack,
-    TextField,
-    Tooltip,
     Typography,
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import LayersIcon from "@mui/icons-material/Layers";
 
 import StyledDialog from "../../../Components/New/StyledDialog";
 import FlexBetween from "../../../Components/FlexBetween";
+import Field from "../../../Components/Fields/Field";
+import { FieldLabel } from "../../../Components/New/StyledField";
+
 import { useUI } from "../../../context/UIContext";
 
-// ─── helpers ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Fields
+// ─────────────────────────────────────────────────────────────
 
-const createEmptyField = () => ({ key: "", value: "" });
-const createEmptySection = () => ({ section: "", fields: [createEmptyField()] });
+const FORM_SECTIONS = [
+    {
+        title: "Parent Information",
+        fields: [
+            {
+                name: "parentName",
+                label: "Parent Name",
+                type: "text",
+            },
+            {
+                name: "parentPhone",
+                label: "Parent Phone",
+                type: "text",
+            },
+            {
+                name: "parentAddress",
+                label: "Parent Address",
+                type: "textarea",
+            },
+            {
+                name: "parentRelation",
+                label: "Parent Relation",
+                type: "text",
+            },
+        ],
+    },
+    {
+        title: "Other Information",
+        fields: [
+            {
+                name: "anyPastExperience",
+                label: "Any Past Experience",
+                type: "textarea",
+            },
+            {
+                name: "whereYouHereAboutUs",
+                label: "How You Heard About Us",
+                type: "text",
+            },
+            {
+                name: "hobbiesInterests",
+                label: "Hobbies & Interests",
+                type: "textarea",
+            },
+        ],
+    },
+    {
+        title: "Medical Information",
+        fields: [
+            {
+                name: "medicalInfo",
+                label: "Medical Notes",
+                type: "textarea",
+            },
+        ],
+    },
+];
 
-const parseData = (value) => {
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+
+const EMPTY_DATA = {
+    parentName: "",
+    parentPhone: "",
+    parentAddress: "",
+    parentRelation: "",
+
+    anyPastExperience: "",
+    whereYouHereAboutUs: "",
+    hobbiesInterests: "",
+
+    medicalInfo: "",
+};
+
+const parseValue = (value) => {
     try {
-        if (!value) return {};
-        return typeof value === "string" ? JSON.parse(value) : value;
+        if (!value) return EMPTY_DATA;
+
+        const parsed =
+            typeof value === "string"
+                ? JSON.parse(value)
+                : value;
+
+        return {
+            ...EMPTY_DATA,
+            ...parsed,
+        };
     } catch {
-        return {};
+        return EMPTY_DATA;
     }
 };
 
-const objectToSections = (obj) => {
-    if (!obj || typeof obj !== "object") return [createEmptySection()];
+const getFilledCount = (data) =>
+    Object.values(data).filter(
+        (value) =>
+            value !== null &&
+            value !== undefined &&
+            value !== ""
+    ).length;
 
-    const sections = Object.entries(obj).map(([sectionName, values]) => ({
-        section: sectionName,
-        fields:
-            typeof values === "object" && values !== null
-                ? Object.entries(values).map(([key, value]) => ({ key, value: value ?? "" }))
-                : [createEmptyField()],
-    }));
+// ─────────────────────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────────────────────
 
-    return sections.length > 0 ? sections : [createEmptySection()];
-};
-
-const sectionsToObject = (sections) => {
-    const result = {};
-    sections.forEach((section) => {
-        if (!section.section?.trim()) return;
-        const sectionData = {};
-        section.fields.forEach((field) => {
-            if (!field.key?.trim()) return;
-            sectionData[field.key] = field.value;
-        });
-        if (Object.keys(sectionData).length > 0) {
-            result[section.section] = sectionData;
-        }
-    });
-    return result;
-};
-
-// ─── section badge count ─────────────────────────────────────────────────────
-
-const getTotalFields = (parsedData) =>
-    Object.values(parsedData).reduce(
-        (acc, section) =>
-            acc + (typeof section === "object" ? Object.keys(section).length : 0),
-        0
-    );
-
-// ─── component ───────────────────────────────────────────────────────────────
-
-const OtherInfo = ({ value, setValue, isEdit }) => {
+const OtherInfo = ({
+    value,
+    setValue,
+    isEdit,
+}) => {
     const { isEnabled, FEATURE_KEYS } = useUI();
+
+    const parsedValue = useMemo(
+        () => parseValue(value),
+        [value]
+    );
 
     const [open, setOpen] = useState(false);
 
-    // Draft state — only written to parent on confirm
-    const [draft, setDraft] = useState([createEmptySection()]);
+    const [formData, setFormData] =
+        useState(parsedValue);
 
-    const parsedData = useMemo(() => parseData(value), [value]);
-    const totalFields = getTotalFields(parsedData);
+    const filledCount =
+        getFilledCount(parsedValue);
 
-    // Sync draft from saved value whenever the dialog opens
+    const hasData = filledCount > 0;
+
+    // ─────────────────────────────────────────────────────────
+
     const handleOpen = () => {
-        setDraft(objectToSections(parsedData));
+        setFormData(parseValue(value));
         setOpen(true);
     };
 
-    const handleCancel = () => {
-        setOpen(false);
-        // draft is discarded – parent value unchanged
-    };
-
-    const handleConfirm = () => {
-        const json = JSON.stringify(sectionsToObject(draft));
-        setValue(json);
+    const handleClose = () => {
         setOpen(false);
     };
 
-    // ── draft mutators ────────────────────────────────────────────────────────
+    const handleChange = (
+        fieldName,
+        fieldValue
+    ) => {
+        setFormData((prev) => ({
+            ...prev,
+            [fieldName]: fieldValue,
+        }));
+    };
 
-    const addSection = () => setDraft((prev) => [...prev, createEmptySection()]);
+    const handleSave = () => {
+        setValue(JSON.stringify(formData));
 
-    const removeSection = (si) =>
-        setDraft((prev) => prev.filter((_, i) => i !== si));
+        setOpen(false);
+    };
 
-    const updateSectionName = (si, val) =>
-        setDraft((prev) =>
-            prev.map((s, i) => (i === si ? { ...s, section: val } : s))
-        );
+    // ─────────────────────────────────────────────────────────
 
-    const addField = (si) =>
-        setDraft((prev) =>
-            prev.map((s, i) =>
-                i === si ? { ...s, fields: [...s.fields, createEmptyField()] } : s
-            )
-        );
-
-    const removeField = (si, fi) =>
-        setDraft((prev) =>
-            prev.map((s, i) =>
-                i === si
-                    ? { ...s, fields: s.fields.filter((_, idx) => idx !== fi) }
-                    : s
-            )
-        );
-
-    const updateField = (si, fi, key, val) =>
-        setDraft((prev) =>
-            prev.map((s, i) => {
-                if (i !== si) return s;
-                return {
-                    ...s,
-                    fields: s.fields.map((f, idx) =>
-                        idx === fi ? { ...f, [key]: val } : f
-                    ),
-                };
-            })
-        );
-
-    // ─────────────────────────────────────────────────────────────────────────
-
-    if (!isEnabled(FEATURE_KEYS.ENROLMENT)) return null;
-
-    const hasData = Object.keys(parsedData).length > 0;
+    if (!isEnabled(FEATURE_KEYS.ENROLMENT)) {
+        return null;
+    }
 
     return (
         <>
-            {/* ── Trigger button ── */}
+            {/* Trigger Button */}
+
             <Box>
                 <Button
                     size="small"
-                    variant={hasData ? "contained" : "outlined"}
-                    startIcon={isEdit ? <EditNoteIcon /> : <InfoOutlinedIcon />}
                     onClick={handleOpen}
+                    variant={
+                        hasData
+                            ? "contained"
+                            : "outlined"
+                    }
+                    startIcon={
+                        isEdit ? (
+                            <EditNoteIcon />
+                        ) : (
+                            <InfoOutlinedIcon />
+                        )
+                    }
                     sx={{
                         m: 0,
-                        p: .5,
+                        p: 0.5,
                         borderRadius: 2,
                         textTransform: "none",
                         fontWeight: 600,
+
                         ...(hasData && {
-                            background: (t) =>
-                                `linear-gradient(135deg, ${t.palette.primary.main}, ${t.palette.primary.dark})`,
                             color: "white",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+
+                            background: (theme) =>
+                                `linear-gradient(
+                                    135deg,
+                                    ${theme.palette.primary.main},
+                                    ${theme.palette.primary.dark}
+                                )`,
+
+                            boxShadow:
+                                "0 2px 8px rgba(0,0,0,0.15)",
                         }),
                     }}
                 >
-                    {isEdit ? "Manage Additional Info" : "Additional Info"}
+                    {isEdit
+                        ? "Manage Additional Info"
+                        : "Additional Info"}
+
                     {hasData && (
                         <Chip
-                            label={totalFields}
                             size="small"
+                            label={filledCount}
                             sx={{
                                 ml: 1,
                                 height: 18,
                                 fontSize: 10,
                                 fontWeight: 700,
-                                bgcolor: "rgba(255,255,255,0.25)",
+                                bgcolor:
+                                    "rgba(255,255,255,0.25)",
                                 color: "white",
-                                "& .MuiChip-label": { px: "6px" },
+
+                                "& .MuiChip-label": {
+                                    px: "6px",
+                                },
                             }}
                         />
                     )}
                 </Button>
             </Box>
 
-            {/* ── Dialog ── */}
+            {/* Dialog */}
+
             <StyledDialog
                 open={open}
-                onClose={handleCancel}
+                onClose={handleClose}
+                closeIcon
+                maxWidth="md"
                 title="Additional Information"
                 titleBgColor="info"
-                maxWidth="sm"
-                onConfirm={isEdit ? handleConfirm : undefined}
-                confirmText="Save Changes"
-                cancelText={isEdit ? "Cancel" : "Close"}
+                onConfirm={
+                    isEdit
+                        ? handleSave
+                        : undefined
+                }
+                confirmText="Save"
+                cancelText={
+                    isEdit ? "Cancel" : "Close"
+                }
             >
-                {/* ── View mode: no data ── */}
-                {!isEdit && !hasData && (
-                    <Box
-                        sx={{
-                            py: 6,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            gap: 1,
-                            color: "text.disabled",
-                        }}
-                    >
-                        <LayersIcon sx={{ fontSize: 48, opacity: 0.4 }} />
-                        <Typography variant="body2" color="text.secondary">
-                            No additional information recorded yet.
-                        </Typography>
-                    </Box>
-                )}
+                <Stack spacing={3} mt={1}>
+                    {FORM_SECTIONS.map(
+                        (section, sectionIndex) => (
+                            <Paper
+                                key={section.title}
+                                elevation={0}
+                                sx={{
+                                    p: 2.5,
+                                    borderRadius: 3,
+                                    border:
+                                        "1px solid",
+                                    borderColor:
+                                        "divider",
+                                }}
+                            >
+                                {/* Section Title */}
 
-                {/* ── Sections ── */}
-                <Stack spacing={2} sx={{ mt: 1 }}>
-                    {draft.map((section, si) => (
-                        <Paper
-                            key={si}
-                            elevation={0}
-                            sx={{
-                                p: 2.5,
-                                border: "1.5px solid",
-                                borderColor: "divider",
-                                borderRadius: 3,
-                                transition: "box-shadow 0.2s",
-                                "&:hover": {
-                                    boxShadow: (t) =>
-                                        `0 4px 20px ${t.palette.mode === "dark" ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)"}`,
-                                },
-                            }}
-                        >
-                            {/* Section header */}
-                            <FlexBetween sx={{ mb: 2 }}>
-                                {isEdit ? (
-                                    <TextField
-                                        fullWidth
-                                        size="small"
-                                        label="Section Name"
-                                        value={section.section}
-                                        placeholder="e.g. Experience"
-                                        onChange={(e) => updateSectionName(si, e.target.value)}
-                                        sx={{ mr: 1, "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                    />
-                                ) : (
-                                    <Typography
-                                        variant="subtitle1"
-                                        fontWeight={700}
-                                        sx={{ letterSpacing: 0.3 }}
-                                    >
-                                        {section.section || "Untitled Section"}
-                                    </Typography>
-                                )}
-
-                                {isEdit && (
-                                    <Tooltip title="Remove section">
-                                        <IconButton
-                                            size="small"
-                                            color="error"
-                                            onClick={() => removeSection(si)}
-                                            sx={{
-                                                border: "1px solid",
-                                                borderColor: "error.light",
-                                                borderRadius: 2,
-                                            }}
-                                        >
-                                            <DeleteOutlineIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                            </FlexBetween>
-
-                            {/* Fields */}
-                            <Stack spacing={1.5}>
-                                {section.fields.map((field, fi) =>
-                                    isEdit ? (
-                                        <Grid container spacing={1} alignItems="center" key={fi}>
-                                            <Grid item xs={12} md={4}>
-                                                <TextField
-                                                    fullWidth
-                                                    size="small"
-                                                    label="Label"
-                                                    placeholder="e.g. Experience"
-                                                    value={field.key}
-                                                    onChange={(e) =>
-                                                        updateField(si, fi, "key", e.target.value)
-                                                    }
-                                                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} md={7}>
-                                                <TextField
-                                                    fullWidth
-                                                    size="small"
-                                                    label="Value"
-                                                    placeholder="e.g. 2 years"
-                                                    value={field.value}
-                                                    onChange={(e) =>
-                                                        updateField(si, fi, "value", e.target.value)
-                                                    }
-                                                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} md={1} sx={{ textAlign: "center" }}>
-                                                <Tooltip title="Remove field">
-                                                    <IconButton
-                                                        size="small"
-                                                        color="error"
-                                                        onClick={() => removeField(si, fi)}
-                                                    >
-                                                        <DeleteOutlineIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Grid>
-                                        </Grid>
-                                    ) : (
-                                        <Box
-                                            key={fi}
-                                            sx={{
-                                                px: 2,
-                                                py: 1.5,
-                                                borderRadius: 2,
-                                                bgcolor: "action.hover",
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "flex-start",
-                                                gap: 2,
-                                            }}
-                                        >
-                                            <Typography
-                                                variant="caption"
-                                                fontWeight={700}
-                                                color="text.secondary"
-                                                sx={{ textTransform: "uppercase", letterSpacing: 0.8, flexShrink: 0 }}
-                                            >
-                                                {field.key}
-                                            </Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{ wordBreak: "break-word", textAlign: "right" }}
-                                            >
-                                                {field.value || "—"}
-                                            </Typography>
-                                        </Box>
-                                    )
-                                )}
-                            </Stack>
-
-                            {/* Add field button */}
-                            {isEdit && (
-                                <Button
-                                    size="small"
-                                    startIcon={<AddIcon />}
-                                    onClick={() => addField(si)}
-                                    sx={{
-                                        mt: 1.5,
-                                        textTransform: "none",
-                                        borderRadius: 2,
-                                        fontSize: 12,
-                                    }}
+                                <Typography
+                                    variant="subtitle1"
+                                    fontWeight={700}
+                                    mb={2}
                                 >
-                                    Add Field
-                                </Button>
-                            )}
-                        </Paper>
-                    ))}
-                </Stack>
+                                    {section.title}
+                                </Typography>
 
-                {/* Add section button */}
-                {isEdit && (
-                    <Box sx={{ mt: 2 }}>
-                        <Button
-                            variant="outlined"
-                            startIcon={<AddIcon />}
-                            onClick={addSection}
-                            sx={{
-                                textTransform: "none",
-                                borderRadius: 2,
-                                fontWeight: 600,
-                                borderStyle: "dashed",
-                                width: "100%",
-                            }}
-                        >
-                            Add Section
-                        </Button>
-                    </Box>
-                )}
+                                <Divider
+                                    sx={{ mb: 2 }}
+                                />
+
+                                {/* Fields */}
+
+                                <Stack spacing={2}>
+                                    {section.fields.map(
+                                        (field) => (
+                                            <FlexBetween
+                                                key={
+                                                    field.name
+                                                }
+                                                gap={2}
+                                            >
+                                                <FieldLabel
+                                                    sx={{
+                                                        minWidth: 250,
+                                                        m: "auto"
+                                                    }}
+                                                >
+                                                    {
+                                                        field.label
+                                                    }
+                                                </FieldLabel>
+
+                                                <Box
+                                                    width="100%"
+                                                    m={"auto"}
+                                                >
+                                                    <Field
+                                                        type={
+                                                            field.type
+                                                        }
+                                                        value={
+                                                            formData[
+                                                            field
+                                                                .name
+                                                            ]
+                                                        }
+                                                        isEdit={
+                                                            isEdit ?? false
+                                                        }
+                                                        setValue={(
+                                                            value
+                                                        ) =>
+                                                            handleChange(
+                                                                field.name,
+                                                                value
+                                                            )
+                                                        }
+                                                    />
+                                                </Box>
+                                            </FlexBetween>
+                                        )
+                                    )}
+                                </Stack>
+                            </Paper>
+                        )
+                    )}
+                </Stack>
             </StyledDialog>
         </>
     );
