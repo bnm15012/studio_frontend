@@ -16,7 +16,7 @@ import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUti
 import ActionBar from "../../../Components/ActionBar.jsx";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import StudentAttendence from "./StudentAttendence.jsx";
-import MarkPresentDialog from "./MarkPresent.jsx";
+import OtherInfo from "./OtherInfo.jsx";
 
 const size = 7;
 
@@ -58,6 +58,28 @@ const FIELDS = [
         extraProp: { includeCurrentTime: false }
     },
     {
+        show: false,
+        section: "Personal Details",
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        getValue: (_, row) => {
+            if (!row.dob) return null;
+
+            const dob = new Date(row.dob);
+            const today = new Date();
+
+            const hasBirthdayPassed =
+                today.getMonth() > dob.getMonth() ||
+                (today.getMonth() === dob.getMonth() &&
+                    today.getDate() >= dob.getDate());
+
+            const age = today.getFullYear() - dob.getFullYear();
+            return hasBirthdayPassed ? age : age - 1;
+        },
+        extraProp: { readOnly: true }
+    },
+    {
         show: true,
         section: "Personal Details",
         name: "membershipStatus",
@@ -69,6 +91,23 @@ const FIELDS = [
         ),
         defaultValue: "ACTIVE",
         extraProp: { readOnly: true },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "gender",
+        label: "Gender",
+        type: "SELECT",
+        validation: { required: true },
+        getValue: (value) => value && { key: value, value },
+        defaultValue: "MALE",
+        extraProp: {
+            getOptions: async (search, page, limit) =>
+                ["MALE", "FEMALE", "NOT_TO_SAY"]
+                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                    .slice(page * limit, (page + 1) * limit)
+                    .map((a) => ({ key: a, value: a })),
+        },
     },
     { show: false, section: "Contact Details", name: "address", label: "Address" },
     {
@@ -97,6 +136,21 @@ const Students = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const api = useRef({});
     const apiStudent = useRef({});
+    let extraField = []
+    if (isEnabled(FEATURE_KEYS.ENROLMENT)) {
+        extraField = [
+            {
+                show: false,
+                section: "Additional Info",
+                name: "additionalData",
+                label: "",
+                type: "CUSTOME",
+                extraProp: {
+                    CustomComponent: OtherInfo
+                }
+            }
+        ]
+    }
 
     const awaitForDialog = useCallback(
         (paymentInit) =>
@@ -515,12 +569,22 @@ const Students = ({ ID }) => {
             )}
             <Views
                 formKey={ID}
+                beforeAdd={(row) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                beforeUpdate={async (row) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}
-                fields={[...FIELDS, ASSIGNMENT_FIELD]}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
