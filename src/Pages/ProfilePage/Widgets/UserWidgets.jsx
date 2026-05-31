@@ -245,7 +245,7 @@ const UserWidgets = ({ admin, studio }) => {
                             isEdit={editMode}
                             validation={{
                                 regex: /^[0-9A-Z]{15}$/,
-                                message: "Enter valid 15-digit GST number",
+                                message: "Enter valid GST number (15-digit only - digits & capital letters)",
                             }}
                         />
                     </Box>
