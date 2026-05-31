@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { studentsAssignmentsCruds } from "../../api/all.api";
 import StudentInvoice from "../Management/Student/StudentInvoice";
 import Loading from "../../Components/Loading/Loading";
+import BookingInvoice from "../Management/Booking/BookingInvoice";
 
 
 function InvoicePage() {
@@ -25,15 +26,20 @@ function InvoicePage() {
 
     return (
         <div>
-            {!loading ? (
+            {!loading && invoice?.assignment ? (
                 <StudentInvoice
                     open={true}
                     studentData={invoice?.student}
-                    activityData={invoice?.assignment}
+                    activityData={invoice.assignment}
                     studio={invoice?.studio}
                     currentBranch={invoice?.branch}
-                />) :
-                <Loading />
+                />) : (invoice?.booking ? <BookingInvoice open={true}
+                    bookingData={invoice?.booking}
+                    studio={invoice?.studio}
+                    currentBranch={invoice?.branch}
+                    template={invoice?.template}
+                />
+                    : <Loading />)
             }
         </div>
     )

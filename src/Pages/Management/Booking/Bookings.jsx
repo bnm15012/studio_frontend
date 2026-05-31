@@ -1,14 +1,14 @@
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Button, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CalendarView from "./Celendar/CalendarView.jsx";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { getCurrentDateTimeLocal } from "../../../utils/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import PropTypes from "prop-types";
-import { bookingCruds } from "../../../api/all.api.js";
+import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useUI } from "../../../context/UIContext.jsx";
 import BookingCard from "./BookingCard.jsx";
 import { useAlert } from "../../../utils/Alert.jsx";
@@ -33,13 +33,20 @@ const VIEWS = ["LIST", "CARD"];
 
 const Bookings = ({ ID }) => {
     const { isMobile } = useUI();
+    const dispatch = useDispatch();
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
+    const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const [calendarAnchor, setCalendarAnchor] = useState(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState(false);
     const api = useRef({});
+    const templates = useSelector((state) => state.genericTemplate.items)
+
+    useEffect(() => {
+        dispatch(genericTemplateCruds.getAll(showAlert, () => { }, token, { searchTerm: "BOOKING" }, studio.studioId, false))
+    }, [dispatch, showAlert, studio.studioId, token]);
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const getClientsByName = useCallback(
@@ -287,6 +294,10 @@ const Bookings = ({ ID }) => {
             {showInvoice && (
                 <BookingInvoice
                     open={true}
+                    isUser={true}
+                    studio={studio}
+                    template={templates?.find(t => t.templateType === "BOOKING")}
+                    currentBranch={currentBranch}
                     onClose={() => setShowInvoice(false)}
                     bookingData={showInvoice}
                 />

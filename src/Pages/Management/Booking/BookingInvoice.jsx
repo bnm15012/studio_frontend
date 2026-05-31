@@ -1,12 +1,8 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
-import { useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
-import { useAlert } from "../../../utils/Alert";
-import Loading from "../../../Components/Loading/Loading";
+import { useRef } from "react";
 import { getLocalDateTime } from "../../../utils/DateUtil";
 import FlexBetween from "../../../Components/FlexBetween";
-import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 import { Typography } from "@mui/material";
 import StyledDialog from "../../../Components/New/StyledDialog";
@@ -24,69 +20,26 @@ const sectionTitle = {
 const tableHeaderStyle = { textAlign: "left", padding: "6px" };
 const tableCellStyle = { padding: "6px" };
 
-const BookingInvoice = ({ open, onClose, bookingData }) => {
+const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isUser = false, template }) => {
     const pdfViewerRef = useRef();
-    const studio = useSelector((state) => state.auth.studio);
-    const token = useSelector((state) => state.auth.token);
-    const showAlert = useAlert();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const [loading, setLoading] = useState(false);
-    const [templates, setTemplates] = useState([]);
-    const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
-    useEffect(() => {
-        const fetchTemplates = async () => {
-            try {
-                setLoading(true);
-                const res = await getAllTemplatesAPI({
-                    studioId: studio.studioId,
-                    token,
-                    templateType: "BOOKING",
-                });
-                if (res.success) {
-                    setTemplates(res.data || []);
-                } else {
-                    showAlert(res.message || "Failed to load templates", "error");
-                }
-            } catch {
-                showAlert("Error loading templates", "error");
-            } finally {
-                setLoading(false);
-            }
-        };
-        if (open) fetchTemplates();
-    }, [open, showAlert, studio.studioId, token]);
-
-    useEffect(() => {
-        if (templates.length && !selectedTemplateId) {
-            const matchedTemplate = templates.find((t) =>
-                t.templateType?.toLowerCase().includes("booking"),
-            );
-            if (matchedTemplate) {
-                setSelectedTemplateId(matchedTemplate.id);
-            }
-        }
-    }, [templates, selectedTemplateId]);
-
-    const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
-
-    const preparedDescription = selectedTemplate
-        ? replacePlaceholders(selectedTemplate.templateContent, {
+    const preparedDescription = template
+        ? replacePlaceholders(template.templateContent, {
             studio,
             branch: currentBranch,
             getLocalDateTime,
         })
         : "";
-
     return (
         <StyledDialog
             open={open}
             onClose={onClose}
+            fullScreen={!isUser}
             confirmText="Download"
             onConfirm={() => pdfViewerRef.current.downloadPDF()}
             cancelText="Close"
             maxWidth="md"
-            actions={[
+            actions={isUser ? [
                 {
                     key: "send-mail",
                     tip: "Send Mail",
@@ -106,10 +59,9 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone),
                     component: <WhatsApp />,
                 },
-            ]}
+            ] : []}
         >
             <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
-                {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
                     studio={studio}
@@ -118,6 +70,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                         title: "Booking Invoice",
                         templateName: "BOOKING_INVOICE",
                         clientIds: [bookingData?.clientEntry?.clientId],
+                        token: bookingData?.invoiceToken,
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={
