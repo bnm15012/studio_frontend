@@ -113,8 +113,20 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         }
     };
 
+    const redirectToWhatsApp = (phone) => {
+        const receiver = `91${phone}`;
+
+        const invoiceUrl = `${window.location.origin}/#/invoice/${remainingPayload?.token}`;
+
+        const message = `Hello, please find your invoice here: ${invoiceUrl}`;
+
+        const whatsappUrl = `https://wa.me/${receiver}?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappUrl, "_blank");
+    };
+
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = () => sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
+    const sendWhatsApp = (phone) => redirectToWhatsApp(phone);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

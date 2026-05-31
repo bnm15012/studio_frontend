@@ -17,7 +17,7 @@ const PrivacyPolicyPage = lazy(() => import("../Pages/PrivacyPolicy/PrivacyPolic
 const Analysis = lazy(() => import("../Pages/Analysis/Analysis"));
 const ContactUsPage = lazy(() => import("../Pages/ContactUs/ContactUs"));
 const FormFillPage = lazy(() => import("../Pages/FormPage/FormFillPage"));
-
+const InvoicePage = lazy(() => import("../Pages/Invoice/InvoicePage"));
 import LoginDialog from "../Pages/Auth/LoginDialog";
 import SignupDialog from "../Pages/Auth/SignupDialog";
 import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
@@ -38,6 +38,7 @@ export const AllRoutes = () => {
                 <Route path="/terms-and-condition" element={<TermsConditionPage />} />
                 <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
                 <Route path="/form/:formId/:branchId" element={<FormFillPage />} />
+                <Route path="/invoice/:invoiceToken" element={<InvoicePage />} />
 
                 {user && (
                     <>

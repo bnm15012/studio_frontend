@@ -27,7 +27,7 @@ import { sendMessageApi } from "./communication.api";
 import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
 import { useUI } from "../../../context/UIContext";
 
-const MAIL_TYPE = ["WHATSAPP", "EMAIL"];
+const MAIL_TYPE = ["EMAIL"];
 
 const audienceTypes = [
     { value: "all", label: "Everyone" },

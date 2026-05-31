@@ -95,7 +95,7 @@ const CommunicationConfigs = ({ studio }) => {
                         </FlexBetween>
                     </Box>
                 )}
-                <WhatsAppConfiguration studio={studio} />
+                {/* <WhatsAppConfiguration studio={studio} /> */}
             </FlexBetween>
         </Box>
     );

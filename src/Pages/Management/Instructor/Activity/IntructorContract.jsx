@@ -99,6 +99,7 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                 <HtmlToPdfViewer
                     fileName={`Instructor-Contract-${instructorData.name}.pdf`}
                     ref={pdfViewerRef}
+                    studio={studio}
                     header={
                         <p>
                             <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>

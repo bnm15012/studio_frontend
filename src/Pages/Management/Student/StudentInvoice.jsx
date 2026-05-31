@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
-import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { getLocalDateTime } from "../../../utils/DateUtil";
 import { useUI } from "../../../context/UIContext";
@@ -9,20 +8,19 @@ import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
 import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
 
-const StudentInvoice = ({ open, onClose, activityData, studentData }) => {
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+const StudentInvoice = ({ open, onClose, activityData, studentData, studio, currentBranch, isUser = false }) => {
     const pdfViewerRef = useRef();
     const { isBatchEnabled } = useUI();
-    const studio = useSelector((state) => state.auth.studio);
 
     return (
         <StyledDialog
             open={open}
             onClose={onClose}
             maxWidth="md"
+            fullScreen={!isUser}
             confirmText={<Download />}
             onConfirm={() => pdfViewerRef.current.downloadPDF()}
-            actions={[
+            actions={isUser ? [
                 {
                     key: "email",
                     tip: "E-mail",
@@ -41,17 +39,19 @@ const StudentInvoice = ({ open, onClose, activityData, studentData }) => {
                     onClick: () => pdfViewerRef.current.printPDF(),
                     component: <PrinterIcon />,
                 },
-            ]}
+            ] : []}
         >
             <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
-                    fileName={`student-invoice-${studentData?.studentId}`}
+                    studio={studio}
+                    fileName={`student-invoice-${studentData?.name?.replaceAll(" ", "-")}-${activityData?.activityName?.replaceAll(" ", "-")}`}
                     remainingPayload={{
                         title: "Invoice",
                         templateName: "MEMBERSHIP_INVOICE",
                         activityType: activityData?.activityName,
                         memberIds: [studentData?.studentId],
+                        token: activityData?.invoiceToken
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={

@@ -112,6 +112,7 @@ const BookingInvoice = ({ open, onClose, bookingData }) => {
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
+                    studio={studio}
                     fileName={`booking-invoice-${bookingData?.clientEntry?.clientId}`}
                     remainingPayload={{
                         title: "Booking Invoice",

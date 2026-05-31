@@ -59,6 +59,23 @@ export const studentsAssignmentsCruds = createCrud({
                 setLoading(false);
             }
         },
+        fetchInvoiceApi: async (invoiceToken, showAlert, setLoading) => {
+            try {
+                setLoading(true);
+                const { data } = await api.get(
+                    `/${route}/invoice?token=${invoiceToken}`
+                );
+                return data
+            } catch (err) {
+                console.error(err);
+                showAlert(
+                    err?.response?.data?.status?.statusMessage || `Failed to fetch invoice`,
+                    "error",
+                );
+            } finally {
+                setLoading(false);
+            }
+        }
     })
 });
 

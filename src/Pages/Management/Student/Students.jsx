@@ -127,6 +127,7 @@ const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTI
 
 const Students = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
+    const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const allActivities = useSelector((state) => state.activity.activities);
 
@@ -595,7 +596,10 @@ const Students = ({ ID }) => {
             />
             {showInvoice && (
                 <StudentInvoice
+                    studio={studio}
+                    currentBranch={currentBranch}
                     open={true}
+                    isUser={true}
                     onClose={() => setShowInvoice(false)}
                     studentData={tableState.recordById[showInvoice?.studentId]}
                     activityData={showInvoice}

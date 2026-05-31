@@ -344,6 +344,7 @@ const Reports = () => {
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
+                    studio={studio}
                     fileName="Report.pdf"
                     header={
                         <>
