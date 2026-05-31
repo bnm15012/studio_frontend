@@ -11,7 +11,7 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const indianMobileRegex = /^[6-9]\d{9}$/;
 
 const HtmlToPdfViewer = forwardRef(
-    ({ content, header, studio, fileName = "document", footer, remainingPayload = {} }, ref) => {
+    ({ content, header, studio, fileName = "document", footer, remainingPayload = {}, whatsAppPayload = {} }, ref) => {
         const previewRef = useRef(null);
         const sourceRef = useRef(null);
         const [dialogOpen, setDialogOpen] = useState(false);
@@ -56,7 +56,7 @@ const HtmlToPdfViewer = forwardRef(
 
             setDialogOpen(false);
             if (dialogType === "email") await sendMail();
-            else if (dialogType === "mobile") await sendWhatsApp(inputValue);
+            else if (dialogType === "mobile") await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload });
         };
 
         useImperativeHandle(ref, () => ({

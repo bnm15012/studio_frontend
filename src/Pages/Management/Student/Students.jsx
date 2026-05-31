@@ -420,21 +420,10 @@ const Students = ({ ID }) => {
                         getValue: (v, row, isEdit) => {
                             if (!isEdit) {
                                 if (!row || !row.paymentEntry) return null;
-                                return row.paymentEntry.amount !== row.paymentEntry.actualAmount ? (
-                                    <>
-                                        Rs. {row.paymentEntry.amount}{" "}
-                                        <span
-                                            style={{
-                                                textDecoration: "line-through",
-                                                color: "red",
-                                            }}
-                                        >
-                                            Rs. {row.paymentEntry.actualAmount}
-                                        </span>
-                                    </>
-                                ) : (
-                                    `Rs. ${row.paymentEntry.amount}`
-                                );
+                                return <>
+                                    Rs. {row.paymentEntry.amount}{" "}
+                                    {row.paymentEntry.actualAmount && row.paymentEntry.actualAmount !== row.paymentEntry.amount && (<span style={{ textDecoration: "line-through", color: "red", }}>Rs. {row.paymentEntry.actualAmount}</span>)}
+                                </>
                             } else {
                                 return v;
                             }

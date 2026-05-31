@@ -51,7 +51,11 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                         templateName: "MEMBERSHIP_INVOICE",
                         activityType: activityData?.activityName,
                         memberIds: [studentData?.studentId],
-                        token: activityData?.invoiceToken
+                    }}
+                    whatsAppPayload={{
+                        name: studentData?.name,
+                        studioName: studio?.studioName,
+                        invoiceToken: activityData?.invoiceToken
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={

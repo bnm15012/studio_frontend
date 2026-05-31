@@ -88,7 +88,7 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
     const sendFile = async ({ type, contentLabel }) => {
         setLoading(true);
         try {
-            const pdfBlob = await createPdfBlob();
+            const pdfBlob = type === "WHATSAPP" ? null : await createPdfBlob();
             const payload = {
                 branchId: currentBranch.branchId,
                 studioId: studio.studioId,
@@ -113,20 +113,16 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         }
     };
 
-    const redirectToWhatsApp = (phone) => {
-        const receiver = `91${phone}`;
-
-        const invoiceUrl = `${window.location.origin}/#/invoice/${remainingPayload?.token}`;
-
-        const message = `Hello, please find your invoice here: ${invoiceUrl}`;
-
-        const whatsappUrl = `https://wa.me/${receiver}?text=${encodeURIComponent(message)}`;
-
+    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }) => {
+        sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
+        const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken}`;
+        const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName}`;
+        const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, "_blank");
     };
 
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = (phone) => redirectToWhatsApp(phone);
+    const sendWhatsApp = (payload) => redirectToWhatsApp(payload);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

@@ -66,11 +66,15 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                     ref={pdfViewerRef}
                     studio={studio}
                     fileName={`booking-invoice-${bookingData?.clientEntry?.clientId}`}
+                    whatsAppPayload={{
+                        name: bookingData?.clientEntry?.pocName,
+                        studioName: studio?.studioName,
+                        invoiceToken: bookingData?.invoiceToken,
+                    }}
                     remainingPayload={{
                         title: "Booking Invoice",
                         templateName: "BOOKING_INVOICE",
                         clientIds: [bookingData?.clientEntry?.clientId],
-                        token: bookingData?.invoiceToken,
                     }}
                     footer={<p>Thank you for choosing {studio?.studioName}!</p>}
                     header={
