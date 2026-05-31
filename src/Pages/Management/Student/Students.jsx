@@ -133,6 +133,7 @@ const Students = ({ ID }) => {
     const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
     const [showInvoice, setShowInvoice] = useState(false);
     const [showAttendence, setShowAttendence] = useState(false);
+    const tableState = useSelector((state) => state["students"]);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const api = useRef({});
     const apiStudent = useRef({});
@@ -596,6 +597,7 @@ const Students = ({ ID }) => {
                 <StudentInvoice
                     open={true}
                     onClose={() => setShowInvoice(false)}
+                    studentData={tableState.recordById[showInvoice?.studentId]}
                     activityData={showInvoice}
                 />
             )}
