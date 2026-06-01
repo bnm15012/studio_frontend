@@ -29,6 +29,7 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                 },
                 {
                     key: "whatsapp",
+                    disabled: !activityData?.invoiceToken,
                     tip: "WhatsApp",
                     onClick: () => pdfViewerRef.current.sendWhatsApp(studentData?.phone),
                     component: <WhatsApp />,

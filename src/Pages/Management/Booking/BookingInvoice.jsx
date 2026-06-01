@@ -55,6 +55,7 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                 {
                     key: "whatsapp",
                     tip: "Send WhatsApp",
+                    disabled: !bookingData?.invoiceToken,
                     onClick: () =>
                         pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone),
                     component: <WhatsApp />,
