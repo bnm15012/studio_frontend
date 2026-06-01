@@ -1,9 +1,10 @@
 .pdf-page {
-  padding: 12mm;
+  padding: 12mm 12mm 30mm 12mm;
   margin: 10px auto;
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, .2);
   box-sizing: border-box;
+  position: relative;
 }
 
 .pdf-page table {
@@ -94,4 +95,22 @@
 .footer-powered {
   font-size: 12px;
   margin-top: 8px; /* mt: 1 equivalent */
+}
+
+.pdf-footer {
+  position: absolute;
+  bottom: 8mm;
+  left: 12mm;
+  right: 12mm;
+  margin: 0;
+  padding: 0;
+}
+
+@media print {
+  .pdf-page {
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
 }

@@ -14,6 +14,7 @@ const HtmlToPdfViewer = forwardRef(
     ({ content, header, studio, fileName = "document", footer, remainingPayload = {}, whatsAppPayload = {} }, ref) => {
         const previewRef = useRef(null);
         const sourceRef = useRef(null);
+        const containerRef = useRef(null);
         const [dialogOpen, setDialogOpen] = useState(false);
         const [dialogType, setDialogType] = useState("");
         const [inputValue, setInputValue] = useState("");
@@ -73,37 +74,61 @@ const HtmlToPdfViewer = forwardRef(
         useEffect(() => {
             const previewElement = previewRef.current;
             const sourceElement = sourceRef.current;
+            const containerElement = containerRef.current;
 
-            if (!previewElement || !sourceElement) return;
+            if (!previewElement || !sourceElement || !containerElement) return;
 
             // First, paginate the content into the preview element
             paginate(previewElement, sourceElement);
 
             // Then, adjust the scale of the preview to fit its container
             const adjustPreviewScale = () => {
-                // Ensure content is rendered before attempting to measure
-                // Assuming `paginate` creates page elements as direct children within previewElement
-                if (!previewElement.firstChild) return;
+                if (!previewElement.firstChild || !containerRef.current) return;
+
+                // Reset previewElement inline styles first to get accurate natural dimensions
+                previewElement.style.transform = "none";
+                previewElement.style.transformOrigin = "top center";
+                previewElement.style.width = "";
+                previewElement.style.height = "";
+                containerRef.current.style.height = "";
 
                 const firstPage = previewElement.firstChild;
-                const contentNaturalWidth = firstPage.offsetWidth + 30; // Get the natural width of a single page (e.g., A4 width)
+                const contentNaturalWidth = firstPage.offsetWidth;
+                const contentNaturalHeight = previewElement.scrollHeight;
 
-                const containerWidth = previewElement.parentElement.clientWidth; // Get the width of the parent container of #preview
+                const containerWidth = containerRef.current.clientWidth;
 
                 if (contentNaturalWidth > 0 && containerWidth > 0) {
                     let newScale = containerWidth / contentNaturalWidth;
                     if (newScale > 1) newScale = 1; // Max scale is 1
 
+                    // Set standard size so we can transform from center
+                    previewElement.style.width = `${contentNaturalWidth}px`;
+                    previewElement.style.height = `${contentNaturalHeight}px`;
+
                     previewElement.style.transform = `scale(${newScale})`;
-                    previewElement.style.transformOrigin = "top left";
+                    previewElement.style.transformOrigin = "top center";
+
+                    // Dynamically set the height of the parent container to the scaled height
+                    const scaledHeight = contentNaturalHeight * newScale;
+                    containerRef.current.style.height = `${scaledHeight}px`;
                 }
             };
+
             // Use a small delay to ensure DOM is updated after paginate has rendered content
             const timeoutId = setTimeout(adjustPreviewScale, 50);
+
+            // Set up ResizeObserver to observe parent container size changes
+            const resizeObserver = new ResizeObserver(() => {
+                adjustPreviewScale();
+            });
+            resizeObserver.observe(containerElement);
+
             window.addEventListener("resize", adjustPreviewScale);
             return () => {
                 clearTimeout(timeoutId);
                 window.removeEventListener("resize", adjustPreviewScale);
+                resizeObserver.disconnect();
             };
         }, [content]);
 
@@ -136,7 +161,16 @@ const HtmlToPdfViewer = forwardRef(
                     </div>
                 </div>
 
-                <div id="preview" ref={previewRef}></div>
+                <div className="preview-container" ref={containerRef} style={{
+                    width: "100%",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    position: "relative",
+                }}>
+                    <div id="preview" ref={previewRef}></div>
+                </div>
 
                 <ConfirmationDialog
                     type={dialogType}
