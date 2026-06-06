@@ -69,14 +69,14 @@ const FormView = (props) => {
                     >
                         <ArrowBackIcon sx={{ color: "black" }} />
                     </IconButton>
-                    <Typography variant="h5" fontWeight="bold">
+                    <Typography variant="h5" fontWeight="bold" sx={{ textOverflow: "ellipsis" }}>
                         {tableName}
                     </Typography>
                 </FlexBetween>
 
                 <Box>
                     {!editingId ? (
-                        <FlexBetween gap={2}>
+                        <FlexBetween gap={1}>
                             <Actions actions={actions} row={data} />
                             <IconButton>
                                 {loading ? (
@@ -166,12 +166,12 @@ const FormView = (props) => {
                                                         value={
                                                             field?.getValue
                                                                 ? field.getValue(
-                                                                      getNestedValue(
-                                                                          data,
-                                                                          field.name,
-                                                                      ),
-                                                                      data,
-                                                                  )
+                                                                    getNestedValue(
+                                                                        data,
+                                                                        field.name,
+                                                                    ),
+                                                                    data,
+                                                                )
                                                                 : getNestedValue(data, field.name)
                                                         }
                                                         setValue={(v) => {

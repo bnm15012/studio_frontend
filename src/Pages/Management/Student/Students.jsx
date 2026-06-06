@@ -17,6 +17,8 @@ import ActionBar from "../../../Components/ActionBar.jsx";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import StudentAttendence from "./StudentAttendence.jsx";
 import OtherInfo from "./OtherInfo.jsx";
+import { WhatsApp } from "@mui/icons-material";
+import SelectTemplateDialog from "../Communication/SelectTemplateDialog.jsx";
 
 const size = 7;
 
@@ -136,6 +138,7 @@ const Students = ({ ID }) => {
     const [showAttendence, setShowAttendence] = useState(false);
     const tableState = useSelector((state) => state["students"]);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState(false);
     const api = useRef({});
     const apiStudent = useRef({});
     let extraField = []
@@ -570,6 +573,20 @@ const Students = ({ ID }) => {
                     delete row.age;
                     return row;
                 }}
+                actions={[
+                    {
+                        name: "WhatsApp",
+                        icon: <WhatsApp />,
+                        enabled: (row) => true,
+                        sx: { color: "green" },
+                        onClick: (row) => {
+                            if (row.studentId) {
+                                setOpenTemplateDialog({ open: true, data: row })
+                            } else {
+                                showAlert("No student data available, please try again", "error")
+                            }
+                        },
+                    }]}
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
@@ -609,6 +626,19 @@ const Students = ({ ID }) => {
                     open={true}
                     onClose={() => setShowAttendence(false)}
                     activityData={showAttendence}
+                />
+            )}
+            {openTemplateDialog.open && (
+                <SelectTemplateDialog
+                    open={openTemplateDialog.open}
+                    onClose={() => setOpenTemplateDialog({ open: false })}
+                    data={{
+                        ids: [openTemplateDialog.data.studentId],
+                        raw: openTemplateDialog.data,
+                        phoneNumber: openTemplateDialog.data.phone,
+                        email: openTemplateDialog.data.email,
+                        notificationType: "WHATSAPP"
+                    }}
                 />
             )}
         </FlexBetweenColumn>

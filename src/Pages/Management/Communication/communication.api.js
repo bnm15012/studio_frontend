@@ -105,3 +105,17 @@ export const getMessageRecipientsAPI = async ({ token, messageId }) => {
         };
     }
 };
+
+export const sendWhatsAppMessage = async ({ token, phone, message, payload }) => {
+    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+    try {
+        await sendMessageApi({ token, payload });
+    } catch (error) {
+
+    }
+    return {
+        success: true,
+        message: "Message sent successfully!",
+    };
+};
