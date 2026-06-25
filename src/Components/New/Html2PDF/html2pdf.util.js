@@ -11,22 +11,14 @@ export const getA4Dimensions = () => {
     return { width, height };
 };
 
-export const createPage = (footerHtml) => {
+export const createPage = () => {
     const div = document.createElement("div");
     div.className = "pdf-page";
     const { width, height } = getA4Dimensions();
     div.style.width = width + "px";
     div.style.height = height + "px";
     div.style.position = "relative"; // Ensure relative positioning for absolute children
-    
-    if (footerHtml) {
-        const footerDiv = document.createElement("div");
-        footerDiv.className = "pdf-footer";
-        footerDiv.innerHTML = footerHtml;
-        div.appendChild(footerDiv);
-    }
-    
-    return div;
+      return div;
 };
 
 export const createTable = () => {
@@ -39,16 +31,12 @@ export const paginate = (preview, source) => {
 
     preview.innerHTML = "";
 
-    // Extract footer HTML and filter out footer-wrapper from children to paginate
-    const footerElement = source.querySelector(".footer-wrapper");
-    const footerHtml = footerElement ? footerElement.innerHTML : "";
-
     // We get all children EXCEPT the footer wrapper
     const childrenToPaginate = Array.from(source.children).filter(
         (child) => !child.classList.contains("footer-wrapper")
     );
 
-    let page = createPage(footerHtml);
+    let page = createPage();
     preview.appendChild(page);
 
     for (const block of childrenToPaginate) {
@@ -74,7 +62,7 @@ export const paginate = (preview, source) => {
                     blockCloneContainer.removeChild(childClone);
 
                     // Create a new page
-                    page = createPage(footerHtml);
+                    page = createPage();
                     preview.appendChild(page);
 
                     // Create a new container on the new page
@@ -104,7 +92,7 @@ export const paginate = (preview, source) => {
             if (page.scrollHeight > page.clientHeight) {
                 newTable.removeChild(rowClone);
 
-                page = createPage(footerHtml);
+                page = createPage();
                 preview.appendChild(page);
 
                 newTable = createTable();
