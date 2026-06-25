@@ -50,7 +50,7 @@ const FIELDS = [
     {
         show: true,
         name: "paymentType",
-        label: "Payment Category",
+        label: "Payment Type",
         type: FIELD_TYPES.SELECT,
         getValue: (value) => ({ key: value, value }),
         extraProp: {

@@ -11,8 +11,9 @@ import {
     ListItemIcon,
     ListItemText,
     useTheme,
+    Avatar,
 } from "@mui/material";
-import { Crown } from "lucide-react";
+import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
 import { Check as CheckIcon, Close } from "@mui/icons-material";
 import { useCallback, useEffect, useState } from "react";
 import { getAllPlans } from "./plans.api";
@@ -32,6 +33,16 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [allPlans, setAllPlans] = useState(null); //useSelector((state) => state.auth.pricingPlans));
     const user = useSelector((state) => state.auth.user);
+
+    const getFeatureIcon = (featureName) => {
+        const lowerName = featureName.toLowerCase();
+        if (lowerName.includes("student")) return Users;
+        if (lowerName.includes("payment")) return CreditCard;
+        if (lowerName.includes("booking") || lowerName.includes("calendar")) return Calendar;
+        if (lowerName.includes("statistics") || lowerName.includes("analysis")) return BarChart3;
+        if (lowerName.includes("sales") || lowerName.includes("report")) return TrendingUp;
+        return null;
+    };
 
     const gradient = `linear-gradient(
       to left,
@@ -213,46 +224,99 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                     {buttonText}
                                 </Button>
 
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3 }}>
                                     What&apos;s included:
                                 </Typography>
                                 <List sx={{ p: 0 }}>
-                                    {plan?.enabledFeatures.map((feature, featureIndex) => (
-                                        <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
-                                            <ListItemIcon sx={{ minWidth: 32 }}>
-                                                <CheckIcon
-                                                    sx={{ color: "#10B981", fontSize: "1.25rem" }}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={feature}
-                                                slotProps={{
-                                                    primary: {
-                                                        variant: "body2",
-                                                        color: "text.secondary",
+                                    {plan?.enabledFeatures.map((feature, featureIndex) => {
+                                        const FeatureIcon = getFeatureIcon(feature);
+                                        return (
+                                            <ListItem
+                                                key={featureIndex}
+                                                sx={{
+                                                    px: 0,
+                                                    py: 1.5,
+                                                    borderRadius: 2,
+                                                    transition: "all 0.2s ease",
+                                                    "&:hover": {
+                                                        backgroundColor: "rgba(16, 185, 129, 0.08)",
                                                     },
                                                 }}
-                                            />
-                                        </ListItem>
-                                    ))}
-                                    {plan?.disabledFeatures.map((feature, featureIndex) => (
-                                        <ListItem key={featureIndex} sx={{ px: 0, py: 0.5 }}>
-                                            <ListItemIcon sx={{ minWidth: 32 }}>
-                                                <Close
-                                                    sx={{ color: "#b91310ff", fontSize: "1.25rem" }}
+                                            >
+                                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            width: 36,
+                                                            height: 36,
+                                                            background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                                                            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
+                                                        }}
+                                                    >
+                                                        {FeatureIcon ? (
+                                                            <FeatureIcon size={18} color="white" />
+                                                        ) : (
+                                                            <CheckIcon sx={{ fontSize: "1.25rem", color: "white" }} />
+                                                        )}
+                                                    </Avatar>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={feature}
+                                                    slotProps={{
+                                                        primary: {
+                                                            variant: "body1",
+                                                            sx: {
+                                                                fontWeight: 500,
+                                                                color: "text.primary",
+                                                            },
+                                                        },
+                                                    }}
                                                 />
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={feature}
-                                                slotProps={{
-                                                    primary: {
-                                                        variant: "body2",
-                                                        color: "text.secondary",
-                                                    },
+                                            </ListItem>
+                                        );
+                                    })}
+                                    {plan?.disabledFeatures.map((feature, featureIndex) => {
+                                        const FeatureIcon = getFeatureIcon(feature);
+                                        return (
+                                            <ListItem
+                                                key={featureIndex}
+                                                sx={{
+                                                    px: 0,
+                                                    py: 1.5,
+                                                    borderRadius: 2,
+                                                    opacity: 0.6,
                                                 }}
-                                            />
-                                        </ListItem>
-                                    ))}
+                                            >
+                                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                                    <Avatar
+                                                        sx={{
+                                                            width: 36,
+                                                            height: 36,
+                                                            background: "rgba(185, 19, 16, 0.1)",
+                                                            border: "1px solid rgba(185, 19, 16, 0.2)",
+                                                        }}
+                                                    >
+                                                        {FeatureIcon ? (
+                                                            <FeatureIcon size={18} color="#b91310ff" />
+                                                        ) : (
+                                                            <Close sx={{ fontSize: "1.25rem", color: "#b91310ff" }} />
+                                                        )}
+                                                    </Avatar>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={feature}
+                                                    slotProps={{
+                                                        primary: {
+                                                            variant: "body1",
+                                                            sx: {
+                                                                fontWeight: 500,
+                                                                color: "text.secondary",
+                                                            },
+                                                        },
+                                                    }}
+                                                />
+                                            </ListItem>
+                                        );
+                                    })}
                                 </List>
                             </CardContent>
                         </Card>

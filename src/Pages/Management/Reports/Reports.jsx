@@ -43,6 +43,7 @@ const Reports = () => {
     const [eiData, setEiData] = useState(null);
     const [reportType, setReportType] = useState("incomeExpense");
     const [paymentStatus, setPaymentStatus] = useState("COMPLETED");
+    const [paymentMethod, setPaymentMethod] = useState("All");
 
     const getData = async () => {
         if (!startDateValue || !endDateValue) {
@@ -63,6 +64,7 @@ const Reports = () => {
             startMonth: startDateValue.getMonth() + 1,
             startYear: startDateValue.getFullYear(),
             studioId: studio.studioId,
+            paymentMethod,
             branchId: currentBranch.branchId,
         };
         try {
@@ -89,6 +91,7 @@ const Reports = () => {
                     const expenseFormatted = report.expenseEntries.map((entry, index) => [
                         index + 1,
                         entry.description || entry.expenseCategory,
+                        entry.paymentType,
                         entry.expenseCategory,
                         getLocalDateTime(entry.expenseDate),
                         `₹${entry.amount}`,
@@ -146,13 +149,13 @@ const Reports = () => {
                     });
                     paymentStatus === "PENDING"
                         ? setEiData({
-                              pendingPaymentEntries: formatted,
-                              totalPendingPayment: totalAmount,
-                          })
+                            pendingPaymentEntries: formatted,
+                            totalPendingPayment: totalAmount,
+                        })
                         : setEiData({
-                              completedPaymentEntries: formatted,
-                              totalCompletedPayment: totalAmount,
-                          });
+                            completedPaymentEntries: formatted,
+                            totalCompletedPayment: totalAmount,
+                        });
                 } else {
                     paymentStatus === "PENDING"
                         ? setEiData({ pendingPaymentEntries: [], totalPendingPayment: 0 })
@@ -190,8 +193,8 @@ const Reports = () => {
                                             i === 0
                                                 ? "center"
                                                 : headers.length - 1 === i
-                                                  ? "right"
-                                                  : "left",
+                                                    ? "right"
+                                                    : "left",
                                     }}
                                 >
                                     {h}
@@ -217,8 +220,8 @@ const Reports = () => {
                                                 j == 0
                                                     ? "center"
                                                     : j === row.length - 1
-                                                      ? "right"
-                                                      : "left",
+                                                        ? "right"
+                                                        : "left",
                                         }}
                                     >
                                         {cell}
@@ -240,7 +243,7 @@ const Reports = () => {
     const formattedDateRange = () =>
         `${startDateValue ? formatDate(startDateValue, "DD-MM-YYYY") : "N/A"} – ${endDateValue ? formatDate(endDateValue, "DD-MM-YYYY") : "N/A"}`;
 
-    useEffect(() => {}, [paymentStatus, reportType]);
+    useEffect(() => { }, [paymentStatus, reportType]);
 
     return (
         <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
@@ -286,7 +289,20 @@ const Reports = () => {
                                 <MenuItem value="payment">Payment Report</MenuItem>
                             </Select>
                         </FormControl>
-
+                        <FormControl fullWidth>
+                            <InputLabel>Payment Method</InputLabel>
+                            <Select
+                                value={paymentMethod}
+                                label="Payment Method"
+                                onChange={(e) => {
+                                    setPaymentMethod(e.target.value);
+                                }}
+                            >
+                                <MenuItem value="All">All</MenuItem>
+                                <MenuItem value="CASH">CASH</MenuItem>
+                                <MenuItem value="UPI">UPI</MenuItem>
+                            </Select>
+                        </FormControl>
                         {reportType === "payment" && (
                             <FormControl fullWidth>
                                 <InputLabel>Payment Status</InputLabel>
@@ -371,6 +387,7 @@ const Reports = () => {
                                 renderTable("Expenses", eiData.expenses, [
                                     "No.",
                                     "Description",
+                                    "Payment Mode",
                                     "Category",
                                     "Date",
                                     "Amount",
@@ -451,27 +468,27 @@ const Reports = () => {
                                                 )}
                                             {(eiData?.totalCompletedPayment != null ||
                                                 eiData?.totalPendingPayment != null) && (
-                                                <tr>
-                                                    <td>
-                                                        <strong>
-                                                            Total{" "}
-                                                            {eiData?.totalPendingPayment != null
-                                                                ? "pending"
-                                                                : "completd"}{" "}
-                                                            amount
-                                                        </strong>
-                                                    </td>
-                                                    <td style={{ textAlign: "right" }}>
-                                                        ₹
-                                                        {eiData?.totalPendingPayment?.toLocaleString(
-                                                            "en-IN",
-                                                        ) ||
-                                                            eiData?.totalCompletedPayment?.toLocaleString(
+                                                    <tr>
+                                                        <td>
+                                                            <strong>
+                                                                Total{" "}
+                                                                {eiData?.totalPendingPayment != null
+                                                                    ? "pending"
+                                                                    : "completd"}{" "}
+                                                                amount
+                                                            </strong>
+                                                        </td>
+                                                        <td style={{ textAlign: "right" }}>
+                                                            ₹
+                                                            {eiData?.totalPendingPayment?.toLocaleString(
                                                                 "en-IN",
-                                                            )}
-                                                    </td>
-                                                </tr>
-                                            )}
+                                                            ) ||
+                                                                eiData?.totalCompletedPayment?.toLocaleString(
+                                                                    "en-IN",
+                                                                )}
+                                                        </td>
+                                                    </tr>
+                                                )}
                                         </tbody>
                                     </table>
                                 </>

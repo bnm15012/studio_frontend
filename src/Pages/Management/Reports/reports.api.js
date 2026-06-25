@@ -12,12 +12,13 @@ export const reportsAPi = async ({
     token,
     type,
     status,
+    paymentMethod,
 }) => {
     try {
         let response = null;
         if (type === "payment") {
             response = await api.get(
-                `/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}`,
+                `/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}&paymentType=${paymentMethod}`,
                 {
                     headers: {
                         Authorization: token,
@@ -28,7 +29,7 @@ export const reportsAPi = async ({
             );
         } else {
             response = await api.get(
-                `/reports/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}`,
+                `/reports/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?paymentType=${paymentMethod}`,
                 {
                     headers: {
                         Authorization: token,
