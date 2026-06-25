@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import Loading from "../../Loading/Loading";
 import { usePdfActions } from "./usePdfActions";
-import { useSelector } from "react-redux";
 import { paginate } from "./html2pdf.util";
 import "./html2pdf.css";
 
@@ -78,9 +77,16 @@ const HtmlToPdfViewer = forwardRef(
 
             if (!previewElement || !sourceElement || !containerElement) return;
 
+            const footerElement = sourceElement.querySelector(".footer-wrapper");
+            const footerHtml = footerElement ? footerElement.innerHTML : "";
             // First, paginate the content into the preview element
             paginate(previewElement, sourceElement);
-
+            if (footerHtml) {
+                const footerDiv = document.createElement("div");
+                footerDiv.className = "pdf-footer";
+                footerDiv.innerHTML = footerHtml;
+                previewElement.appendChild(footerDiv);
+            }
             // Then, adjust the scale of the preview to fit its container
             const adjustPreviewScale = () => {
                 if (!previewElement.firstChild || !containerRef.current) return;

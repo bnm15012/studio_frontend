@@ -32,7 +32,8 @@ const FIELDS = [
         name: "status",
         label: "Status",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value, value }),
+        getValue: (value) => value && ({ key: value, value }),
+        defaultValue: STATUS[1],
         extraProp: {
             getOptions: async (search, page, limit) =>
                 STATUS.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
@@ -52,7 +53,8 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value, value }),
+        getValue: (value) => value && ({ key: value, value }),
+        defaultValue: PAYMENT_TYPE[1],
         extraProp: {
             getOptions: async (search, page, limit) =>
                 PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))

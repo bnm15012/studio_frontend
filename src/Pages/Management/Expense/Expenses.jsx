@@ -20,7 +20,7 @@ const categories = [
     "OTHER",
 ];
 const LIMIT = 7;
-const PAYMENT_TYPE = ["UPI", "CASH"]
+const PAYMENT_TYPE = ["CASH", "UPI"]
 const FIELD_META = {
     primary: "expenseId",
     root: "branchId",
@@ -58,7 +58,8 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => ({ key: value, value }),
+        getValue: (value) => value && ({ key: value, value }),
+        defaultValue: PAYMENT_TYPE[0],
         extraProp: {
             getOptions: async (search, page, limit) =>
                 PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))

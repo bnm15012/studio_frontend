@@ -142,7 +142,7 @@ const Footer = () => {
                                     <XIcon />
                                 </IconButton>
                                 <IconButton
-                                    href="https://www.instagram.com/"
+                                    href="https://www.instagram.com/book_and_manage"
                                     sx={{
                                         color: "rgba(255, 255, 255, 0.7)",
                                         "&:hover": {
