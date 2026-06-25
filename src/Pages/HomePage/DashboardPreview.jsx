@@ -1,24 +1,29 @@
-import { Box, Typography, Container, Card, CardContent, Chip, Button, useTheme } from "@mui/material";
-import { Monitor as MonitorIcon, ArrowForward as ArrowForwardIcon, PlayCircle as PlayIcon } from "@mui/icons-material";
+import { Box, Typography, Container, Chip, useTheme } from "@mui/material";
+import { Monitor as MonitorIcon } from "@mui/icons-material";
 
 export function DashboardPreview() {
     const theme = useTheme();
 
     const dashboardFeatures = [
         {
-            title: "Reports & Analytics",
-            description: "Track attendance, retention, and revenue trends",
+            title: "Dashboard Overview",
+            description: "Get a real-time snapshot of your entire studio at a glance. View total students, active memberships, monthly revenue, and expense summaries — all from a single screen. Monitor current month vs last month revenue trends, track instructor count, and stay on top of every aspect of your studio operations without switching between multiple screens.",
+            image: "/assets/dashboard-main.png",
+        },
+        {
+            title: "Activity Overview",
+            description: "Manage all your studio activities effortlessly in one place. Create and customise activities with flexible membership plans — monthly, quarterly, half-yearly, or yearly. Set up multiple batch timings to accommodate different student schedules, assign dedicated instructors per batch, and define capacity limits. Whether it's yoga, dance, fitness, or martial arts — organise everything with ease.",
+            image: "/assets/dashboard-activity.png",
+        },
+        {
+            title: "Income & Expense Reports",
+            description: "Powerful, filter-rich reports across every section — bookings, students, clients, expenses, and memberships. Filter by payment mode (Cash, UPI, Card, Bank Transfer), track pending payments, and drill down by date, batch, or instructor. Export fee summaries and expense breakdowns for complete financial visibility.",
             image: "/assets/dashboard-reports.png",
         },
         {
-            title: "Smart Calendar",
-            description: "Manage class schedules and bookings efficiently",
+            title: "Analytics",
+            description: "Dive deep into your studio's data with intuitive visual analytics. Track payment modes — cash, UPI, card, or bank transfer — and understand which revenue streams perform best. Identify peak enrollment periods, monitor batch-wise occupancy, and spot trends in student drop-offs before they become a problem. Turn your data into actionable insights that help your studio grow.",
             image: "/assets/dashboard-analytics.png",
-        },
-        {
-            title: "Payment Dashboard",
-            description: "Track payments, invoices, and revenue in real-time",
-            image: "/assets/dashboard-payments.png",
         },
     ];
 
@@ -26,7 +31,7 @@ export function DashboardPreview() {
         <Box
             id="dashboard"
             sx={{
-                py: 12,
+                py: 8,
                 background: "linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)",
                 position: "relative",
                 overflow: "hidden",
@@ -62,7 +67,7 @@ export function DashboardPreview() {
 
             <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10 }}>
                 {/* Section Header */}
-                <Box sx={{ textAlign: "center", mb: 8 }}>
+                <Box sx={{ textAlign: "center", mb: 4 }}>
                     <Chip
                         icon={<MonitorIcon />}
                         label="Powerful Dashboard"
@@ -103,7 +108,7 @@ export function DashboardPreview() {
                     sx={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 8,
+                        gap: 4,
                     }}
                 >
                     {dashboardFeatures.map((feature, index) => (
@@ -123,16 +128,14 @@ export function DashboardPreview() {
                                 src={feature.image}
                                 alt={feature.title}
                                 sx={{
-                                    width: { xs: "100%", md: 450 },
-                                    height: { xs: 300, md: 350 },
-                                    objectFit: "cover",
-                                    borderRadius: 3,
-                                    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
-                                    transform: index % 2 === 0 ? "rotate(-2deg)" : "rotate(2deg)",
+                                    width: { xs: "100%", md: 580 },
+                                    height: { xs: 240, md: 340 },
+                                    objectFit: "contain",
+                                    transform: index % 2 === 0 ? "rotate(-5deg)" : "rotate(5deg)",
                                     transition: "transform 0.3s ease",
                                     flexShrink: 0,
                                     "&:hover": {
-                                        transform: "rotate(0deg) scale(1.02)",
+                                        transform: "rotate(0deg) scale(1.04)",
                                     },
                                 }}
                             />
@@ -154,25 +157,7 @@ export function DashboardPreview() {
                     ))}
                 </Box>
 
-                {/* CTA */}
-                <Box sx={{ textAlign: "center", mt: 8 }}>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        endIcon={<ArrowForwardIcon />}
-                        sx={{
-                            py: 2,
-                            px: 6,
-                            fontSize: "1.125rem",
-                            background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
-                            "&:hover": {
-                                background: "linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)",
-                            },
-                        }}
-                    >
-                        Start Free Trial
-                    </Button>
-                </Box>
+
             </Container>
         </Box>
     );

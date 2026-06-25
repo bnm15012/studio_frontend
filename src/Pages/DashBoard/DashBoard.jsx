@@ -239,6 +239,30 @@ const DashBoard = () => {
                         </Box>
                     )}
 
+                    {/* Dashboard Main Image */}
+                    <Box
+                        mt={2}
+                        sx={{
+                            borderRadius: 4,
+                            overflow: "hidden",
+                            boxShadow: "0 8px 32px rgba(16,24,40,0.12)",
+                            animation: `${fadeInUp} .6s ease-out .1s both`,
+                        }}
+                    >
+                        <Box
+                            component="img"
+                            src="/assets/dashboard-main.png"
+                            alt="Dashboard Overview"
+                            sx={{
+                                width: "100%",
+                                maxHeight: { xs: 200, md: 320 },
+                                objectFit: "cover",
+                                display: "block",
+                            }}
+                        />
+                    </Box>
+
+                    {/* Summary Cards */}
                     <Box
                         mt={2}
                         sx={{
@@ -286,6 +310,74 @@ const DashBoard = () => {
                                 </Box>
                             );
                         })}
+                    </Box>
+
+                    {/* Dashboard Feature Images - 2x2 grid */}
+                    <Box
+                        mt={3}
+                        sx={{
+                            display: "grid",
+                            gap: 3,
+                            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                            animation: `${fadeInUp} .7s ease-out .3s both`,
+                        }}
+                    >
+                        {[
+                            {
+                                src: "/assets/dashboard-activity.png",
+                                alt: "Activity Overview",
+                                label: "Activity Overview",
+                                icon: <LocalActivityRounded sx={{ color: "#E91E63" }} />,
+                                navigateTo: "/management/activity",
+                            },
+                            {
+                                src: "/assets/dashboard-analytics.png",
+                                alt: "Analytics",
+                                label: "Analytics",
+                                icon: <TrendingUp sx={{ color: "#009688" }} />,
+                                navigateTo: "/management/reports",
+                            },
+                            {
+                                src: "/assets/dashboard-reports.png",
+                                alt: "Reports",
+                                label: "Reports",
+                                icon: <MoneyIcon sx={{ color: "#607D8B" }} />,
+                                navigateTo: "/management/reports",
+                            },
+                            {
+                                src: "/assets/dashboard-main.png",
+                                alt: "Dashboard Overview",
+                                label: "Dashboard Overview",
+                                icon: <Payment sx={{ color: "#795548" }} />,
+                                navigateTo: "/management/payments",
+                            },
+                        ].map((item, index) => (
+                            <Paper
+                                key={index}
+                                elevation={2}
+                                sx={{ borderRadius: 3, overflow: "hidden", cursor: "pointer" }}
+                                onClick={() => navigate(item.navigateTo)}
+                            >
+                                <Box sx={{ p: 2, pb: 1 }}>
+                                    <Typography variant="h6" fontWeight={700} display="flex" alignItems="center" gap={1}>
+                                        {item.icon} {item.label}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    component="img"
+                                    src={item.src}
+                                    alt={item.alt}
+                                    sx={{
+                                        width: "100%",
+                                        height: { xs: 180, md: 220 },
+                                        objectFit: "cover",
+                                        display: "block",
+                                        transition: "transform .3s ease",
+                                        "&:hover": { transform: "scale(1.02)" },
+                                    }}
+                                />
+                            </Paper>
+                        ))}
                     </Box>
                 </>
             }
