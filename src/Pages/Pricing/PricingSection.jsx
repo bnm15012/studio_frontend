@@ -1,5 +1,5 @@
-import { Box, Typography, Container, Chip } from "@mui/material";
-import { Star as StarIcon } from "@mui/icons-material";
+import { Box, Typography, Container, Chip, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Star as StarIcon, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import PricingPlanCards from "./PricingPlanCards";
 
 const PricingSection = () => {
@@ -10,15 +10,39 @@ const PricingSection = () => {
         },
         {
             question: "Can I change plans anytime?",
-            answer: "Absolutely. You can upgrade or downgrade your plan at any time. Changes take effect immediately.",
+            answer: "Absolutely. You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate your billing accordingly.",
         },
         {
             question: "What payment methods do you accept?",
-            answer: "We accept via RazorPay.",
+            answer: "We accept all major payment methods through RazorPay including credit/debit cards, UPI, net banking, and popular wallets.",
         },
         {
             question: "Is there a setup fee?",
-            answer: "No setup fees.",
+            answer: "No setup fees. You can get started immediately without any additional costs.",
+        },
+        {
+            question: "How long does it take to set up?",
+            answer: "Most studios are up and running within 24-48 hours. Our team provides onboarding support to ensure a smooth transition.",
+        },
+        {
+            question: "Is my data secure?",
+            answer: "Yes, we use enterprise-grade encryption and follow GDPR compliance standards. Your data is backed up daily and stored in secure data centers.",
+        },
+        {
+            question: "Do you offer customer support?",
+            answer: "Yes, we provide 24/7 customer support via chat, email, and phone. Our average response time is under 2 hours.",
+        },
+        {
+            question: "Can I import my existing data?",
+            answer: "Absolutely. We help you import your existing member data, schedules, and booking history from spreadsheets or other systems at no extra cost.",
+        },
+        {
+            question: "What happens if I cancel?",
+            answer: "You can cancel anytime. Your data will be exported for you, and you'll retain access until the end of your billing period.",
+        },
+        {
+            question: "Do you offer discounts for annual plans?",
+            answer: "Yes, annual plans come with a 20% discount compared to monthly billing. Contact our sales team for custom enterprise pricing.",
         },
     ];
 
@@ -101,37 +125,43 @@ const PricingSection = () => {
                 <PricingPlanCards />
 
                 {/* FAQ Section */}
-                <Box sx={{ maxWidth: 1000, mx: "auto" }}>
+                <Box sx={{ maxWidth: 900, mx: "auto" }}>
                     <Typography
                         variant="h4"
                         sx={{ textAlign: "center", fontWeight: "bold", mb: 6 }}
                     >
                         Frequently Asked Questions
                     </Typography>
-                    <Box
-                        sx={{
-                            display: "grid",
-                            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-                            gap: 4,
-                        }}
-                    >
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         {faqs.map((faq, index) => (
-                            <Box key={index}>
-                                <Box sx={{ mb: 3 }}>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontWeight: 600, mb: 2, color: "text.primary" }}
-                                    >
-                                        {faq.question}
-                                    </Typography>
-                                    <Typography
-                                        variant="body1"
-                                        sx={{ color: "text.secondary", lineHeight: 1.6 }}
-                                    >
-                                        {faq.answer}
-                                    </Typography>
-                                </Box>
-                            </Box>
+                            <Accordion
+                                key={index}
+                                sx={{
+                                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                    backdropFilter: "blur(10px)",
+                                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                                    "&:before": { display: "none" },
+                                    boxShadow: "none",
+                                }}
+                            >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    sx={{
+                                        fontWeight: 600,
+                                        color: "text.primary",
+                                    }}
+                                >
+                                    {faq.question}
+                                </AccordionSummary>
+                                <AccordionDetails
+                                    sx={{
+                                        color: "text.secondary",
+                                        lineHeight: 1.6,
+                                    }}
+                                >
+                                    {faq.answer}
+                                </AccordionDetails>
+                            </Accordion>
                         ))}
                     </Box>
                 </Box>

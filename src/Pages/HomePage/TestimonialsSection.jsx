@@ -8,9 +8,13 @@ export function TestimonialsSection() {
             name: "Ajay Roy",
             role: "Owner, Rhythmix International",
             content:
-                "Book & Manage has completely transformed how we operate. The automated scheduling saves us hours every week, and our members love the easy booking system.",
+                "Book & Manage has completely transformed how we operate. The automated scheduling saves us 15+ hours every week, and our members love the easy booking system.",
             rating: 5,
             image: "assets/rhythmix.png",
+            metrics: [
+                { label: "Time Saved", value: "15+ hrs/week" },
+                { label: "Booking Increase", value: "+40%" },
+            ],
         },
         {
             name: "Krishna",
@@ -19,13 +23,22 @@ export function TestimonialsSection() {
                 "The payment processing is seamless and the financial reporting gives us insights we never had before. Our revenue has increased by 30% since implementation.",
             rating: 5,
             image: "assets/studio7.png",
+            metrics: [
+                { label: "Revenue Growth", value: "+30%" },
+                { label: "Payment Speed", value: "2x faster" },
+            ],
         },
         {
+            name: "Priya Sharma",
             role: "Manager, Urban Beats",
             content:
-                "Customer support is exceptional and the platform is incredibly user-friendly. Both our staff and members adapted to it immediately.",
+                "Customer support is exceptional and the platform is incredibly user-friendly. Both our staff and members adapted to it immediately. Our no-show rate dropped by 60%.",
             rating: 5,
             image: "assets/urban_beats.png",
+            metrics: [
+                { label: "No-show Reduction", value: "-60%" },
+                { label: "Staff Adoption", value: "100%" },
+            ],
         },
         {
             name: "Bhavesh",
@@ -34,6 +47,10 @@ export function TestimonialsSection() {
                 "The member management features help us provide personalized experiences. Our retention rate has improved significantly since we started using Book & Manage.",
             rating: 5,
             image: "assets/house_of_happiness.jpeg",
+            metrics: [
+                { label: "Retention Rate", value: "+25%" },
+                { label: "Member Satisfaction", value: "4.9/5" },
+            ],
         },
     ];
 
@@ -246,7 +263,7 @@ export function TestimonialsSection() {
                                             },
                                         }}
                                     />
-                                    <Box>
+                                    <Box sx={{ flex: 1 }}>
                                         <Typography
                                             variant="subtitle1"
                                             sx={{ fontWeight: 600, color: "text.primary" }}
@@ -261,6 +278,42 @@ export function TestimonialsSection() {
                                         </Typography>
                                     </Box>
                                 </Box>
+
+                                {/* Metrics */}
+                                {testimonial.metrics && (
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            gap: 2,
+                                            mt: 3,
+                                            pt: 3,
+                                            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+                                        }}
+                                    >
+                                        {testimonial.metrics.map((metric, metricIndex) => (
+                                            <Box key={metricIndex}>
+                                                <Typography
+                                                    variant="h6"
+                                                    sx={{
+                                                        fontWeight: "bold",
+                                                        background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                                        backgroundClip: "text",
+                                                        WebkitBackgroundClip: "text",
+                                                        WebkitTextFillColor: "transparent",
+                                                    }}
+                                                >
+                                                    {metric.value}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    sx={{ color: "text.secondary", fontSize: "0.75rem" }}
+                                                >
+                                                    {metric.label}
+                                                </Typography>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                )}
                             </CardContent>
                         </Card>
                     ))}
