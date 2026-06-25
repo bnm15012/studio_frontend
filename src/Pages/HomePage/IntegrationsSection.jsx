@@ -1,5 +1,5 @@
 import { Box, Typography, Container, Card, CardContent, Chip, Avatar, useTheme } from "@mui/material";
-import { Extension as ExtensionIcon, Check as CheckIcon } from "@mui/icons-material";
+import { Extension as ExtensionIcon, Check as CheckIcon, WhatsApp as WhatsAppIcon, Payment as PaymentIcon, CalendarMonth as CalendarIcon, Email as EmailIcon, PictureAsPdf as PdfIcon } from "@mui/icons-material";
 
 export function IntegrationsSection() {
     const theme = useTheme();
@@ -7,27 +7,38 @@ export function IntegrationsSection() {
     const integrations = [
         {
             name: "WhatsApp Business",
-            description: "Automated notifications and reminders",
-            icon: "/assets/whatsapp-icon.png",
+            description: "Send automated fee reminders, booking confirmations, and attendance alerts directly to students and parents on WhatsApp.",
+            icon: <WhatsAppIcon sx={{ fontSize: 32, color: "#25D366" }} />,
+            iconBg: "rgba(37, 211, 102, 0.1)",
             category: "Communication",
         },
         {
             name: "RazorPay",
-            description: "Secure payment processing",
-            icon: "/assets/razorpay-icon.png",
+            description: "Accept payments online securely via UPI, cards, net banking, and wallets. Track every transaction in real-time.",
+            icon: <PaymentIcon sx={{ fontSize: 32, color: "#2D9CDB" }} />,
+            iconBg: "rgba(45, 156, 219, 0.1)",
             category: "Payments",
         },
         {
             name: "Google Calendar",
-            description: "Sync schedules seamlessly",
-            icon: "/assets/google-calendar-icon.png",
+            description: "Sync class schedules, batch timings, and events directly with Google Calendar so nothing is ever missed.",
+            icon: <CalendarIcon sx={{ fontSize: 32, color: "#4285F4" }} />,
+            iconBg: "rgba(66, 133, 244, 0.1)",
             category: "Productivity",
         },
         {
             name: "Gmail",
-            description: "Email notifications and updates",
-            icon: "/assets/gmail-icon.png",
+            description: "Send fee receipts, invoices, and important studio updates directly to students and parents via email.",
+            icon: <EmailIcon sx={{ fontSize: 32, color: "#EA4335" }} />,
+            iconBg: "rgba(234, 67, 53, 0.1)",
             category: "Communication",
+        },
+        {
+            name: "PDF & Invoice Generator",
+            description: "Auto-generate fee receipts, student invoices, and expense reports as professional downloadable PDFs in one click.",
+            icon: <PdfIcon sx={{ fontSize: 32, color: "#F44336" }} />,
+            iconBg: "rgba(244, 67, 54, 0.1)",
+            category: "Documents",
         },
     ];
 
@@ -150,10 +161,9 @@ export function IntegrationsSection() {
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-                        gap: 4,
-                        mb: 8,
-                        maxWidth: 900,
+                        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", lg: "1fr 1fr 1fr" },
+                        gap: 3,
+                        maxWidth: 1100,
                         mx: "auto",
                     }}
                 >
@@ -163,61 +173,49 @@ export function IntegrationsSection() {
                             sx={{
                                 height: "100%",
                                 transition: "all 0.3s ease",
-                                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                backdropFilter: "blur(10px)",
-                                border: "1px solid rgba(255, 255, 255, 0.2)",
+                                backgroundColor: "#fff",
+                                border: "1px solid",
+                                borderColor: "grey.100",
+                                borderRadius: 3,
+                                boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
                                 "&:hover": {
-                                    transform: "translateY(-8px)",
-                                    boxShadow: "0 20px 40px rgba(139, 92, 246, 0.15)",
-                                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                                    transform: "translateY(-6px)",
+                                    boxShadow: "0 16px 40px rgba(139, 92, 246, 0.15)",
+                                    borderColor: "primary.light",
                                 },
                             }}
                         >
-                            <CardContent sx={{ p: 4 }}>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 2,
-                                        mb: 3,
-                                    }}
-                                >
+                            <CardContent sx={{ p: 3 }}>
+                                {/* Icon + Category row */}
+                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
                                     <Avatar
-                                        src={integration.icon}
-                                        alt={integration.name}
                                         sx={{
-                                            width: 56,
-                                            height: 56,
-                                            backgroundColor: "rgba(139, 92, 246, 0.1)",
+                                            width: 52,
+                                            height: 52,
+                                            backgroundColor: integration.iconBg,
+                                            borderRadius: 2,
                                         }}
                                     >
-                                        <ExtensionIcon sx={{ color: "primary.main" }} />
+                                        {integration.icon}
                                     </Avatar>
-                                    <Box>
-                                        <Typography
-                                            variant="h6"
-                                            sx={{ fontWeight: 600, color: "text.primary" }}
-                                        >
-                                            {integration.name}
-                                        </Typography>
-                                        <Chip
-                                            label={integration.category}
-                                            size="small"
-                                            sx={{
-                                                backgroundColor: "rgba(139, 92, 246, 0.1)",
-                                                color: "primary.main",
-                                                fontSize: "0.75rem",
-                                            }}
-                                        />
-                                    </Box>
+                                    <Chip
+                                        label={integration.category}
+                                        size="small"
+                                        sx={{
+                                            backgroundColor: integration.iconBg,
+                                            color: "text.secondary",
+                                            fontWeight: 600,
+                                            fontSize: "0.7rem",
+                                            borderRadius: 1,
+                                        }}
+                                    />
                                 </Box>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        color: "text.secondary",
-                                        lineHeight: 1.6,
-                                    }}
-                                >
+                                {/* Name */}
+                                <Typography variant="h6" sx={{ fontWeight: 700, color: "text.primary", mb: 1 }}>
+                                    {integration.name}
+                                </Typography>
+                                {/* Description */}
+                                <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.7 }}>
                                     {integration.description}
                                 </Typography>
                             </CardContent>

@@ -118,8 +118,8 @@ export function DashboardPreview() {
                                 display: "flex",
                                 flexDirection: { xs: "column", md: index % 2 === 0 ? "row" : "row-reverse" },
                                 alignItems: "center",
-                                gap: 6,
-                                maxWidth: 1200,
+                                gap: 10,
+                                maxWidth: 1400,
                                 mx: "auto",
                             }}
                         >

@@ -7,7 +7,6 @@ import { HeroSection } from "./HeroSection";
 import { TestimonialsSection } from "./TestimonialsSection";
 import { FeaturesSection } from "./FeaturesSection";
 import { DashboardPreview } from "./DashboardPreview";
-import { IntegrationsSection } from "./IntegrationsSection";
 import Footer from "../../Components/Footer";
 import PricingSection from "../Pricing/PricingSection";
 
@@ -31,7 +30,6 @@ const HomePage = () => {
             <FeaturesSection />
             <DashboardPreview />
             <TestimonialsSection />
-            <IntegrationsSection />
             <PricingSection />
             <Footer />
         </Box>
