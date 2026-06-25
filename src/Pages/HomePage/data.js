@@ -73,10 +73,10 @@ export const featurePageContent = {
         {
             icon: SecurityIcon,
             color: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
-            title: "Security & Compliance",
+            title: "Security & Data Protection",
             description:
-                "Enterprise-grade security with GDPR compliance and data protection to keep your business and members safe.",
-            benefits: ["Data encryption", "GDPR compliance", "Secure access", "Privacy protection"],
+                "Enterprise-grade security and daily backups to keep your business and member data safe at all times.",
+            benefits: ["Data encryption", "Daily backups", "Secure access", "Privacy protection"],
         },
     ],
     cta: {

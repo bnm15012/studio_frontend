@@ -1,6 +1,31 @@
-import { Box, Typography, Container, Chip, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import { Star as StarIcon, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import { Box, Typography, Container, Chip, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Star as StarIcon, ExpandMore as ExpandMoreIcon, Check as CheckIcon, Close as CloseIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import PricingPlanCards from "./PricingPlanCards";
+
+const CheckCell = () => <CheckIcon sx={{ color: "#10B981", fontSize: "1.4rem" }} />;
+const CrossCell = () => <CloseIcon sx={{ color: "#EF4444", fontSize: "1.4rem" }} />;
+const PartialCell = () => <RemoveIcon sx={{ color: "#F59E0B", fontSize: "1.4rem" }} />;
+
+const comparisonRows = [
+    { feature: "WhatsApp Notifications",         bnm: true,    mindbody: false,  gymmaster: false  },
+    { feature: "India-specific Pricing (₹)",     bnm: true,    mindbody: false,  gymmaster: false  },
+    { feature: "PDF Invoice & Receipt Generator",bnm: true,    mindbody: "partial", gymmaster: false },
+    { feature: "Activity & Batch Management",    bnm: true,    mindbody: "partial", gymmaster: "partial" },
+    { feature: "Cash / UPI / Card Tracking",     bnm: true,    mindbody: false,  gymmaster: "partial" },
+    { feature: "Expense Management",             bnm: true,    mindbody: false,  gymmaster: false  },
+    { feature: "Student & Member Management",    bnm: true,    mindbody: true,   gymmaster: true   },
+    { feature: "Income & Expense Reports",       bnm: true,    mindbody: "partial", gymmaster: "partial" },
+    { feature: "Mobile App",                     bnm: true,    mindbody: true,   gymmaster: true   },
+    { feature: "Affordable for Small Studios",   bnm: true,    mindbody: false,  gymmaster: "partial" },
+    { feature: "7-day Free Trial",               bnm: true,    mindbody: false,  gymmaster: true   },
+    { feature: "WhatsApp Invoice Sharing",       bnm: true,    mindbody: false,  gymmaster: false  },
+];
+
+const renderCell = (val) => {
+    if (val === true) return <CheckCell />;
+    if (val === false) return <CrossCell />;
+    return <PartialCell />;
+};
 
 const PricingSection = () => {
     const faqs = [
@@ -26,7 +51,7 @@ const PricingSection = () => {
         },
         {
             question: "Is my data secure?",
-            answer: "Yes, we use enterprise-grade encryption and follow GDPR compliance standards. Your data is backed up daily and stored in secure data centers.",
+            answer: "Yes, we use enterprise-grade encryption to keep your data safe. Your data is backed up daily and stored in secure data centers — so you never have to worry about losing it.",
         },
         {
             question: "Do you offer customer support?",
@@ -123,6 +148,69 @@ const PricingSection = () => {
                     </Typography>
                 </Box>
                 <PricingPlanCards />
+
+                {/* Comparison Table */}
+                <Box sx={{ maxWidth: 900, mx: "auto", mb: 10 }}>
+                    <Typography variant="h4" sx={{ textAlign: "center", fontWeight: "bold", mb: 1 }}>
+                        How We Compare
+                    </Typography>
+                    <Typography variant="body1" sx={{ textAlign: "center", color: "text.secondary", mb: 4 }}>
+                        See why studios choose Book & Manage over the alternatives
+                    </Typography>
+                    <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: "0 4px 24px rgba(0,0,0,0.08)", overflow: "hidden" }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow sx={{ background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)" }}>
+                                    <TableCell sx={{ color: "white", fontWeight: 700, fontSize: "1rem", width: "40%" }}>
+                                        Feature
+                                    </TableCell>
+                                    <TableCell align="center" sx={{ color: "white", fontWeight: 700, fontSize: "1rem" }}>
+                                        Book & Manage
+                                    </TableCell>
+                                    <TableCell align="center" sx={{ color: "white", fontWeight: 700, fontSize: "1rem" }}>
+                                        Mindbody
+                                    </TableCell>
+                                    <TableCell align="center" sx={{ color: "white", fontWeight: 700, fontSize: "1rem" }}>
+                                        Gymmaster
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {comparisonRows.map((row, index) => (
+                                    <TableRow
+                                        key={index}
+                                        sx={{
+                                            backgroundColor: index % 2 === 0 ? "#fff" : "rgba(139, 92, 246, 0.03)",
+                                            "&:hover": { backgroundColor: "rgba(139, 92, 246, 0.06)" },
+                                        }}
+                                    >
+                                        <TableCell sx={{ fontWeight: 500, color: "text.primary" }}>
+                                            {row.feature}
+                                        </TableCell>
+                                        <TableCell align="center">{renderCell(row.bnm)}</TableCell>
+                                        <TableCell align="center">{renderCell(row.mindbody)}</TableCell>
+                                        <TableCell align="center">{renderCell(row.gymmaster)}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {/* Legend */}
+                    <Box sx={{ display: "flex", gap: 3, justifyContent: "center", mt: 2, flexWrap: "wrap" }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <CheckIcon sx={{ color: "#10B981", fontSize: "1.1rem" }} />
+                            <Typography variant="body2" color="text.secondary">Available</Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <RemoveIcon sx={{ color: "#F59E0B", fontSize: "1.1rem" }} />
+                            <Typography variant="body2" color="text.secondary">Partial / Limited</Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <CloseIcon sx={{ color: "#EF4444", fontSize: "1.1rem" }} />
+                            <Typography variant="body2" color="text.secondary">Not Available</Typography>
+                        </Box>
+                    </Box>
+                </Box>
 
                 {/* FAQ Section */}
                 <Box sx={{ maxWidth: 900, mx: "auto" }}>
