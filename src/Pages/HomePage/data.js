@@ -12,6 +12,7 @@ export const featurePageContent = {
     featuresGrids: [
         {
             icon: CalendarTodayIcon,
+            color: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
             title: "Smart Scheduling",
             description:
                 "Intuitive calendar system to manage classes, appointments, and events. Allow clients to book online 24/7 and reduce scheduling conflicts.",
@@ -24,6 +25,7 @@ export const featurePageContent = {
         },
         {
             icon: CreditCardIcon,
+            color: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
             title: "Seamless Payments",
             description:
                 "Process payments, manage subscriptions, and automate billing. Keep track of revenue with detailed financial reports.",
@@ -36,6 +38,7 @@ export const featurePageContent = {
         },
         {
             icon: PeopleIcon,
+            color: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
             title: "Member Management",
             description:
                 "Track memberships, attendance, progress, and preferences. Build stronger relationships with personalized member experiences.",
@@ -48,6 +51,7 @@ export const featurePageContent = {
         },
         {
             icon: TrendingUpIcon,
+            color: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
             title: "Studio Growth",
             description:
                 "Marketing tools, analytics, and insights to help your studio reach more clients and increase retention rates.",
@@ -60,6 +64,7 @@ export const featurePageContent = {
         },
         {
             icon: MessageIcon,
+            color: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
             title: "Communication Hub",
             description:
                 "Centralized messaging system to keep members informed about classes, updates, and special offers.",
@@ -67,10 +72,11 @@ export const featurePageContent = {
         },
         {
             icon: SecurityIcon,
-            title: "Security & Compliance",
+            color: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+            title: "Security & Data Protection",
             description:
-                "Enterprise-grade security with GDPR compliance and data protection to keep your business and members safe.",
-            benefits: ["Data encryption", "GDPR compliance", "Secure access", "Privacy protection"],
+                "Enterprise-grade security and daily backups to keep your business and member data safe at all times.",
+            benefits: ["Data encryption", "Daily backups", "Secure access", "Privacy protection"],
         },
     ],
     cta: {
