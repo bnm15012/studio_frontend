@@ -130,8 +130,7 @@ export function FeaturesSection() {
                                         <Box
                                             sx={{
                                                 p: 2,
-                                                background:
-                                                    "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                                background: feature.color || "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
                                                 borderRadius: 2,
                                                 display: "flex",
                                                 alignItems: "center",

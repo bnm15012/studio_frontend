@@ -6,6 +6,7 @@ import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
 import { HeroSection } from "./HeroSection";
 import { TestimonialsSection } from "./TestimonialsSection";
 import { FeaturesSection } from "./FeaturesSection";
+import { DashboardPreview } from "./DashboardPreview";
 import Footer from "../../Components/Footer";
 import PricingSection from "../Pricing/PricingSection";
 
@@ -27,6 +28,7 @@ const HomePage = () => {
             <Navbar />
             <HeroSection />
             <FeaturesSection />
+            <DashboardPreview />
             <TestimonialsSection />
             <PricingSection />
             <Footer />
