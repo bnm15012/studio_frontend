@@ -5,11 +5,7 @@ import { Snackbar, Alert as MuiAlert } from "@mui/material";
 const AlertContext = createContext();
 
 export const AlertProvider = ({ children }) => {
-    const [alert, setAlert] = useState({
-        open: false,
-        message: "",
-        severity: "info",
-    });
+    const [alert, setAlert] = useState({ open: false, message: "", severity: "info" });
 
     const showAlert = useCallback((message, severity = "info") => {
         setAlert({ open: true, message, severity });

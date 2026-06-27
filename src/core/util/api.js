@@ -1,7 +1,7 @@
 import axios from "axios";
-import { store } from "../state";
-import { setToken } from "../state/authSlice";
-import { logoutUser } from "../state/thunks";
+import { store } from "../../state";
+import { setToken } from "../../state/authSlice";
+import { logoutUser } from "../../state/thunks";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_APP_REST_API,

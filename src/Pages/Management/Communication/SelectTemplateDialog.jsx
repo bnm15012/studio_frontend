@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { genericTemplateCruds } from "../../../api/all.api";
 import Loading from "../../../Components/Loading/Loading";
 import { sendWhatsAppMessage } from "./communication.api";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import {
     Box,
     TextField,

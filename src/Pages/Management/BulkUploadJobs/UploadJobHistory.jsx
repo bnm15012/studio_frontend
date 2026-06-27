@@ -10,10 +10,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "../../../Components/StyledTableComponents";
 import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 
 const size = 7;
 const UploadJobHistory = () => {

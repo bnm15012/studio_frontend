@@ -1,6 +1,6 @@
 import { Pagination } from "@mui/material";
 
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
 import { useSelector } from "react-redux";

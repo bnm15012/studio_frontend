@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { DialogContent, Typography, Box, Divider } from "@mui/material";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { useSelector, useDispatch } from "react-redux";
 import { createOrder, verifyPayment } from "./RazorPay.api";
 import PropTypes from "prop-types";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
-import { getCurrentDateTimeLocal, getLocalDateTime } from "../../utils/DateUtil";
+import { getCurrentDateTimeLocal, getLocalDateTime } from "../../core/util/DateUtil";
 import StyledDialog from "../../core/components/StyledDialog";
 
 const PaymentDialog = ({ open, onClose, plan }) => {

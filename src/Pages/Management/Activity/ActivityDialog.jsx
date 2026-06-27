@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
 import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import StyledDialog from "../../../core/components/StyledDialog";
 import Field from "../../../Components/Fields/Field";
 import { membershipPackageCruds } from "../../../api/all.api";

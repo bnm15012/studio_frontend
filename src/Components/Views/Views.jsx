@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../../core/components/StyledDialog";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";

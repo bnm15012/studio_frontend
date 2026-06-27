@@ -118,7 +118,6 @@ export const getTimePassed = (dateString) => {
     return `${days} days ago`;
 };
 
-
 export const getDateRangeLocal = (startDate, endDate) => {
     const dates = [];
 

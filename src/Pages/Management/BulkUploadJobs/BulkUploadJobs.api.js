@@ -1,4 +1,4 @@
-import api from "../../../utils/api";
+import api from "../../../core/util/api";
 
 export const createBulkUploadJobAPI = async (jobData, token) => {
     try {

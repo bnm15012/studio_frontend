@@ -3,13 +3,13 @@ import { HashRouter as Router } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { themeSettings } from "./utils/theme";
+import { themeSettings } from "./core/util/theme";
 import { AllRoutes } from "./NavigationComponets/AllRoutes";
-import { AlertProvider } from "./utils/Alert";
-import ServerErrorDialog from "./utils/ServerErrorDialog";
+import { AlertProvider } from "./core/util/Alert";
 import { clearCacheIfNewDay } from "./utils/cacheManager";
 import { loadInitialDataAPI } from "./utils/loadInitialData";
 import { UIProvider } from "./context/UIContext";
+import ServerErrorDialog from "./core/util/ServerErrorDialog";
 
 const App = () => {
     const mode = useSelector((state) => state.auth.mode);

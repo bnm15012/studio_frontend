@@ -11,10 +11,10 @@ import FlexBetween from "../../../Components/FlexBetween";
 import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
 import { useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import DialogForm from "../../../Components/Views/DialogForm";
 
 const paymentTypes = ["CASH", "UPI"];

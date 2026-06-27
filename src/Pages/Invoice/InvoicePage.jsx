@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { useState } from "react";
 import { useEffect } from "react";
 import { studentsAssignmentsCruds } from "../../api/all.api";

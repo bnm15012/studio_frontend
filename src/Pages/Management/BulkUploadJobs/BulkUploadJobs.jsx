@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import FlexBetween from "../../../Components/FlexBetween";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
 import UploadData from "./UploadData";

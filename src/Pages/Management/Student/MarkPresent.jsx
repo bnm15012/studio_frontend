@@ -14,7 +14,7 @@ import { Html5Qrcode } from "html5-qrcode";
 
 import StyledDialog from "../../../core/components/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useUI } from "../../../context/UIContext";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 

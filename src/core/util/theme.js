@@ -110,66 +110,66 @@ export const themeSettings = (mode) => ({
         mode: mode,
         ...(mode === "dark"
             ? {
-                primary: {
-                    dark: colorTokens.primary[200],
-                    main: colorTokens.primary[500],
-                    light: colorTokens.primary[800],
-                    contrastText: "#ffffff",
-                },
-                secondary: {
-                    dark: colorTokens.secondary[100],
-                    main: colorTokens.secondary[400],
-                    light: colorTokens.secondary[700],
-                    contrastText: colorTokens.grey[900],
-                },
-                neutral: {
-                    dark: colorTokens.grey[100],
-                    main: colorTokens.grey[200],
-                    mediumMain: colorTokens.grey[300],
-                    medium: colorTokens.grey[400],
-                    light: colorTokens.grey[700],
-                },
-                background: {
-                    default: colorTokens.grey[1000],
-                    paper: colorTokens.grey[800],
-                    odd: colorTokens.grey[700],
-                    alt: colorTokens.grey[800],
-                },
-                text: {
-                    primary: colorTokens.grey[100],
-                    secondary: colorTokens.grey[300],
-                },
-            }
+                  primary: {
+                      dark: colorTokens.primary[200],
+                      main: colorTokens.primary[500],
+                      light: colorTokens.primary[800],
+                      contrastText: "#ffffff",
+                  },
+                  secondary: {
+                      dark: colorTokens.secondary[100],
+                      main: colorTokens.secondary[400],
+                      light: colorTokens.secondary[700],
+                      contrastText: colorTokens.grey[900],
+                  },
+                  neutral: {
+                      dark: colorTokens.grey[100],
+                      main: colorTokens.grey[200],
+                      mediumMain: colorTokens.grey[300],
+                      medium: colorTokens.grey[400],
+                      light: colorTokens.grey[700],
+                  },
+                  background: {
+                      default: colorTokens.grey[1000],
+                      paper: colorTokens.grey[800],
+                      odd: colorTokens.grey[700],
+                      alt: colorTokens.grey[800],
+                  },
+                  text: {
+                      primary: colorTokens.grey[100],
+                      secondary: colorTokens.grey[300],
+                  },
+              }
             : {
-                primary: {
-                    dark: colorTokens.primary[800],
-                    main: colorTokens.primary[700],
-                    light: colorTokens.primary[200],
-                    contrastText: "#ffffff",
-                },
-                secondary: {
-                    dark: colorTokens.secondary[700],
-                    main: colorTokens.secondary[400],
-                    light: colorTokens.secondary[100],
-                    contrastText: colorTokens.grey[900],
-                },
-                neutral: {
-                    dark: colorTokens.grey[1000],
-                    main: colorTokens.grey[700],
-                    medium: colorTokens.grey[500],
-                    light: colorTokens.grey[0],
-                },
-                background: {
-                    default: colorTokens.grey[0],
-                    paper: colorTokens.grey[50],
-                    alt: colorTokens.grey[100],
-                    odd: colorTokens.grey[10],
-                },
-                text: {
-                    primary: colorTokens.grey[900],
-                    secondary: colorTokens.grey[600],
-                },
-            }),
+                  primary: {
+                      dark: colorTokens.primary[800],
+                      main: colorTokens.primary[700],
+                      light: colorTokens.primary[200],
+                      contrastText: "#ffffff",
+                  },
+                  secondary: {
+                      dark: colorTokens.secondary[700],
+                      main: colorTokens.secondary[400],
+                      light: colorTokens.secondary[100],
+                      contrastText: colorTokens.grey[900],
+                  },
+                  neutral: {
+                      dark: colorTokens.grey[1000],
+                      main: colorTokens.grey[700],
+                      medium: colorTokens.grey[500],
+                      light: colorTokens.grey[0],
+                  },
+                  background: {
+                      default: colorTokens.grey[0],
+                      paper: colorTokens.grey[50],
+                      alt: colorTokens.grey[100],
+                      odd: colorTokens.grey[10],
+                  },
+                  text: {
+                      primary: colorTokens.grey[900],
+                      secondary: colorTokens.grey[600],
+                  },
+              }),
         success: {
             main: "#10B981",
             contrastText: "#ffffff",

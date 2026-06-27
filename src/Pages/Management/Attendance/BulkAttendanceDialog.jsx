@@ -20,7 +20,7 @@ import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 
 import StyledDialog from "../../../core/components/StyledDialog";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 
 const BulkAttendanceDialog = ({
     open,

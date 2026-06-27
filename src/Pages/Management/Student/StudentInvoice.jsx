@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 import { useUI } from "../../../context/UIContext";
 import StyledDialog from "../../../core/components/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";

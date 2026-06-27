@@ -7,7 +7,7 @@ import {
 } from "./whatsapp.api";
 import Loading from "../../Components/Loading/Loading";
 import { useCallback, useEffect, useState } from "react";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../api/all.api";
 import FlexBetween from "../../Components/FlexBetween";

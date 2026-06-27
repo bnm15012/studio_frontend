@@ -3,7 +3,7 @@ import StyledSwitch from "./StyledFields/StyledSwitch";
 import DateTime from "./StyledFields/DateTime";
 import StyledTextField from "./StyledFields/StyledTextField";
 import SelectionField from "./Selection/SelectionField";
-import { getLocalDateTime } from "../../utils/DateUtil";
+import { getLocalDateTime } from "../../core/util/DateUtil";
 import TemplateEditor from "../../Pages/Management/TemplatesPage/TemplateEditor";
 import ImageComponent from "../ImageComponent";
 import ImageDialog from "../Views/ImageDialog";

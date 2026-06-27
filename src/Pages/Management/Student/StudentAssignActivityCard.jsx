@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material";
 
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 import { Class, Task } from "@mui/icons-material";
 import ShowMoreDialog from "../../../Components/Views/ShowMoreDialog";
 
@@ -40,21 +40,21 @@ const StudentAssignActivityCard = ({ row }) => {
                 ChipIcon={Calendar}
             />
             <CardChip value={paymentEntry?.amount !== paymentEntry?.actualAmount ? (
-                    <>
-                        Rs. {paymentEntry?.amount}{" "}
-                        <span
-                            style={{
-                                textDecoration: "line-through",
-                                color: theme.palette.error.main,
-                            }}
-                        >
-                            Rs. {paymentEntry?.actualAmount}
-                        </span>
-                    </>
-                ) : (
-                    `Rs. ${paymentEntry?.amount}`
-                )
-                } label="Amount" ChipIcon={Wallet} />
+                <>
+                    Rs. {paymentEntry?.amount}{" "}
+                    <span
+                        style={{
+                            textDecoration: "line-through",
+                            color: theme.palette.error.main,
+                        }}
+                    >
+                        Rs. {paymentEntry?.actualAmount}
+                    </span>
+                </>
+            ) : (
+                `Rs. ${paymentEntry?.amount}`
+            )
+            } label="Amount" ChipIcon={Wallet} />
             <CardChip value={daysPerWeek} label="Days Per Week" ChipIcon={Calendar} />
             <ShowMoreDialog title={"More Activity Details"}>
                 <CardChip value={batchTime} label="Batch Time" ChipIcon={Clock1} />

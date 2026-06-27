@@ -7,7 +7,7 @@ import StudentCard from "./StudentCard.jsx";
 import { useUI } from "../../../context/UIContext";
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
 import StudentInvoice from "./StudentInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";

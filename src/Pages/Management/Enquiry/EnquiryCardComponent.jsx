@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import { getTimePassed, isToday } from "../../../utils/DateUtil";
+import { getTimePassed, isToday } from "../../../core/util/DateUtil";
 import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";

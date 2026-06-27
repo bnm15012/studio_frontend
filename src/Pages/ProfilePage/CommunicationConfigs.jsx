@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import Field from "../../Components/Fields/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import Loading from "../../Components/Loading/Loading";
 import WhatsAppConfiguration from "./WhatsAppConfiguration";
 import { useUI } from "../../context/UIContext";

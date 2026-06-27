@@ -1,4 +1,4 @@
-import api from "../utils/api";
+import api from "../core/util/api";
 
 // ✅ Add Enquiry form builder
 export const addEnquiryAPI = async ({ newData, token }) => {

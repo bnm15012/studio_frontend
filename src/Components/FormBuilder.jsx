@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useAlert } from "../utils/Alert";
+import { useAlert } from "../core/util/Alert";
 import { styled, useTheme } from "@mui/material/styles";
 import {
     Box,

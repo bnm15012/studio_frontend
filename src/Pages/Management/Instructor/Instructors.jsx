@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
 import ActionBar from "../../../Components/ActionBar";
 

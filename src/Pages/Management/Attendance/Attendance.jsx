@@ -10,8 +10,8 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "../Student/StudentAttendence";
 import BulkAttendanceDialog from "./BulkAttendanceDialog";
 import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
-import { getCurrentDateLocal } from "../../../utils/DateUtil";
+import { useAlert } from "../../../core/util/Alert";
+import { getCurrentDateLocal } from "../../../core/util/DateUtil";
 import MarkPresentDialog from "../Student/MarkPresent";
 
 const LIMIT = 50;

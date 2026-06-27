@@ -1,4 +1,4 @@
-import api from "../../utils/api";
+import api from "../../core/util/api";
 
 export const fetchDashBoardData = async ({ token, branchId }) => {
     const today = new Date();

@@ -1,7 +1,7 @@
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCurrentDateTimeLocal } from "../../../utils/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "../../../Components/Views/Views";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";

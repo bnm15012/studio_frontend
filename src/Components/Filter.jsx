@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DateTime from "./Fields/StyledFields/DateTime";
-import { getCurrentDateLocal } from "../utils/DateUtil";
+import { getCurrentDateLocal } from "../core/util/DateUtil";
 
 
 const Filter = ({ filterOptions = [], onChange }) => {

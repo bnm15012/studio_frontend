@@ -12,7 +12,7 @@ import { Percent } from "lucide-react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useUI } from "../../../context/UIContext";
 import ImageComponent from "../../../Components/ImageComponent";
 import Field from "../../../Components/Fields/Field";

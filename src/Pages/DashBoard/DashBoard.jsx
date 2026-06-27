@@ -3,7 +3,7 @@ import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useNavigate } from "react-router-dom";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
 import WidgetsOnPage from "../../Components/WidgetsOnPage";

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useAlert } from "../utils/Alert";
+import { useAlert } from "../core/util/Alert";
 
 const MAX_FILE_SIZE_MB = 5;
 

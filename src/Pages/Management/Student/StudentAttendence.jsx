@@ -8,8 +8,8 @@ import {
 import StyledDialog from "../../../core/components/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../../utils/Alert";
-import { formatDate, getDateRangeLocal, getLocalDateTime, parseDateTime } from "../../../utils/DateUtil";
+import { useAlert } from "../../../core/util/Alert";
+import { formatDate, getDateRangeLocal, getLocalDateTime, parseDateTime } from "../../../core/util/DateUtil";
 import QrForm from "../../../Components/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";

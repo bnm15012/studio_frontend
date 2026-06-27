@@ -4,7 +4,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { useCallback, useEffect, useState } from "react";
 import { getStudentNamesOncePerDay } from "../../Pages/Management/Student/Student.api";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import { markAllAsRead, markAsRead, setNotifications } from "../../state/notificationSlice";
 
 const Notification = () => {

@@ -19,7 +19,7 @@ import MultiSelectDialog from "../../../Components/MultiSelectDialog";
 import { getStudentNamesAPI } from "../Student/Student.api";
 import FlexBetween from "../../../Components/FlexBetween";
 import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
@@ -165,16 +165,16 @@ const Communication = () => {
                     audienceType === "all"
                         ? "ALL"
                         : audienceType === "allStudents"
-                          ? "STUDENT"
-                          : audienceType === "allInstructors"
-                            ? "INSTRUCTOR"
-                            : null,
+                            ? "STUDENT"
+                            : audienceType === "allInstructors"
+                                ? "INSTRUCTOR"
+                                : null,
                 memberIds:
                     audienceType === "selectedStudents"
                         ? selectedStudents.map((s) => s.studentId)
                         : audienceType === "selectedInstructors"
-                          ? selectedInstructors.map((i) => i.studentId)
-                          : [],
+                            ? selectedInstructors.map((i) => i.studentId)
+                            : [],
             };
 
             const response = await sendMessageApi({ token, payload, page: 1, size: 3 });
@@ -365,65 +365,65 @@ const Communication = () => {
 
                         {(audienceType === "selectedStudents" ||
                             audienceType === "selectedInstructors") && (
-                            <FlexBetweenColumn
-                                flexGrow={1}
-                                border={"1px solid rgba(0,0,0,0.2)"}
-                                p={1}
-                                borderRadius={"10px"}
-                                gap={1}
-                            >
-                                <Box
-                                    height={"12vh"}
-                                    sx={{ overflow: "auto", borderRadius: "10px" }}
+                                <FlexBetweenColumn
+                                    flexGrow={1}
+                                    border={"1px solid rgba(0,0,0,0.2)"}
+                                    p={1}
+                                    borderRadius={"10px"}
+                                    gap={1}
                                 >
-                                    {(audienceType === "selectedStudents"
-                                        ? selectedStudents
-                                        : selectedInstructors
-                                    ).length > 0 ? (
-                                        (audienceType === "selectedStudents"
+                                    <Box
+                                        height={"12vh"}
+                                        sx={{ overflow: "auto", borderRadius: "10px" }}
+                                    >
+                                        {(audienceType === "selectedStudents"
                                             ? selectedStudents
                                             : selectedInstructors
-                                        ).map((user) => (
-                                            <Box key={user.studentId}>
-                                                <Typography>{user.name}</Typography>
-                                                <Divider />
-                                            </Box>
-                                        ))
-                                    ) : (
-                                        <Typography>
-                                            No{" "}
-                                            {audienceType === "selectedStudents"
-                                                ? "students"
-                                                : "instructors"}{" "}
-                                            selected.
-                                        </Typography>
-                                    )}
-                                </Box>
+                                        ).length > 0 ? (
+                                            (audienceType === "selectedStudents"
+                                                ? selectedStudents
+                                                : selectedInstructors
+                                            ).map((user) => (
+                                                <Box key={user.studentId}>
+                                                    <Typography>{user.name}</Typography>
+                                                    <Divider />
+                                                </Box>
+                                            ))
+                                        ) : (
+                                            <Typography>
+                                                No{" "}
+                                                {audienceType === "selectedStudents"
+                                                    ? "students"
+                                                    : "instructors"}{" "}
+                                                selected.
+                                            </Typography>
+                                        )}
+                                    </Box>
 
-                                <FlexBetween gap={2}>
-                                    <Button variant="contained" onClick={() => setOpen(true)}>
-                                        Add
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        disabled={
-                                            (audienceType === "selectedStudents" &&
-                                                selectedStudents.length === 0) ||
-                                            (audienceType === "selectedInstructors" &&
-                                                selectedInstructors.length === 0)
-                                        }
-                                        onClick={() =>
-                                            audienceType === "selectedStudents"
-                                                ? setSelectedStudents([])
-                                                : setSelectedInstructors([])
-                                        }
-                                    >
-                                        Clear
-                                    </Button>
-                                </FlexBetween>
-                            </FlexBetweenColumn>
-                        )}
+                                    <FlexBetween gap={2}>
+                                        <Button variant="contained" onClick={() => setOpen(true)}>
+                                            Add
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            disabled={
+                                                (audienceType === "selectedStudents" &&
+                                                    selectedStudents.length === 0) ||
+                                                (audienceType === "selectedInstructors" &&
+                                                    selectedInstructors.length === 0)
+                                            }
+                                            onClick={() =>
+                                                audienceType === "selectedStudents"
+                                                    ? setSelectedStudents([])
+                                                    : setSelectedInstructors([])
+                                            }
+                                        >
+                                            Clear
+                                        </Button>
+                                    </FlexBetween>
+                                </FlexBetweenColumn>
+                            )}
                     </FlexBetween>
                 </FlexBetweenColumn>
 

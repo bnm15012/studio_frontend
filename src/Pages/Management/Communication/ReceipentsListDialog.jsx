@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { useSelector } from "react-redux";
 import { getMessageRecipientsAPI } from "./communication.api";
 import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";

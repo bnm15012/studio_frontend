@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
-import { getCurrentDateTimeLocal } from "../../../utils/DateUtil.js";
+import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil.js";
 import Views from "../../../Components/Views/Views.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import EnquiryCardComponent from "./EnquiryCardComponent.jsx";

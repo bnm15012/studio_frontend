@@ -3,7 +3,7 @@ import { Typography, Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "../../../Components/FlexBetween";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../../core/util/Alert";
 import { activityCruds } from "../../../api/all.api";
 import ActivityCard from "./ActivityCard";
 import ActivityDialog from "./ActivityDialog";

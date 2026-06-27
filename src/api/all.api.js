@@ -1,5 +1,5 @@
-import api from "../utils/api";
 import { createCrudModule } from "../core/api/createCrudModule";
+import api from "../core/util/api";
 
 export const usersCruds = createCrudModule({ route: "users", idKey: "userId" });
 

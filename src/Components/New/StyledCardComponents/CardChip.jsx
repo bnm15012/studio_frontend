@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 import { CalendarMonth } from "@mui/icons-material";
 
 const CardChip = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {

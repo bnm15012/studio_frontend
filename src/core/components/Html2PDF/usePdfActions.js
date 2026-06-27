@@ -1,7 +1,7 @@
 // src/hooks/usePdfActions.js
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useAlert } from "../../../utils/Alert";
+import { useAlert } from "../../util/Alert";
 import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
 
 export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPayload }) => {

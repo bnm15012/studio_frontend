@@ -5,7 +5,7 @@ import {
     StyledTableRow,
 } from "../../../Components/StyledTableComponents";
 import { Avatar, IconButton, TableBody, TableHead } from "@mui/material";
-import { getLocalDateTime } from "../../../utils/DateUtil";
+import { getLocalDateTime } from "../../../core/util/DateUtil";
 
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Email, WhatsApp } from "@mui/icons-material";

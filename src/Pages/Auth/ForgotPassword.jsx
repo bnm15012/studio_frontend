@@ -13,7 +13,7 @@ import { useState } from "react";
 import FlexBetween from "../../Components/FlexBetween";
 import Loading from "../../Components/Loading/Loading";
 import { changePasswordApiCall, sendOTPRequest } from "./auth.api";
-import { useAlert } from "../../utils/Alert";
+import { useAlert } from "../../core/util/Alert";
 import FlexEvenlyColumn from "../../Components/FlexEvenlyColumn";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
