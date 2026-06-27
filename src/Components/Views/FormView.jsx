@@ -28,6 +28,7 @@ import { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import FlexEvenly from "../FlexEvenly";
 import Actions from "./helper/Actions";
+import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
 const FormSkeleton = ({ isMobile }) => (
@@ -179,81 +180,85 @@ const FormView = (props) => {
             </FlexBetween>
 
             {/* ───────── BODY ───────── */}
-            {!data ? (
-                <FormSkeleton isMobile={isMobile} />
-            ) : (
-                <FlexBetween
-                    flexDirection={isMobile ? "column" : "row"}
-                    my={2}
-                    sx={{ alignItems: "flex-start", gap: 1.5 }}
-                >
-                    {/* IMAGE */}
-                    {imageField && (
-                        <FlexEvenly width={isMobile ? "100%" : 200}>
-                            <Box sx={{ p: 1, borderRadius: 2 }}>
-                                <Field
-                                    label={imageField.label}
-                                    isEdit={!!editingId}
-                                    value={getNestedValue(data, imageField.name)}
-                                    setValue={(v) => handleChange(v, formKey, imageField.name)}
-                                    type={imageField.type}
-                                    extraProp={{
-                                        ...imageField.extraProp,
-                                        size: "140px",
+            <FadeIn animKey={formKey ?? "form"} y={6} duration={0.25}>
+                {!data ? (
+                    <FormSkeleton isMobile={isMobile} />
+                ) : (
+                    <FlexBetween
+                        flexDirection={isMobile ? "column" : "row"}
+                        my={2}
+                        sx={{ alignItems: "flex-start", gap: 1.5 }}
+                    >
+                        {/* IMAGE */}
+                        {imageField && (
+                            <FlexEvenly width={isMobile ? "100%" : 200}>
+                                <Box sx={{ p: 1, borderRadius: 2 }}>
+                                    <Field
+                                        label={imageField.label}
+                                        isEdit={!!editingId}
+                                        value={getNestedValue(data, imageField.name)}
+                                        setValue={(v) => handleChange(v, formKey, imageField.name)}
+                                        type={imageField.type}
+                                        extraProp={{
+                                            ...imageField.extraProp,
+                                            size: "140px",
+                                        }}
+                                    />
+                                </Box>
+                            </FlexEvenly>
+                        )}
+
+                        {/* SECTIONS */}
+                        <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
+                            {Object.entries(groupedFields).map(([sectionName, fieldsInSection]) => (
+                                <Box
+                                    key={sectionName}
+                                    sx={{
+                                        p: 1.5,
+                                        borderRadius: 1.5,
+                                        bgcolor: "background.paper",
                                     }}
-                                />
-                            </Box>
-                        </FlexEvenly>
-                    )}
+                                >
+                                    <Typography sx={{ fontSize: 13, fontWeight: 700, mb: 0.5 }}>
+                                        <SegmentIcon sx={{ fontSize: 12 }} /> {sectionName}
+                                    </Typography>
 
-                    {/* SECTIONS */}
-                    <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
-                        {Object.entries(groupedFields).map(([sectionName, fieldsInSection]) => (
-                            <Box
-                                key={sectionName}
-                                sx={{
-                                    p: 1.5,
-                                    borderRadius: 1.5,
-                                    bgcolor: "background.paper",
-                                }}
-                            >
-                                <Typography sx={{ fontSize: 13, fontWeight: 700, mb: 0.5 }}>
-                                    <SegmentIcon sx={{ fontSize: 12 }} /> {sectionName}
-                                </Typography>
+                                    <Divider sx={{ mb: 1 }} />
 
-                                <Divider sx={{ mb: 1 }} />
+                                    <StyledFieldContainer>
+                                        {fieldsInSection.map((field) => (
+                                            <StyledFieldItem key={field.name}>
+                                                <FieldLabel>{field.label}</FieldLabel>
+                                                <Field
+                                                    isEdit={!!editingId}
+                                                    value={
+                                                        field.getValue
+                                                            ? field.getValue(
+                                                                  getNestedValue(data, field.name),
+                                                                  data,
+                                                              )
+                                                            : getNestedValue(data, field.name)
+                                                    }
+                                                    setValue={(v) =>
+                                                        handleChange(v, formKey, field.name)
+                                                    }
+                                                    type={field.type}
+                                                    extraProp={field.extraProp}
+                                                    validation={field.validation}
+                                                />
+                                            </StyledFieldItem>
+                                        ))}
+                                    </StyledFieldContainer>
+                                </Box>
+                            ))}
 
-                                <StyledFieldContainer>
-                                    {fieldsInSection.map((field) => (
-                                        <StyledFieldItem key={field.name}>
-                                            <FieldLabel>{field.label}</FieldLabel>
-                                            <Field
-                                                isEdit={!!editingId}
-                                                value={
-                                                    field.getValue
-                                                        ? field.getValue(
-                                                              getNestedValue(data, field.name),
-                                                              data,
-                                                          )
-                                                        : getNestedValue(data, field.name)
-                                                }
-                                                setValue={(v) =>
-                                                    handleChange(v, formKey, field.name)
-                                                }
-                                                type={field.type}
-                                                extraProp={field.extraProp}
-                                                validation={field.validation}
-                                            />
-                                        </StyledFieldItem>
-                                    ))}
-                                </StyledFieldContainer>
-                            </Box>
-                        ))}
-
-                        {component && <component.CustomComponent data={data} field={component} />}
-                    </FlexBetweenColumn>
-                </FlexBetween>
-            )}
+                            {component && (
+                                <component.CustomComponent data={data} field={component} />
+                            )}
+                        </FlexBetweenColumn>
+                    </FlexBetween>
+                )}
+            </FadeIn>
 
             {/* TABS */}
             <ViewTabs

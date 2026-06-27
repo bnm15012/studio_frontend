@@ -2,7 +2,6 @@ import {
     TableBody,
     TableHead,
     Paper,
-    IconButton,
     Pagination,
     Typography,
     Checkbox,
@@ -11,8 +10,6 @@ import {
     Box,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Cancel";
 
 import {
     StyledTable,
@@ -27,26 +24,25 @@ import FlexBetween from "../FlexBetween";
 import Actions from "./helper/Actions";
 import { useUI } from "../../context/UIContext";
 import FieldCell from "./components/FieldCell";
-import { getVisibleFields, EMPTY_DATA_MSG } from "./utils/fieldHelpers";
+import { getVisibleFields } from "./utils/fieldHelpers";
 import { useTheme } from "@emotion/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { RowActions, getRowNumber, EmptyState } from "./components/shared";
 
-// ── Save/Cancel inline row controls ───────────────────────────────────────
-const InlineEditControls = ({ rowId, handleSave, handleCancel }) => (
-    <Box sx={{ display: "flex", gap: 1 }}>
-        <IconButton size="small" color="primary" onClick={() => handleSave(rowId)}>
-            <SaveIcon fontSize="small" />
-        </IconButton>
-        <IconButton size="small" color="error" onClick={handleCancel}>
-            <CancelIcon fontSize="small" />
-        </IconButton>
-    </Box>
-);
-
-InlineEditControls.propTypes = {
-    rowId: PropTypes.any,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
+// ── Shared motion variants ─────────────────────────────────────────────────
+// Used by both desktop rows and mobile cards so the animation feels uniform.
+const rowVariants = {
+    hidden: { opacity: 0, y: 8 },
+    visible: (i) => ({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.22, ease: "easeOut", delay: i * 0.04 },
+    }),
+    exit: { opacity: 0, transition: { duration: 0.15 } },
 };
+
+// Motion-enhanced table row — keeps all existing StyledTableRow styles.
+const MotionTableRow = motion.create(StyledTableRow);
 
 // ── Mobile card for a single row ───────────────────────────────────────────
 const MobileRowCard = ({
@@ -93,7 +89,10 @@ const MobileRowCard = ({
                 },
             }}
         >
-            <FlexBetween mb={2} sx={{ pb: 1.5, borderBottom: `1px solid ${theme.palette.divider}` }}>
+            <FlexBetween
+                mb={2}
+                sx={{ pb: 1.5, borderBottom: `1px solid ${theme.palette.divider}` }}
+            >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     {multi && (
                         <Checkbox
@@ -106,15 +105,21 @@ const MobileRowCard = ({
                         />
                     )}
                     <Typography variant="subtitle2" sx={{ color: "text.primary", fontWeight: 700 }}>
-                        Record #{(parseInt(tableState.currentPage) - 1) * tableState.pageSize + rowIndex + 1}
+                        Record #{getRowNumber(tableState, rowIndex)}
                     </Typography>
                 </Box>
-                <Box sx={{ display: "flex", alignItems: "center" }} onClick={(e) => e.stopPropagation()}>
-                    {isRowEditing ? (
-                        <InlineEditControls rowId={rowId} handleSave={handleSave} handleCancel={handleCancel} />
-                    ) : (
-                        <Actions actions={actions} row={row} />
-                    )}
+                <Box
+                    sx={{ display: "flex", alignItems: "center" }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <RowActions
+                        isEditing={isRowEditing}
+                        rowId={rowId}
+                        handleSave={handleSave}
+                        handleCancel={handleCancel}
+                        actions={actions}
+                        row={row}
+                    />
                 </Box>
             </FlexBetween>
 
@@ -146,13 +151,21 @@ const MobileRowCard = ({
                             {field.label}
                         </Typography>
                         <Box
-                            sx={{ minWidth: 0, display: "flex", justifyContent: "flex-end", textAlign: "right" }}
+                            sx={{
+                                minWidth: 0,
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                textAlign: "right",
+                            }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <FieldCell
                                 field={field}
                                 row={row}
-                                isEdit={editingId === rowId && (field?.editable ? field.editable(row) : true)}
+                                isEdit={
+                                    editingId === rowId &&
+                                    (field?.editable ? field.editable(row) : true)
+                                }
                                 handleChange={(v, _id, name) => handleChange(v, rowId, name)}
                                 handleViewOpen={handleViewOpen}
                             />
@@ -229,69 +242,76 @@ const DesktopTable = ({
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row, rowIndex) => {
-                        const rowId = row[fieldsMeta.primary];
-                        const isItemSelected = selectedRows.includes(rowId);
-                        return (
-                            <StyledTableRow
-                                key={rowId}
-                                sx={{ cursor: onClickRow ? "pointer" : "auto" }}
-                                onClick={() => onClickRow && onClickRow(row)}
-                                selected={isItemSelected}
-                            >
-                                {multi && (
-                                    <StyledTableCell padding="checkbox">
-                                        <Checkbox
-                                            color="primary"
-                                            checked={isItemSelected}
-                                            onChange={(e) => handleSelectRow(e, rowId)}
-                                            onClick={(e) => e.stopPropagation()}
-                                        />
+                    <AnimatePresence mode="popLayout">
+                        {data.map((row, rowIndex) => {
+                            const rowId = row[fieldsMeta.primary];
+                            const isItemSelected = selectedRows.includes(rowId);
+                            return (
+                                <MotionTableRow
+                                    key={rowId}
+                                    custom={rowIndex}
+                                    variants={rowVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    layout
+                                    sx={{ cursor: onClickRow ? "pointer" : "auto" }}
+                                    onClick={() => onClickRow && onClickRow(row)}
+                                    selected={isItemSelected}
+                                >
+                                    {multi && (
+                                        <StyledTableCell padding="checkbox">
+                                            <Checkbox
+                                                color="primary"
+                                                checked={isItemSelected}
+                                                onChange={(e) => handleSelectRow(e, rowId)}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                        </StyledTableCell>
+                                    )}
+                                    <StyledTableCell>
+                                        {getRowNumber(tableState, rowIndex)}
                                     </StyledTableCell>
-                                )}
-                                <StyledTableCell>
-                                    {(parseInt(tableState.currentPage) - 1) * tableState.pageSize + rowIndex + 1}
-                                </StyledTableCell>
 
-                                {visibleFields.map((field) => (
-                                    <StyledTableCell key={field.name}>
-                                        <FieldCell
-                                            field={field}
-                                            row={row}
-                                            isEdit={
-                                                editingId === rowId &&
-                                                (field?.editable ? field.editable(row) : true)
-                                            }
-                                            handleChange={(v, _id, name) => handleChange(v, rowId, name)}
-                                            handleViewOpen={handleViewOpen}
-                                        />
-                                    </StyledTableCell>
-                                ))}
+                                    {visibleFields.map((field) => (
+                                        <StyledTableCell key={field.name}>
+                                            <FieldCell
+                                                field={field}
+                                                row={row}
+                                                isEdit={
+                                                    editingId === rowId &&
+                                                    (field?.editable ? field.editable(row) : true)
+                                                }
+                                                handleChange={(v, _id, name) =>
+                                                    handleChange(v, rowId, name)
+                                                }
+                                                handleViewOpen={handleViewOpen}
+                                            />
+                                        </StyledTableCell>
+                                    ))}
 
-                                <StyledTableCell onClick={(e) => e.stopPropagation()}>
-                                    <FlexEvenly>
-                                        {editingId === rowId ? (
-                                            <InlineEditControls
+                                    <StyledTableCell onClick={(e) => e.stopPropagation()}>
+                                        <FlexEvenly>
+                                            <RowActions
+                                                isEditing={editingId === rowId}
                                                 rowId={rowId}
                                                 handleSave={handleSave}
                                                 handleCancel={handleCancel}
+                                                actions={actions}
+                                                row={row}
                                             />
-                                        ) : (
-                                            <Actions actions={actions} row={row} />
-                                        )}
-                                    </FlexEvenly>
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        );
-                    })}
+                                        </FlexEvenly>
+                                    </StyledTableCell>
+                                </MotionTableRow>
+                            );
+                        })}
+                    </AnimatePresence>
 
                     {data?.length === 0 && !loading && (
                         <StyledTableRow>
-                            <StyledTableCell
-                                colSpan={2 + visibleFields.length + (multi ? 1 : 0)}
-                            >
+                            <StyledTableCell colSpan={2 + visibleFields.length + (multi ? 1 : 0)}>
                                 <FlexEvenly>
-                                    <Typography>{EMPTY_DATA_MSG}</Typography>
+                                    <EmptyState />
                                 </FlexEvenly>
                             </StyledTableCell>
                         </StyledTableRow>
@@ -432,14 +452,21 @@ const ListView = ({
             {/* ── View: mobile cards or desktop table ── */}
             {isMobile ? (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: "100%" }}>
-                    {data.map((row, rowIndex) => (
-                        <MobileRowCard
-                            key={row[fieldsMeta.primary] || rowIndex}
-                            row={row}
-                            rowIndex={rowIndex}
-                            {...sharedRowProps}
-                        />
-                    ))}
+                    <AnimatePresence mode="popLayout">
+                        {data.map((row, rowIndex) => (
+                            <motion.div
+                                key={row[fieldsMeta.primary] || rowIndex}
+                                custom={rowIndex}
+                                variants={rowVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                layout
+                            >
+                                <MobileRowCard row={row} rowIndex={rowIndex} {...sharedRowProps} />
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
                     {data?.length === 0 && !loading && (
                         <Paper
                             sx={{
@@ -449,7 +476,7 @@ const ListView = ({
                                 border: `1px solid ${theme.palette.divider}`,
                             }}
                         >
-                            <Typography color="text.secondary">{EMPTY_DATA_MSG}</Typography>
+                            <EmptyState />
                         </Paper>
                     )}
                 </Box>

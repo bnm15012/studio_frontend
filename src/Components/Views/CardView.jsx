@@ -12,6 +12,8 @@ import FlexBetween from "../FlexBetween";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { memo } from "react";
 import Actions from "./helper/Actions";
+import { AnimatePresence } from "framer-motion";
+import { FadeIn, EmptyState } from "./components/shared";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -52,44 +54,49 @@ const CardView = (props) => {
 
     return (
         <Box>
-            <StyledCardContainer>
-                {data.map((row, index) => {
-                    const rowId = row[fieldsMeta.primary];
+            <AnimatePresence mode="wait">
+                <FadeIn animKey={tableState?.currentPage ?? 0} y={0} duration={0.18}>
+                    <StyledCardContainer>
+                        {data.map((row, index) => {
+                            const rowId = row[fieldsMeta.primary];
 
-                    return (
-                        <StyledMotionCard key={rowId || index}>
-                            {" "}
-                            <StyledCardContent sx={{ flexGrow: "1" }}>
-                                {CardContentComponent ? (
-                                    <CardContentComponent row={row} {...{ handleViewOpen }} />
-                                ) : (
-                                    <>
-                                        {visibleFields.map((field) => (
-                                            <FieldContainer key={field.name}>
-                                                <FieldLabel>{field.label}</FieldLabel>
-                                                {field?.getValue
-                                                    ? field.getValue(
-                                                          getNestedValue(row, field.name),
-                                                          row,
-                                                      )?.value
-                                                    : getNestedValue(row, field.name)}
-                                            </FieldContainer>
-                                        ))}
-                                    </>
-                                )}
-                            </StyledCardContent>
-                            <StyledCardActions>
-                                <FlexBetween>
-                                    <Actions actions={actions} row={row} />
-                                </FlexBetween>
-                            </StyledCardActions>
-                        </StyledMotionCard>
-                    );
-                })}
-                {data.length === 0 && !loading && (
-                    <StyledCardContent>No Data Available</StyledCardContent>
-                )}
-            </StyledCardContainer>
+                            return (
+                                <StyledMotionCard key={rowId || index}>
+                                    {" "}
+                                    <StyledCardContent sx={{ flexGrow: "1" }}>
+                                        {CardContentComponent ? (
+                                            <CardContentComponent
+                                                row={row}
+                                                {...{ handleViewOpen }}
+                                            />
+                                        ) : (
+                                            <>
+                                                {visibleFields.map((field) => (
+                                                    <FieldContainer key={field.name}>
+                                                        <FieldLabel>{field.label}</FieldLabel>
+                                                        {field?.getValue
+                                                            ? field.getValue(
+                                                                  getNestedValue(row, field.name),
+                                                                  row,
+                                                              )?.value
+                                                            : getNestedValue(row, field.name)}
+                                                    </FieldContainer>
+                                                ))}
+                                            </>
+                                        )}
+                                    </StyledCardContent>
+                                    <StyledCardActions>
+                                        <FlexBetween>
+                                            <Actions actions={actions} row={row} />
+                                        </FlexBetween>
+                                    </StyledCardActions>
+                                </StyledMotionCard>
+                            );
+                        })}
+                        {data.length === 0 && !loading && <EmptyState />}
+                    </StyledCardContainer>
+                </FadeIn>
+            </AnimatePresence>
             {hasMore && (
                 <LoadMoreContainer>
                     <LoadMoreButton onClick={handleLoadMore} variant="contained">
