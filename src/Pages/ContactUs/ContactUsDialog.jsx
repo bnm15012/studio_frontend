@@ -1,7 +1,7 @@
 import { Box, useTheme } from "@mui/material";
 import ContactForm from "./ContactForm";
 import PropTypes from "prop-types";
-import StyledDialog from "../../Components/New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 
 const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
     const theme = useTheme();

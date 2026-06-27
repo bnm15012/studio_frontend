@@ -5,7 +5,7 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../../utils/Alert";
@@ -233,7 +233,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                 <Paper
                     variant="outlined"
                     sx={{
-                        mt:5,
+                        mt: 5,
                         borderRadius: 2,
                         overflow: "hidden",
                     }}

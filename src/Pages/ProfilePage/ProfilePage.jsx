@@ -9,7 +9,7 @@ import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";
-import StyledDialog from "../../Components/New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 
 const dialogNames = [
     "profileDialog",
@@ -55,12 +55,12 @@ const ProfilePage = () => {
                 tabValue === 0
                     ? "Profile Details"
                     : tabValue === 1
-                      ? "Change Password"
-                      : tabValue === 2
-                        ? "Subscription Details"
-                        : tabValue === 3 && DEBUG
-                          ? "Settings"
-                          : "Communication Configuration"
+                        ? "Change Password"
+                        : tabValue === 2
+                            ? "Subscription Details"
+                            : tabValue === 3 && DEBUG
+                                ? "Settings"
+                                : "Communication Configuration"
             }
             open={dialogNames.includes(dialog)}
             onClose={handleClose}

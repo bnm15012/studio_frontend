@@ -19,7 +19,7 @@ import FileDropZone from "../../../Components/FileDropZone";
 import FlexBetween from "../../../Components/FlexBetween";
 import Papa from "papaparse";
 import { StyledTable } from "../../../Components/StyledTableComponents";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 
 const validationSchema = {
     name: {

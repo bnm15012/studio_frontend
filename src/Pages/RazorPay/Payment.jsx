@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
 import { getCurrentDateTimeLocal, getLocalDateTime } from "../../utils/DateUtil";
-import StyledDialog from "../../Components/New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 
 const PaymentDialog = ({ open, onClose, plan }) => {
     const showAlert = useAlert();
@@ -63,7 +63,7 @@ const PaymentDialog = ({ open, onClose, plan }) => {
                                 );
                                 showAlert(
                                     paymentResponse.message ||
-                                        `Payment successful! Payment ID: ${razorpay_payment_id}`,
+                                    `Payment successful! Payment ID: ${razorpay_payment_id}`,
                                     "success",
                                 );
                             }

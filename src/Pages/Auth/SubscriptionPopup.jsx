@@ -3,7 +3,7 @@ import { DialogContent, Box } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import StyledDialog from "../../Components/New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 
 const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
     const [open, setOpen] = useState(popupOn);
@@ -19,9 +19,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
     useEffect(() => {
         const checkSubscription = () => {
             const currentDate = new Date();
-            const endDate = subscriptionPlan
-                ? new Date(subscriptionPlan.endDate)
-                : null;
+            const endDate = subscriptionPlan ? new Date(subscriptionPlan.endDate) : null;
             if (currentDate > endDate) {
                 setOpen(true);
                 setIsExpired(true);

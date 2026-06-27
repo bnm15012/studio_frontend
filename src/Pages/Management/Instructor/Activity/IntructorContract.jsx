@@ -7,9 +7,9 @@ import Loading from "../../../../Components/Loading/Loading";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
 import { useAlert } from "../../../../utils/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
-import StyledDialog from "../../../../Components/New/StyledDialog";
+import StyledDialog from "../../../../core/components/StyledDialog";
 import { PrinterIcon } from "lucide-react";
-import HtmlToPdfViewer from "../../../../Components/New/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "../../../../core/components/Html2PDF/HtmlToPdfViewer";
 
 const InstructorContract = ({ open, onClose, activityData }) => {
     const dispatch = useDispatch();
@@ -70,12 +70,12 @@ const InstructorContract = ({ open, onClose, activityData }) => {
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent, {
-              instructor: instructorData,
-              instructorActivity: activityData,
-              studio,
-              branch: currentBranch,
-              getLocalDateTime,
-          })
+            instructor: instructorData,
+            instructorActivity: activityData,
+            studio,
+            branch: currentBranch,
+            getLocalDateTime,
+        })
         : "";
 
     return (

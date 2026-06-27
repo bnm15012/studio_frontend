@@ -5,10 +5,10 @@ import { getLocalDateTime } from "../../../utils/DateUtil";
 import FlexBetween from "../../../Components/FlexBetween";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 import { Typography } from "@mui/material";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
 
 const sectionTitle = {
     marginTop: "10mm",

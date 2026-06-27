@@ -4,7 +4,7 @@ import { useAlert } from "../../../utils/Alert";
 import { useSelector } from "react-redux";
 import { getMessageRecipientsAPI } from "./communication.api";
 import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { User } from "lucide-react";
 import { Close, Done } from "@mui/icons-material";
 

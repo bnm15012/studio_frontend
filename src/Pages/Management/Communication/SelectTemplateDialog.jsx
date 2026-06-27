@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { genericTemplateCruds } from "../../../api/all.api";
 import Loading from "../../../Components/Loading/Loading";

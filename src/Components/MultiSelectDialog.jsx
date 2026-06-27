@@ -1,7 +1,7 @@
 import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
 import { useEffect, useState, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
-import StyledDialog from "./New/StyledDialog";
+import StyledDialog from "../core/components/StyledDialog";
 
 const MultiSelectDialog = ({
     open,

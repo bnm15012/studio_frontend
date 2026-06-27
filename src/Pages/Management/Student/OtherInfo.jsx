@@ -13,7 +13,7 @@ import {
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import FlexBetween from "../../../Components/FlexBetween";
 import Field from "../../../Components/Fields/Field";
 import { FieldLabel } from "../../../Components/New/StyledField";

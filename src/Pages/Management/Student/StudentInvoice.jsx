@@ -3,10 +3,10 @@ import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
 import { getLocalDateTime } from "../../../utils/DateUtil";
 import { useUI } from "../../../context/UIContext";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
 
 const StudentInvoice = ({ open, onClose, activityData, studentData, studio, currentBranch, isUser = false }) => {
     const pdfViewerRef = useRef();

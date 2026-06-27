@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DialogContent, Button, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
-import StyledDialog from "../New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 import ImageComponent from "../ImageComponent";
 import { Upload } from "lucide-react";
 import FlexEvenly from "../FlexEvenly";

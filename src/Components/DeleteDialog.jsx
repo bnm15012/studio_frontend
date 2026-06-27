@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { DialogContentText } from "@mui/material";
-import StyledDialog from "./New/StyledDialog";
+import StyledDialog from "../core/components/StyledDialog";
 
 const DeleteDialog = ({ open, onClose, onConfirm, displayData, id }) => (
     <StyledDialog

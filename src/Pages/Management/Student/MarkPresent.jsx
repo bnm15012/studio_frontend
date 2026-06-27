@@ -12,7 +12,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Html5Qrcode } from "html5-qrcode";
 
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../../utils/Alert";
 import { useUI } from "../../../context/UIContext";
@@ -77,7 +77,7 @@ const MarkPresentDialog = () => {
                             if (scannerRef.current) {
                                 await scannerRef.current.stop();
                             }
-                        } catch (e) {}
+                        } catch (e) { }
 
                         if (!assignmentId) {
                             if (isMounted) {
@@ -91,7 +91,7 @@ const MarkPresentDialog = () => {
                         }
 
                         await markPresent(assignmentId);
-                        
+
                         timeOutRef.current = setTimeout(() => {
                             if (isMounted) {
                                 initScanner();
@@ -118,15 +118,15 @@ const MarkPresentDialog = () => {
         return () => {
             isMounted = false;
             isProcessingRef.current = true; // prevent any pending callback from executing
-            
+
             if (timeOutRef.current) {
                 clearTimeout(timeOutRef.current);
             }
-            
+
             if (scannerRef.current) {
                 scannerRef.current.stop().then(() => {
                     scannerRef.current.clear();
-                }).catch(() => {});
+                }).catch(() => { });
             }
         };
     }, [open]);
@@ -150,12 +150,12 @@ const MarkPresentDialog = () => {
         if (timeOutRef.current) {
             clearTimeout(timeOutRef.current);
         }
-        
+
         if (scannerRef.current) {
             try {
                 await scannerRef.current.stop();
                 scannerRef.current.clear();
-            } catch (err) {}
+            } catch (err) { }
             scannerRef.current = null;
         }
 

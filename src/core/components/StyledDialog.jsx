@@ -55,7 +55,7 @@ const StyledDialog = ({
         <StyledDialogBase
             open={open}
             onClose={onClose}
-            slots={{ transition: (isMobile || isFullScreen) ? Transition : undefined }}
+            slots={{ transition: isMobile || isFullScreen ? Transition : undefined }}
             fullWidth
             fullScreen={isFullScreen}
             {...props}

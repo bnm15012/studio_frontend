@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { DialogContent } from "@mui/material";
-import StyledDialog from "../Components/New/StyledDialog";
+import StyledDialog from "../core/components/StyledDialog";
 
 const ServerErrorDialog = () => {
     const [serverDown, setServerDown] = useState(false);

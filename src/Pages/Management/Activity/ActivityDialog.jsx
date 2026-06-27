@@ -22,7 +22,7 @@ import FlexBetween from "../../../Components/FlexBetween";
 import { useUI } from "../../../context/UIContext";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../utils/Alert";
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import Field from "../../../Components/Fields/Field";
 import { membershipPackageCruds } from "../../../api/all.api";
 
@@ -259,13 +259,13 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                 ...membershipTypes,
                                                 ...validMembershipTypes,
                                             ].includes(batch.planType) && (
-                                                <MenuItem
-                                                    value={batch.planType}
-                                                    key={batch.planType}
-                                                >
-                                                    {batch.planType}
-                                                </MenuItem>
-                                            )}
+                                                    <MenuItem
+                                                        value={batch.planType}
+                                                        key={batch.planType}
+                                                    >
+                                                        {batch.planType}
+                                                    </MenuItem>
+                                                )}
                                             {membershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
                                                     {type}

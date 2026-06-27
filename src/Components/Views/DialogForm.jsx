@@ -2,7 +2,7 @@ import Field from "../Fields/Field";
 import FlexBetween from "../FlexBetween";
 import { Box } from "@mui/material";
 import PropTypes from "prop-types";
-import StyledDialog from "../New/StyledDialog";
+import StyledDialog from "../../core/components/StyledDialog";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
@@ -44,10 +44,16 @@ export const DialogForm = (props) => {
                                 isEdit={field?.editable ? field.editable(data) : true}
                                 value={
                                     field?.getValue
-                                        ? field.getValue(getNestedValue(data, field.name), data, true)
+                                        ? field.getValue(
+                                              getNestedValue(data, field.name),
+                                              data,
+                                              true,
+                                          )
                                         : getNestedValue(data, field.name)
                                 }
-                                setValue={(v) => handleChange(v, data[fieldsMeta.primary], field.name)}
+                                setValue={(v) =>
+                                    handleChange(v, data[fieldsMeta.primary], field.name)
+                                }
                                 type={field.type}
                                 extraProp={bindGetOptions(field.extraProp, data)}
                                 validation={field.validation}

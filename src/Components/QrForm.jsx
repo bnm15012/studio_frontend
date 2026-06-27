@@ -4,13 +4,21 @@ import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import { useSelector } from "react-redux";
-import StyledDialog from "./New/StyledDialog";
+import StyledDialog from "../core/components/StyledDialog";
 
-const QrForm = ({ link, qrSize = 256, title = "QR Code", buttonVariant = "contained", qrValue = false }) => {
+const QrForm = ({
+    link,
+    qrSize = 256,
+    title = "QR Code",
+    buttonVariant = "contained",
+    qrValue = false,
+}) => {
     const [open, setOpen] = useState(false);
     const qrRef = useRef(null);
     const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-    const qrLink = qrValue ? qrValue : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
+    const qrLink = qrValue
+        ? qrValue
+        : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

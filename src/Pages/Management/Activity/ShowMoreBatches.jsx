@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import ActivityBatchCard from "./ActivityBatchCard";
 import { DialogContent } from "@mui/material";
 import FlexBetween from "../../../Components/FlexBetween";
-import StyledDialog from "../../../Components/New/StyledDialog"; // adjust path as needed
+import StyledDialog from "../../../core/components/StyledDialog"; // adjust path as needed
 
 const ShowMoreBatches = ({ batchEntries, onClose }) => (
     <StyledDialog

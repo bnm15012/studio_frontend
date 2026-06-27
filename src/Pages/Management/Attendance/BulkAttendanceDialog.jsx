@@ -19,7 +19,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 
-import StyledDialog from "../../../Components/New/StyledDialog";
+import StyledDialog from "../../../core/components/StyledDialog";
 import { getLocalDateTime } from "../../../utils/DateUtil";
 
 const BulkAttendanceDialog = ({
