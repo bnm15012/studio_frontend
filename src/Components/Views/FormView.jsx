@@ -1,15 +1,28 @@
 import { useTheme } from "@emotion/react";
 import FlexBetween from "../FlexBetween";
-import { IconButton, Typography, Box, CircularProgress, Divider } from "@mui/material";
+import {
+    IconButton,
+    Typography,
+    Box,
+    CircularProgress,
+    Divider,
+    Skeleton,
+    Tooltip,
+    alpha,
+    Chip,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { CloudUpload } from "@mui/icons-material";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import SegmentIcon from "@mui/icons-material/Segment";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
 import FlexBetweenColumn from "../FlexBetweenColumn";
-import Loading from "../Loading/Loading";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel, FieldValue } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
@@ -18,6 +31,31 @@ import { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import FlexEvenly from "../FlexEvenly";
 import Actions from "./helper/Actions";
+
+/* ───────── Skeleton (slightly denser) ───────── */
+const FormSkeleton = ({ isMobile }) => (
+    <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", mt: 2, gap: 2 }}>
+        <Box sx={{ width: isMobile ? "100%" : 180 }}>
+            <Skeleton variant="rectangular" height={170} />
+        </Box>
+
+        <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: 1.5 }}>
+            {[1, 2].map((s) => (
+                <Box key={s} sx={{ p: 2, borderRadius: 2, bgcolor: "background.paper" }}>
+                    <Skeleton width={100} height={18} sx={{ mb: 1 }} />
+                    <Box sx={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 1.5 }}>
+                        {[1, 2, 3, 4].map((f) => (
+                            <Box key={f}>
+                                <Skeleton width={60} height={10} sx={{ mb: 0.5 }} />
+                                <Skeleton height={28} />
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+            ))}
+        </Box>
+    </Box>
+);
 
 const FormView = (props) => {
     const {
@@ -39,7 +77,6 @@ const FormView = (props) => {
     const theme = useTheme();
 
     const normalFields = fields.filter((f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type));
-
     const imageField = fields.find((f) => f.type === "IMAGE");
     const viewFields = fields.filter((f) => f.type === "VIEW");
     const component = fields.find((f) => f.type === "COMPONENT");
@@ -53,79 +90,100 @@ const FormView = (props) => {
 
     return (
         <>
-            {/* 🔹 Header */}
             <FlexBetween
                 backgroundColor={theme.palette.background.paper}
-                sx={{ width: "100%", p: 1, borderRadius: 2, boxShadow: theme.shadows[2] }}
+                sx={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 100,
+                    px: 0.75,
+                    borderRadius: 1.5,
+                    boxShadow: theme.shadows[1],
+                    flexWrap: "wrap",
+                    gap: 1,
+                }}
             >
-                <FlexBetween alignItems="center" gap={2}>
-                    <IconButton
-                        onClick={() => {
-                            if (editingId) {
-                                handleCancel();
-                            }
-                            navigate(`/management/${tableName}`);
-                        }}
-                    >
-                        <ArrowBackIcon sx={{ color: "black" }} />
-                    </IconButton>
-                    <Typography
-                        variant="h5"
-                        fontWeight="bold"
-                        sx={{ textOverflow: "ellipsis", textTransform: "capitalize" }}
-                    >
-                        {tableName}
-                    </Typography>
-                </FlexBetween>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
+                    <Tooltip title="Back">
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                if (editingId) handleCancel();
+                                navigate(`/management/${tableName}`);
+                            }}
+                        >
+                            <ArrowBackIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
 
-                <Box>
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="caption" sx={{ color: "text.secondary", fontSize: 11 }}>
+                            Management / {tableName}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                            <Typography
+                                noWrap
+                                sx={{ fontWeight: 700, fontSize: 14, maxWidth: 180 }}
+                            >
+                                {String(tableName).toUpperCase()}
+                            </Typography>
+
+                            <Chip
+                                size="small"
+                                label={editingId ? "Editing" : "Saved"}
+                                sx={{
+                                    height: 18,
+                                    fontSize: 10,
+                                    px: 0.5,
+                                    backgroundColor: editingId
+                                        ? alpha(theme.palette.warning.main, 0.15)
+                                        : alpha(theme.palette.success.main, 0.12),
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 0.5 }}>
                     {!editingId ? (
-                        <FlexBetween gap={1}>
+                        <>
                             <Actions actions={actions} row={data} />
                             <IconButton>
+
                                 {loading ? (
-                                    <CircularProgress size={24} />
+                                    <CircularProgress size={18} />
                                 ) : (
-                                    <CloudDoneIcon sx={{ color: "green" }} />
+                                    <CloudDoneIcon sx={{ color: "green" }} size={18} />
                                 )}
                             </IconButton>
-                        </FlexBetween>
+                        </>
                     ) : (
-                        <FlexBetween gap={2}>
-                            <IconButton
-                                disabled={loading}
-                                onClick={() => {
-                                    handleCancel();
-                                }}
-                            >
+                        <>
+                            <IconButton onClick={handleCancel}>
                                 <CancelIcon sx={{ color: "red" }} />
                             </IconButton>
-                            <IconButton disabled={loading} onClick={() => handleSave(formKey)}>
+                            <IconButton onClick={() => handleSave(formKey)}>
                                 <CloudUpload sx={{ color: "green" }} />
                             </IconButton>
-                        </FlexBetween>
+                        </>
                     )}
                 </Box>
             </FlexBetween>
+
+            {/* ───────── BODY ───────── */}
             {!data ? (
-                <Loading />
+                <FormSkeleton isMobile={isMobile} />
             ) : (
                 <FlexBetween
                     flexDirection={isMobile ? "column" : "row"}
-                    my={1}
-                    p={1}
-                    sx={{
-                        borderRadius: 2,
-                        alignItems: "flex-start",
-                    }}
+                    my={2}
+                    sx={{ alignItems: "flex-start", gap: 1.5 }}
                 >
+                    {/* IMAGE */}
                     {imageField && (
-                        <FlexEvenly p={1} width={isMobile ? "100%" : "220px"}>
-                            <Box
-                                borderRadius={2}
-                                p={1}
-                                backgroundColor={theme.palette.background.paper}
-                            >
+                        <FlexEvenly width={isMobile ? "100%" : 200}>
+                            <Box sx={{ p: 1, borderRadius: 2 }}>
                                 <Field
                                     label={imageField.label}
                                     isEdit={!!editingId}
@@ -134,68 +192,58 @@ const FormView = (props) => {
                                     type={imageField.type}
                                     extraProp={{
                                         ...imageField.extraProp,
-                                        size: "160px",
-                                        isCircular: "10%",
+                                        size: "140px",
                                     }}
                                 />
                             </Box>
                         </FlexEvenly>
                     )}
 
+                    {/* SECTIONS */}
                     <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
-                        {Object.entries(groupedFields).map(
-                            ([sectionName, fieldsInSection], idx) => (
-                                <Box
-                                    key={sectionName}
-                                    p={2}
-                                    borderRadius={2}
-                                    backgroundColor={theme.palette.background.paper}
-                                    boxShadow={theme.shadows[2]}
-                                >
-                                    <Typography
-                                        variant="h6"
-                                        fontWeight="bold"
-                                        color={theme.palette.text.primary}
-                                    >
-                                        {sectionName}
-                                    </Typography>
-                                    <Divider sx={{ mb: 0 }} />
-                                    <StyledFieldContainer>
-                                        {fieldsInSection.map((field) => (
-                                            <StyledFieldItem key={field.name} gap={1}>
-                                                <FieldLabel>{field.label}</FieldLabel>
-                                                <FieldValue>
-                                                    <Field
-                                                        isEdit={!!editingId}
-                                                        value={
-                                                            field?.getValue
-                                                                ? field.getValue(
-                                                                      getNestedValue(
-                                                                          data,
-                                                                          field.name,
-                                                                      ),
-                                                                      data,
-                                                                  )
-                                                                : getNestedValue(data, field.name)
-                                                        }
-                                                        setValue={(v) => {
-                                                            handleChange(v, formKey, field.name);
-                                                        }}
-                                                        type={field.type}
-                                                        extraProp={field.extraProp}
-                                                        validation={field.validation}
-                                                    />
-                                                </FieldValue>
-                                            </StyledFieldItem>
-                                        ))}
-                                    </StyledFieldContainer>
-                                </Box>
-                            ),
-                        )}
+                        {Object.entries(groupedFields).map(([sectionName, fieldsInSection]) => (
+                            <Box
+                                key={sectionName}
+                                sx={{
+                                    p: 1.5,
+                                    borderRadius: 1.5,
+                                    bgcolor: "background.paper",
+                                }}
+                            >
+                                <Typography sx={{ fontSize: 13, fontWeight: 700, mb: 0.5 }}>
+                                    <SegmentIcon sx={{ fontSize: 12 }} />  {sectionName}
+                                </Typography>
+
+                                <Divider sx={{ mb: 1 }} />
+
+                                <StyledFieldContainer>
+                                    {fieldsInSection.map((field) => (
+                                        <StyledFieldItem key={field.name}>
+                                            <FieldLabel>{field.label}</FieldLabel>
+                                            <Field
+                                                isEdit={!!editingId}
+                                                value={
+                                                    field.getValue
+                                                        ? field.getValue(getNestedValue(data, field.name), data)
+                                                        : getNestedValue(data, field.name)
+                                                }
+                                                setValue={(v) => handleChange(v, formKey, field.name)}
+                                                type={field.type}
+                                                extraProp={field.extraProp}
+                                                validation={field.validation}
+                                            />
+                                        </StyledFieldItem>
+                                    ))}
+                                </StyledFieldContainer>
+                            </Box>
+                        ))}
+
                         {component && <component.CustomComponent data={data} field={component} />}
                     </FlexBetweenColumn>
                 </FlexBetween>
             )}
+
+            {/* TABS */}
             <ViewTabs
                 currentView={currentView}
                 editingId={editingId}
@@ -209,7 +257,6 @@ const FormView = (props) => {
 FormView.propTypes = {
     formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     data: PropTypes.object,
-    addNewRow: PropTypes.func,
     fields: PropTypes.array,
     editingId: PropTypes.any,
     tableName: PropTypes.string,
@@ -218,16 +265,7 @@ FormView.propTypes = {
     handleSave: PropTypes.func,
     handleCancel: PropTypes.func,
     loading: PropTypes.bool,
-    actions: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-            onClick: PropTypes.func,
-            icon: PropTypes.element,
-            sx: PropTypes.object,
-            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-            hide: PropTypes.bool,
-        }),
-    ),
+    actions: PropTypes.array,
 };
 
 export default memo(FormView);

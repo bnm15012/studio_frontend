@@ -15,7 +15,6 @@ const InstructorAssignedActivityCard = ({ row }) => {
                 enabled={membershipStatus === "ACTIVE"}
                 fieldValue={activityName}
                 FieldIcon={Activity}
-                badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}
             />
             <CardChip value={assignedDate} type="DATE" label="Assigned Date" ChipIcon={Calendar} />
             <CardChip value={startDate} type="DATE" label="Start Date" ChipIcon={TimerReset} />

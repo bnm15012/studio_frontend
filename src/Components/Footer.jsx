@@ -333,6 +333,7 @@ const Footer = () => {
                                     size="small"
                                     sx={{
                                         flex: 1,
+                                        minWidth: 0,
                                         "& .MuiOutlinedInput-root": {
                                             backgroundColor: "rgba(255, 255, 255, 0.1)",
                                             color: "white",
@@ -458,7 +459,14 @@ const Footer = () => {
                     <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
                         © {currentYear} Book & Manage. All rights reserved.
                     </Typography>
-                    <Box sx={{ display: "flex", gap: 3 }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: { xs: 1.5, md: 3 },
+                            flexWrap: "wrap",
+                            justifyContent: "center",
+                        }}
+                    >
                         {[
                             "Privacy Policy",
                             "Terms and Condition",

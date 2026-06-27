@@ -207,8 +207,9 @@ export function FeaturesSection() {
                 <Card
                     sx={{
                         maxWidth: 1000,
+                        width: "100%",
                         mx: "auto",
-                        p: 6,
+                        p: { xs: 3, md: 6 },
                         background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
                         color: "white",
                         textAlign: "center",

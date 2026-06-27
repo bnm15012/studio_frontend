@@ -44,7 +44,8 @@ export const Navbar = ({ position = "fixed" }) => {
             <AppBar
                 position={position}
                 sx={{
-                    height: "3.2rem",
+                    minHeight: "3.2rem",
+                    height: "auto",
                     boxShadow: theme.shadows[5],
                     backgroundColor: "rgb(37,10,49)",
                     backdropFilter: "blur(50px)",
@@ -52,7 +53,7 @@ export const Navbar = ({ position = "fixed" }) => {
                     color: "primary",
                 }}
             >
-                <FlexBetween px={isMobile ? 0 : 2} my={"auto"}>
+                <FlexBetween px={isMobile ? 1 : 2} my={"auto"}>
                     {/* Logo */}
                     <Box
                         sx={{

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardActions, Box } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled, useTheme, alpha } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
@@ -7,23 +7,31 @@ export const StyledCardContainer = styled(Box)(({ theme }) => ({
     display: "grid",
     paddingBottom: theme.spacing(10),
     gap: theme.spacing(3),
-    gridTemplateColumns: "repeat(auto-fill, minmax(19rem, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(min(17rem, 100%), 1fr))",
+    [theme.breakpoints.down("sm")]: {
+        gap: theme.spacing(2),
+    },
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     position: "relative",
     display: "flex",
     gap: theme.spacing(1.5),
-    padding: theme.spacing(1),
+    padding: theme.spacing(2.5),
     height: "100%",
     flexDirection: "column",
     background: theme.palette.background.paper,
+    "&:last-child": {
+        paddingBottom: theme.spacing(2.5),
+    },
 }));
 
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     position: "relative",
     justifyContent: "flex-end",
     background: theme.palette.background.paper,
+    padding: theme.spacing(1.5, 2.5),
+    borderTop: `1px solid ${theme.palette.divider}`,
 }));
 
 export const CardBadge = styled(Box)(({ theme }) => ({
@@ -42,12 +50,14 @@ export const CardBadge = styled(Box)(({ theme }) => ({
 const MotionCard = motion.create(Card);
 
 const StyledCardBase = styled(MotionCard)(({ theme }) => ({
-    borderRadius: theme.shape.borderRadius * 2,
+    borderRadius: "16px",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
-    background: `linear-gradient(145deg, ${theme.palette.background.paper}, ${theme.palette.background.default})`,
-    transition: "box-shadow 0.3s ease, transform 0.3s ease",
+    backgroundColor: theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`,
+    borderLeft: `5px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     position: "relative",
 }));
 
@@ -55,17 +65,21 @@ export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
     const theme = useTheme();
     return (
         <StyledCardBase
-            elevation={elevation}
-            initial={{ opacity: 0, y: 20 }}
+            elevation={0}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -15 }}
             whileHover={{
-                y: -5,
-                boxShadow: theme.shadows[10],
+                y: -4,
+                boxShadow: `0 12px 30px ${alpha(theme.palette.primary.main, 0.12)}`,
+                borderLeftColor: theme.palette.primary.main,
             }}
             {...props}
-            sx={{ boxShadow: theme.shadows[7] }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            sx={{
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.02)",
+                ...props.sx,
+            }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
         >
             {children}
         </StyledCardBase>

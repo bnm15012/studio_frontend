@@ -14,17 +14,25 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
         <Box
             sx={{
                 backgroundColor: theme.palette.background.default,
-                // border: "1px solid red",
+                overflowX: "hidden",
+                maxWidth: "100vw",
             }}
             height={"100vh"}
         >
             <Navbar position="static" />
-            <FlexBetween height={"calc(100vh - 3.2rem)"}>
+            <FlexBetween
+                height={"calc(100vh - 3.2rem)"}
+                sx={{ overflowX: "hidden" }}
+            >
                 <Sidebar sidebarOpen={isSidebarShouldBeOn} />
                 <FlexBetweenColumn
                     overflow={"auto"}
-                    p={2}
-                    width={isMobile ? "100vw" : "calc(100vw - 13rem)"}
+                    p={isMobile ? 1 : 2}
+                    sx={{
+                        flex: 1,
+                        minWidth: 0,
+                        maxWidth: "100%",
+                    }}
                     mx={0}
                     my={0}
                 >

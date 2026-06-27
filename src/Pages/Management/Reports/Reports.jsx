@@ -246,19 +246,29 @@ const Reports = () => {
     useEffect(() => { }, [paymentStatus, reportType]);
 
     return (
-        <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
+        <FlexBetween
+            gap={2}
+            flexDirection={isMobile ? "column" : "row"}
+            sx={{ alignItems: "flex-start", width: "100%" }}
+        >
             {/* Left Controls */}
             <Box
                 p={2}
                 sx={{
                     height: "fit-content",
-                    minWidth: isMobile ? "1rem" : "25rem",
+                    width: isMobile ? "100%" : "25rem",
+                    flexShrink: 0,
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: "8px",
                     boxShadow: theme.shadows[7],
                 }}
             >
-                <Typography variant="h3" m={2} mb={6} textAlign={"center"}>
+                <Typography
+                    variant={isMobile ? "h5" : "h3"}
+                    m={isMobile ? 1 : 2}
+                    mb={isMobile ? 3 : 6}
+                    textAlign={"center"}
+                >
                     Report
                 </Typography>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -269,6 +279,7 @@ const Reports = () => {
                             value={startDateValue}
                             onChange={setStartDate}
                             renderInput={(params) => <TextField {...params} fullWidth />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
                         <DatePicker
                             label="End Date"
@@ -276,6 +287,7 @@ const Reports = () => {
                             value={endDateValue}
                             onChange={setEndDate}
                             renderInput={(params) => <TextField {...params} fullWidth />}
+                            slotProps={{ textField: { fullWidth: true } }}
                         />
 
                         <FormControl fullWidth>
@@ -285,7 +297,7 @@ const Reports = () => {
                                 label="Report Type"
                                 onChange={(e) => setReportType(e.target.value)}
                             >
-                                <MenuItem value="incomeExpense">Income & Expense Report</MenuItem>
+                                <MenuItem value="incomeExpense">Income &amp; Expense Report</MenuItem>
                                 <MenuItem value="payment">Payment Report</MenuItem>
                             </Select>
                         </FormControl>
@@ -322,7 +334,7 @@ const Reports = () => {
                         <Button variant="contained" onClick={getData} fullWidth disabled={loading}>
                             Generate Report
                         </Button>
-                        <FlexBetween gap={2}>
+                        <FlexBetween gap={2} sx={{ width: "100%" }}>
                             <Button
                                 variant="outlined"
                                 onClick={() => pdfViewerRef.current.downloadPDF()}
@@ -348,13 +360,16 @@ const Reports = () => {
             <Box
                 sx={{
                     overflow: "auto",
+                    minHeight: isMobile ? "50vh" : "89vh",
                     height: isMobile ? "auto" : "89vh",
                     boxShadow: theme.shadows[7],
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: "8px",
-                    flexGrow: 1,
+                    flex: 1,
+                    minWidth: 0,
                     p: 1,
-                    px: isMobile ? 1 : 20,
+                    px: isMobile ? 1 : 4,
+                    width: isMobile ? "100%" : "auto",
                 }}
             >
                 {loading && <Loading />}

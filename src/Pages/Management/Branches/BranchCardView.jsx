@@ -19,14 +19,13 @@ const BranchCardView = ({ row }) => {
                         <Circle
                             sx={{
                                 fontSize: 10,
-                                color: isActive ? "white" : "text.disabled",
+                                color: isActive ? "success.main" : "text.disabled",
                                 animation: isActive ? "pulse 1.5s infinite" : "none",
                             }}
                         />
                         {isActive ? "Active" : "Inactive"}
                     </Box>
                 }
-                badgeSx={{ backgroundColor: isActive ? "green" : "grey.400" }}
             />
             <CardLocation address={address} city={city} state={state} pincode={pincode} />
             <ContactSection contact={phone} />

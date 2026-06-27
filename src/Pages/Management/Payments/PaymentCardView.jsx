@@ -7,15 +7,6 @@ import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 const PaymentCard = ({ row }) => {
     const { payeeType, status, paymentDate, paymentType, amount, payeeName } = row;
 
-    const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
-            case "completed":
-                return "green";
-            default:
-                return "red";
-        }
-    };
-
     return (
         <>
             <CardHeader
@@ -23,7 +14,6 @@ const PaymentCard = ({ row }) => {
                 fieldValue={amount}
                 enabled={status?.toLowerCase() === "completed"}
                 badge={status}
-                badgeSx={{ background: getStatusColor(status) }}
             />
             <CardChip
                 value={(payeeName || "N/A") + " (" + payeeType + ")"}

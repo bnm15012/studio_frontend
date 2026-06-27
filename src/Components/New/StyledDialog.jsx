@@ -44,17 +44,20 @@ const StyledDialog = ({
     confirmDisabled = false,
     actions = [],
     titleBgColor = "success",
+    fullScreen = false,
     ...props
 }) => {
     const { isMobile } = useUI();
     const theme = useTheme();
     const backgrounds = TITLE_BGs(theme);
+    const isFullScreen = fullScreen || false;
     return (
         <StyledDialogBase
             open={open}
             onClose={onClose}
-            slots={{ transition: isMobile ? Transition : undefined }}
+            slots={{ transition: (isMobile || isFullScreen) ? Transition : undefined }}
             fullWidth
+            fullScreen={isFullScreen}
             {...props}
         >
             <DialogTitle
@@ -127,6 +130,7 @@ StyledDialog.propTypes = {
     titleBgColor: PropTypes.string,
     onConfirm: PropTypes.func,
     confirmDisabled: PropTypes.bool,
+    fullScreen: PropTypes.bool,
     size: PropTypes.oneOf(["lg", "md", "sm", "xs", "xl"]),
     title: PropTypes.string,
     children: PropTypes.node,

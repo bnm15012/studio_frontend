@@ -106,7 +106,7 @@ export function HeroSection() {
             </Box>
 
             {/* Content */}
-            <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10, py: 10 }}>
+            <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10, pt: { xs: "6rem", md: 10 }, pb: 10 }}>
                 <Box
                     sx={{
                         display: "flex",

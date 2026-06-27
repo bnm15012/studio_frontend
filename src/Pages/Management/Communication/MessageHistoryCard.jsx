@@ -1,4 +1,4 @@
-import { Button, Avatar } from "@mui/material";
+import { Button, Avatar, useTheme } from "@mui/material";
 import { Send } from "lucide-react";
 import { Email, Group, WhatsApp } from "@mui/icons-material";
 import {
@@ -11,37 +11,41 @@ import PropTypes from "prop-types";
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 
-const MessageHistoryCard = ({ history, onViewRecipients }) => (
-    <StyledCardContainer>
-        {history &&
-            history.map((row) => (
-                <StyledMotionCard
-                    key={row.id}
-                    sx={{
-                        transition: "box-shadow 0.2s ease-in-out",
-                        "&:hover": { boxShadow: 4 },
-                    }}
-                >
-                    <StyledCardContent
-                        sx={{ p: 2.5, display: "flex", flexDirection: "column", gap: 2 }}
+const MessageHistoryCard = ({ history, onViewRecipients }) => {
+    const theme = useTheme();
+    return (
+        <StyledCardContainer>
+            {history &&
+                history.map((row) => (
+                    <StyledMotionCard
+                        key={row.id}
+                        sx={{
+                            transition: "box-shadow 0.2s ease-in-out",
+                            "&:hover": { boxShadow: 4 },
+                        }}
                     >
-                        <CardHeader
-                            FieldIcon={Send}
-                            fieldValue={row?.memberType ? "All Recipients" : "Few"}
-                            badgeSx={{ backgroundColor: "" }}
-                            badge={
-                                <Avatar
-                                    size="small"
-                                    sx={{
-                                        p: 2,
-                                        backgroundColor:
-                                            row?.notificationType === "EMAIL" ? "blue" : "green",
-                                    }}
-                                >
-                                    {row?.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
-                                </Avatar>
-                            }
-                        />
+                        <StyledCardContent
+                            sx={{ p: 2.5, display: "flex", flexDirection: "column", gap: 2 }}
+                        >
+                            <CardHeader
+                                FieldIcon={Send}
+                                fieldValue={row?.memberType ? "All Recipients" : "Few"}
+                                badgeSx={{ backgroundColor: "" }}
+                                badge={
+                                    <Avatar
+                                        size="small"
+                                        sx={{
+                                            p: 2,
+                                            backgroundColor:
+                                                row?.notificationType === "EMAIL"
+                                                    ? theme.palette.info.main
+                                                    : theme.palette.success.main,
+                                        }}
+                                    >
+                                        {row?.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
+                                    </Avatar>
+                                }
+                            />
                         <CardChip label={"Sent Date"} value={row?.sentDate} type="DATETIME" />
                     </StyledCardContent>
                     <StyledCardActions>
@@ -60,7 +64,8 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => (
                 </StyledMotionCard>
             ))}
     </StyledCardContainer>
-);
+    );
+};
 
 MessageHistoryCard.propTypes = {
     history: PropTypes.arrayOf(PropTypes.object),

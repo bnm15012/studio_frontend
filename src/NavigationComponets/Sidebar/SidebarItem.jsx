@@ -10,7 +10,7 @@ const SidebarItem = ({ route, isSelected, onClick, isNonMobileScreens }) => {
             onClick={onClick}
             sx={{
                 m: "0.2rem",
-                py: "1rem",
+                py: isNonMobileScreens ? "1rem" : "0.75rem",
                 borderRadius: "0.75rem",
                 flexDirection: isNonMobileScreens ? "row" : "column",
                 justifyContent: isNonMobileScreens ? "left" : "center",
@@ -22,16 +22,25 @@ const SidebarItem = ({ route, isSelected, onClick, isNonMobileScreens }) => {
                 "&:hover": { bgcolor: theme.palette.primary.dark },
             }}
         >
-            <Box fontSize={"2.4rem"} display="flex" alignItems="center" justifyContent="center">
+            <Box
+                fontSize={isNonMobileScreens ? "1.6rem" : "1.4rem"}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
                 {route.icon}
             </Box>
 
             <Typography
-                fontSize={"1rem"}
+                fontSize={isNonMobileScreens ? "0.95rem" : "0.75rem"}
                 mx={isNonMobileScreens ? 2 : "0.25rem"}
                 fontWeight={isSelected && isNonMobileScreens ? 700 : 400}
                 color="inherit"
                 textAlign="center"
+                sx={{
+                    lineHeight: 1.2,
+                    mt: isNonMobileScreens ? 0 : 0.5,
+                }}
             >
                 {route.label}
             </Typography>

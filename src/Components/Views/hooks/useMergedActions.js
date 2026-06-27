@@ -3,12 +3,17 @@ import { defaultActions } from "../constant/defaultActions";
 
 export const useMergedActions = (actions, args) =>
     useMemo(() => {
-        const defaults = defaultActions(args).map((def) => {
+        // Compute once and reuse — avoids calling defaultActions(args) twice per render.
+        const defaults = defaultActions(args);
+        const defaultNames = new Set(defaults.map((d) => d.name));
+
+        const merged = defaults.map((def) => {
             const override = actions.find((a) => a.name === def.name);
             return override ? { ...def, ...override } : def;
         });
+
         return [
-            ...defaults,
-            ...actions.filter((a) => !defaultActions(args).some((def) => def.name === a.name)),
+            ...merged,
+            ...actions.filter((a) => !defaultNames.has(a.name)),
         ];
     }, [args, actions]);

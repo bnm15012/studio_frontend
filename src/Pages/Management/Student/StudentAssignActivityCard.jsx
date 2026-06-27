@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
+import { useTheme } from "@mui/material";
 
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
@@ -8,6 +9,7 @@ import { Class, Task } from "@mui/icons-material";
 import ShowMoreDialog from "../../../Components/Views/ShowMoreDialog";
 
 const StudentAssignActivityCard = ({ row }) => {
+    const theme = useTheme();
     const {
         activityName,
         batchName,
@@ -30,7 +32,6 @@ const StudentAssignActivityCard = ({ row }) => {
                 fieldValue={activityName}
                 FieldIcon={Activity}
                 image={null}
-                badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}
             />
             <CardChip
                 value={registrationDate}
@@ -44,7 +45,7 @@ const StudentAssignActivityCard = ({ row }) => {
                         <span
                             style={{
                                 textDecoration: "line-through",
-                                color: "red",
+                                color: theme.palette.error.main,
                             }}
                         >
                             Rs. {paymentEntry?.actualAmount}

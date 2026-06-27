@@ -1,8 +1,8 @@
-import { MapPin } from "lucide-react";
 import PropTypes from "prop-types";
 import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
 import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
 import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import CardLocation from "../../../Components/New/StyledCardComponents/CardLocation";
 
 const StudentCard = ({ row }) => {
     const { name, email, phone, membershipStatus, imageUrl, dob, address } = row;
@@ -14,12 +14,11 @@ const StudentCard = ({ row }) => {
                 enabled={membershipStatus === "ACTIVE"}
                 fieldValue={name}
                 image={imageUrl}
-                badgeSx={{ backgroundColor: membershipStatus === "ACTIVE" ? "green" : "grey.400" }}
             />
             <ContactSection contact={email} />
             <ContactSection contact={phone} />
             <CardChip value={dob} type={"DATE"} label={"Date of Birth"} />
-            <CardChip address={address} label={"Address"} ChipIcon={MapPin} />
+            <CardLocation address={address} />
         </>
     );
 };

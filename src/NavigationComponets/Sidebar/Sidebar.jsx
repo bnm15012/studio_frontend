@@ -1,27 +1,28 @@
 import { Box, Fab, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import EventNote from "@mui/icons-material/EventNote";
-import QuestionAnswer from "@mui/icons-material/QuestionAnswer";
-import TypeSpecimen from "@mui/icons-material/TypeSpecimen";
-import EmailIcon from "@mui/icons-material/Email";
-import Contacts from "@mui/icons-material/Contacts";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import HelpIcon from "@mui/icons-material/Help";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import BadgeIcon from "@mui/icons-material/Badge";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import SchoolIcon from "@mui/icons-material/School";
-import GroupIcon from "@mui/icons-material/Group";
-import EventIcon from "@mui/icons-material/Event";
-import PaymentIcon from "@mui/icons-material/Payment";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
+import ForumIcon from "@mui/icons-material/Forum";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import DescriptionIcon from "@mui/icons-material/Description";
 import PropTypes from "prop-types";
 import SidebarItem from "./SidebarItem";
-import Assessment from "@mui/icons-material/Assessment";
-import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import { useUI } from "../../context/UIContext";
-import { BookTemplate, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Close, GridView } from "@mui/icons-material";
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 const Sidebar = ({ sidebarOpen }) => {
     const navigate = useNavigate();
@@ -43,91 +44,91 @@ const Sidebar = ({ sidebarOpen }) => {
             label: "Upload Data",
             show: isEnabled(FEATURE_KEYS.BULK_UPLOAD) && isAdmin,
             showOnBottomBar: isEnabled(FEATURE_KEYS.BULK_UPLOAD) && isAdmin && false,
-            icon: <Upload />,
+            icon: <CloudUploadIcon />,
         },
         {
             path: "/management/branch",
             label: "Branches",
             show: isEnabled(FEATURE_KEYS.BRANCH) && isAdmin,
             showOnBottomBar: isEnabled(FEATURE_KEYS.BRANCH) && isAdmin && false,
-            icon: <DeviceHubIcon />,
+            icon: <StorefrontIcon />,
         },
         {
             path: "/management/enquiry",
             label: "Enquiries",
             show: isEnabled(FEATURE_KEYS.ENQUIRY),
             showOnBottomBar: isEnabled(FEATURE_KEYS.ENQUIRY),
-            icon: <QuestionAnswer />,
+            icon: <HelpIcon />,
         },
         {
             path: "/management/clients",
             label: "Clients",
             show: isEnabled(FEATURE_KEYS.CLIENT),
             showOnBottomBar: isEnabled(FEATURE_KEYS.CLIENT),
-            icon: <Contacts />,
+            icon: <BusinessCenterIcon />,
         },
         {
             path: "/management/booking",
             label: "Bookings",
             show: isEnabled(FEATURE_KEYS.BOOKINGS),
             showOnBottomBar: isEnabled(FEATURE_KEYS.BOOKINGS),
-            icon: <EventNote />,
+            icon: <CalendarMonthIcon />,
         },
         {
             path: "/management/instructors",
             label: "Instructors",
             show: isEnabled(FEATURE_KEYS.INSTRUCTOR),
             showOnBottomBar: isEnabled(FEATURE_KEYS.INSTRUCTOR),
-            icon: <SchoolIcon />,
+            icon: <BadgeIcon />,
         },
         {
             path: "/management/attendance",
             label: "Attendance",
             show: isEnabled(FEATURE_KEYS.ATTENDANCE),
             showOnBottomBar: isEnabled(FEATURE_KEYS.ATTENDANCE) && false,
-            icon: <AccessTimeFilledIcon />,
+            icon: <HowToRegIcon />,
         },
         {
             path: "/management/students",
             label: "Students",
             show: isEnabled(FEATURE_KEYS.STUDENT),
             showOnBottomBar: isEnabled(FEATURE_KEYS.STUDENT),
-            icon: <GroupIcon />,
+            icon: <SchoolIcon />,
         },
         {
             path: "/management/activity",
             label: "Activities",
             show: isEnabled(FEATURE_KEYS.ACTIVITY),
             showOnBottomBar: isEnabled(FEATURE_KEYS.ACTIVITY),
-            icon: <EventIcon />,
+            icon: <FitnessCenterIcon />,
         },
         {
             path: "/management/type",
             label: "Packages",
             show: isEnabled(FEATURE_KEYS.PACKAGE),
             showOnBottomBar: isEnabled(FEATURE_KEYS.PACKAGE) && false,
-            icon: <TypeSpecimen />,
+            icon: <CardGiftcardIcon />,
         },
         {
             path: "/management/communication",
             label: "Communication",
             show: isEnabled(FEATURE_KEYS.COMMUNICATION),
             showOnBottomBar: isEnabled(FEATURE_KEYS.COMMUNICATION),
-            icon: <EmailIcon />,
+            icon: <ForumIcon />,
         },
         {
             path: "/management/payments",
             label: "Payments",
             show: isEnabled(FEATURE_KEYS.PAYMENTS),
             showOnBottomBar: isEnabled(FEATURE_KEYS.PAYMENTS),
-            icon: <PaymentIcon />,
+            icon: <CreditCardIcon />,
         },
         {
             path: "/management/expenses",
             label: "Expense",
             show: isEnabled(FEATURE_KEYS.EXPENSE),
             showOnBottomBar: isEnabled(FEATURE_KEYS.EXPENSE),
-            icon: <CurrencyRupeeIcon />,
+            icon: <AccountBalanceWalletIcon />,
         },
         {
             path: "/analysis",
@@ -141,14 +142,14 @@ const Sidebar = ({ sidebarOpen }) => {
             label: "Reports",
             show: isEnabled(FEATURE_KEYS.REPORTS),
             showOnBottomBar: isEnabled(FEATURE_KEYS.REPORTS),
-            icon: <Assessment />,
+            icon: <AnalyticsIcon />,
         },
         {
             path: "/management/template",
             label: "Templates",
             show: isEnabled(FEATURE_KEYS.TEMPLATES),
             showOnBottomBar: isEnabled(FEATURE_KEYS.TEMPLATES),
-            icon: <BookTemplate />,
+            icon: <DescriptionIcon />,
         },
     ];
 
@@ -172,24 +173,30 @@ const Sidebar = ({ sidebarOpen }) => {
                             <Box
                                 component={motion.div}
                                 position="fixed"
+                                top={"3.2rem"}
                                 width="100vw"
-                                height="calc(100vh - 3.2rem)"
+                                height="calc(100dvh - 3.2rem)"
                                 boxSizing="border-box"
                                 zIndex={1000}
                                 bgcolor="#312850f7"
                                 sx={{
                                     overflowY: "auto",
-                                    padding: "3rem 2rem",
+                                    overflowX: "hidden",
+                                    padding: { xs: "1.5rem 1rem", sm: "2rem 1.5rem" },
                                     display: "grid",
-                                    gridTemplateColumns: "repeat(auto-fill, minmax(135px, 1fr))",
-                                    gap: "1rem",
+                                    gridTemplateColumns: {
+                                        xs: "repeat(auto-fill, minmax(110px, 1fr))",
+                                        sm: "repeat(auto-fill, minmax(135px, 1fr))",
+                                    },
+                                    gap: { xs: "0.75rem", sm: "1rem" },
                                     justifyContent: "center",
                                     alignContent: "flex-start",
                                     backdropFilter: "blur(4px)",
+                                    WebkitOverflowScrolling: "touch",
                                 }}
-                                initial={{ opacity: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
                             >
                                 {routes
                                     .filter((r) => r.show)
@@ -221,9 +228,11 @@ const Sidebar = ({ sidebarOpen }) => {
                         onClick={() => setOpen(!open)}
                         sx={{
                             position: "fixed",
-                            bottom: 24,
+                            bottom: "max(24px, env(safe-area-inset-bottom, 24px))",
                             right: 24,
                             zIndex: 1200,
+                            width: 52,
+                            height: 52,
                             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.3)",
                             transition: "transform 0.3s ease",
                             "&:hover": {
@@ -237,6 +246,7 @@ const Sidebar = ({ sidebarOpen }) => {
             ) : (
                 <Box
                     width={"15rem"}
+                    flexShrink={0}
                     display={sidebarOpen ? "" : "none"}
                     height={"100%"}
                     boxSizing={"border-box"}
@@ -245,6 +255,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     sx={{
                         zIndex: 99,
                         overflowY: "auto",
+                        overflowX: "hidden",
                         padding: "1rem 0.2rem",
                         transition: "all 0.3s ease-in-out",
                     }}

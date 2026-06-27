@@ -14,6 +14,7 @@ import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import FlexEvenly from "../FlexEvenly";
+import { useUI } from "../../context/UIContext";
 
 const Views = (props) => {
     const {
@@ -43,6 +44,7 @@ const Views = (props) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const navigate = useNavigate();
+    const { isMobile } = useUI();
 
     const token = useSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
@@ -167,7 +169,7 @@ const Views = (props) => {
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
-            setRecord(tableState.recordById[formKey] || {});
+            setRecord(tableState.recordById[formKey]);
         }
     }, [formKey, setRecord, tableState.recordById]);
 
@@ -213,6 +215,7 @@ const Views = (props) => {
                     closeIcon={true}
                     title="View"
                     maxWidth="md"
+                    fullScreen={isMobile}
                 >
                     {viewRow && (
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>

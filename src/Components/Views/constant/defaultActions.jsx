@@ -1,5 +1,10 @@
 import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 
+// Icon elements as module-level constants — created once, not on every defaultActions() call.
+const EditIcon = <Edit />;
+const DeleteIcon = <Delete />;
+const FormIcon = <OpenInNew />;
+
 export const defaultActions = ({
     loading,
     editMode,
@@ -9,11 +14,11 @@ export const defaultActions = ({
     openFormView,
 }) => {
     const base = [
-        { name: "edit", icon: <Edit />, sx: { color: "blue" }, onClick: handleEdit },
-        { name: "delete", icon: <Delete />, sx: { color: "red" }, onClick: handleDeleteClick },
+        { name: "edit", icon: EditIcon, sx: { color: "blue" }, onClick: handleEdit },
+        { name: "delete", icon: DeleteIcon, sx: { color: "red" }, onClick: handleDeleteClick },
         {
             name: "form",
-            icon: <OpenInNew />,
+            icon: FormIcon,
             sx: { color: "blue" },
             onClick: openFormView,
             help: "Open form view",
