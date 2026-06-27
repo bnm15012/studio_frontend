@@ -57,8 +57,8 @@ const Field = ({
                         defaultImage={extraProp?.defaultImage}
                     />
                 );
-            case "CUSTOME":
-                return <CustomComponent {...commonProps} isEdit={true}/>;
+            case "CUSTOM":
+                return <CustomComponent {...commonProps} isEdit={true} />;
             case "IMAGE":
                 return <ImageComponent allowEdit={isEdit} {...commonProps} />;
             default:
@@ -84,8 +84,8 @@ const Field = ({
             case "DATE":
             case "DATETIME":
                 return getLocalDateTime(value, type);
-            case "CUSTOME":
-                return <CustomComponent {...commonProps}  />;
+            case "CUSTOM":
+                return <CustomComponent {...commonProps} />;
             case "IMAGE":
                 return renderInputField();
             case "IMAGE_DIALOG":

@@ -149,7 +149,7 @@ const Students = ({ ID }) => {
                 section: "Additional Info",
                 name: "additionalData",
                 label: "",
-                type: "CUSTOME",
+                type: "CUSTOM",
                 extraProp: {
                     CustomComponent: OtherInfo
                 }

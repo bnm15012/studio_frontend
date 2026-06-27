@@ -3,13 +3,13 @@ import { Star as StarIcon, ExpandMore as ExpandMoreIcon, Check as CheckIcon, Clo
 import PricingPlanCards from "./PricingPlanCards";
 
 const comparisonRows = [
-    { feature: "PDF Invoice & Receipt Generator", bnm: true, gymmaster: false,     fitbudd: false,     glofox: false     },
-    { feature: "Expense Management",              bnm: true, gymmaster: false,     fitbudd: false,     glofox: false     },
-    { feature: "Activity & Batch Management",     bnm: true, gymmaster: "partial", fitbudd: "partial", glofox: false     },
-    { feature: "Affordable for Small Studios",    bnm: true, gymmaster: "partial", fitbudd: false,     glofox: false     },
-    { feature: "WhatsApp Invoice Sharing",        bnm: true, gymmaster: false,     fitbudd: false,     glofox: false     },
-    { feature: "Multiple Branch (Same Login)",    bnm: true, gymmaster: false,     fitbudd: false,     glofox: false     },
-    { feature: "Student Attendance Tracking",     bnm: true, gymmaster: false,     fitbudd: false,     glofox: false     },
+    { feature: "PDF Invoice & Receipt Generator", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
+    { feature: "Expense Management", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
+    { feature: "Activity & Batch Management", bnm: true, gymmaster: "partial", fitbudd: "partial", glofox: false },
+    { feature: "Affordable for Small Studios", bnm: true, gymmaster: "partial", fitbudd: false, glofox: false },
+    { feature: "WhatsApp Invoice Sharing", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
+    { feature: "Multiple Branch (Same Login)", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
+    { feature: "Student Attendance Tracking", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
 ];
 
 const PricingSection = () => {
@@ -39,8 +39,8 @@ const PricingSection = () => {
             answer: "Yes, we use enterprise-grade encryption to keep your data safe. Your data is backed up daily and stored in secure data centers — so you never have to worry about losing it.",
         },
         {
-            question: "Do you offer customer support?",
-            answer: "Yes, we provide 24/7 customer support via chat, email, and phone. Our average response time is under 2 hours.",
+            question: "Do you offer CUSTOMr support?",
+            answer: "Yes, we provide 24/7 CUSTOMr support via chat, email, and phone. Our average response time is under 2 hours.",
         },
         {
             question: "Can I import my existing data?",

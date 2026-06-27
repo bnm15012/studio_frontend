@@ -32,7 +32,7 @@ const FIELDS = [
         show: true,
         name: "userAccessEntry",
         label: "Access Rights",
-        type: "CUSTOME",
+        type: "CUSTOM",
         defaultValue: {},
         extraProp: {
             CustomComponent: UserAccessButton,

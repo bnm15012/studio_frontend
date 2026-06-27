@@ -19,7 +19,7 @@ const CancellationRefundPolicy = () => {
                     <Divider sx={{ mb: 2, borderColor: "rgba(255, 255, 255, 0.2)" }} />
                     <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
                         At Book & Manage, we strive to provide the best possible service to our
-                        customers. However, we understand that there might be situations requiring
+                        CUSTOMrs. However, we understand that there might be situations requiring
                         cancellations or refunds. Below are the terms governing our cancellation and
                         refund process.
                     </Typography>
@@ -29,7 +29,7 @@ const CancellationRefundPolicy = () => {
                             1. Cancellation Policy
                         </Typography>
                         <Typography variant="body2">
-                            - Customers can cancel their subscriptions or bookings by contacting us
+                            - CUSTOMrs can cancel their subscriptions or bookings by contacting us
                             at least 24 hours before the scheduled service or renewal date. <br />-
                             Cancellations made less than 24 hours in advance may not be eligible for
                             a refund, subject to the discretion of Book & Manage.

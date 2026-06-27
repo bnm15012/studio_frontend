@@ -93,7 +93,7 @@ const SelectTemplateDialog = ({ open, onClose, data }) => {
                 payload: {
                     branchId: currentBranch.branchId,
                     notificationType,
-                    title: selectedTemplate?.templateName ?? "CUSTOME",
+                    title: selectedTemplate?.templateName ?? "CUSTOM",
                     content: editableMessage,
                     memberIds: ids,
                 },

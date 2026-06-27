@@ -51,7 +51,7 @@ const PrivacyPolicyPage = () => {
                                 <li>To provide and personalize our services</li>
                                 <li>To process payments</li>
                                 <li>To improve our platform and services</li>
-                                <li>To communicate with you, including customer support</li>
+                                <li>To communicate with you, including CUSTOMr support</li>
                                 <li>To comply with legal obligations</li>
                             </ul>
                         </Typography>

@@ -32,7 +32,7 @@ export function TestimonialsSection() {
             name: "Priya Sharma",
             role: "Manager, Urban Beats",
             content:
-                "Customer support is exceptional and the platform is incredibly user-friendly. Both our staff and members adapted to it immediately. Our no-show rate dropped by 60%.",
+                "CUSTOMr support is exceptional and the platform is incredibly user-friendly. Both our staff and members adapted to it immediately. Our no-show rate dropped by 60%.",
             rating: 5,
             image: "assets/urban_beats.png",
             metrics: [

@@ -13,7 +13,7 @@ const UserCard = ({ row }) => {
             <ContactSection contact={phone} />
             <Field
                 value={userAccessEntry}
-                type="CUSTOME"
+                type="CUSTOM"
                 isEdit={false}
                 extraProp={{ CustomComponent: UserAccessButton }}
             />
