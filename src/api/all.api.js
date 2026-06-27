@@ -1,18 +1,18 @@
 import api from "../utils/api";
-import { createCrud } from "./create_crud";
+import { createCrudModule } from "../core/api/createCrudModule";
 
-export const usersCruds = createCrud({ route: "users", idKey: "userId" });
+export const usersCruds = createCrudModule({ route: "users", idKey: "userId" });
 
-export const instructorsCruds = createCrud({ route: "instructors", idKey: "instructorId" });
+export const instructorsCruds = createCrudModule({ route: "instructors", idKey: "instructorId" });
 
-export const instructorsAssignmentsCruds = createCrud({
+export const instructorsAssignmentsCruds = createCrudModule({
     route: "instructorActivities",
     idKey: "assignmentId",
 });
 
-export const studentsCruds = createCrud({ route: "students", idKey: "studentId" });
+export const studentsCruds = createCrudModule({ route: "students", idKey: "studentId" });
 
-export const studentsAssignmentsCruds = createCrud({
+export const studentsAssignmentsCruds = createCrudModule({
     route: "studentActivities",
     idKey: "assignmentId",
     extraCruds: ({ actions, getHeader, route }) => ({
@@ -74,23 +74,23 @@ export const studentsAssignmentsCruds = createCrud({
     }),
 });
 
-export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
+export const clientCruds = createCrudModule({ route: "clients", idKey: "clientId" });
 
-export const bookingCruds = createCrud({ route: "booking" });
+export const bookingCruds = createCrudModule({ route: "booking" });
 
-export const expenseCruds = createCrud({ route: "expenses", idKey: "expenseId" });
+export const expenseCruds = createCrudModule({ route: "expenses", idKey: "expenseId" });
 
-export const membershipPackageCruds = createCrud({ route: "membershipPackages" });
+export const membershipPackageCruds = createCrudModule({ route: "membershipPackages" });
 
-export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" });
+export const enquiryCruds = createCrudModule({ route: "enquiries", idKey: "enquiryId" });
 
-export const paymentCruds = createCrud({ route: "payments" });
+export const paymentCruds = createCrudModule({ route: "payments" });
 
-export const genericTemplateCruds = createCrud({ route: "genericTemplate" });
+export const genericTemplateCruds = createCrudModule({ route: "genericTemplate" });
 
-export const activityCruds = createCrud({ route: "activities", idKey: "activityId" });
+export const activityCruds = createCrudModule({ route: "activities", idKey: "activityId" });
 
-export const branchCruds = createCrud({
+export const branchCruds = createCrudModule({
     route: "branch",
     idKey: "branchId",
     extraState: {

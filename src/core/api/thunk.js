@@ -1,70 +1,14 @@
-import { createGenericSlice } from "../state/createGenericSlice";
-import api from "../utils/api";
+// ── Thunks ─────────────────────────────────────────────────────────────
 
-/** Build the Authorization header object. */
-const getHeader = (token) => ({ headers: { Authorization: token } });
-
-/**
- * Extract a human-readable error message from an Axios error response,
- * falling back to `fallback` when the server provides no message.
- */
-const getApiMessage = (err, fallback) => err?.response?.data?.status?.statusMessage ?? fallback;
+import api from "../../utils/api";
+import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
 
 /**
- * Wrap an async `fn` with setLoading(true) / setLoading(false) lifecycle.
- * Always calls setLoading(false) even if `fn` throws.
+ * POST /{route}/add
+ * Adds a new record. Dispatches `prependItem` when `prepend` is true.
  */
-const withLoading = async (setLoading, fn) => {
-    setLoading(true);
-    try {
-        return await fn();
-    } finally {
-        setLoading(false);
-    }
-};
 
-/**
- * Returns true when the slice state already contains the data being requested,
- * meaning the thunk can safely skip a network call.
- */
-const isCacheValid = (state, rootId, params) =>
-    state.rootId === rootId &&
-    state.currentPage === params?.page &&
-    params?.searchTerm === state.searchTerm &&
-    JSON.stringify(params) === JSON.stringify(state.filterKeys);
-
-// ── Factory ────────────────────────────────────────────────────────────────
-
-/**
- * Creates a complete CRUD slice + thunk set for a given API route.
- *
- * @param {object} opts
- * @param {string}   opts.route         - API route segment (e.g. "students")
- * @param {string}   [opts.idKey="id"]  - Primary key field name
- * @param {Function} [opts.extraCruds]  - Factory for extra thunks, receives { actions, getHeader, route }
- * @param {object}   [opts.extraState]  - Extra initial state merged into the slice
- * @param {object}   [opts.extraReducers] - Extra reducers merged into the slice
- */
-export function createCrud({
-    route,
-    idKey = "id",
-    extraCruds = () => ({}),
-    extraState = {},
-    extraReducers = {},
-}) {
-    const { actions, getInitialState, reducer } = createGenericSlice({
-        name: route,
-        idKey,
-        extraState,
-        extraReducers,
-    });
-
-    // ── Thunks ─────────────────────────────────────────────────────────────
-
-    /**
-     * POST /{route}/add
-     * Adds a new record. Dispatches `prependItem` when `prepend` is true.
-     */
+export const createCrudThunks = ({ actions, idKey, route }) => {
     const add = (newData, token, showAlert, setLoading, prepend) => async (dispatch, getState) => {
         await withLoading(setLoading, async () => {
             try {
@@ -114,7 +58,7 @@ export function createCrud({
     /**
      * DELETE /{route}/delete/{id}
      */
-    const del = (id, token, showAlert, setLoading) => async (dispatch) => {
+    const remove = (id, token, showAlert, setLoading) => async (dispatch) => {
         await withLoading(setLoading, async () => {
             try {
                 await api.delete(`/${route}/delete/${id}`, getHeader(token));
@@ -223,22 +167,12 @@ export function createCrud({
             );
         };
 
-    // ── Assembly ───────────────────────────────────────────────────────────
-    const baseCrud = {
-        actions,
-        initialState: getInitialState(),
-        reducer,
-        removeAll: actions.clearData,
+    return {
         add,
         update,
-        delete: del,
+        remove,
         getAll,
         getById,
         refresh,
     };
-
-    return {
-        ...baseCrud,
-        ...extraCruds({ actions, getHeader, route }),
-    };
-}
+};

@@ -32,7 +32,7 @@ export const useDeleteHandler = ({
 
     const handleDeleteConfirm = useCallback(async () => {
         try {
-            await dispatch(tableCruds.delete(deleteId, token, showAlert, setLoading));
+            await dispatch(tableCruds.remove(deleteId, token, showAlert, setLoading));
             if (formKey) navigate(`/management/${tableName}`);
         } catch (error) {
             console.error(error);

@@ -122,7 +122,7 @@ const Activities = () => {
     };
 
     const handleDeleteActivity = async (activityId) => {
-        await dispatch(activityCruds.delete(activityId, token, showAlert, setLoading));
+        await dispatch(activityCruds.remove(activityId, token, showAlert, setLoading));
         showAlert("Activity deleted successfully!", "success");
     };
 
