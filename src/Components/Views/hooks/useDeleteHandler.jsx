@@ -1,5 +1,4 @@
-import { useCallback, useState, useMemo } from "react";
-import DeleteDialog from "../../DeleteDialog";
+import { useCallback, useState } from "react";
 
 export const useDeleteHandler = ({
     tableCruds,
@@ -10,9 +9,7 @@ export const useDeleteHandler = ({
     navigate,
     tableName,
     consts,
-    data,
     formKey,
-    fieldToDisplayOnDelete,
 }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
@@ -53,36 +50,11 @@ export const useDeleteHandler = ({
         closeDeleteDialog,
     ]);
 
-    const DeleteDialogComponent = useMemo(
-        () =>
-            deleteDialogOpen &&
-            deleteId && (
-                <DeleteDialog
-                    open={deleteDialogOpen}
-                    onClose={closeDeleteDialog}
-                    onConfirm={handleDeleteConfirm}
-                    id={deleteId}
-                    displayData={`${tableName} for ${
-                        data.find((d) => d[consts.current.primaryKey] === deleteId)?.[
-                            fieldToDisplayOnDelete
-                        ]
-                    }`}
-                />
-            ),
-        [
-            deleteDialogOpen,
-            deleteId,
-            handleDeleteConfirm,
-            closeDeleteDialog,
-            tableName,
-            data,
-            fieldToDisplayOnDelete,
-            consts,
-        ],
-    );
-
     return {
         handleDeleteClick,
-        DeleteDialogComponent,
+        deleteDialogOpen,
+        deleteId,
+        closeDeleteDialog,
+        handleDeleteConfirm,
     };
 };

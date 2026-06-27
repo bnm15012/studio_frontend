@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../../core/components/StyledDialog";
+import DeleteDialog from "../DeleteDialog";
 import { useAlert } from "../../core/util/Alert";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +34,11 @@ const Views = (props) => {
         editMode = "INLINE",
         multi = false,
         defaultParams = {},
+        size,
+        rootId,
+        beforeAdd,
+        beforeUpdate,
+        overRideOnChange,
     } = props;
 
     const consts = useRef({
@@ -53,11 +59,15 @@ const Views = (props) => {
     const [viewRow, setViewRow] = useState(null);
 
     const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
-        ...props,
+        tableCruds,
+        tableName,
         token,
         showAlert,
+        size,
+        rootId,
         currentView,
         setLoading,
+        defaultParams,
     });
 
     const {
@@ -70,16 +80,22 @@ const Views = (props) => {
         addNewRow,
         handleChange,
     } = useCrudAction({
-        ...props,
+        formKey,
         data,
         setData,
         dispatch,
+        tableCruds,
         token,
         showAlert,
         setLoading,
-        tableState,
+        rootId,
         navigate,
+        tableName,
+        tableState,
         consts,
+        beforeAdd,
+        beforeUpdate,
+        overRideOnChange,
     });
 
     const handleViewOpen = (row) => {
@@ -91,7 +107,13 @@ const Views = (props) => {
         setViewRow(null);
         setViewDialogOpen(false);
     };
-    const { handleDeleteClick, DeleteDialogComponent } = useDeleteHandler({
+    const {
+        handleDeleteClick,
+        deleteDialogOpen,
+        deleteId,
+        closeDeleteDialog,
+        handleDeleteConfirm,
+    } = useDeleteHandler({
         tableCruds,
         token,
         showAlert,
@@ -101,8 +123,6 @@ const Views = (props) => {
         formKey,
         tableName,
         consts,
-        data,
-        fieldToDisplayOnDelete,
     });
 
     const refreshData = useCallback(() => {
@@ -133,7 +153,12 @@ const Views = (props) => {
 
     const commonStableProps = useMemo(
         () => ({
-            ...props,
+            fields,
+            fieldsMeta,
+            tableName,
+            currentView,
+            multi,
+            CardContentComponent,
             handleChange,
             handleViewOpen,
             handleSave,
@@ -141,7 +166,20 @@ const Views = (props) => {
             handlePageChange,
             addNewRow: showAddButton ? addNewRow : undefined,
         }),
-        [addNewRow, handleCancel, handleChange, handlePageChange, handleSave, props, showAddButton],
+        [
+            fields,
+            fieldsMeta,
+            tableName,
+            currentView,
+            multi,
+            CardContentComponent,
+            addNewRow,
+            handleCancel,
+            handleChange,
+            handlePageChange,
+            handleSave,
+            showAddButton,
+        ],
     );
 
     const commonProps = {
@@ -157,9 +195,13 @@ const Views = (props) => {
         apiRef.current.refreshData = refreshData;
     }, [addNewRow, apiRef, refreshData]);
 
+    const didInitNewRow = useRef(false);
     useEffect(() => {
-        if (formKey === "NEW") addNewRow(editingId);
-    }, [formKey]);
+        if (formKey === "NEW" && !didInitNewRow.current) {
+            didInitNewRow.current = true;
+            addNewRow();
+        }
+    }, [formKey, addNewRow]);
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
@@ -245,7 +287,20 @@ const Views = (props) => {
                     <CircularProgress />
                 </FlexEvenly>
             )}
-            {DeleteDialogComponent}
+
+            {deleteDialogOpen && deleteId && (
+                <DeleteDialog
+                    open={deleteDialogOpen}
+                    onClose={closeDeleteDialog}
+                    onConfirm={handleDeleteConfirm}
+                    id={deleteId}
+                    displayData={`${tableName} for ${
+                        data.find((d) => d[consts.current.primaryKey] === deleteId)?.[
+                            fieldToDisplayOnDelete
+                        ]
+                    }`}
+                />
+            )}
         </>
     );
 };
@@ -266,6 +321,7 @@ Views.propTypes = {
         current: PropTypes.object,
     }),
     dialogProps: PropTypes.object,
+    defaultParams: PropTypes.object,
     beforeAdd: PropTypes.func,
     beforeUpdate: PropTypes.func,
     cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),
@@ -277,4 +333,5 @@ Views.propTypes = {
     multi: PropTypes.bool,
     editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),
 };
+
 export default Views;

@@ -11,14 +11,17 @@ export const useTableData = ({
     rootId,
     currentView,
     setLoading,
-    defaultParams = {}
+    defaultParams = {},
 }) => {
     const dispatch = useDispatch();
     const tableState = useSelector((state) => state[tableName]);
 
     const { subscribe } = usePageSearch();
 
-    const [data, setData] = useState([]);
+    // Lazy-initialize from the Redux store so that if the store already has
+    // cached items (e.g. back-navigation), the component never renders with an
+    // empty array first — eliminating the visible flash/flicker on mount.
+    const [data, setData] = useState(() => tableState.items ?? []);
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterKeys, setFilterKeys] = useState({});
@@ -35,6 +38,7 @@ export const useTableData = ({
             ),
         );
     }, [
+        defaultParams,
         currentView,
         dispatch,
         filterKeys,

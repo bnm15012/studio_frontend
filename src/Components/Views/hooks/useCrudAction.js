@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { validate } from "../utils/validate";
 
+const defaultBeforeAdd = async (row) => row;
+const defaultBeforeUpdate = async (row) => row;
+const defaultOverRideOnChange = (_value, obj) => obj;
+
 export const useCrudAction = ({
     formKey,
     data,
@@ -15,9 +19,9 @@ export const useCrudAction = ({
     tableName,
     tableState,
     consts,
-    beforeAdd = async (row) => row,
-    beforeUpdate = async (row) => row,
-    overRideOnChange = (value, obj, field) => obj,
+    beforeAdd = defaultBeforeAdd,
+    beforeUpdate = defaultBeforeUpdate,
+    overRideOnChange = defaultOverRideOnChange,
 }) => {
     const [editingId, setEditingId] = useState(null);
     const [originalRow, setOriginalRow] = useState(null);
