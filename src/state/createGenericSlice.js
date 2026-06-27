@@ -1,9 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export function createGenericSlice(options) {
+/**
+ * Creates a generic Redux slice with standard CRUD reducers for list views.
+ *
+ * @param {object}  options
+ * @param {string}  options.name          - Slice name (matches the Redux state key)
+ * @param {string}  [options.idKey="id"]  - Field used as the primary key
+ * @param {object}  [options.extraState]  - Additional fields merged into initialState
+ * @param {object}  [options.extraReducers] - Additional reducers merged into the slice
+ *
+ * @returns {{ actions, reducer, name, getInitialState }}
+ */
+export function createGenericSlice({
+    name,
+    idKey = "id",
+    extraState = {},
+    extraReducers = {},
+}) {
     const initialState = {
         rootId: 0,
         items: [],
+        /** Record cache: { [id]: record } */
         recordById: {},
         searchTerm: "",
         filterKeys: {},
@@ -11,98 +28,120 @@ export function createGenericSlice(options) {
         totalPages: 0,
         currentPage: 0,
         pageSize: 0,
-        ...options.extraState,
+        ...extraState,
     };
 
     const slice = createSlice({
-        name: options.name,
+        name,
         initialState,
         reducers: {
-            setItems(state, action) {
-                state.rootId = action.payload.rootId;
-                state.items = action.payload.data;
+            /** Replace the full item list and update rootId. */
+            setItems(state, { payload: { data, rootId } }) {
+                state.rootId = rootId;
+                state.items = data;
             },
-            setInfo(state, action) {
-                state.totalCount = action.payload.totalCount;
-                state.currentPage = action.payload.currentPage;
-                state.searchTerm = action.payload.searchTerm || "";
-                state.filterKeys = action.payload.filterKeys || {};
-                state.pageSize = action.payload.pageSize;
-                state.totalPages = Math.ceil(
-                    action.payload.totalCount / (action.payload.pageSize ?? 1),
-                );
+
+            /** Update pagination / search metadata without replacing items. */
+            setInfo(state, { payload }) {
+                state.totalCount = payload.totalCount;
+                state.currentPage = payload.currentPage;
+                state.searchTerm = payload.searchTerm ?? "";
+                state.filterKeys = payload.filterKeys ?? {};
+                state.pageSize = payload.pageSize;
+                state.totalPages = Math.ceil(payload.totalCount / (payload.pageSize ?? 1));
             },
-            addItem(state, action) {
-                state.items.push(action.payload);
+
+            /** Append a single item to the end of the list. */
+            addItem(state, { payload }) {
+                state.items.push(payload);
             },
-            prependItem(state, action) {
-                state.items = [action.payload, ...state.items];
+
+            /** Insert a single item at the beginning of the list. */
+            prependItem(state, { payload }) {
+                state.items = [payload, ...state.items];
             },
-            appendItems(state, action) {
-                if (state.rootId != action.payload.rootId) {
-                    state.rootId = action.payload.rootId;
+
+            /**
+             * Append multiple items for infinite scroll.
+             * Resets the list first when rootId changes.
+             * De-duplicates by idKey before inserting.
+             */
+            appendItems(state, { payload: { data, rootId } }) {
+                if (state.rootId !== rootId) {
+                    state.rootId = rootId;
                     state.items = [];
                 }
-                const newItems = action.payload.data.filter(
-                    (item) =>
-                        !state.items.some(
-                            (existing) => existing[options.idKey] === item[options.idKey],
-                        ),
-                );
+                const existingIds = new Set(state.items.map((item) => item[idKey]));
+                const newItems = data.filter((item) => !existingIds.has(item[idKey]));
                 state.items.push(...newItems);
             },
-            updateItem(state, action) {
-                if ("predicate" in action.payload) {
-                    const { predicate, data } = action.payload;
+
+            /**
+             * Update one or many items in the list.
+             *
+             * Accepts two forms:
+             *   - `{ predicate: (item) => bool, data: partialItem }` — update all matching items
+             *   - `updatedItem` — match by idKey and merge
+             */
+            updateItem(state, { payload }) {
+                if ("predicate" in payload) {
                     state.items = state.items.map((item) =>
-                        predicate(item) ? { ...item, ...data } : item,
+                        payload.predicate(item) ? { ...item, ...payload.data } : item,
                     );
                 } else {
-                    const updatedItem = action.payload;
                     state.items = state.items.map((item) =>
-                        item[options.idKey] === updatedItem[options.idKey]
-                            ? { ...item, ...updatedItem }
-                            : item,
+                        item[idKey] === payload[idKey] ? { ...item, ...payload } : item,
                     );
                 }
             },
-            updateItems(state, action) {
-                if ("predicate" in action.payload) {
-                    const { predicate, data } = action.payload;
+
+            /**
+             * Bulk-update items in the list.
+             *
+             * Accepts two forms:
+             *   - `{ predicate, data }` — update all matching items
+             *   - `updatedItems[]` — matched by idKey via a Map for O(n) performance
+             */
+            updateItems(state, { payload }) {
+                if ("predicate" in payload) {
                     state.items = state.items.map((item) =>
-                        predicate(item)
-                            ? { ...item, ...data }
-                            : item
+                        payload.predicate(item) ? { ...item, ...payload.data } : item,
                     );
                     return;
                 }
-
-                const updatedItems = action.payload;
-                const updatedMap = new Map(updatedItems.map((item) => [item[options.idKey], item]));
+                const byId = new Map(payload.map((item) => [item[idKey], item]));
                 state.items = state.items.map((item) => {
-                    const updatedItem = updatedMap.get(item[options.idKey]);
-                    return updatedItem ? { ...item, ...updatedItem } : item;
+                    const updated = byId.get(item[idKey]);
+                    return updated ? { ...item, ...updated } : item;
                 });
             },
-            removeItem(state, action) {
-                if (typeof action.payload === "function") {
-                    state.items = state.items.filter((item) => !action.payload(item));
+
+            /**
+             * Remove item(s) from the list.
+             *
+             * Accepts:
+             *   - a predicate `(item) => bool` — remove all matching
+             *   - a raw id value — remove by idKey
+             */
+            removeItem(state, { payload }) {
+                if (typeof payload === "function") {
+                    state.items = state.items.filter((item) => !payload(item));
                 } else {
-                    state.items = state.items.filter(
-                        (item) => item[options.idKey] !== action.payload,
-                    );
+                    state.items = state.items.filter((item) => item[idKey] !== payload);
                 }
             },
-            setRecord(state, action) {
-                const record = action.payload;
-                state.recordById[record[options.idKey]] = record;
+
+            /** Store a single record in the recordById cache. */
+            setRecord(state, { payload }) {
+                state.recordById[payload[idKey]] = payload;
             },
-            clearData(state) {
-                Object.keys(initialState).forEach((key) => {
-                    state[key] = initialState[key];
-                });
+
+            /** Reset the entire slice back to initialState. */
+            clearData() {
+                return initialState;
             },
-            ...options.extraReducers,
+
+            ...extraReducers,
         },
     });
 
