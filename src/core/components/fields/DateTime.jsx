@@ -6,21 +6,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-
-const parseDateTime = (str) => {
-    if (!str) return null;
-
-    const [datePart, timePart = "00:00:00"] = str.split(" ");
-    const [y, m, d] = datePart.split("-").map(Number);
-    const [h = 0, min = 0, s = 0] = timePart.split(":").map(Number);
-
-    return new Date(y, m - 1, d, h, min, s);
-};
-
-const formatDateTime = (date) => {
-    const pad = (n) => String(n).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-};
+import { parseDateTime, formatDateTime } from "../../utils/DateUtil";
 
 const DateTime = ({
     value,
@@ -84,8 +70,7 @@ const DateTime = ({
                 size: "small",
                 fullWidth: true,
                 placeholder:
-                    placeholder ||
-                    (format === "DATE" ? "Select date" : "Select date and time"),
+                    placeholder || (format === "DATE" ? "Select date" : "Select date and time"),
                 sx: {
                     borderRadius: 2,
                     "& .MuiOutlinedInput-root": {
@@ -143,11 +128,7 @@ const DateTime = ({
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {format === "DATE" ? (
-                    <DatePicker
-                        {...commonProps}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                    />
+                    <DatePicker {...commonProps} minDate={minDate} maxDate={maxDate} />
                 ) : (
                     <DateTimePicker
                         {...commonProps}

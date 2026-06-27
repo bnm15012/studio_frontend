@@ -3,11 +3,15 @@ import { FlexBetween } from "../components/layout/FlexBox";
 import { Box } from "@mui/material";
 import PropTypes from "prop-types";
 import StyledDialog from "../components/dialogs/StyledDialog";
-import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../components/fields/StyledField";
 import { useUI } from "../../context/UIContext";
 import SaveCancelButtons from "./components/SaveCancelButtons";
-import { getVisibleFields, bindGetOptions } from "./utils/fieldHelpers";
+import {
+    getVisibleFields,
+    bindGetOptions,
+    resolveFieldValue,
+    isFieldEditable,
+} from "./utils/fieldHelpers";
 
 export const DialogForm = (props) => {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
@@ -41,16 +45,8 @@ export const DialogForm = (props) => {
                         </FieldLabel>
                         <Box sx={{ flex: 1, minWidth: 0, width: "100%" }}>
                             <Field
-                                isEdit={field?.editable ? field.editable(data) : true}
-                                value={
-                                    field?.getValue
-                                        ? field.getValue(
-                                              getNestedValue(data, field.name),
-                                              data,
-                                              true,
-                                          )
-                                        : getNestedValue(data, field.name)
-                                }
+                                isEdit={isFieldEditable(field, data, true)}
+                                value={resolveFieldValue(field, data, true)}
                                 setValue={(v) =>
                                     handleChange(v, data[fieldsMeta.primary], field.name)
                                 }

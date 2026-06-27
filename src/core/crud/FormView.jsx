@@ -21,6 +21,7 @@ import PropTypes from "prop-types";
 import Field from "../components/fields/Field";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../components/fields/StyledField";
+import { resolveFieldValue, bindGetOptions, isFieldEditable } from "../utils/fieldHelpers";
 import { useUI } from "../../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
@@ -228,20 +229,24 @@ const FormView = (props) => {
                                             <StyledFieldItem key={field.name}>
                                                 <FieldLabel>{field.label}</FieldLabel>
                                                 <Field
-                                                    isEdit={!!editingId}
-                                                    value={
-                                                        field.getValue
-                                                            ? field.getValue(
-                                                                  getNestedValue(data, field.name),
-                                                                  data,
-                                                              )
-                                                            : getNestedValue(data, field.name)
-                                                    }
+                                                    isEdit={isFieldEditable(
+                                                        field,
+                                                        data,
+                                                        !!editingId,
+                                                    )}
+                                                    value={resolveFieldValue(
+                                                        field,
+                                                        data,
+                                                        !!editingId,
+                                                    )}
                                                     setValue={(v) =>
                                                         handleChange(v, formKey, field.name)
                                                     }
                                                     type={field.type}
-                                                    extraProp={field.extraProp}
+                                                    extraProp={bindGetOptions(
+                                                        field.extraProp,
+                                                        data,
+                                                    )}
                                                     validation={field.validation}
                                                 />
                                             </StyledFieldItem>

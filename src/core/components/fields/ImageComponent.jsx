@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAlert } from "../feedback/Alert";
-import { uploadImageApiCall } from "../../../api/uploadImg.api";
+import { uploadImageApiCall } from "../../api/uploadImg.api";
 import FileDropZone from "./FileDropZone";
 
 /**

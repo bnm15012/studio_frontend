@@ -22,6 +22,19 @@ export const resolveFieldValue = (field, row, isEdit) => {
 };
 
 /**
+ * Checks if a field is editable given a record and editing state.
+ *
+ * @param {Object} field     - field definition
+ * @param {Object} row       - current record data
+ * @param {boolean} isEditing
+ * @returns {boolean}
+ */
+export const isFieldEditable = (field, row, isEditing) => {
+    if (!isEditing) return false;
+    return field?.editable ? field.editable(row) : true;
+};
+
+/**
  * Returns a patched extraProp object where getOptions is row-bound.
  *
  * @param {Object} extraProp - original field.extraProp

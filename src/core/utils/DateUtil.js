@@ -13,7 +13,7 @@ export const parseDateTime = (str) => {
 };
 
 // ✅ Format Date → "YYYY-MM-DD HH:mm:ss"
-const formatDateTime = (date) => {
+export const formatDateTime = (date) => {
     if (!(date instanceof Date) || isNaN(date)) return null;
 
     const pad = (n) => String(n).padStart(2, "0");
