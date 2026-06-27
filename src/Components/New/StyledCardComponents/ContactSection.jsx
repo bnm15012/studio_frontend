@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Box, Typography, IconButton, Tooltip, useTheme } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { IconButton, Tooltip, useTheme } from "@mui/material";
 import { Phone, Copy, Mail } from "lucide-react";
 import PropTypes from "prop-types";
+import CardInfoRow from "./CardInfoRow";
 
 const ContactSection = ({ contact }) => {
     const [copied, setCopied] = useState(false);
@@ -29,70 +29,33 @@ const ContactSection = ({ contact }) => {
     };
 
     const iconColor = theme.palette.primary.main;
-    return (
-        <Box
-            display="flex"
-            alignItems="center"
-            gap={1.5}
-            sx={{
-                p: 1,
-                borderRadius: "8px",
-                backgroundColor: theme.palette.background.alt || alpha(theme.palette.primary.main, 0.02),
-                transition: "background-color 0.2s ease",
-                "&:hover": {
-                    backgroundColor: theme.palette.action.hover || alpha(theme.palette.primary.main, 0.06),
-                }
-            }}
-        >
-            <Box
-                sx={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "6px",
-                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                }}
-                onClick={handleClick}
+    const IconComponent = isEmail ? (
+        <Mail size={16} color={iconColor} />
+    ) : (
+        <Phone size={16} color={iconColor} />
+    );
+
+    const copyButtonAction = (
+        <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
+            <IconButton
+                size="small"
+                onClick={handleCopy}
+                sx={{ color: theme.palette.primary.main }}
             >
-                {isEmail ? <Mail size={16} color={iconColor} /> : <Phone size={16} color={iconColor} />}
-            </Box>
-            <Box flexGrow={1} onClick={handleClick} sx={{ cursor: "pointer", minWidth: 0 }}>
-                <Typography
-                    variant="caption"
-                    sx={{
-                        fontWeight: 700,
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
-                        lineHeight: 1,
-                    }}
-                >
-                    {isEmail ? "Email" : "Phone"}
-                </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: "text.primary",
-                        fontWeight: 500,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        mt: 0.25,
-                    }}
-                >
-                    {contact}
-                </Typography>
-            </Box>
-            <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
-                <IconButton size="small" onClick={handleCopy} sx={{ color: theme.palette.primary.main }}>
-                    <Copy size={14} />
-                </IconButton>
-            </Tooltip>
-        </Box>
+                <Copy size={14} />
+            </IconButton>
+        </Tooltip>
+    );
+
+    return (
+        <CardInfoRow
+            Icon={IconComponent}
+            label={isEmail ? "Email" : "Phone"}
+            value={contact}
+            onClick={handleClick}
+            action={copyButtonAction}
+            hoverable={true}
+        />
     );
 };
 

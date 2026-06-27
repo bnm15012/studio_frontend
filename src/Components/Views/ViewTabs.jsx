@@ -1,6 +1,6 @@
 import { Tabs, Tab, Box, Button } from "@mui/material";
 import { useState } from "react";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween } from "../FlexBox";
 import Views from "./Views";
 import { Add } from "@mui/icons-material";
 import PropTypes from "prop-types";

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { TextField, Button, Box } from "@mui/material";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import FlexBetween from "./FlexBetween";
+import { FlexBetween } from "./FlexBox";
 import { SearchIcon } from "lucide-react";
 import Filter from "./Filter";
 
@@ -28,7 +28,12 @@ const ButtonProps = {
     p: 0,
 };
 
-const SearchField = ({ handleSearch, filterOptions = [], placeHolder = "Search...", handleFilterKeys = () => { } }) => {
+const SearchField = ({
+    handleSearch,
+    filterOptions = [],
+    placeHolder = "Search...",
+    handleFilterKeys = () => {},
+}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterKeys, setFilterKeys] = useState({});
 
@@ -98,6 +103,7 @@ SearchField.propTypes = {
     placeHolder: PropTypes.string,
     handleSearch: PropTypes.func.isRequired,
     filterOptions: PropTypes.array,
+    handleFilterKeys: PropTypes.func,
 };
 
 export default SearchField;

@@ -2,8 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import { Navbar } from "../NavigationComponets/Navbar/Navbar";
 import Sidebar from "../NavigationComponets/Sidebar/Sidebar";
-import FlexBetween from "./FlexBetween";
-import FlexBetweenColumn from "./FlexBetweenColumn";
+import { FlexBetween, FlexBetweenColumn } from "./FlexBox";
 import { useUI } from "../context/UIContext";
 
 const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
@@ -20,10 +19,7 @@ const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {
             height={"100vh"}
         >
             <Navbar position="static" />
-            <FlexBetween
-                height={"calc(100vh - 3.2rem)"}
-                sx={{ overflowX: "hidden" }}
-            >
+            <FlexBetween height={"calc(100vh - 3.2rem)"} sx={{ overflowX: "hidden" }}>
                 <Sidebar sidebarOpen={isSidebarShouldBeOn} />
                 <FlexBetweenColumn
                     overflow={"auto"}

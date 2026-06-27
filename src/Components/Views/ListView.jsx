@@ -18,9 +18,8 @@ import {
     StyledTableRow,
 } from "../StyledTableComponents";
 import PropTypes from "prop-types";
-import FlexEvenly from "../FlexEvenly";
 import { memo, useCallback, useState, useMemo, useEffect } from "react";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween, FlexEvenly } from "../FlexBox";
 import Actions from "./helper/Actions";
 import { useUI } from "../../context/UIContext";
 import FieldCell from "./components/FieldCell";

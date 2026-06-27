@@ -1,4 +1,4 @@
-import FlexBetween from "./FlexBetween";
+import { FlexBetween } from "./FlexBox";
 import SearchField from "./SearchField";
 import { usePageSearch } from "../hooks/useSearch";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -25,7 +25,11 @@ const ActionBar = ({
     return (
         <FlexBetween paddingBottom={2} gap={1} height={"5.5rem"}>
             {search ? (
-                <SearchField handleSearch={triggerSearch} filterOptions={filterOptions} handleFilterKeys={handleFilterKeys} />
+                <SearchField
+                    handleSearch={triggerSearch}
+                    filterOptions={filterOptions}
+                    handleFilterKeys={handleFilterKeys}
+                />
             ) : (
                 <Box flexGrow={1} />
             )}
@@ -74,6 +78,7 @@ ActionBar.propTypes = {
     search: PropTypes.bool,
     children: PropTypes.node,
     addBtnText: PropTypes.string,
+    handleFilterKeys: PropTypes.func,
     qrProps: PropTypes.object,
     api: PropTypes.shape({
         current: PropTypes.object,

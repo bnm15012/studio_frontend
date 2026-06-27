@@ -1,5 +1,5 @@
 import Field from "../Fields/Field";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween } from "../FlexBox";
 import { Box } from "@mui/material";
 import PropTypes from "prop-types";
 import StyledDialog from "../../core/components/StyledDialog";

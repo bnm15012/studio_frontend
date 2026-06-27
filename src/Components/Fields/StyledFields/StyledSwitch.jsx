@@ -1,6 +1,6 @@
 import { Switch, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import FlexBetween from "../../FlexBetween";
+import { FlexBetween } from "../../FlexBox";
 
 const StyledSwitch = ({ label, readOnly, value, setValue }) => (
     <FlexBetween>

@@ -1,56 +1,36 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import Dropzone from "react-dropzone";
 import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useAlert } from "../core/util/Alert";
 
-const MAX_FILE_SIZE_MB = 5;
-
+/**
+ * FileDropZone
+ *
+ * A pure presentation component for drag & drop file/image uploading.
+ * Handles drop interaction and UI rendering (hover borders, preview image,
+ * upload overlay, file name, and edit button) but delegates all upload
+ * logic, state management, and side-effects to the parent wrapper.
+ */
 const FileDropZone = ({
-    file,
-    setFile,
-    size = "200px",
-    isCircular = true,
+    previewUrl,
+    fileName,
+    uploading = false,
     allowEdit = false,
-    acceptedFileFormats = {
-        "image/*": [".jpeg", ".jpg", ".png", ".webp"],
-    },
+    isCircular = true,
+    size = "200px",
+    acceptedFileFormats,
+    onDrop,
+    placeholderText = "Drag & Drop or Click to Upload",
 }) => {
     const theme = useTheme();
-    const showAlert = useAlert();
-    const [width, height] = size.split(" ");
-    const [previewUrl, setPreviewUrl] = useState(file || null);
-    const [uploading, setUploading] = useState(false);
-    const [fileName, setFileName] = useState("");
+    const [width, height] = size ? size.split(" ") : ["200px", "200px"];
 
-    const isImage = (type) => type.startsWith("image/");
-
-    const handleDrop = async (acceptedFiles, rejectedFiles) => {
-        if (rejectedFiles.length > 0) {
-            const rejected = rejectedFiles[0];
-            const reason = rejected.errors?.[0]?.message || "Unsupported file.";
-            showAlert(`File rejected: ${reason}`, "error");
-            return;
-        }
-
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            if (file.size / (1024 * 1024) > MAX_FILE_SIZE_MB) {
-                showAlert(`File size exceeds ${MAX_FILE_SIZE_MB}MB`, "error");
-                return;
-            }
-
-            const isImg = isImage(file.type);
-            const preview = isImg ? URL.createObjectURL(file) : null;
-            setFile(file);
-            setPreviewUrl(preview);
-            setFileName(file.name);
-            setUploading(true);
-            setUploading(false);
-            if (preview) URL.revokeObjectURL(preview);
-        }
+    const handleDrop = (acceptedFiles, rejectedFiles) => {
+        onDrop?.(acceptedFiles, rejectedFiles);
     };
+
+    const borderRadius =
+        isCircular === true ? "50%" : isCircular === false ? "8px" : isCircular || "0";
 
     return (
         <Dropzone
@@ -70,18 +50,26 @@ const FileDropZone = ({
                     justifyContent="center"
                     alignItems="center"
                     sx={{
-                        borderRadius: isCircular ? "50%" : "8px",
+                        borderRadius,
                         overflow: "hidden",
                         border: allowEdit ? `2px dashed ${theme.palette.primary.main}` : "none",
                         cursor: allowEdit ? "pointer" : "default",
                         "&:hover": allowEdit
-                            ? { borderColor: theme.palette.primary.dark }
+                            ? {
+                                  borderColor:
+                                      theme.palette.secondary.main || theme.palette.primary.dark,
+                              }
                             : undefined,
-                        backgroundColor: theme.palette.background.default,
+                        backgroundColor: previewUrl
+                            ? "transparent"
+                            : theme.palette.background.default,
                         textAlign: "center",
-                        p: 1,
+                        p: previewUrl ? 0 : 1,
                     }}
                 >
+                    <input {...getInputProps()} />
+
+                    {/* Loading Overlay */}
                     {uploading && (
                         <Box
                             position="absolute"
@@ -99,29 +87,31 @@ const FileDropZone = ({
                         </Box>
                     )}
 
+                    {/* Content Display: Preview Image, File Name, or Placeholder */}
                     {previewUrl ? (
                         <img
                             style={{
                                 width: "100%",
                                 height: "100%",
                                 objectFit: "cover",
-                                display: isImage(previewUrl) ? "block" : "none",
+                                display: previewUrl ? "block" : "none",
                             }}
                             alt="preview"
                             src={previewUrl}
                         />
                     ) : fileName && !uploading ? (
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" color="textSecondary" sx={{ px: 2 }}>
                             {fileName}
                         </Typography>
                     ) : (
                         !uploading && (
-                            <Typography variant="body1" color="textSecondary">
-                                Drag & Drop or Click to Upload
+                            <Typography variant="body1" color="textSecondary" sx={{ px: 2 }}>
+                                {placeholderText}
                             </Typography>
                         )
                     )}
 
+                    {/* Floating Edit Button Overlay */}
                     {allowEdit && !uploading && (
                         <IconButton
                             sx={{
@@ -135,7 +125,6 @@ const FileDropZone = ({
                             }}
                         >
                             <EditIcon />
-                            <input {...getInputProps()} />
                         </IconButton>
                     )}
                 </Box>
@@ -145,13 +134,15 @@ const FileDropZone = ({
 };
 
 FileDropZone.propTypes = {
-    file: PropTypes.object,
-    uploadFileApiCall: PropTypes.func.isRequired,
-    setFile: PropTypes.func.isRequired,
-    size: PropTypes.string,
-    isCircular: PropTypes.bool,
+    previewUrl: PropTypes.string,
+    fileName: PropTypes.string,
+    uploading: PropTypes.bool,
     allowEdit: PropTypes.bool,
+    isCircular: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+    size: PropTypes.string,
     acceptedFileFormats: PropTypes.object,
+    onDrop: PropTypes.func.isRequired,
+    placeholderText: PropTypes.string,
 };
 
 export default FileDropZone;

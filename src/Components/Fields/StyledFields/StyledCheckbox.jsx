@@ -1,20 +1,11 @@
 import { Checkbox, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import FlexBetween from "../../FlexBetween";
+import { FlexBetween } from "../../FlexBox";
 
-const StyledCheckbox = ({
-    label,
-    readOnly = false,
-    value = false,
-    setValue,
-}) => (
+const StyledCheckbox = ({ label, readOnly = false, value = false, setValue }) => (
     <FlexBetween>
         {label && (
-            <Typography
-                variant="body1"
-                my={"auto"}
-                color="textSecondary"
-            >
+            <Typography variant="body1" my={"auto"} color="textSecondary">
                 {label}:
             </Typography>
         )}

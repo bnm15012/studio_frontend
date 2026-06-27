@@ -103,10 +103,13 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
             >
                 <DialogContent sx={{ p: 2 }}>
                     <FileDropZone
-                        file={file}
-                        setFile={(f) => {
-                            setFile(f);
-                            parseCsv(f);
+                        fileName={file?.name}
+                        onDrop={(acceptedFiles) => {
+                            if (acceptedFiles.length > 0) {
+                                const f = acceptedFiles[0];
+                                setFile(f);
+                                parseCsv(f);
+                            }
                         }}
                         size="100% 5rem"
                         isCircular={false}

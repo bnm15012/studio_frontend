@@ -1,12 +1,16 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import Dropzone from "react-dropzone";
-import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import { useAlert } from "../core/util/Alert";
 import { uploadImageApiCall } from "../api/uploadImg.api";
+import FileDropZone from "./FileDropZone";
 
+/**
+ * ImageComponent
+ *
+ * A container wrapper around FileDropZone that handles the authentication,
+ * image uploading API call, state/alert management, and default image fallback.
+ */
 const ImageComponent = ({
     value,
     setValue,
@@ -15,7 +19,6 @@ const ImageComponent = ({
     allowEdit = false,
     dirName = "default",
 }) => {
-    const theme = useTheme();
     const showAlert = useAlert();
     const token = useSelector((state) => state.auth.token);
     const [previewUrl, setPreviewUrl] = useState(value || "/assets/defaultUserPic.png");
@@ -33,7 +36,6 @@ const ImageComponent = ({
             setUploading(true);
 
             try {
-                // Upload Image
                 const result = await uploadImageApiCall(file, token, dirName);
 
                 if (result.success) {
@@ -48,90 +50,26 @@ const ImageComponent = ({
                 console.error(error);
                 showAlert("An error occurred during image upload.", "error");
                 setPreviewUrl(value || "/assets/defaultUserPic.png");
+            } finally {
+                setUploading(false);
+                URL.revokeObjectURL(preview);
             }
-
-            setUploading(false);
-            URL.revokeObjectURL(preview);
         }
     };
 
     return (
-        <Dropzone
-            accept={{
+        <FileDropZone
+            previewUrl={previewUrl}
+            uploading={uploading}
+            allowEdit={allowEdit}
+            isCircular={isCircular}
+            size={size}
+            acceptedFileFormats={{
                 "image/jpeg": [".jpg", ".jpeg"],
                 "image/png": [".png"],
             }}
-            multiple={false}
             onDrop={handleDrop}
-            disabled={!allowEdit}
-        >
-            {({ getRootProps, getInputProps }) => (
-                <Box
-                    {...getRootProps()}
-                    position="relative"
-                    width={size}
-                    height={size}
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{
-                        borderRadius: isCircular === true ? "50%" : isCircular || "0",
-                        overflow: "hidden",
-                        border: allowEdit ? `4px dashed ${theme.palette.primary.main}` : "none",
-                        cursor: allowEdit ? "pointer" : "default",
-                        "&:hover": allowEdit
-                            ? { borderColor: theme.palette.secondary.main }
-                            : undefined,
-                    }}
-                >
-                    <input {...getInputProps()} />
-                    {uploading && (
-                        <Box
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            width="100%"
-                            height="100%"
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            bgcolor="rgba(255, 255, 255, 0.8)"
-                            zIndex={2}
-                        >
-                            <CircularProgress />
-                        </Box>
-                    )}
-                    <img
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            display: previewUrl ? "block" : "none",
-                        }}
-                        alt="userImage"
-                        src={previewUrl}
-                    />
-                    {!previewUrl && !uploading && (
-                        <Typography variant="body2" color="textSecondary">
-                            Drag & Drop or Click to Upload
-                        </Typography>
-                    )}
-                    {allowEdit && !uploading && (
-                        <IconButton
-                            sx={{
-                                position: "absolute",
-                                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                "&:hover": {
-                                    backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                },
-                            }}
-                        >
-                            <EditIcon />
-                        </IconButton>
-                    )}
-                </Box>
-            )}
-        </Dropzone>
+        />
     );
 };
 

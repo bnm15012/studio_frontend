@@ -2,20 +2,13 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useAlert } from "../core/util/Alert";
 import { styled, useTheme } from "@mui/material/styles";
-import {
-    Box,
-    Typography,
-    Button,
-    Paper,
-    Grid,
-    Divider,
-} from "@mui/material";
+import { Box, Typography, Button, Paper, Grid, Divider } from "@mui/material";
 
 import Field from "./Fields/Field";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { getNestedValue } from "../utils/objectHelpers";
+import { resolveFieldValue, bindGetOptions } from "./Fields/utils/fieldHelpers";
 
 // ==============================
 // Styled Components
@@ -34,10 +27,9 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             ? `linear-gradient(135deg, ${theme.palette.background.paper} 0%, rgba(30,30,40,0.95) 100%)`
             : `linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)`,
 
-    border: `1px solid ${theme.palette.mode === "dark"
-        ? "rgba(255,255,255,0.06)"
-        : "rgba(0,0,0,0.06)"
-        }`,
+    border: `1px solid ${
+        theme.palette.mode === "dark" ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"
+    }`,
 
     boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
 
@@ -96,16 +88,11 @@ const FieldContainer = styled(Box)(({ theme }) => ({
         borderRadius: 14,
         transition: "all 0.2s ease",
 
-        background:
-            theme.palette.mode === "dark"
-                ? "rgba(255,255,255,0.02)"
-                : "rgba(0,0,0,0.01)",
+        background: theme.palette.mode === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.01)",
 
         "& fieldset": {
             borderColor:
-                theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.12)"
-                    : "rgba(0,0,0,0.12)",
+                theme.palette.mode === "dark" ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)",
         },
 
         "&:hover fieldset": {
@@ -198,12 +185,7 @@ const FormBuilder = ({ form, branchId }) => {
     // ==============================
 
     const validateField = (label, value, validation) => {
-        if (
-            validation?.required &&
-            (value === undefined ||
-                value === null ||
-                value === "")
-        ) {
+        if (validation?.required && (value === undefined || value === null || value === "")) {
             throw Error(`${label} is required`);
         }
 
@@ -211,9 +193,7 @@ const FormBuilder = ({ form, branchId }) => {
             const regex = new RegExp(validation.regex);
 
             if (!regex.test(value)) {
-                throw Error(
-                    validation.message || `Invalid ${label}`
-                );
+                throw Error(validation.message || `Invalid ${label}`);
             }
         }
     };
@@ -245,26 +225,19 @@ const FormBuilder = ({ form, branchId }) => {
             }
 
             // Validate all fields
-            form.fields.forEach(
-                ({ name, validation, label }) => {
-                    validateField(
-                        label,
-                        formState[name],
-                        validation
-                    );
-                }
-            );
+            form.fields.forEach(({ name, validation, label }) => {
+                validateField(label, formState[name], validation);
+            });
 
             setLoading(true);
 
-            const { success, message } =
-                await form.onSubmit({
-                    newData: {
-                        ...cleanData,
-                        branchId: parseInt(branchId),
-                    },
-                    formSignature: FORM_SIG,
-                });
+            const { success, message } = await form.onSubmit({
+                newData: {
+                    ...cleanData,
+                    branchId: parseInt(branchId),
+                },
+                formSignature: FORM_SIG,
+            });
 
             if (success) {
                 setIsSubmitted(true);
@@ -275,11 +248,7 @@ const FormBuilder = ({ form, branchId }) => {
         } catch (error) {
             console.error(error);
 
-            showAlert(
-                error?.message ||
-                "Failed to submit form",
-                "error"
-            );
+            showAlert(error?.message || "Failed to submit form", "error");
         }
 
         setLoading(false);
@@ -318,9 +287,7 @@ const FormBuilder = ({ form, branchId }) => {
                         Form Submitted Successfully
                     </Typography>
 
-                    <Typography color="text.secondary">
-                        Your response has been recorded.
-                    </Typography>
+                    <Typography color="text.secondary">Your response has been recorded.</Typography>
                 </Box>
             </FormContainer>
         );
@@ -361,81 +328,60 @@ const FormBuilder = ({ form, branchId }) => {
             </Typography>
 
             {/* Form */}
-            <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-            >
-                <input
-                    type="hidden"
-                    name="_form_sig"
-                    value={formState._form_sig}
-                />
+            <Box component="form" noValidate onSubmit={handleSubmit}>
+                <input type="hidden" name="_form_sig" value={formState._form_sig} />
 
                 {/* Sections */}
-                {Object.entries(sectionMap).map(
-                    ([sectionName, fields]) => (
-                        <SectionContainer key={sectionName}>
-                            <SectionHeader>
-                                <SectionTitle>
-                                    {sectionName}
-                                </SectionTitle>
+                {Object.entries(sectionMap).map(([sectionName, fields]) => (
+                    <SectionContainer key={sectionName}>
+                        <SectionHeader>
+                            <SectionTitle>{sectionName}</SectionTitle>
 
-                                <Divider />
-                            </SectionHeader>
+                            <Divider />
+                        </SectionHeader>
 
-                            <Grid container spacing={3}>
-                                {fields.map((field) => (
-                                    <Grid
-                                        item
-                                        xs={12}
-                                        sm={
-                                            field.type ===
-                                                "textarea"
-                                                ? 12
-                                                : 6
-                                        }
-                                        key={field.name}
-                                    >
-                                        <FieldWrapper>
-                                            <FieldLabel>
-                                                {field.label}
+                        <Grid container spacing={3}>
+                            {fields.map((field) => (
+                                <Grid
+                                    item
+                                    xs={12}
+                                    sm={field.type === "textarea" ? 12 : 6}
+                                    key={field.name}
+                                >
+                                    <FieldWrapper>
+                                        <FieldLabel>
+                                            {field.label}
 
-                                                {field.validation
-                                                    ?.required && (
-                                                        <span className="required">
-                                                            *
-                                                        </span>
-                                                    )}
-                                            </FieldLabel>
+                                            {field.validation?.required && (
+                                                <span className="required">*</span>
+                                            )}
+                                        </FieldLabel>
 
-                                            <FieldContainer>
-                                                <Field
-                                                    isEdit={field?.editable ? field.editable(formState) : true}
-                                                    value={
-                                                        field?.getValue
-                                                            ? field.getValue(getNestedValue(formState, field.name), formState, true)
-                                                            : getNestedValue(formState, field.name)
-                                                    }
-                                                    setValue={(v) => {
-                                                        handleChange(field.name, v);
-                                                    }}
-                                                    type={field.type}
-                                                    extraProp={{
-                                                        ...field.extraProp,
-                                                        getOptions: async (search, page, limit) =>
-                                                            field.extraProp.getOptions(search, page, limit, formState),
-                                                    }}
-                                                    validation={field.validation}
-                                                />
-                                            </FieldContainer>
-                                        </FieldWrapper>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </SectionContainer>
-                    )
-                )}
+                                        <FieldContainer>
+                                            <Field
+                                                isEdit={
+                                                    field?.editable
+                                                        ? field.editable(formState)
+                                                        : true
+                                                }
+                                                value={resolveFieldValue(field, formState, true)}
+                                                setValue={(v) => {
+                                                    handleChange(field.name, v);
+                                                }}
+                                                type={field.type}
+                                                extraProp={bindGetOptions(
+                                                    field.extraProp,
+                                                    formState,
+                                                )}
+                                                validation={field.validation}
+                                            />
+                                        </FieldContainer>
+                                    </FieldWrapper>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </SectionContainer>
+                ))}
 
                 {/* Submit */}
                 <Box
@@ -444,10 +390,11 @@ const FormBuilder = ({ form, branchId }) => {
                         justifyContent: "flex-end",
                         mt: 6,
                         pt: 3,
-                        borderTop: `1px solid ${theme.palette.mode === "dark"
-                            ? "rgba(255,255,255,0.06)"
-                            : "rgba(0,0,0,0.06)"
-                            }`,
+                        borderTop: `1px solid ${
+                            theme.palette.mode === "dark"
+                                ? "rgba(255,255,255,0.06)"
+                                : "rgba(0,0,0,0.06)"
+                        }`,
                     }}
                 >
                     <SubmitButton
@@ -456,9 +403,7 @@ const FormBuilder = ({ form, branchId }) => {
                         disabled={loading}
                         endIcon={<SendIcon />}
                     >
-                        {loading
-                            ? "Submitting..."
-                            : "Submit Form"}
+                        {loading ? "Submitting..." : "Submit Form"}
                     </SubmitButton>
                 </Box>
             </Box>

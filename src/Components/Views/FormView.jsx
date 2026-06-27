@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween, FlexBetweenColumn, FlexEvenly } from "../FlexBox";
 import {
     IconButton,
     Typography,
@@ -19,14 +19,12 @@ import SegmentIcon from "@mui/icons-material/Segment";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
-import FlexBetweenColumn from "../FlexBetweenColumn";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
 import ViewTabs from "./ViewTabs";
-import FlexEvenly from "../FlexEvenly";
 import Actions from "./helper/Actions";
 import { FadeIn } from "./components/shared";
 

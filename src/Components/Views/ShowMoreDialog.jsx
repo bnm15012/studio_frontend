@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@mui/material";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween } from "../FlexBox";
 import StyledDialog from "../../core/components/StyledDialog";
 const ShowMoreDialog = ({ children, title, buttonText = "SHOW MORE" }) => {
     const [open, setOpen] = useState(false);

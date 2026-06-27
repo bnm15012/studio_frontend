@@ -8,7 +8,7 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "../New/StyledCard";
-import FlexBetween from "../FlexBetween";
+import { FlexBetween } from "../FlexBox";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { memo } from "react";
 import Actions from "./helper/Actions";
