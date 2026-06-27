@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 import PropTypes from "prop-types";
 import Field from "../../Components/Fields/Field";
 import { useDispatch, useSelector } from "react-redux";

@@ -4,7 +4,7 @@ import { updateStudio } from "../Auth/auth.api";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../core/util/Alert";
 import { setSettings } from "../../state/authSlice";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 
 const SettingsTab = () => {
     const dispatch = useDispatch();

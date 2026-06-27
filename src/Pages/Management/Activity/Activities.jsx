@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { useAlert } from "../../../core/util/Alert";
 import { activityCruds } from "../../../api/all.api";
 import ActivityCard from "./ActivityCard";

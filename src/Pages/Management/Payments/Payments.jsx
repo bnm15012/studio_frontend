@@ -1,4 +1,4 @@
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";

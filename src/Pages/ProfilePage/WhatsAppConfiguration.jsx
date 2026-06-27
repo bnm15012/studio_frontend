@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useAlert } from "../../core/util/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../api/all.api";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 
 const WhatsAppConfiguration = () => {
     const showAlert = useAlert();

@@ -8,8 +8,7 @@ import Loading from "../../Components/Loading/Loading";
 import FormFields from "./FormFields.jsx";
 import { loginApiCall, registerApiCall } from "./auth.api";
 import { useAlert } from "../../core/util/Alert.jsx";
-import FlexEvenly from "../../Components/FlexEvenly.jsx";
-import FlexBetween from "../../Components/FlexBetween.jsx";
+import { FlexBetween, FlexEvenly } from "../../Components/FlexBox.jsx";
 
 const Form = ({ pageType, editProfile = false, user }) => {
     const initialValuesRegister = {

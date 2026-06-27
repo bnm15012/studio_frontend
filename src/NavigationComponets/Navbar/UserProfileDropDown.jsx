@@ -4,7 +4,7 @@ import { Menu, MenuItem, Button, Typography } from "@mui/material";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import Logout from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";
 import { openDialog } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";

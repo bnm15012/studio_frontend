@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import UserAccessDialog from "./UserAccessDialog";
 import PropTypes from "prop-types";
-import FlexEvenly from "../../../../Components/FlexEvenly";
+import { FlexEvenly } from "../../../../Components/FlexBox";
 
 const UserAccessButton = (props) => {
     const { value, setValue, isEdit = false } = props;

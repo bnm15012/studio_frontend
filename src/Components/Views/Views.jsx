@@ -14,7 +14,7 @@ import { useMergedActions } from "./hooks/useMergedActions";
 import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
-import FlexEvenly from "../FlexEvenly";
+import { FlexEvenly } from "../FlexBox";
 import { useUI } from "../../context/UIContext";
 
 const Views = (props) => {

@@ -7,7 +7,7 @@ import {
     StyledMotionCard,
 } from "../../../Components/New/StyledCard";
 import PaymentCard from "../Payments/PaymentCardView";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
 import { useState } from "react";

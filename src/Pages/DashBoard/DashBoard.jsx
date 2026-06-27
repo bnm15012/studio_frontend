@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
 import WidgetsOnPage from "../../Components/WidgetsOnPage";
 import Loading from "../../Components/Loading/Loading";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import Group from "@mui/icons-material/Group";
 import CardMembershipRounded from "@mui/icons-material/CardMembershipRounded";

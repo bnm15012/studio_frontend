@@ -4,7 +4,7 @@ import Views from "../../../Components/Views/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import ActionBar from "../../../Components/ActionBar";
 
 const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);

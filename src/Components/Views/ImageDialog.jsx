@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import StyledDialog from "../../core/components/StyledDialog";
 import ImageComponent from "../ImageComponent";
 import { Upload } from "lucide-react";
-import FlexEvenly from "../FlexEvenly";
+import { FlexEvenly } from "../FlexBox";
 
 const ImageDialog = ({ image, isEdit, setImage, defaultImage }) => {
     const [open, setOpen] = useState(false);

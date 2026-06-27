@@ -17,10 +17,10 @@ import {
 } from "@mui/material";
 import MultiSelectDialog from "../../../Components/MultiSelectDialog";
 import { getStudentNamesAPI } from "../Student/Student.api";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../core/util/Alert";
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
 import { sendMessageApi } from "./communication.api";

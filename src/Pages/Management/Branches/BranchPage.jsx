@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { usersCruds } from "../../../api/all.api";

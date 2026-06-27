@@ -15,7 +15,7 @@ import ImageComponent from "../../Components/ImageComponent";
 import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
 import { logoutUser } from "../../state/thunks";

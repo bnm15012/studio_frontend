@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
 import { getLocalDateTime } from "../../../core/util/DateUtil";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 import { Typography } from "@mui/material";
 import StyledDialog from "../../../core/components/StyledDialog";

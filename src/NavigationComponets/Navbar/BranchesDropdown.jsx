@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { branchCruds } from "../../api/all.api";
 import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
-import FlexBetween from "../../Components/FlexBetween";
+import { FlexBetween } from "../../Components/FlexBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import { useUI } from "../../context/UIContext";
 

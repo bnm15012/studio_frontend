@@ -18,7 +18,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { useUI } from "../../../context/UIContext";
 import Loading from "../../../Components/Loading/Loading";
 import { useAlert } from "../../../core/util/Alert";

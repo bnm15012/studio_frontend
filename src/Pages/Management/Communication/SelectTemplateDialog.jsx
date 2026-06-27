@@ -10,7 +10,7 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 
 const SelectTemplateDialog = ({ open, onClose, data }) => {

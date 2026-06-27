@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../../api/all.api";

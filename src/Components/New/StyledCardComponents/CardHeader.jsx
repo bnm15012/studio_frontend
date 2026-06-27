@@ -1,7 +1,7 @@
 import { Chip, Box, Typography, Avatar, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import FlexBetween from "../../FlexBetween";
+import { FlexBetween } from "../../FlexBox";
 import Field from "../../Fields/Field";
 import PersonIcon from "@mui/icons-material/Person";
 
@@ -10,7 +10,9 @@ const getBadgeStyles = (badge, enabled, theme) => {
     if (typeof badge !== "string") {
         const isActive = enabled;
         return {
-            backgroundColor: isActive ? alpha(theme.palette.success.main, 0.12) : alpha(theme.palette.text.secondary, 0.08),
+            backgroundColor: isActive
+                ? alpha(theme.palette.success.main, 0.12)
+                : alpha(theme.palette.text.secondary, 0.08),
             color: isActive ? theme.palette.success.main : theme.palette.text.secondary,
             border: `1px solid ${isActive ? alpha(theme.palette.success.main, 0.2) : alpha(theme.palette.text.secondary, 0.12)}`,
         };
@@ -41,7 +43,9 @@ const getBadgeStyles = (badge, enabled, theme) => {
 
     const isActive = enabled;
     return {
-        backgroundColor: isActive ? alpha(theme.palette.primary.main, 0.12) : alpha(theme.palette.text.secondary, 0.08),
+        backgroundColor: isActive
+            ? alpha(theme.palette.primary.main, 0.12)
+            : alpha(theme.palette.text.secondary, 0.08),
         color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
         border: `1px solid ${isActive ? alpha(theme.palette.primary.main, 0.2) : alpha(theme.palette.text.secondary, 0.12)}`,
     };

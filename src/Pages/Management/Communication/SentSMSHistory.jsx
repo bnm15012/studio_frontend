@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
 import { useSelector } from "react-redux";
 import Loading from "../../../Components/Loading/Loading";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import { useUI } from "../../../context/UIContext";
 import PropTypes from "prop-types";
 import HistoryMessageTable from "./HistoryMessageTable";

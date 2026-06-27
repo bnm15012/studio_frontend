@@ -16,7 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FileDropZone from "../../../Components/FileDropZone";
-import FlexBetween from "../../../Components/FlexBetween";
+import { FlexBetween } from "../../../Components/FlexBox";
 import Papa from "papaparse";
 import { StyledTable } from "../../../Components/StyledTableComponents";
 import StyledDialog from "../../../core/components/StyledDialog";

@@ -1,4 +1,4 @@
-import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
+import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
