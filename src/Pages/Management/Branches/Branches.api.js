@@ -1,4 +1,4 @@
-import api from "../../../core/util/api";
+import api from "../../../core/utils/api";
 
 const getErrorMessage = (error, defaultMessage) =>
     error.response?.data?.status?.statusMessage || defaultMessage;

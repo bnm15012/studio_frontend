@@ -5,17 +5,17 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledMotionCard,
-} from "../../../Components/New/StyledCard";
+} from "../../../core/components/cards/StyledCard";
 import PaymentCard from "../Payments/PaymentCardView";
-import { FlexBetween } from "../../../Components/FlexBox";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
 import { useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../core/util/Alert";
-import DialogForm from "../../../Components/Views/DialogForm";
+import Loading from "../../../core/components/loading/Loading";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import DialogForm from "../../../core/crud/DialogForm";
 
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];

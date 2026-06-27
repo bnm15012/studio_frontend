@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { ConfirmationDialog } from "./ConfirmationDialog";
-import Loading from "../../../Components/Loading/Loading";
+import Loading from "../loading/Loading";
 import { usePdfActions } from "./usePdfActions";
 import { paginate } from "./html2pdf.util";
 import "./html2pdf.css";

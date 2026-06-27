@@ -5,11 +5,11 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
-import StyledDialog from "../../../core/components/StyledDialog";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../../core/util/Alert";
-import { formatDate, getDateRangeLocal, getLocalDateTime, parseDateTime } from "../../../core/util/DateUtil";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import { formatDate, getDateRangeLocal, getLocalDateTime, parseDateTime } from "../../../core/utils/DateUtil";
 import QrForm from "../../../Components/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";

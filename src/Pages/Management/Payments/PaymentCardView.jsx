@@ -1,8 +1,8 @@
 import { CurrencyRupee } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { IndianRupeeIcon, QrCodeIcon, User2 } from "lucide-react";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
 
 const PaymentCard = ({ row }) => {
     const { payeeType, status, paymentDate, paymentType, amount, payeeName } = row;

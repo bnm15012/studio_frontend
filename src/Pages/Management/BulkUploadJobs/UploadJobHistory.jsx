@@ -8,12 +8,12 @@ import {
     Typography,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { StyledTableCell, StyledTableRow } from "../../../Components/StyledTableComponents";
+import { StyledTableCell, StyledTableRow } from "../../../core/components/tables/StyledTableComponents";
 import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";
-import { useAlert } from "../../../core/util/Alert";
+import { useAlert } from "../../../core/components/feedback/Alert";
 import { useSelector } from "react-redux";
-import Loading from "../../../Components/Loading/Loading";
-import { getLocalDateTime } from "../../../core/util/DateUtil";
+import Loading from "../../../core/components/loading/Loading";
+import { getLocalDateTime } from "../../../core/utils/DateUtil";
 
 const size = 7;
 const UploadJobHistory = () => {

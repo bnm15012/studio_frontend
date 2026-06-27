@@ -3,7 +3,7 @@ import { DialogContent, Box } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import StyledDialog from "../../core/components/StyledDialog";
+import StyledDialog from "../../core/components/dialogs/StyledDialog";
 
 const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
     const [open, setOpen] = useState(popupOn);

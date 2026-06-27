@@ -20,7 +20,7 @@ import { getAllPlans } from "./plans.api";
 // import { setPricingPlans } from '../../state/authSlice';
 import { useDispatch, useSelector } from "react-redux";
 import PaymentDialog from "../RazorPay/Payment";
-import Loading from "../../Components/Loading/Loading";
+import Loading from "../../core/components/loading/Loading";
 import { openDialog } from "../../state/dialogSlice";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";

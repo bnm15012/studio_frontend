@@ -1,8 +1,8 @@
-import Field from "../../../../Components/Fields/Field";
-import ContactSection from "../../../../Components/New/StyledCardComponents/ContactSection";
+import Field from "../../../../core/components/fields/Field";
+import ContactSection from "../../../../core/components/cards/ContactSection";
 import UserAccessButton from "./UserAccessButton";
 import PropTypes from "prop-types";
-import CardHeader from "../../../../Components/New/StyledCardComponents/CardHeader";
+import CardHeader from "../../../../core/components/cards/CardHeader";
 
 const UserCard = ({ row }) => {
     const { userName, email, role, enabled, phone, userAccessEntry, imageUrl } = row;

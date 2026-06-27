@@ -1,4 +1,4 @@
-import api from "../../core/util/api";
+import api from "../../core/utils/api";
 
 export const createWhatsAppCredentialsAPI = async ({ branchId, token }) => {
     try {

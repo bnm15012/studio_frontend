@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useAlert } from "../../core/util/Alert";
+import { useAlert } from "../../core/components/feedback/Alert";
 import { useState } from "react";
 import { useEffect } from "react";
 import { studentsAssignmentsCruds } from "../../api/all.api";
 import StudentInvoice from "../Management/Student/StudentInvoice";
-import Loading from "../../Components/Loading/Loading";
+import Loading from "../../core/components/loading/Loading";
 import BookingInvoice from "../Management/Booking/BookingInvoice";
 
 

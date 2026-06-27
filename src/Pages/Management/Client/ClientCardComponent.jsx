@@ -1,8 +1,8 @@
 import { User2, FileText } from "lucide-react";
 import PropTypes from "prop-types";
-import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import ContactSection from "../../../core/components/cards/ContactSection";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 const ClientCardComponent = ({ row }) => {
     const { groupName, pocName, pocPhone, pocEmail, clientType, notes } = row;

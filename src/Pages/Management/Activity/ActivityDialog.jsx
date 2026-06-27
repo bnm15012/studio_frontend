@@ -18,12 +18,12 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
-import { FlexBetween } from "../../../Components/FlexBox";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../core/util/Alert";
-import StyledDialog from "../../../core/components/StyledDialog";
-import Field from "../../../Components/Fields/Field";
+import Loading from "../../../core/components/loading/Loading";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import Field from "../../../core/components/fields/Field";
 import { membershipPackageCruds } from "../../../api/all.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {

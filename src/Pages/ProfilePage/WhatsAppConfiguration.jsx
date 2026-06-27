@@ -5,12 +5,12 @@ import {
     createWhatsAppCredentialsAPI,
     logoutWhatsAppConnectionAPI,
 } from "./whatsapp.api";
-import Loading from "../../Components/Loading/Loading";
+import Loading from "../../core/components/loading/Loading";
 import { useCallback, useEffect, useState } from "react";
-import { useAlert } from "../../core/util/Alert";
+import { useAlert } from "../../core/components/feedback/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../api/all.api";
-import { FlexBetween } from "../../Components/FlexBox";
+import { FlexBetween } from "../../core/components/layout/FlexBox";
 
 const WhatsAppConfiguration = () => {
     const showAlert = useAlert();

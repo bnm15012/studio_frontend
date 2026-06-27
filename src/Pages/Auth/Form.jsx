@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
-import Loading from "../../Components/Loading/Loading";
+import Loading from "../../core/components/loading/Loading";
 import FormFields from "./FormFields.jsx";
 import { loginApiCall, registerApiCall } from "./auth.api";
-import { useAlert } from "../../core/util/Alert.jsx";
-import { FlexBetween, FlexEvenly } from "../../Components/FlexBox.jsx";
+import { useAlert } from "../../core/components/feedback/Alert.jsx";
+import { FlexBetween, FlexEvenly } from "../../core/components/layout/FlexBox.jsx";
 
 const Form = ({ pageType, editProfile = false, user }) => {
     const initialValuesRegister = {

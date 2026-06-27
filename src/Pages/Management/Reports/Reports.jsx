@@ -11,13 +11,13 @@ import {
 } from "@mui/material";
 
 import { useEffect, useRef, useState } from "react";
-import { FlexBetween } from "../../../Components/FlexBox";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useSelector } from "react-redux";
-import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "../../../core/util/DateUtil";
-import { useAlert } from "../../../core/util/Alert";
-import Loading from "../../../Components/Loading/Loading";
+import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "../../../core/utils/DateUtil";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import Loading from "../../../core/components/loading/Loading";
 import { reportsAPi } from "./reports.api";
 import { useUI } from "../../../context/UIContext";
 import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";

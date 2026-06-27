@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
-import { FlexBetween } from "../../../Components/FlexBox";
-import { useAlert } from "../../../core/util/Alert";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { useAlert } from "../../../core/components/feedback/Alert";
 import { useSelector } from "react-redux";
-import Loading from "../../../Components/Loading/Loading";
+import Loading from "../../../core/components/loading/Loading";
 import UploadData from "./UploadData";
 import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
 import { createBulkUploadJobAPI } from "./BulkUploadJobs.api";

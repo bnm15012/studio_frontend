@@ -13,10 +13,10 @@ import {
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-import StyledDialog from "../../../core/components/StyledDialog";
-import { FlexBetween } from "../../../Components/FlexBox";
-import Field from "../../../Components/Fields/Field";
-import { FieldLabel } from "../../../Components/New/StyledField";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import Field from "../../../core/components/fields/Field";
+import { FieldLabel } from "../../../core/components/fields/StyledField";
 
 import { useUI } from "../../../context/UIContext";
 

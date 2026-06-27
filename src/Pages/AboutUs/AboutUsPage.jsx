@@ -1,5 +1,5 @@
 import { Typography, Paper, Box, Stack, useTheme, keyframes } from "@mui/material";
-import { FlexBetween, FlexEvenlyColumn } from "../../Components/FlexBox";
+import { FlexBetween, FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
 import Footer from "../../Components/Footer";
 

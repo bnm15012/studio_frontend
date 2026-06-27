@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import { Navbar } from "../NavigationComponets/Navbar/Navbar";
 import Sidebar from "../NavigationComponets/Sidebar/Sidebar";
-import { FlexBetween, FlexBetweenColumn } from "./FlexBox";
+import { FlexBetween, FlexBetweenColumn } from "../core/components/layout/FlexBox";
 import { useUI } from "../context/UIContext";
 
 const WidgetsOnPage = ({ components, isSidebarShouldBeOn = false }) => {

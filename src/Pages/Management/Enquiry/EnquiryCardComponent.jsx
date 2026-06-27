@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import { getTimePassed, isToday } from "../../../core/util/DateUtil";
-import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import { getTimePassed, isToday } from "../../../core/utils/DateUtil";
+import ContactSection from "../../../core/components/cards/ContactSection";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
 import { FileText } from "lucide-react";
 
 const EnquiryCard = ({ row }) => {

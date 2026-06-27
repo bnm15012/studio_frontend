@@ -1,13 +1,13 @@
 import { useRef } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
-import Views from "../../../Components/Views/Views";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import Views from "../../../core/crud/Views";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
-import ActionBar from "../../../Components/ActionBar";
+import ActionBar from "../../../core/components/layout/ActionBar";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 

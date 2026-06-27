@@ -1,7 +1,7 @@
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import Views from "../../../Components/Views/Views";
+import Views from "../../../core/crud/Views";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
@@ -9,9 +9,9 @@ import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
-import ActionBar from "../../../Components/ActionBar";
+import ActionBar from "../../../core/components/layout/ActionBar";
 
 const size = 7;
 

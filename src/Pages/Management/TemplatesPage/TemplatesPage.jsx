@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { useSelector } from "react-redux";
-import Views from "../../../Components/Views/Views";
+import Views from "../../../core/crud/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
-import ActionBar from "../../../Components/ActionBar";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import ActionBar from "../../../core/components/layout/ActionBar";
 
 const templateTypes = new Set(["COMMUNICATION", "BOOKING"]);
 

@@ -1,13 +1,13 @@
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
-import Views from "../../../Components/Views/Views";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import Views from "../../../core/crud/Views";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
-import ActionBar from "../../../Components/ActionBar";
+import ActionBar from "../../../core/components/layout/ActionBar";
 import { useRef } from "react";
 
 const PAYMENT_TYPE = ["UPI", "CASH"];

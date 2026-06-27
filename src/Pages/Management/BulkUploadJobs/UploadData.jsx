@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import FileDropZone from "../../../Components/FileDropZone";
-import { FlexBetween } from "../../../Components/FlexBox";
+import FileDropZone from "../../../core/components/fields/FileDropZone";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import Papa from "papaparse";
-import { StyledTable } from "../../../Components/StyledTableComponents";
-import StyledDialog from "../../../core/components/StyledDialog";
+import { StyledTable } from "../../../core/components/tables/StyledTableComponents";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 
 const validationSchema = {
     name: {

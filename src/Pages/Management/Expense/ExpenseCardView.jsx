@@ -1,7 +1,7 @@
 import { CalendarMonth, Description } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
 import { IndianRupee } from "lucide-react";
 
 const ExpenseCard = ({ row }) => (

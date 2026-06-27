@@ -15,12 +15,12 @@ import {
     Divider,
     useTheme,
 } from "@mui/material";
-import MultiSelectDialog from "../../../Components/MultiSelectDialog";
+import MultiSelectDialog from "../../../core/components/dialogs/MultiSelectDialog";
 import { getStudentNamesAPI } from "../Student/Student.api";
-import { FlexBetween } from "../../../Components/FlexBox";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../core/util/Alert";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import Loading from "../../../core/components/loading/Loading";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
 import { sendMessageApi } from "./communication.api";

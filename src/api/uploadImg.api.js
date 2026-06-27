@@ -1,4 +1,4 @@
-import api from "../core/util/api";
+import api from "../core/utils/api";
 
 export const uploadImageApiCall = async (file, token, dirName = "default") => {
     const formData = new FormData();

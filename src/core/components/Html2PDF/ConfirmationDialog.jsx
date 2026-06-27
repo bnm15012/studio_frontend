@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import StyledDialog from "../StyledDialog";
+import StyledDialog from "../dialogs/StyledDialog";
 
 export const ConfirmationDialog = ({ type, value, error, open, onClose, onConfirm, disabled }) => (
     <StyledDialog

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Loading from "../../Components/Loading/Loading";
+import Loading from "../../core/components/loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
 import ChangePassword from "./ChangePassword";
@@ -9,7 +9,7 @@ import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";
-import StyledDialog from "../../core/components/StyledDialog";
+import StyledDialog from "../../core/components/dialogs/StyledDialog";
 
 const dialogNames = [
     "profileDialog",

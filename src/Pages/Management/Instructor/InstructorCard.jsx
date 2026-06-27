@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
-import CardLocation from "../../../Components/New/StyledCardComponents/CardLocation";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import ContactSection from "../../../core/components/cards/ContactSection";
+import CardChip from "../../../core/components/cards/CardChip";
+import CardLocation from "../../../core/components/cards/CardLocation";
 
 const InstructorCard = ({ row }) => {
     const { name, email, phone, instructorStatus, imageUrl, dob, address } = row;

@@ -1,7 +1,7 @@
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
 import { useState } from "react";
-import Loading from "../../Components/Loading/Loading";
-import { useAlert } from "../../core/util/Alert";
+import Loading from "../../core/components/loading/Loading";
+import { useAlert } from "../../core/components/feedback/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../Auth/auth.api";
 import { validatePassword } from "../../utils/validationConstraints";

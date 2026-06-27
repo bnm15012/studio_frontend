@@ -3,12 +3,12 @@ import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useNavigate } from "react-router-dom";
-import { useAlert } from "../../core/util/Alert";
+import { useAlert } from "../../core/components/feedback/Alert";
 import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
 import WidgetsOnPage from "../../Components/WidgetsOnPage";
-import Loading from "../../Components/Loading/Loading";
-import { FlexBetween } from "../../Components/FlexBox";
+import Loading from "../../core/components/loading/Loading";
+import { FlexBetween } from "../../core/components/layout/FlexBox";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import Group from "@mui/icons-material/Group";
 import CardMembershipRounded from "@mui/icons-material/CardMembershipRounded";
@@ -16,7 +16,7 @@ import LocalActivityRounded from "@mui/icons-material/LocalActivityRounded";
 import Payment from "@mui/icons-material/Payment";
 import TrendingUp from "@mui/icons-material/TrendingUp";
 import SummaryCard from "./SummaryCard";
-import ImageComponent from "../../Components/ImageComponent";
+import ImageComponent from "../../core/components/fields/ImageComponent";
 import { useUI } from "../../context/UIContext";
 
 // Entrance animation (fade + up + subtle scale)

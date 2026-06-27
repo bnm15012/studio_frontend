@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Suspense, lazy } from "react";
 import HomePage from "../Pages/HomePage/HomePage";
-import Loading from "../Components/Loading/Loading";
+import Loading from "../core/components/loading/Loading";
 
 const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
 const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));

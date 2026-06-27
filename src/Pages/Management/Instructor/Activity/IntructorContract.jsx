@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { getLocalDateTime } from "../../../../core/util/DateUtil";
-import Loading from "../../../../Components/Loading/Loading";
+import { getLocalDateTime } from "../../../../core/utils/DateUtil";
+import Loading from "../../../../core/components/loading/Loading";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
-import { useAlert } from "../../../../core/util/Alert";
+import { useAlert } from "../../../../core/components/feedback/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
-import StyledDialog from "../../../../core/components/StyledDialog";
+import StyledDialog from "../../../../core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer from "../../../../core/components/Html2PDF/HtmlToPdfViewer";
 

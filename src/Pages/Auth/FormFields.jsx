@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { FlexEvenlyColumn } from "../../Components/FlexBox";
+import { FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
 import PropTypes from "prop-types";
 
 const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (

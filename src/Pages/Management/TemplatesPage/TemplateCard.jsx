@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { Box, Button } from "@mui/material";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
+import CardHeader from "../../../core/components/cards/CardHeader";
 import { BookTemplate, LucideBookTemplate } from "lucide-react";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import CardChip from "../../../core/components/cards/CardChip";
 import { Subject } from "@mui/icons-material";
 
 const TemplateCard = ({ row, handleViewOpen }) => {

@@ -12,10 +12,10 @@ import { Percent } from "lucide-react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
-import { useAlert } from "../../../core/util/Alert";
+import { useAlert } from "../../../core/components/feedback/Alert";
 import { useUI } from "../../../context/UIContext";
-import ImageComponent from "../../../Components/ImageComponent";
-import Field from "../../../Components/Fields/Field";
+import ImageComponent from "../../../core/components/fields/ImageComponent";
+import Field from "../../../core/components/fields/Field";
 
 const UserWidgets = ({ admin, studio }) => {
     const theme = useTheme();

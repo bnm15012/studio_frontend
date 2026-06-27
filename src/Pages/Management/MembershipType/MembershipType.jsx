@@ -1,9 +1,9 @@
 import { useRef } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import Views from "../../../Components/Views/Views";
-import ActionBar from "../../../Components/ActionBar";
+import Views from "../../../core/crud/Views";
+import ActionBar from "../../../core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 
 const LIMIT = 7;

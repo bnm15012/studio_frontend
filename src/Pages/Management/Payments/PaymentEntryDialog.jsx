@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import StyledDialog from "../../../core/components/StyledDialog";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 
 const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus, paymentType }) => {
     const [formData, setFormData] = useState(initialData || {});

@@ -9,7 +9,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { FlexBetween } from "../../Components/FlexBox";
+import { FlexBetween } from "../../core/components/layout/FlexBox";
 import { useEffect, useState } from "react";
 import SubscriptionPopup from "../Auth/SubscriptionPopup";
 import PropTypes from "prop-types";

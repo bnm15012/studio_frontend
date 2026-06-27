@@ -21,7 +21,7 @@ import { useState } from "react";
 import ShowMoreBatches from "./ShowMoreBatches";
 import ActivityBatchCard from "./ActivityBatchCard";
 import { useUI } from "../../../context/UIContext";
-import DeleteDialog from "../../../Components/DeleteDialog";
+import DeleteDialog from "../../../core/components/dialogs/DeleteDialog";
 
 const ActivityCard = ({ activity, onEdit, onDelete }) => {
     const theme = useTheme();

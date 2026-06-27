@@ -1,14 +1,14 @@
 import { useRef } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes.js";
 import { enquiryCruds } from "../../../api/all.api";
-import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil.js";
-import Views from "../../../Components/Views/Views.jsx";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil.js";
+import Views from "../../../core/crud/Views.jsx";
 import { useUI } from "../../../context/UIContext.jsx";
 import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
-import ActionBar from "../../../Components/ActionBar.jsx";
+import ActionBar from "../../../core/components/layout/ActionBar.jsx";
 
 const LIMIT = 7;
 

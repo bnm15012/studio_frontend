@@ -1,15 +1,15 @@
 import { useRef } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../../api/all.api";
-import Views from "../../../Components/Views/Views";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import Views from "../../../core/crud/Views";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
-import ActionBar from "../../../Components/ActionBar";
+import ActionBar from "../../../core/components/layout/ActionBar";
 
 const LIMIT = 7;
 

@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
 import { useTheme } from "@mui/material";
 
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
-import { getLocalDateTime } from "../../../core/util/DateUtil";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
+import { getLocalDateTime } from "../../../core/utils/DateUtil";
 import { Class, Task } from "@mui/icons-material";
-import ShowMoreDialog from "../../../Components/Views/ShowMoreDialog";
+import ShowMoreDialog from "../../../core/crud/ShowMoreDialog";
 
 const StudentAssignActivityCard = ({ row }) => {
     const theme = useTheme();

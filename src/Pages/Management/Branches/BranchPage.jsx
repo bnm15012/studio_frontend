@@ -1,12 +1,12 @@
 import { useRef } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { FlexBetween } from "../../../Components/FlexBox";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { usersCruds } from "../../../api/all.api";
-import Views from "../../../Components/Views/Views";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes";
+import Views from "../../../core/crud/Views";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";

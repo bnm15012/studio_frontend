@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { Activity, Calendar, FileText, TimerReset } from "lucide-react";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
-import ImageDialog from "../../../Components/Views/ImageDialog";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
+import ImageDialog from "../../../core/crud/ImageDialog";
 
 const InstructorAssignedActivityCard = ({ row }) => {
     const { activityName, assignedDate, startDate, endDate, contractDocument, membershipStatus } =

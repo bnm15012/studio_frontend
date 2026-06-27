@@ -4,7 +4,7 @@ import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import { useSelector } from "react-redux";
-import StyledDialog from "../core/components/StyledDialog";
+import StyledDialog from "../core/components/dialogs/StyledDialog";
 
 const QrForm = ({
     link,

@@ -1,22 +1,22 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Button, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useDispatch, useSelector } from "react-redux";
 import CalendarView from "./Celendar/CalendarView.jsx";
-import { FIELD_TYPES } from "../../../Components/Fields/FieldTypes.js";
-import { getCurrentDateTimeLocal } from "../../../core/util/DateUtil.js";
-import Views from "../../../Components/Views/Views.jsx";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes.js";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil.js";
+import Views from "../../../core/crud/Views.jsx";
 import PropTypes from "prop-types";
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useUI } from "../../../context/UIContext.jsx";
 import BookingCard from "./BookingCard.jsx";
-import { useAlert } from "../../../core/util/Alert.jsx";
+import { useAlert } from "../../../core/components/feedback/Alert.jsx";
 import { getCLientByNamesAPI } from "../Client/client.api.js";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import BookingInvoice from "./BookingInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import ActionBar from "../../../Components/ActionBar.jsx";
+import ActionBar from "../../../core/components/layout/ActionBar.jsx";
 import PaymentList from "./PaymentList.jsx";
 
 const paymentTypes = ["CASH", "UPI"];

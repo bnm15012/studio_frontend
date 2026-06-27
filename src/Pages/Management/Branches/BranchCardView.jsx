@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import { Circle, Business } from "@mui/icons-material";
-import ContactSection from "../../../Components/New/StyledCardComponents/ContactSection";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardLocation from "../../../Components/New/StyledCardComponents/CardLocation";
+import ContactSection from "../../../core/components/cards/ContactSection";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardLocation from "../../../core/components/cards/CardLocation";
 
 const BranchCardView = ({ row }) => {
     const { name, address, city, state, pincode, phone, isActive } = row;

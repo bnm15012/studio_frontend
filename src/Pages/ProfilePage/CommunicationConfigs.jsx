@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
-import { FlexBetween } from "../../Components/FlexBox";
+import { FlexBetween } from "../../core/components/layout/FlexBox";
 import PropTypes from "prop-types";
-import Field from "../../Components/Fields/Field";
+import Field from "../../core/components/fields/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
-import { useAlert } from "../../core/util/Alert";
-import Loading from "../../Components/Loading/Loading";
+import { useAlert } from "../../core/components/feedback/Alert";
+import Loading from "../../core/components/loading/Loading";
 import WhatsAppConfiguration from "./WhatsAppConfiguration";
 import { useUI } from "../../context/UIContext";
 

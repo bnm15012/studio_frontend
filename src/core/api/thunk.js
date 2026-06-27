@@ -1,6 +1,6 @@
 // ── Thunks ─────────────────────────────────────────────────────────────
 
-import api from "../../core/util/api";
+import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
 
 /**

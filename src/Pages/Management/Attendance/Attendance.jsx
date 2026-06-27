@@ -1,17 +1,17 @@
-import { FlexBetween }Column from "../../../Components/FlexBoxColumn";
+import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useUI } from "../../../context/UIContext";
-import ActionBar from "../../../Components/ActionBar";
+import ActionBar from "../../../core/components/layout/ActionBar";
 import { useMemo, useRef, useState } from "react";
-import Views from "../../../Components/Views/Views";
+import Views from "../../../core/crud/Views";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "../Student/StudentAttendence";
 import BulkAttendanceDialog from "./BulkAttendanceDialog";
-import Loading from "../../../Components/Loading/Loading";
-import { useAlert } from "../../../core/util/Alert";
-import { getCurrentDateLocal } from "../../../core/util/DateUtil";
+import Loading from "../../../core/components/loading/Loading";
+import { useAlert } from "../../../core/components/feedback/Alert";
+import { getCurrentDateLocal } from "../../../core/utils/DateUtil";
 import MarkPresentDialog from "../Student/MarkPresent";
 
 const LIMIT = 50;

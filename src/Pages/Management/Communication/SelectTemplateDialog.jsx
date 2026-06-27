@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import StyledDialog from "../../../core/components/StyledDialog";
+import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { genericTemplateCruds } from "../../../api/all.api";
-import Loading from "../../../Components/Loading/Loading";
+import Loading from "../../../core/components/loading/Loading";
 import { sendWhatsAppMessage } from "./communication.api";
-import { useAlert } from "../../../core/util/Alert";
+import { useAlert } from "../../../core/components/feedback/Alert";
 import {
     Box,
     TextField,
     Typography,
 } from "@mui/material";
-import { FlexBetween } from "../../../Components/FlexBox";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 
 const SelectTemplateDialog = ({ open, onClose, data }) => {

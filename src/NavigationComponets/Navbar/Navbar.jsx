@@ -11,11 +11,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItems from "./MenuItems";
-import ImageComponent from "../../Components/ImageComponent";
+import ImageComponent from "../../core/components/fields/ImageComponent";
 import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
-import { FlexBetween } from "../../Components/FlexBox";
+import { FlexBetween } from "../../core/components/layout/FlexBox";
 import PropTypes from "prop-types";
 import AuthButtons from "./AuthButtons";
 import { logoutUser } from "../../state/thunks";

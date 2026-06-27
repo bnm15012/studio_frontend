@@ -6,10 +6,10 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledMotionCard,
-} from "../../../Components/New/StyledCard";
+} from "../../../core/components/cards/StyledCard";
 import PropTypes from "prop-types";
-import CardHeader from "../../../Components/New/StyledCardComponents/CardHeader";
-import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
 
 const MessageHistoryCard = ({ history, onViewRecipients }) => {
     const theme = useTheme();
