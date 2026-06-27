@@ -8,8 +8,7 @@ const getHeader = (token) => ({ headers: { Authorization: token } });
  * Extract a human-readable error message from an Axios error response,
  * falling back to `fallback` when the server provides no message.
  */
-const getApiMessage = (err, fallback) =>
-    err?.response?.data?.status?.statusMessage ?? fallback;
+const getApiMessage = (err, fallback) => err?.response?.data?.status?.statusMessage ?? fallback;
 
 /**
  * Wrap an async `fn` with setLoading(true) / setLoading(false) lifecycle.
@@ -66,31 +65,32 @@ export function createCrud({
      * POST /{route}/add
      * Adds a new record. Dispatches `prependItem` when `prepend` is true.
      */
-    const add = (newData, token, showAlert, setLoading, prepend) =>
-        async (dispatch, getState) => {
-            await withLoading(setLoading, async () => {
-                try {
-                    const state = getState()[route];
-                    const { data: { data } } = await api.post(`/${route}/add`, newData, getHeader(token));
+    const add = (newData, token, showAlert, setLoading, prepend) => async (dispatch, getState) => {
+        await withLoading(setLoading, async () => {
+            try {
+                const state = getState()[route];
+                const {
+                    data: { data },
+                } = await api.post(`/${route}/add`, newData, getHeader(token));
 
-                    if (state.recordById["NEW"]) {
-                        dispatch(actions.setRecord(data[0]));
-                    }
-                    dispatch(prepend ? actions.prependItem(data[0]) : actions.addItem(data[0]));
-                } catch (err) {
-                    console.error(err);
-                    showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
+                if (state.recordById["NEW"]) {
+                    dispatch(actions.setRecord(data[0]));
                 }
-            });
-        };
+                dispatch(prepend ? actions.prependItem(data[0]) : actions.addItem(data[0]));
+            } catch (err) {
+                console.error(err);
+                showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
+            }
+        });
+    };
 
     /**
      * PUT /{route}/update/{id}
      * Updates an existing record and refreshes both the list item and the
      * recordById cache if it exists.
      */
-    const update = (id, updatedData, token, showAlert, setLoading) =>
-        async (dispatch, getState) => {
+    const update =
+        (id, updatedData, token, showAlert, setLoading) => async (dispatch, getState) => {
             await withLoading(setLoading, async () => {
                 try {
                     const state = getState()[route];
@@ -114,18 +114,17 @@ export function createCrud({
     /**
      * DELETE /{route}/delete/{id}
      */
-    const del = (id, token, showAlert, setLoading) =>
-        async (dispatch) => {
-            await withLoading(setLoading, async () => {
-                try {
-                    await api.delete(`/${route}/delete/${id}`, getHeader(token));
-                    dispatch(actions.removeItem(id));
-                } catch (err) {
-                    console.error(err);
-                    showAlert(getApiMessage(err, `Failed to delete ${route}`), "error");
-                }
-            });
-        };
+    const del = (id, token, showAlert, setLoading) => async (dispatch) => {
+        await withLoading(setLoading, async () => {
+            try {
+                await api.delete(`/${route}/delete/${id}`, getHeader(token));
+                dispatch(actions.removeItem(id));
+            } catch (err) {
+                console.error(err);
+                showAlert(getApiMessage(err, `Failed to delete ${route}`), "error");
+            }
+        });
+    };
 
     /**
      * GET /{route}/getAll/{rootId}
@@ -133,42 +132,43 @@ export function createCrud({
      * page/searchTerm/filterKeys combination.
      */
     const getAll =
-        (showAlert, setLoading, token, params, rootId, infinite) =>
-            async (dispatch, getState) => {
-                const state = getState()[route];
+        (showAlert, setLoading, token, params, rootId, infinite) => async (dispatch, getState) => {
+            const state = getState()[route];
 
-                if (rootId === "NEW") return;
-                if (isCacheValid(state, rootId, params)) return;
-                if (!params?.page && state.items.length) return;
+            if (rootId === "NEW") return;
+            if (isCacheValid(state, rootId, params)) return;
+            if (!params?.page && state.items.length) return;
 
-                await withLoading(setLoading, async () => {
-                    try {
-                        const { data: { data, status } } = await api.get(
-                            `/${route}/getAll/${rootId}`,
-                            { ...getHeader(token), params },
-                        );
+            await withLoading(setLoading, async () => {
+                try {
+                    const {
+                        data: { data, status },
+                    } = await api.get(`/${route}/getAll/${rootId}`, {
+                        ...getHeader(token),
+                        params,
+                    });
 
-                        const action =
-                            infinite && params?.searchTerm === state.searchTerm
-                                ? actions.appendItems({ data, rootId })
-                                : actions.setItems({ data, rootId });
+                    const action =
+                        infinite && params?.searchTerm === state.searchTerm
+                            ? actions.appendItems({ data, rootId })
+                            : actions.setItems({ data, rootId });
 
-                        dispatch(action);
-                        dispatch(
-                            actions.setInfo({
-                                currentPage: params?.page,
-                                pageSize: params?.size,
-                                searchTerm: params?.searchTerm,
-                                filterKeys: params,
-                                totalCount: status.totalCount,
-                            }),
-                        );
-                    } catch (err) {
-                        console.error(err);
-                        showAlert(getApiMessage(err, `Failed to fetch ${route}`), "error");
-                    }
-                });
-            };
+                    dispatch(action);
+                    dispatch(
+                        actions.setInfo({
+                            currentPage: params?.page,
+                            pageSize: params?.size,
+                            searchTerm: params?.searchTerm,
+                            filterKeys: params,
+                            totalCount: status.totalCount,
+                        }),
+                    );
+                } catch (err) {
+                    console.error(err);
+                    showAlert(getApiMessage(err, `Failed to fetch ${route}`), "error");
+                }
+            });
+        };
 
     /**
      * GET /{route}/get/{id}
@@ -176,46 +176,52 @@ export function createCrud({
      */
     const getById =
         (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
-            async (dispatch, getState) => {
-                if (id === "NEW") return;
+        async (dispatch, getState) => {
+            if (id === "NEW") return;
 
-                const cached = getState()[route].recordById[id];
-                if (cached && !forceRefresh) return cached;
+            const cached = getState()[route].recordById[id];
+            if (cached && !forceRefresh) return cached;
 
-                return withLoading(setLoading, async () => {
-                    try {
-                        const { data: { data } } = await api.get(
-                            `/${route}/get/${id}`,
-                            getHeader(token),
-                        );
-                        const record = data[0];
-                        dispatch(actions.setRecord(record));
-                        return record;
-                    } catch (err) {
-                        console.error(err);
-                        showAlert(getApiMessage(err, `Failed to fetch ${route} by ID`), "error");
-                        return null;
-                    }
-                });
-            };
+            return withLoading(setLoading, async () => {
+                try {
+                    const {
+                        data: { data },
+                    } = await api.get(`/${route}/get/${id}`, getHeader(token));
+                    const record = data[0];
+                    dispatch(actions.setRecord(record));
+                    return record;
+                } catch (err) {
+                    console.error(err);
+                    showAlert(getApiMessage(err, `Failed to fetch ${route} by ID`), "error");
+                    return null;
+                }
+            });
+        };
 
     /**
      * Clears the slice and re-fetches the current page with the same filters.
      */
     const refresh =
         (showAlert, setLoading, token, infinite = false) =>
-            async (dispatch, getState) => {
-                const state = getState()[route];
-                dispatch(actions.clearData());
-                return dispatch(
-                    getAll(showAlert, setLoading, token, {
+        async (dispatch, getState) => {
+            const state = getState()[route];
+            dispatch(actions.clearData());
+            return dispatch(
+                getAll(
+                    showAlert,
+                    setLoading,
+                    token,
+                    {
                         page: 1,
                         size: state.pageSize,
                         searchTerm: state.searchTerm,
                         ...state.filterKeys,
-                    }, state.rootId, infinite),
-                );
-            };
+                    },
+                    state.rootId,
+                    infinite,
+                ),
+            );
+        };
 
     // ── Assembly ───────────────────────────────────────────────────────────
     const baseCrud = {

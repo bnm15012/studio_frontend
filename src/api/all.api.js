@@ -15,11 +15,7 @@ export const studentsCruds = createCrud({ route: "students", idKey: "studentId" 
 export const studentsAssignmentsCruds = createCrud({
     route: "studentActivities",
     idKey: "assignmentId",
-    extraCruds: ({
-        actions,
-        getHeader,
-        route,
-    }) => ({
+    extraCruds: ({ actions, getHeader, route }) => ({
         markAttendanceBulk: (payload, token, showAlert, setLoading) => async (dispatch) => {
             try {
                 setLoading(true);
@@ -39,33 +35,32 @@ export const studentsAssignmentsCruds = createCrud({
                 setLoading(false);
             }
         },
-        markAttendanceQR: (assignmentId, token, showAlert, setLoading, throwErro) => async (dispatch) => {
-            try {
-                setLoading(true);
-                const { data } = await api.put(
-                    `/${route}/mark_attendance/${assignmentId}`,
-                    {},
-                    getHeader(token),
-                );
-                dispatch(actions.updateItem(data.data[0]));
-            } catch (err) {
-                console.error(err);
-                showAlert(
-                    err?.response?.data?.status?.statusMessage || `Failed to mark attendance`,
-                    "error",
-                );
-                if (throwErro) throw err;
-            } finally {
-                setLoading(false);
-            }
-        },
+        markAttendanceQR:
+            (assignmentId, token, showAlert, setLoading, throwErro) => async (dispatch) => {
+                try {
+                    setLoading(true);
+                    const { data } = await api.put(
+                        `/${route}/mark_attendance/${assignmentId}`,
+                        {},
+                        getHeader(token),
+                    );
+                    dispatch(actions.updateItem(data.data[0]));
+                } catch (err) {
+                    console.error(err);
+                    showAlert(
+                        err?.response?.data?.status?.statusMessage || `Failed to mark attendance`,
+                        "error",
+                    );
+                    if (throwErro) throw err;
+                } finally {
+                    setLoading(false);
+                }
+            },
         fetchInvoiceApi: async (invoiceToken, showAlert, setLoading) => {
             try {
                 setLoading(true);
-                const { data } = await api.get(
-                    `/${route}/invoice?token=${invoiceToken}`
-                );
-                return data
+                const { data } = await api.get(`/${route}/invoice?token=${invoiceToken}`);
+                return data;
             } catch (err) {
                 console.error(err);
                 showAlert(
@@ -75,8 +70,8 @@ export const studentsAssignmentsCruds = createCrud({
             } finally {
                 setLoading(false);
             }
-        }
-    })
+        },
+    }),
 });
 
 export const clientCruds = createCrud({ route: "clients", idKey: "clientId" });
@@ -92,6 +87,8 @@ export const enquiryCruds = createCrud({ route: "enquiries", idKey: "enquiryId" 
 export const paymentCruds = createCrud({ route: "payments" });
 
 export const genericTemplateCruds = createCrud({ route: "genericTemplate" });
+
+export const activityCruds = createCrud({ route: "activities", idKey: "activityId" });
 
 export const branchCruds = createCrud({
     route: "branch",

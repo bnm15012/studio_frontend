@@ -47,7 +47,7 @@ const DashBoard = () => {
         : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-    const allActivities = useSelector((state) => state.activity.activities);
+    const allActivities = useSelector((state) => state.activities.items);
     const [loading, setLoading] = useState(false);
     const [data, setDashboardData] = useState(null);
 

@@ -7,10 +7,10 @@ import { combineReducers } from "redux";
 import authSlice from "./authSlice";
 import dialogSlice from "./dialogSlice";
 import notificationSlice from "./notificationSlice";
-import activitySlice from "./activitySlice";
 import analysisSlice from "./analysisSlice";
 
 import {
+    activityCruds,
     bookingCruds,
     branchCruds,
     clientCruds,
@@ -28,7 +28,7 @@ import {
 
 const rootReducer = combineReducers({
     auth: authSlice,
-    activity: activitySlice,
+    activities: activityCruds.reducer,
     users: usersCruds.reducer,
     instructors: instructorsCruds.reducer,
     instructorActivities: instructorsAssignmentsCruds.reducer,

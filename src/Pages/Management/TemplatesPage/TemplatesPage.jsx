@@ -57,7 +57,7 @@ const VIEWS = ["LIST", "CARD"];
 const TemplatesPage = () => {
     const { isMobile } = useUI();
 
-    useSelector((state) => state.activity.activities)?.map((x) =>
+    useSelector((state) => state.activities.items)?.map((x) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
     ) || [];
     const studio = useSelector((state) => state.auth.studio);

@@ -32,7 +32,7 @@ const Views = (props) => {
         actions = [],
         editMode = "INLINE",
         multi = false,
-        defaultParams = {}
+        defaultParams = {},
     } = props;
 
     const consts = useRef({

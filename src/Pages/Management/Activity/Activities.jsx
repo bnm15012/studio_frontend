@@ -4,33 +4,40 @@ import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "../../../Components/FlexBetween";
 import { useAlert } from "../../../utils/Alert";
-import {
-    addActivityAPI,
-    deleteActivityAPI,
-    getAllActivitiesAPI,
-    updateActivityAPI,
-} from "./Activity.api";
-import {
-    addActivity,
-    deleteActivity,
-    setActivities,
-    updateActivity,
-} from "../../../state/activitySlice";
+import { activityCruds } from "../../../api/all.api";
 import ActivityCard from "./ActivityCard";
 import ActivityDialog from "./ActivityDialog";
 import { useUI } from "../../../context/UIContext";
+import { sortMembershipPlans } from "./Activity.util";
 
 const Activities = () => {
     const showAlert = useAlert();
     const { isBatchEnabled } = useUI();
-    const allActivities = useSelector((state) => state.activity.activities);
+
+    const allActivities = useSelector((state) => state.activities.items);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
-    const [activityData, setActivityData] = useState();
 
+    const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingActivity, setEditingActivity] = useState();
+
+    const fetchActivities = useCallback(() => {
+        dispatch(
+            activityCruds.getAll(
+                showAlert,
+                setLoading,
+                token,
+                { size: 500 },
+                currentBranch.branchId,
+            ),
+        );
+    }, [dispatch, showAlert, token, currentBranch.branchId]);
+
+    useEffect(() => {
+        if (!allActivities.length) fetchActivities();
+    }, [allActivities.length, fetchActivities]);
 
     const handleAddActivity = () => {
         setEditingActivity(undefined);
@@ -42,63 +49,14 @@ const Activities = () => {
         setDialogOpen(true);
     };
 
-    const fetchActivityData = useCallback(async () => {
-        try {
-            const { success, data } = await getAllActivitiesAPI({
-                branchId: currentBranch.branchId,
-                token,
-            });
-            if (success) {
-                setActivityData(data);
-                dispatch(setActivities(data));
-            }
-        } catch (error) {
-            console.error(error);
-            showAlert("Error retrieving activities!", "error");
-        }
-    }, [dispatch, showAlert, currentBranch.branchId, token]);
-
-    useEffect(() => {
-        if (allActivities.length == 0 && !activityData) {
-            fetchActivityData();
-        }
-    }, [allActivities.lengh, fetchActivityData, allActivities, activityData]);
-
-    useEffect(() => {
-        setActivityData(allActivities);
-    }, [allActivities]);
-
-    const handleDeleteActivity = async (activityId) => {
-        try {
-            const { success } = await deleteActivityAPI({
-                token,
-                activityId: activityId,
-            });
-            if (success) {
-                const updatedData = activityData.filter(
-                    (activity) => activity.activityId !== activityId,
-                );
-                setActivityData(updatedData);
-                dispatch(deleteActivity(activityId));
-                showAlert("Activity deleted successfully!", "success");
-            }
-        } catch (error) {
-            console.error(error);
-            showAlert("Error deleting activity!", "error");
-        }
-    };
-
     const checkUniqueConstraint = (batchEntries) => {
-        const duplicates = new Set();
-        let isValid = true;
-        batchEntries.forEach((batch) => {
+        const seen = new Set();
+        for (const batch of batchEntries) {
             const key = `${batch.name}-${batch.planType}-${batch.daysPerWeek}`;
-            if (duplicates.has(key)) {
-                isValid = false;
-            }
-            duplicates.add(key);
-        });
-        return isValid;
+            if (seen.has(key)) return false;
+            seen.add(key);
+        }
+        return true;
     };
 
     const handleSaveCard = async (updatedActivity) => {
@@ -117,9 +75,9 @@ const Activities = () => {
 
         if (
             allActivities.some(
-                (activity) =>
-                    activity.activityType === updatedActivity.activityType &&
-                    activity.activityId !== updatedActivity.activityId,
+                (a) =>
+                    a.activityType === updatedActivity.activityType &&
+                    a.activityId !== updatedActivity.activityId,
             )
         ) {
             showAlert("Activity type must be unique.", "error");
@@ -128,7 +86,7 @@ const Activities = () => {
 
         if (!checkUniqueConstraint(updatedActivity.batchEntries)) {
             showAlert(
-                `name, plan type and days per week can not be same for multiple ${isBatchEnabled ? "batch" : "membership"}.`,
+                `name, plan type and days per week cannot be the same for multiple ${isBatchEnabled ? "batch" : "membership"}.`,
                 "error",
             );
             return;
@@ -137,55 +95,41 @@ const Activities = () => {
         try {
             if (updatedActivity?.activityId === "NEW") {
                 delete updatedActivity.activityId;
-                updatedActivity.batchEntries.map((batch) => {
-                    delete batch.batchId;
-                });
-                const { success, data, message } = await addActivityAPI({
-                    activityData: updatedActivity,
-                    token,
-                });
-                if (success) {
-                    setActivityData((prev) => [
-                        ...prev.filter((f) => f.activityId !== "NEW"),
-                        data,
-                    ]);
-                    dispatch(addActivity(data));
-                    setDialogOpen(false);
-                    showAlert(message, "success");
-                } else {
-                    showAlert(message, "error");
-                }
+                updatedActivity.batchEntries.forEach((batch) => delete batch.batchId);
+                dispatch(activityCruds.add(updatedActivity, token, showAlert, setLoading));
+                setDialogOpen(false);
             } else {
-                updatedActivity.batchEntries.map((batch) => {
-                    if ("string" === typeof batch.batchId) delete batch.batchId;
+                updatedActivity.batchEntries.forEach((batch) => {
+                    if (typeof batch.batchId === "string") delete batch.batchId;
                 });
-                const { success, data, message } = await updateActivityAPI({
-                    activityId: updatedActivity.activityId,
-                    activityData: updatedActivity,
-                    token,
-                });
-                if (success) {
-                    dispatch(updateActivity(data));
-                    setActivityData((prev) => [
-                        ...prev.filter((f) => f.activityId !== data.activityId),
-                        data,
-                    ]);
-                    setDialogOpen(false);
-                    showAlert(message, "success");
-                } else {
-                    throw Error();
-                }
+
+                const sortedActivity = sortMembershipPlans(updatedActivity);
+                await dispatch(
+                    activityCruds.update(
+                        updatedActivity.activityId,
+                        sortedActivity,
+                        token,
+                        showAlert,
+                        setLoading,
+                    ),
+                );
+                setDialogOpen(false);
             }
         } catch (error) {
             console.error(error);
-            showAlert("Error updating activity!", "error");
+            showAlert("Error saving activity!", "error");
         }
+    };
+
+    const handleDeleteActivity = async (activityId) => {
+        await dispatch(activityCruds.delete(activityId, token, showAlert, setLoading));
+        showAlert("Activity deleted successfully!", "success");
     };
 
     return (
         <Box>
             <FlexBetween paddingBottom={2} gap={1}>
-                <Box sx={{ flexGrow: "1" }} />
+                <Box sx={{ flexGrow: 1 }} />
                 <Button
                     variant="contained"
                     color="primary"
@@ -196,35 +140,29 @@ const Activities = () => {
                     New Activity
                 </Button>
             </FlexBetween>
+
             <Box sx={{ py: 2 }}>
                 <Box
                     display="grid"
-                    gridTemplateColumns={{
-                        xs: "1fr",
-                        md: "repeat(2, 1fr)",
-                        lg: "repeat(3, 1fr)",
-                    }}
+                    gridTemplateColumns={{ xs: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}
                     gap={2}
                 >
-                    {activityData &&
-                        activityData.map((activity, index) => (
-                            <Box key={activity.activityId}>
-                                <ActivityCard
-                                    index={index}
-                                    cancelEdit={() => {
-                                        setActivityData((prev) => [
-                                            ...prev.filter((f) => f.activityId !== undefined),
-                                        ]);
-                                    }}
-                                    activity={activity}
-                                    onEdit={handleEditActivity}
-                                    onDelete={handleDeleteActivity}
-                                />
-                            </Box>
-                        ))}
+                    {allActivities.map((activity, index) => (
+                        <Box key={activity.activityId}>
+                            <ActivityCard
+                                index={index}
+                                cancelEdit={() => {
+                                    setDialogOpen(false);
+                                }}
+                                activity={activity}
+                                onEdit={handleEditActivity}
+                                onDelete={handleDeleteActivity}
+                            />
+                        </Box>
+                    ))}
                 </Box>
 
-                {activityData?.length === 0 && (
+                {allActivities.length === 0 && !loading && (
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -245,6 +183,7 @@ const Activities = () => {
                     </Box>
                 )}
             </Box>
+
             <ActivityDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}

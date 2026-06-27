@@ -131,7 +131,7 @@ const Students = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
     const studio = useSelector((state) => state.auth.studio);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const allActivities = useSelector((state) => state.activity.activities);
+    const allActivities = useSelector((state) => state.activities.items);
 
     const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
     const [showInvoice, setShowInvoice] = useState(false);

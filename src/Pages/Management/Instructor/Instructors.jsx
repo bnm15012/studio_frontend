@@ -118,7 +118,7 @@ const Instructors = ({ ID }) => {
     const api = useRef({});
     const apiInstructor = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
-    const allActivities = useSelector((state) => state.activity.activities);
+    const allActivities = useSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
         () => ({

@@ -6,7 +6,7 @@ import { useUI } from "../../../context/UIContext";
 import ActionBar from "../../../Components/ActionBar";
 import { useMemo, useRef, useState } from "react";
 import Views from "../../../Components/Views/Views";
-import HowToRegIcon from '@mui/icons-material/HowToReg';
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "../Student/StudentAttendence";
 import BulkAttendanceDialog from "./BulkAttendanceDialog";
 import Loading from "../../../Components/Loading/Loading";
@@ -22,97 +22,116 @@ const FIELD_META = {
 };
 const VIEWS = ["LIST", "CARD"];
 
-
 const Attendance = () => {
     const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
-    const showAlert = useAlert()
-    const dispatch = useDispatch()
+    const showAlert = useAlert();
+    const dispatch = useDispatch();
     const token = useSelector((state) => state.auth.token);
     const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const allActivities = useSelector((state) => state.activity.activities);
-    const api = useRef({})
+    const allActivities = useSelector((state) => state.activities.items);
+    const api = useRef({});
     const [showAttendence, setShowAttendence] = useState(false);
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(getCurrentDateLocal());
     const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState(false);
 
-    const filterOptions = useMemo(() => [{ name: "date", key: "date" }, { name: "Limit", key: "size", values: [10, 20, 30, 100, 150, 200] }, { name: "Activity", key: "activityName", values: allActivities.map((a) => a.activityType) }], [allActivities]);
-
-    const FIELDS = useMemo(() => [
-        {
-            show: true,
-            name: "studentName",
-            label: "Student Name",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: true,
-            name: "activityName",
-            label: "Activity",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: true,
-            name: "membershipType",
-            label: "Membership Type",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: true,
-            name: "daysPerWeek",
-            label: "Days Per week",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: isEnabled(FEATURE_KEYS.BATCH),
-            name: "batchName",
-            label: "Batch Name",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: isEnabled(FEATURE_KEYS.BATCH),
-            name: "batchTime",
-            label: "Batch Time",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: true,
-            name: "membershipStatus",
-            label: "Membership Status",
-            defaultValue: "INACTIVE",
-            getValue: (value) => (
-                <Box
-                    sx={{
-                        color: value === "ACTIVE" ? "green" : "red",
-                        fontWeight: "bolder",
-                    }}
-                >
-                    {value}
-                </Box>
-            ),
-            extraProp: { readOnly: true },
-        },
-        {
-            show: true,
-            name: "present",
-            label: "Present",
-            type: "CHECK",
-            getValue: (value, row) => {
-                return row?.attendanceEntries?.filter((entry) => entry.date.split(" ")[0] === date)?.[0]?.present || false;
+    const filterOptions = useMemo(
+        () => [
+            { name: "date", key: "date" },
+            { name: "Limit", key: "size", values: [10, 20, 30, 100, 150, 200] },
+            {
+                name: "Activity",
+                key: "activityName",
+                values: allActivities.map((a) => a.activityType),
             },
-        }
-    ]);
+        ],
+        [allActivities],
+    );
+
+    const FIELDS = useMemo(
+        () => [
+            {
+                show: true,
+                name: "studentName",
+                label: "Student Name",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: true,
+                name: "activityName",
+                label: "Activity",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: true,
+                name: "membershipType",
+                label: "Membership Type",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: true,
+                name: "daysPerWeek",
+                label: "Days Per week",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: isEnabled(FEATURE_KEYS.BATCH),
+                name: "batchName",
+                label: "Batch Name",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: isEnabled(FEATURE_KEYS.BATCH),
+                name: "batchTime",
+                label: "Batch Time",
+                extraProp: { readOnly: true },
+            },
+            {
+                show: true,
+                name: "membershipStatus",
+                label: "Membership Status",
+                defaultValue: "INACTIVE",
+                getValue: (value) => (
+                    <Box
+                        sx={{
+                            color: value === "ACTIVE" ? "green" : "red",
+                            fontWeight: "bolder",
+                        }}
+                    >
+                        {value}
+                    </Box>
+                ),
+                extraProp: { readOnly: true },
+            },
+            {
+                show: true,
+                name: "present",
+                label: "Present",
+                type: "CHECK",
+                getValue: (value, row) =>
+                    row?.attendanceEntries?.filter(
+                        (entry) => entry.date.split(" ")[0] === date,
+                    )?.[0]?.present || false,
+            },
+        ],
+        [isEnabled, FEATURE_KEYS, date],
+    );
 
     const markBulkAttendance = async (data) => {
         dispatch(studentsAssignmentsCruds.markAttendanceBulk(data, token, showAlert, setLoading));
-    }
+    };
 
     return (
         <FlexBetweenColumn>
             {loading && <Loading />}
-            <ActionBar api={api} filterOptions={filterOptions} add={false} handleFilterKeys={(keys) => {
-                setDate(keys["date"])
-            }}>
+            <ActionBar
+                api={api}
+                filterOptions={filterOptions}
+                add={false}
+                handleFilterKeys={(keys) => {
+                    setDate(keys["date"]);
+                }}
+            >
                 <MarkPresentDialog />
             </ActionBar>
             <Box>
@@ -155,15 +174,15 @@ const Attendance = () => {
                     activityData={showAttendence}
                 />
             )}
-            {
-                showBulkAttendanceDialog && <BulkAttendanceDialog
+            {showBulkAttendanceDialog && (
+                <BulkAttendanceDialog
                     open={true}
                     onClose={() => setShowBulkAttendanceDialog(false)}
                     studentsList={showBulkAttendanceDialog}
                     date={date}
                     onConfirm={markBulkAttendance}
                 />
-            }
+            )}
         </FlexBetweenColumn>
     );
 };

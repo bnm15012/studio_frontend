@@ -14,17 +14,14 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { CloudUpload } from "@mui/icons-material";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import SegmentIcon from "@mui/icons-material/Segment";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Field from "../Fields/Field";
 import FlexBetweenColumn from "../FlexBetweenColumn";
 import { getNestedValue } from "../../utils/objectHelpers";
-import { FieldLabel, FieldValue } from "../New/StyledField";
+import { FieldLabel } from "../New/StyledField";
 import { useUI } from "../../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
@@ -43,7 +40,13 @@ const FormSkeleton = ({ isMobile }) => (
             {[1, 2].map((s) => (
                 <Box key={s} sx={{ p: 2, borderRadius: 2, bgcolor: "background.paper" }}>
                     <Skeleton width={100} height={18} sx={{ mb: 1 }} />
-                    <Box sx={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 1.5 }}>
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                            gap: 1.5,
+                        }}
+                    >
                         {[1, 2, 3, 4].map((f) => (
                             <Box key={f}>
                                 <Skeleton width={60} height={10} sx={{ mb: 0.5 }} />
@@ -56,6 +59,8 @@ const FormSkeleton = ({ isMobile }) => (
         </Box>
     </Box>
 );
+
+FormSkeleton.propTypes = { isMobile: PropTypes.bool };
 
 const FormView = (props) => {
     const {
@@ -117,7 +122,10 @@ const FormView = (props) => {
                     </Tooltip>
 
                     <Box sx={{ minWidth: 0 }}>
-                        <Typography variant="caption" sx={{ color: "text.secondary", fontSize: 11 }}>
+                        <Typography
+                            variant="caption"
+                            sx={{ color: "text.secondary", fontSize: 11 }}
+                        >
                             Management / {tableName}
                         </Typography>
 
@@ -150,7 +158,6 @@ const FormView = (props) => {
                         <>
                             <Actions actions={actions} row={data} />
                             <IconButton>
-
                                 {loading ? (
                                     <CircularProgress size={18} />
                                 ) : (
@@ -211,7 +218,7 @@ const FormView = (props) => {
                                 }}
                             >
                                 <Typography sx={{ fontSize: 13, fontWeight: 700, mb: 0.5 }}>
-                                    <SegmentIcon sx={{ fontSize: 12 }} />  {sectionName}
+                                    <SegmentIcon sx={{ fontSize: 12 }} /> {sectionName}
                                 </Typography>
 
                                 <Divider sx={{ mb: 1 }} />
@@ -224,10 +231,15 @@ const FormView = (props) => {
                                                 isEdit={!!editingId}
                                                 value={
                                                     field.getValue
-                                                        ? field.getValue(getNestedValue(data, field.name), data)
+                                                        ? field.getValue(
+                                                              getNestedValue(data, field.name),
+                                                              data,
+                                                          )
                                                         : getNestedValue(data, field.name)
                                                 }
-                                                setValue={(v) => handleChange(v, formKey, field.name)}
+                                                setValue={(v) =>
+                                                    handleChange(v, formKey, field.name)
+                                                }
                                                 type={field.type}
                                                 extraProp={field.extraProp}
                                                 validation={field.validation}

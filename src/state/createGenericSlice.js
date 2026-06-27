@@ -11,16 +11,10 @@ import { createSlice } from "@reduxjs/toolkit";
  *
  * @returns {{ actions, reducer, name, getInitialState }}
  */
-export function createGenericSlice({
-    name,
-    idKey = "id",
-    extraState = {},
-    extraReducers = {},
-}) {
+export function createGenericSlice({ name, idKey = "id", extraState = {}, extraReducers = {} }) {
     const initialState = {
         rootId: 0,
         items: [],
-        /** Record cache: { [id]: record } */
         recordById: {},
         searchTerm: "",
         filterKeys: {},

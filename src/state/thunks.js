@@ -1,4 +1,5 @@
 import {
+    activityCruds,
     bookingCruds,
     branchCruds,
     clientCruds,
@@ -8,7 +9,6 @@ import {
     membershipPackageCruds,
     paymentCruds,
 } from "../api/all.api";
-import { clearActivities } from "./activitySlice";
 import { clearAnalysisState } from "./analysisSlice";
 import { clearAuthState } from "./authSlice";
 import { clearAllDialogs } from "./dialogSlice";
@@ -33,7 +33,7 @@ export const logoutUser = () => (dispatch) => {
  */
 export const clearAllstate = () => (dispatch) => {
     dispatch(clearAllDialogs());
-    dispatch(clearActivities());
+    dispatch(activityCruds.removeAll());
     dispatch(clearAnalysisState());
     dispatch(clientCruds.removeAll());
     dispatch(bookingCruds.removeAll());
