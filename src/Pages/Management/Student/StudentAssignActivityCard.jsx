@@ -23,21 +23,22 @@ const StudentAssignActivityCard = ({ row }) => {
         paymentEntry,
     } = row;
 
-    const amountDisplay = paymentEntry?.amount !== paymentEntry?.actualAmount ? (
-        <>
-            Rs. {paymentEntry?.amount}{" "}
-            <span
-                style={{
-                    textDecoration: "line-through",
-                    color: theme.palette.error.main,
-                }}
-            >
-                Rs. {paymentEntry?.actualAmount}
-            </span>
-        </>
-    ) : (
-        `Rs. ${paymentEntry?.amount}`
-    );
+    const amountDisplay =
+        paymentEntry?.amount !== paymentEntry?.actualAmount ? (
+            <>
+                Rs. {paymentEntry?.amount}{" "}
+                <span
+                    style={{
+                        textDecoration: "line-through",
+                        color: theme.palette.error.main,
+                    }}
+                >
+                    Rs. {paymentEntry?.actualAmount}
+                </span>
+            </>
+        ) : (
+            `Rs. ${paymentEntry?.amount}`
+        );
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
