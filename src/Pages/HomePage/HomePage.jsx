@@ -9,6 +9,7 @@ import { FeaturesSection } from "./FeaturesSection";
 import { DashboardPreview } from "./DashboardPreview";
 import Footer from "../../Components/Footer";
 import PricingSection from "../Pricing/PricingSection";
+import DemoVideoSection from "./DemoVideoSection";
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -29,6 +30,7 @@ const HomePage = () => {
             <HeroSection />
             <FeaturesSection />
             <DashboardPreview />
+            <DemoVideoSection />
             <TestimonialsSection />
             <PricingSection />
             <Footer />

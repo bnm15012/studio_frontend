@@ -194,6 +194,12 @@ export function HeroSection() {
                                 </Button>
                                 <Button
                                     variant="outlined"
+                                    onClick={() => {
+                                        document.getElementById("demo-video")?.scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "center",
+                                        });
+                                    }}
                                     size="large"
                                     sx={{
                                         py: 2,
