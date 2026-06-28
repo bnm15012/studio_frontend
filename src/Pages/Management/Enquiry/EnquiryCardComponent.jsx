@@ -5,22 +5,25 @@ import ContactSection from "../../../core/components/cards/ContactSection";
 import CardHeader from "../../../core/components/cards/CardHeader";
 import CardChip from "../../../core/components/cards/CardChip";
 import { FileText } from "lucide-react";
+import { Box } from "@mui/material";
 
 const EnquiryCard = ({ row }) => {
     const { enquiryDate, name, contact, enquiryPurpose } = row;
 
     return (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
                 FieldIcon={QuestionAnswerIcon}
                 fieldValue={enquiryPurpose}
                 enabled={isToday(enquiryDate)}
                 badge={getTimePassed(enquiryDate)}
             />
-            <CardChip value={enquiryDate} type={"DATETIME"} label={"Enquiry Date"} />
-            <CardChip value={name} label={"Enquire Name"} ChipIcon={FileText} />
-            <ContactSection contact={contact} />
-        </>
+            <Box display="flex" alignItems="center" gap={1.5}>
+                <CardChip value={name} ChipIcon={FileText} />
+                <CardChip value={enquiryDate} type={"DATETIME"} />
+            </Box>
+            {contact && <ContactSection contact={contact} />}
+        </Box>
     );
 };
 

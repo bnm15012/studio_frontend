@@ -56,82 +56,77 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
     const computedBadgeStyles = getBadgeStyles(badge, enabled, theme);
 
     return (
-        <Box sx={{ width: "100%", pb: 1.5, mb: 0.5 }}>
-            <FlexBetween alignItems="flex-start" gap={1.5}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0, flex: 1 }}>
-                    {image ? (
-                        <Box sx={{ flexShrink: 0 }}>
-                            <Field
-                                value={image}
-                                type="IMAGE"
-                                isEdit={false}
-                                extraProp={{ size: "48px" }}
-                            />
-                        </Box>
-                    ) : (
-                        <Avatar
-                            sx={{
-                                width: 48,
-                                height: 48,
-                                backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                                color: theme.palette.primary.main,
-                                flexShrink: 0,
-                                fontSize: "1.25rem",
-                            }}
-                        >
-                            <FieldIcon sx={{ fontSize: "1.4rem" }} />
-                        </Avatar>
-                    )}
-                    <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Typography
-                            sx={{
-                                fontWeight: 600,
-                                fontSize: "1.125rem",
-                                color: "text.primary",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                lineHeight: 1.3,
-                            }}
-                        >
-                            {fieldValue}
-                        </Typography>
-                        {subtitle && (
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    color: "text.secondary",
-                                    fontWeight: 400,
-                                    fontSize: "0.75rem",
-                                    lineHeight: 1.4,
-                                    mt: 0.25,
-                                    display: "block",
-                                }}
-                            >
-                                {subtitle}
-                            </Typography>
-                        )}
+        <FlexBetween alignItems="center" gap={1.25}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: 1 }}>
+                {image ? (
+                    <Box sx={{ flexShrink: 0 }}>
+                        <Field
+                            value={image}
+                            type="IMAGE"
+                            isEdit={false}
+                            extraProp={{ size: "40px" }}
+                        />
                     </Box>
-                </Box>
-                {badge && (
-                    <Chip
-                        size="small"
-                        label={badge}
+                ) : (
+                    <Avatar
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                            color: theme.palette.primary.main,
+                            flexShrink: 0,
+                        }}
+                    >
+                        <FieldIcon sx={{ fontSize: "1.2rem" }} />
+                    </Avatar>
+                )}
+                <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography
                         sx={{
                             fontWeight: 600,
-                            fontSize: "0.65rem",
-                            borderRadius: "12px",
-                            textTransform: "capitalize",
-                            letterSpacing: "0.02em",
-                            height: 24,
-                            mt: 0.5,
-                            ...computedBadgeStyles,
-                            ...badgeSx,
+                            fontSize: "1.0625rem",
+                            color: "text.primary",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            lineHeight: 1.3,
                         }}
-                    />
-                )}
-            </FlexBetween>
-        </Box>
+                    >
+                        {fieldValue}
+                    </Typography>
+                    {subtitle && (
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "text.secondary",
+                                fontWeight: 400,
+                                fontSize: "0.7rem",
+                                lineHeight: 1.3,
+                                display: "block",
+                            }}
+                        >
+                            {subtitle}
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+            {badge && (
+                <Chip
+                    size="small"
+                    label={badge}
+                    sx={{
+                        fontWeight: 600,
+                        fontSize: "0.6rem",
+                        borderRadius: "10px",
+                        textTransform: "capitalize",
+                        letterSpacing: "0.02em",
+                        height: 22,
+                        ...computedBadgeStyles,
+                        ...badgeSx,
+                    }}
+                />
+            )}
+        </FlexBetween>
     );
 };
 

@@ -1,4 +1,4 @@
-import { ButtonBase, Box, Typography, useTheme } from "@mui/material";
+import { ButtonBase, Box, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import React from "react";
@@ -14,12 +14,10 @@ const Actions = ({ actions, row }) => {
                 justifyContent: "space-evenly",
                 alignItems: "center",
                 width: "100%",
-                gap: 0.5,
             }}
         >
-            {visibleActions.map(({ name, enabled, onClick, icon, sx }, index) => {
+            {visibleActions.map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled = typeof enabled === "function" ? enabled(row) : enabled;
-                const isLast = index === visibleActions.length - 1;
 
                 return (
                     <ButtonBase
@@ -31,29 +29,17 @@ const Actions = ({ actions, row }) => {
                         }}
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "center",
                             minWidth: 44,
-                            minHeight: 44,
+                            minHeight: 40,
                             px: 1.5,
-                            py: 0.75,
-                            borderRadius: "12px",
-                            gap: 0.25,
-                            transition: "all 0.2s ease",
-                            opacity: isEnabled ? 1 : 0.4,
-                            ...(isLast && isEnabled
-                                ? {
-                                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                                      "&:hover": {
-                                          backgroundColor: alpha(theme.palette.primary.main, 0.14),
-                                      },
-                                  }
-                                : {
-                                      "&:hover": {
-                                          backgroundColor: alpha(theme.palette.action.hover, 0.6),
-                                      },
-                                  }),
+                            borderRadius: "10px",
+                            transition: "all 0.15s ease",
+                            opacity: isEnabled ? 1 : 0.35,
+                            "&:hover": {
+                                backgroundColor: alpha(theme.palette.action.hover, 0.5),
+                            },
                         }}
                         aria-label={name}
                     >
@@ -63,11 +49,11 @@ const Actions = ({ actions, row }) => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 "& .MuiSvgIcon-root": {
-                                    fontSize: "1.25rem",
+                                    fontSize: "1.2rem",
                                 },
                                 "& svg": {
-                                    width: 20,
-                                    height: 20,
+                                    width: 19,
+                                    height: 19,
                                 },
                                 color: sx?.color || theme.palette.text.secondary,
                             }}
@@ -76,7 +62,7 @@ const Actions = ({ actions, row }) => {
                                 ? React.isValidElement(icon)
                                     ? React.cloneElement(icon, {
                                           sx: {
-                                              fontSize: "1.25rem",
+                                              fontSize: "1.2rem",
                                               color: "inherit",
                                               ...(icon.props?.sx || {}),
                                           },
@@ -84,18 +70,6 @@ const Actions = ({ actions, row }) => {
                                     : icon
                                 : null}
                         </Box>
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontSize: "0.625rem",
-                                fontWeight: 500,
-                                color: sx?.color || theme.palette.text.secondary,
-                                lineHeight: 1,
-                                textTransform: "capitalize",
-                            }}
-                        >
-                            {name}
-                        </Typography>
                     </ButtonBase>
                 );
             })}

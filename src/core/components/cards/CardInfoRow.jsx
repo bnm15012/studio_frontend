@@ -6,15 +6,74 @@ import React from "react";
 /**
  * CardInfoRow
  *
- * A reusable, styled layout element for displaying icon-labeled key-value rows
- * inside listing cards. Replaces duplicate CSS/JSX structures across
- * CardChip, CardLocation, and ContactSection.
+ * Reusable icon + value row for listing cards.
+ *
+ * Modes:
+ *   - Default: icon + label (small) + value (below label)
+ *   - Compact (compact=true): icon + value only, single line, no label — for native mobile list items
  */
-const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false }) => {
+const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false, compact = false }) => {
     const theme = useTheme();
-    const iconColor = theme.palette.primary.main;
+    const iconColor = theme.palette.text.secondary;
     const isClickable = Boolean(onClick);
 
+    if (compact) {
+        return (
+            <Box
+                display="flex"
+                alignItems="center"
+                gap={0.75}
+                sx={{
+                    minWidth: 0,
+                    flex: 1,
+                    cursor: isClickable ? "pointer" : "default",
+                }}
+                onClick={onClick}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                    }}
+                >
+                    {React.isValidElement(Icon) ? (
+                        React.cloneElement(Icon, {
+                            sx: {
+                                color: iconColor,
+                                fontSize: "1rem",
+                                ...(Icon.props.sx || {}),
+                            },
+                        })
+                    ) : (
+                        <Icon sx={{ color: iconColor, fontSize: "1rem" }} />
+                    )}
+                </Box>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: "text.primary",
+                        fontWeight: 450,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        fontSize: "0.8125rem",
+                        lineHeight: 1.4,
+                    }}
+                >
+                    {value}
+                </Typography>
+                {action && (
+                    <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center", ml: "auto" }}>
+                        {action}
+                    </Box>
+                )}
+            </Box>
+        );
+    }
+
+    // Default (non-compact) mode — label + value stacked
     return (
         <Box
             display="flex"
@@ -36,7 +95,6 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                 }),
             }}
         >
-            {/* Left Icon — inline, no background box */}
             <Box
                 sx={{
                     width: 28,
@@ -52,17 +110,16 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                 {React.isValidElement(Icon) ? (
                     React.cloneElement(Icon, {
                         sx: {
-                            color: iconColor,
+                            color: theme.palette.primary.main,
                             fontSize: "1.2rem",
                             ...(Icon.props.sx || {}),
                         },
                     })
                 ) : (
-                    <Icon sx={{ color: iconColor, fontSize: "1.2rem" }} />
+                    <Icon sx={{ color: theme.palette.primary.main, fontSize: "1.2rem" }} />
                 )}
             </Box>
 
-            {/* Middle Text Content */}
             <Box
                 flexGrow={1}
                 sx={{
@@ -98,7 +155,6 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                 </Typography>
             </Box>
 
-            {/* Optional Right Action Container */}
             {action && (
                 <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center" }}>{action}</Box>
             )}
@@ -108,11 +164,12 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
 
 CardInfoRow.propTypes = {
     Icon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.node]).isRequired,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.string,
     value: PropTypes.node,
     onClick: PropTypes.func,
     action: PropTypes.node,
     hoverable: PropTypes.bool,
+    compact: PropTypes.bool,
 };
 
 export default CardInfoRow;

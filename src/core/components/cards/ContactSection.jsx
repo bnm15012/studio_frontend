@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { IconButton, Tooltip, useTheme } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { Phone, Copy, Mail } from "lucide-react";
 import PropTypes from "prop-types";
-import CardInfoRow from "./CardInfoRow";
 
+/**
+ * ContactSection — Compact inline email/phone display.
+ * Icon + value + optional copy button. No label.
+ */
 const ContactSection = ({ contact }) => {
     const [copied, setCopied] = useState(false);
     const theme = useTheme();
+
+    if (!contact) return null;
 
     const isEmail = contact.includes("@");
 
@@ -28,34 +33,48 @@ const ContactSection = ({ contact }) => {
         window.open(link, "_self");
     };
 
-    const iconColor = theme.palette.primary.main;
-    const IconComponent = isEmail ? (
-        <Mail size={18} color={iconColor} />
-    ) : (
-        <Phone size={18} color={iconColor} />
-    );
-
-    const copyButtonAction = (
-        <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
-            <IconButton
-                size="small"
-                onClick={handleCopy}
-                sx={{ color: theme.palette.primary.main }}
-            >
-                <Copy size={14} />
-            </IconButton>
-        </Tooltip>
-    );
-
     return (
-        <CardInfoRow
-            Icon={IconComponent}
-            label={isEmail ? "Email" : "Phone"}
-            value={contact}
-            onClick={handleClick}
-            action={copyButtonAction}
-            hoverable={true}
-        />
+        <Box display="flex" alignItems="center" gap={0.75}>
+            <Box
+                display="flex"
+                alignItems="center"
+                gap={0.75}
+                sx={{ minWidth: 0, flex: 1, cursor: "pointer" }}
+                onClick={handleClick}
+            >
+                {isEmail ? (
+                    <Mail size={16} color={theme.palette.text.secondary} />
+                ) : (
+                    <Phone size={16} color={theme.palette.text.secondary} />
+                )}
+                <Typography
+                    sx={{
+                        fontSize: "0.8125rem",
+                        fontWeight: 450,
+                        color: "text.primary",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        lineHeight: 1.4,
+                    }}
+                >
+                    {contact}
+                </Typography>
+            </Box>
+            <Tooltip title={copied ? "Copied!" : "Copy"} arrow>
+                <IconButton
+                    size="small"
+                    onClick={handleCopy}
+                    sx={{
+                        p: 0.5,
+                        color: theme.palette.text.secondary,
+                        "&:hover": { color: theme.palette.primary.main },
+                    }}
+                >
+                    <Copy size={13} />
+                </IconButton>
+            </Tooltip>
+        </Box>
     );
 };
 

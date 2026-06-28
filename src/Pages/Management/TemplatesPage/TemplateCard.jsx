@@ -1,22 +1,25 @@
 import PropTypes from "prop-types";
-import { Box, Button } from "@mui/material";
 import CardHeader from "../../../core/components/cards/CardHeader";
-import { BookTemplate, LucideBookTemplate } from "lucide-react";
+import { BookTemplate } from "lucide-react";
 import CardChip from "../../../core/components/cards/CardChip";
 import { Subject } from "@mui/icons-material";
+import { Box } from "@mui/material";
 
-const TemplateCard = ({ row, handleViewOpen }) => {
+const TemplateCard = ({ row }) => {
     const { templateType, templateName, templateSubject } = row;
 
     return (
-        <>
-            <CardHeader FieldIcon={BookTemplate} badge={templateType} enabled={true} />
-            <CardChip ChipIcon={Subject} label={"Subject"} value={templateSubject} />
-            <CardChip ChipIcon={LucideBookTemplate} label={"Template Name"} value={templateName} />
-            <Box display="flex" justifyContent={"center"}>
-                <Button onClick={() => handleViewOpen(row)}>View</Button>
-            </Box>
-        </>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
+            <CardHeader
+                fieldValue={templateName}
+                FieldIcon={BookTemplate}
+                badge={templateType}
+                enabled={true}
+            />
+            {templateSubject && (
+                <CardChip ChipIcon={Subject} value={templateSubject} />
+            )}
+        </Box>
     );
 };
 
@@ -27,7 +30,6 @@ TemplateCard.propTypes = {
         templateSubject: PropTypes.string,
         templateContent: PropTypes.string,
     }).isRequired,
-    handleViewOpen: PropTypes.func,
 };
 
 export default TemplateCard;

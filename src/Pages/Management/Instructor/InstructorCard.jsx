@@ -1,25 +1,26 @@
 import PropTypes from "prop-types";
 import CardHeader from "../../../core/components/cards/CardHeader";
 import ContactSection from "../../../core/components/cards/ContactSection";
-import CardChip from "../../../core/components/cards/CardChip";
 import CardLocation from "../../../core/components/cards/CardLocation";
+import { Box } from "@mui/material";
 
 const InstructorCard = ({ row }) => {
-    const { name, email, phone, instructorStatus, imageUrl, dob, address } = row;
+    const { name, email, phone, instructorStatus, imageUrl, address } = row;
 
     return (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
                 badge={instructorStatus}
                 enabled={instructorStatus === "ACTIVE"}
                 fieldValue={name}
                 image={imageUrl}
             />
-            <ContactSection contact={email} />
-            <ContactSection contact={phone} />
-            <CardChip value={dob} type={"DATE"} label={"Date of Birth"} />
-            <CardLocation address={address} />
-        </>
+            {email && <ContactSection contact={email} />}
+            <Box display="flex" alignItems="center" gap={1.5}>
+                {phone && <ContactSection contact={phone} />}
+                {address && <CardLocation address={address} />}
+            </Box>
+        </Box>
     );
 };
 

@@ -1,7 +1,6 @@
 import {
     Card,
     CardContent,
-    CardHeader,
     Typography,
     IconButton,
     Box,
@@ -9,7 +8,6 @@ import {
     alpha,
     useTheme,
     Button,
-    Divider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -31,79 +29,99 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
 
     return (
         <Card
-            elevation={3}
+            elevation={0}
             sx={{
-                backgroundColor: alpha(theme.palette.background.paper, 0.85),
-                backdropFilter: "blur(12px)",
-                transition: "0.3s",
-                borderRadius: 3,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: "16px",
+                border: `1px solid ${alpha(theme.palette.divider, 0.35)}`,
+                transition: "all 0.2s ease-in-out",
+                boxShadow: `0 1px 2px ${alpha(theme.palette.text.primary, 0.05)}`,
                 "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 6,
+                    transform: "translateY(-1px)",
+                    boxShadow: `0 4px 16px ${alpha(theme.palette.text.primary, 0.07)}`,
                 },
             }}
         >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: 6,
-                    background: "linear-gradient(90deg, #0288d1, #26c6da, #4dd0e1)",
-                }}
-            />
-            <CardHeader
-                sx={{ pb: 1 }}
-                title={
-                    <Stack direction="row" spacing={2} alignItems="center">
+            <Box sx={{ p: 1.75, pb: 1.25 }}>
+                <Stack
+                    direction="row"
+                    spacing={1.5}
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    <Stack
+                        direction="row"
+                        spacing={1.5}
+                        alignItems="center"
+                        sx={{ minWidth: 0, flex: 1 }}
+                    >
                         <Box
                             sx={{
-                                width: 56,
-                                height: 56,
-                                borderRadius: 2,
-                                color: "white",
-                                fontSize: 28,
+                                width: 40,
+                                height: 40,
+                                borderRadius: "10px",
+                                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                color: theme.palette.primary.main,
+                                fontSize: "1.2rem",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                boxShadow: 2,
+                                flexShrink: 0,
                             }}
                         >
                             {getIcon(activity.activityType)}
                         </Box>
-                        <Box>
-                            <Typography variant="h6" fontWeight={600}>
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                            <Typography
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: "1.0625rem",
+                                    color: "text.primary",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                    lineHeight: 1.3,
+                                }}
+                            >
                                 {activity.activityType}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {activity.description || "No description available"}
-                            </Typography>
+                            {activity.description && (
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    noWrap
+                                    display="block"
+                                    sx={{ mt: 0.25 }}
+                                >
+                                    {activity.description}
+                                </Typography>
+                            )}
                         </Box>
                     </Stack>
-                }
-                action={
-                    <Stack direction="column" spacing={1}>
-                        <IconButton size="small" onClick={() => onEdit(activity)}>
+                    <Stack direction="row" spacing={0.5} flexShrink={0}>
+                        <IconButton
+                            size="small"
+                            onClick={() => onEdit(activity)}
+                            sx={{ p: 0.75, color: theme.palette.text.secondary }}
+                        >
                             <EditIcon fontSize="small" />
                         </IconButton>
                         <IconButton
+                            size="small"
                             onClick={() => setOpenDeleteDialog(true)}
                             color="error"
-                            size="small"
+                            sx={{ p: 0.75 }}
                         >
                             <DeleteIcon fontSize="small" />
                         </IconButton>
                     </Stack>
-                }
-            />
+                </Stack>
+            </Box>
 
-            <Divider />
-
-            <CardContent>
-                <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-                    <GroupsIcon fontSize="small" color="action" />
-                    <Typography variant="body2" fontWeight={500}>
+            <CardContent sx={{ pt: 0, px: 1.75, pb: "14px !important" }}>
+                <Stack direction="row" spacing={0.75} alignItems="center" mb={1.25}>
+                    <GroupsIcon sx={{ fontSize: "1.05rem" }} color="action" />
+                    <Typography variant="caption" fontWeight={500} color="text.secondary">
                         {activity.batchEntries.length}{" "}
                         {isBatchEnabled ? "Batch" : "Membership plan"}
                         {activity.batchEntries.length !== 1
@@ -115,28 +133,30 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
                     </Typography>
                 </Stack>
 
-                <Stack spacing={2}>
+                <Stack spacing={1}>
                     {activity.batchEntries.slice(0, 2).map((batch) => (
                         <ActivityBatchCard key={batch.batchId} batch={batch} />
                     ))}
 
                     {activity.batchEntries.length > 2 && (
-                        <>
-                            <Typography variant="body2" color="text.secondary" align="center">
-                                +{activity.batchEntries.length - 2} more batch
-                                {activity.batchEntries.length - 2 !== 1 ? "es" : ""}
-                            </Typography>
+                        <Box sx={{ mt: 0.5 }}>
                             <Button
                                 onClick={() => setShowMoreBatches(true)}
-                                variant="outlined"
+                                variant="text"
                                 size="small"
                                 startIcon={<ExpandMoreIcon />}
                                 fullWidth
-                                sx={{ borderRadius: 2 }}
+                                sx={{
+                                    borderRadius: "8px",
+                                    fontSize: "0.75rem",
+                                    py: 0.5,
+                                    textTransform: "none",
+                                    color: theme.palette.text.secondary,
+                                }}
                             >
-                                Show More
+                                + {activity.batchEntries.length - 2} More
                             </Button>
-                        </>
+                        </Box>
                     )}
                 </Stack>
             </CardContent>

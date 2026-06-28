@@ -1,5 +1,5 @@
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
-import { Box } from "@mui/material";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { Box, Chip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useUI } from "../../../context/UIContext";
@@ -13,6 +13,9 @@ import Loading from "../../../core/components/loading/Loading";
 import { useAlert } from "../../../core/components/feedback/Alert";
 import { getCurrentDateLocal } from "../../../core/utils/DateUtil";
 import MarkPresentDialog from "../Student/MarkPresent";
+import CardHeader from "../../../core/components/cards/CardHeader";
+import CardChip from "../../../core/components/cards/CardChip";
+import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
 
 const LIMIT = 50;
 
@@ -121,6 +124,59 @@ const Attendance = () => {
         dispatch(studentsAssignmentsCruds.markAttendanceBulk(data, token, showAlert, setLoading));
     };
 
+    const AttendanceCard = useMemo(() => {
+        const Comp = ({ row }) => {
+            const isPresent =
+                row?.attendanceEntries?.filter((entry) => entry.date.split(" ")[0] === date)?.[0]
+                    ?.present || false;
+
+            return (
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
+                    <CardHeader
+                        fieldValue={row.studentName}
+                        badge={row.membershipStatus}
+                        enabled={row.membershipStatus === "ACTIVE"}
+                    />
+                    <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        gap={1.5}
+                    >
+                        <CardChip
+                            value={`${row.activityName} (${row.membershipType})`}
+                            ChipIcon={Class}
+                        />
+                        <Chip
+                            size="small"
+                            label={isPresent ? "Present" : "Absent"}
+                            color={isPresent ? "success" : "error"}
+                            variant="outlined"
+                            sx={{
+                                height: 20,
+                                fontSize: "0.65rem",
+                                fontWeight: "bold",
+                                borderRadius: "10px",
+                                textTransform: "capitalize",
+                            }}
+                        />
+                    </Box>
+                    <Box display="flex" alignItems="center" gap={1.5}>
+                        <CardChip value={`${row.daysPerWeek} days/week`} ChipIcon={CalendarMonth} />
+                        {isEnabled(FEATURE_KEYS.BATCH) && row.batchName && (
+                            <CardChip
+                                value={`${row.batchName} (${row.batchTime})`}
+                                ChipIcon={AccessTime}
+                            />
+                        )}
+                    </Box>
+                </Box>
+            );
+        };
+        Comp.displayName = "AttendanceCard";
+        return Comp;
+    }, [date, isEnabled, FEATURE_KEYS]);
+
     return (
         <FlexBetweenColumn>
             {loading && <Loading />}
@@ -165,6 +221,7 @@ const Attendance = () => {
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
+                    CardContentComponent={AttendanceCard}
                 />
             </Box>
             {showAttendence && (

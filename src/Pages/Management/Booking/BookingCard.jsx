@@ -4,6 +4,7 @@ import { isPast } from "../../../core/utils/DateUtil";
 import { CreditCard, Hourglass, Target } from "lucide-react";
 import CardChip from "../../../core/components/cards/CardChip";
 import { Person } from "@mui/icons-material";
+import { Box } from "@mui/material";
 
 const BookingCard = ({ row }) => {
     const { purpose, clientEntry, totalAmount, startTime, endTime, paymentEntries } = row;
@@ -24,21 +25,26 @@ const BookingCard = ({ row }) => {
         return "PENDING";
     };
     return (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
                 fieldValue={purpose}
                 FieldIcon={Target}
                 badge={getStatus()}
                 enabled={!isPast(startTime)}
             />
-            <CardChip label={"Client Name"} ChipIcon={Person} value={clientEntry?.pocName} />
-            <CardChip label={"Total Amount"} ChipIcon={CreditCard} value={totalAmount} />
-            <CardChip
-                label={"Meeting Date"}
-                ChipIcon={Hourglass}
-                value={startTime + " - " + endTime}
-            />
-        </>
+            {clientEntry?.pocName && (
+                <CardChip ChipIcon={Person} value={clientEntry.pocName} />
+            )}
+            <Box display="flex" alignItems="center" gap={1.5}>
+                <CardChip
+                    ChipIcon={Hourglass}
+                    value={startTime + " - " + endTime}
+                />
+                {totalAmount !== undefined && totalAmount !== null && (
+                    <CardChip ChipIcon={CreditCard} value={`Rs. ${totalAmount}`} />
+                )}
+            </Box>
+        </Box>
     );
 };
 

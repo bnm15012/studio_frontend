@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
-import { useTheme } from "@mui/material";
+import { useTheme, Box } from "@mui/material";
 
 import CardHeader from "../../../core/components/cards/CardHeader";
 import CardChip from "../../../core/components/cards/CardChip";
@@ -23,9 +23,24 @@ const StudentAssignActivityCard = ({ row }) => {
         paymentEntry,
     } = row;
 
-    return (
+    const amountDisplay = paymentEntry?.amount !== paymentEntry?.actualAmount ? (
         <>
-            {/* Header */}
+            Rs. {paymentEntry?.amount}{" "}
+            <span
+                style={{
+                    textDecoration: "line-through",
+                    color: theme.palette.error.main,
+                }}
+            >
+                Rs. {paymentEntry?.actualAmount}
+            </span>
+        </>
+    ) : (
+        `Rs. ${paymentEntry?.amount}`
+    );
+
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
                 badge={membershipStatus}
                 enabled={membershipStatus === "ACTIVE"}
@@ -33,56 +48,31 @@ const StudentAssignActivityCard = ({ row }) => {
                 FieldIcon={Activity}
                 image={null}
             />
-            <CardChip
-                value={registrationDate}
-                type="DATE"
-                label="Registration Date"
-                ChipIcon={Calendar}
-            />
-            <CardChip value={paymentEntry?.amount !== paymentEntry?.actualAmount ? (
-                <>
-                    Rs. {paymentEntry?.amount}{" "}
-                    <span
-                        style={{
-                            textDecoration: "line-through",
-                            color: theme.palette.error.main,
-                        }}
-                    >
-                        Rs. {paymentEntry?.actualAmount}
-                    </span>
-                </>
-            ) : (
-                `Rs. ${paymentEntry?.amount}`
-            )
-            } label="Amount" ChipIcon={Wallet} />
-            <CardChip value={daysPerWeek} label="Days Per Week" ChipIcon={Calendar} />
-            <ShowMoreDialog title={"More Activity Details"}>
-                <CardChip value={batchTime} label="Batch Time" ChipIcon={Clock1} />
-                <CardChip value={batchName} label="Batch Name" ChipIcon={Class} />
-                <CardChip
-                    value={membershipStartDate}
-                    type="DATE"
-                    label="Membership Start"
-                    ChipIcon={TimerReset}
-                />
-                <CardChip
-                    value={membershipEndDate}
-                    type="DATE"
-                    label="Membership End"
-                    ChipIcon={TimerReset}
-                />
-                <CardChip value={membershipType} label="Membership Type" ChipIcon={Task} />
-                <CardChip
-                    value={
-                        paymentEntry?.paymentDate
-                            ? getLocalDateTime(paymentEntry.paymentDate)
-                            : "Not Paid"
-                    }
-                    label="Last Payment Date"
-                    ChipIcon={Wallet}
-                />
-            </ShowMoreDialog>
-        </>
+            <Box display="flex" alignItems="center" gap={1.5}>
+                <CardChip value={registrationDate} type="DATE" ChipIcon={Calendar} />
+                <CardChip value={amountDisplay} ChipIcon={Wallet} />
+            </Box>
+            <Box display="flex" alignItems="center" gap={1.5}>
+                <CardChip value={`${daysPerWeek} days/week`} ChipIcon={Calendar} />
+                <ShowMoreDialog title={"More Activity Details"}>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75, py: 1 }}>
+                        <CardChip value={`Batch: ${batchName || "-"}`} ChipIcon={Class} />
+                        <CardChip value={`Time: ${batchTime || "-"}`} ChipIcon={Clock1} />
+                        <CardChip value={membershipStartDate} type="DATE" ChipIcon={TimerReset} />
+                        <CardChip value={membershipEndDate} type="DATE" ChipIcon={TimerReset} />
+                        <CardChip value={`Type: ${membershipType || "-"}`} ChipIcon={Task} />
+                        <CardChip
+                            value={
+                                paymentEntry?.paymentDate
+                                    ? getLocalDateTime(paymentEntry.paymentDate)
+                                    : "Not Paid"
+                            }
+                            ChipIcon={Wallet}
+                        />
+                    </Box>
+                </ShowMoreDialog>
+            </Box>
+        </Box>
     );
 };
 
