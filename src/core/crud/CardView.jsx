@@ -8,7 +8,6 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "../components/cards/StyledCard";
-import { FlexBetween } from "../components/layout/FlexBox";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { memo } from "react";
 import Actions from "./helper/Actions";
@@ -61,8 +60,18 @@ const CardView = (props) => {
                             const rowId = row[fieldsMeta.primary];
 
                             return (
-                                <StyledMotionCard key={rowId || index}>
-                                    {" "}
+                                <StyledMotionCard
+                                    key={rowId || index}
+                                    onClick={() => handleViewOpen?.(row)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault();
+                                            handleViewOpen?.(row);
+                                        }
+                                    }}
+                                >
                                     <StyledCardContent sx={{ flexGrow: "1" }}>
                                         {CardContentComponent ? (
                                             <CardContentComponent
@@ -86,9 +95,7 @@ const CardView = (props) => {
                                         )}
                                     </StyledCardContent>
                                     <StyledCardActions>
-                                        <FlexBetween>
-                                            <Actions actions={actions} row={row} />
-                                        </FlexBetween>
+                                        <Actions actions={actions} row={row} />
                                     </StyledCardActions>
                                 </StyledMotionCard>
                             );

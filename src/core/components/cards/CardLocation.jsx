@@ -5,7 +5,13 @@ import CardInfoRow from "./CardInfoRow";
 const CardLocation = ({ address, city, state, pincode }) => {
     const displayValue = address || `${city || ""}, ${state || ""} ${pincode || ""}` || "-";
 
-    return <CardInfoRow Icon={LocationOn} label="Location" value={displayValue} />;
+    return (
+        <CardInfoRow
+            Icon={<LocationOn sx={{ fontSize: "1.2rem" }} />}
+            label="Location"
+            value={displayValue}
+        />
+    );
 };
 
 CardLocation.propTypes = {

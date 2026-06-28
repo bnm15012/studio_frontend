@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import PropTypes from "prop-types";
+import React from "react";
 
 /**
  * CardInfoRow
@@ -20,26 +21,26 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
             alignItems="center"
             gap={1.5}
             sx={{
-                p: 1,
-                borderRadius: "8px",
-                backgroundColor:
-                    theme.palette.background.alt || alpha(theme.palette.primary.main, 0.02),
+                py: 0.75,
+                px: 0.5,
+                borderBottom: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
                 transition: "background-color 0.2s ease",
+                "&:last-of-type": {
+                    borderBottom: "none",
+                },
                 ...(hoverable && {
                     "&:hover": {
-                        backgroundColor:
-                            theme.palette.action.hover || alpha(theme.palette.primary.main, 0.06),
+                        backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                        borderRadius: "8px",
                     },
                 }),
             }}
         >
-            {/* Left Icon Container */}
+            {/* Left Icon — inline, no background box */}
             <Box
                 sx={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "6px",
-                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    width: 28,
+                    height: 28,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -48,10 +49,16 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                 }}
                 onClick={onClick}
             >
-                {typeof Icon === "function" || typeof Icon === "object" ? (
-                    <Icon sx={{ color: iconColor, fontSize: "1.1rem" }} />
+                {React.isValidElement(Icon) ? (
+                    React.cloneElement(Icon, {
+                        sx: {
+                            color: iconColor,
+                            fontSize: "1.2rem",
+                            ...(Icon.props.sx || {}),
+                        },
+                    })
                 ) : (
-                    Icon
+                    <Icon sx={{ color: iconColor, fontSize: "1.2rem" }} />
                 )}
             </Box>
 
@@ -67,10 +74,9 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                 <Typography
                     variant="caption"
                     sx={{
-                        fontWeight: 700,
+                        fontWeight: 500,
                         color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em",
+                        fontSize: "0.7rem",
                         lineHeight: 1,
                     }}
                 >
@@ -85,6 +91,7 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false })
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                         mt: 0.25,
+                        fontSize: "0.875rem",
                     }}
                 >
                     {value}

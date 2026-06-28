@@ -30,9 +30,9 @@ const ContactSection = ({ contact }) => {
 
     const iconColor = theme.palette.primary.main;
     const IconComponent = isEmail ? (
-        <Mail size={16} color={iconColor} />
+        <Mail size={18} color={iconColor} />
     ) : (
-        <Phone size={16} color={iconColor} />
+        <Phone size={18} color={iconColor} />
     );
 
     const copyButtonAction = (

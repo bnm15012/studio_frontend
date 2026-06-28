@@ -6,32 +6,34 @@ import PropTypes from "prop-types";
 export const StyledCardContainer = styled(Box)(({ theme }) => ({
     display: "grid",
     paddingBottom: theme.spacing(10),
-    gap: theme.spacing(3),
+    gap: theme.spacing(2),
     gridTemplateColumns: "repeat(auto-fill, minmax(min(17rem, 100%), 1fr))",
     [theme.breakpoints.down("sm")]: {
-        gap: theme.spacing(2),
+        gap: theme.spacing(1.5),
+        gridTemplateColumns: "1fr",
     },
 }));
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     position: "relative",
     display: "flex",
-    gap: theme.spacing(1.5),
-    padding: theme.spacing(2.5),
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(2, 2.5),
     height: "100%",
     flexDirection: "column",
     background: theme.palette.background.paper,
     "&:last-child": {
-        paddingBottom: theme.spacing(2.5),
+        paddingBottom: theme.spacing(2),
     },
 }));
 
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     position: "relative",
-    justifyContent: "flex-end",
+    justifyContent: "space-evenly",
     background: theme.palette.background.paper,
-    padding: theme.spacing(1.5, 2.5),
-    borderTop: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(0.5, 1),
+    borderTop: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+    minHeight: 48,
 }));
 
 export const CardBadge = styled(Box)(({ theme }) => ({
@@ -50,15 +52,19 @@ export const CardBadge = styled(Box)(({ theme }) => ({
 const MotionCard = motion.create(Card);
 
 const StyledCardBase = styled(MotionCard)(({ theme }) => ({
-    borderRadius: "16px",
+    borderRadius: "20px",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     backgroundColor: theme.palette.background.paper,
-    border: `1px solid ${theme.palette.divider}`,
-    borderLeft: `5px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+    border: `1px solid ${alpha(theme.palette.divider, 0.4)}`,
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     position: "relative",
+    cursor: "pointer",
+    WebkitTapHighlightColor: "transparent",
+    "&:active": {
+        transform: "scale(0.98)",
+    },
 }));
 
 export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
@@ -70,16 +76,16 @@ export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             whileHover={{
-                y: -4,
-                boxShadow: `0 12px 30px ${alpha(theme.palette.primary.main, 0.12)}`,
-                borderLeftColor: theme.palette.primary.main,
+                y: -2,
+                boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.08)}`,
             }}
+            whileTap={{ scale: 0.985 }}
             {...props}
             sx={{
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.02)",
+                boxShadow: `0 1px 3px ${alpha(theme.palette.text.primary, 0.06)}, 0 1px 2px ${alpha(theme.palette.text.primary, 0.04)}`,
                 ...props.sx,
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
         >
             {children}
         </StyledCardBase>

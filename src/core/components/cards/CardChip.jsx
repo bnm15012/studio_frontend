@@ -6,7 +6,13 @@ import CardInfoRow from "./CardInfoRow";
 const CardChip = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {
     const displayValue = type === "STR" ? value || "-" : getLocalDateTime(value, type);
 
-    return <CardInfoRow Icon={ChipIcon} label={label} value={displayValue} />;
+    return (
+        <CardInfoRow
+            Icon={<ChipIcon sx={{ fontSize: "1.2rem" }} />}
+            label={label}
+            value={displayValue}
+        />
+    );
 };
 
 CardChip.propTypes = {
