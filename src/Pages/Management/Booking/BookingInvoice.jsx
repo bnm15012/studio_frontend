@@ -18,7 +18,7 @@ const sectionTitle = {
 };
 
 const tableHeaderStyle = { textAlign: "left", padding: "6px" };
-const tableCellStyle = { padding: "6px" };
+const tableCellStyle = { padding: "6px", textAlign: "left" };
 
 const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isUser = false, template }) => {
     const pdfViewerRef = useRef();

@@ -69,7 +69,11 @@ const FormView = (props) => {
                     >
                         <ArrowBackIcon sx={{ color: "black" }} />
                     </IconButton>
-                    <Typography variant="h5" fontWeight="bold" sx={{ textOverflow: "ellipsis" }}>
+                    <Typography
+                        variant="h5"
+                        fontWeight="bold"
+                        sx={{ textOverflow: "ellipsis", textTransform: "capitalize" }}
+                    >
                         {tableName}
                     </Typography>
                 </FlexBetween>
@@ -166,12 +170,12 @@ const FormView = (props) => {
                                                         value={
                                                             field?.getValue
                                                                 ? field.getValue(
-                                                                    getNestedValue(
-                                                                        data,
-                                                                        field.name,
-                                                                    ),
-                                                                    data,
-                                                                )
+                                                                      getNestedValue(
+                                                                          data,
+                                                                          field.name,
+                                                                      ),
+                                                                      data,
+                                                                  )
                                                                 : getNestedValue(data, field.name)
                                                         }
                                                         setValue={(v) => {

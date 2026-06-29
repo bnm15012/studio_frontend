@@ -331,6 +331,7 @@ const tableHeaderStyle = {
 
 const tableCellStyle = {
     padding: "8px",
+    textAlign: "left",
 };
 
 StudentInvoice.propTypes = {
