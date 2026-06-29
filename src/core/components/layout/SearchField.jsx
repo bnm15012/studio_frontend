@@ -14,8 +14,9 @@ const StyledSearchField = styled(Box)(({ theme }) => ({
     height: "100%",
     margin: 0,
     padding: theme.spacing(0, 2),
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: "12px",
     backgroundColor: theme.palette.background.paper,
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
 }));
 
 const ButtonProps = {
@@ -26,6 +27,13 @@ const ButtonProps = {
     alignItems: "center",
     justifyContent: "center",
     p: 0,
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+    "&:hover": {
+        transform: "translateY(-1px)",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    },
 };
 
 const SearchField = ({

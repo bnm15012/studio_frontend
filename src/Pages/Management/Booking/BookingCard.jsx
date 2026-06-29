@@ -32,18 +32,13 @@ const BookingCard = ({ row }) => {
                 badge={getStatus()}
                 enabled={!isPast(startTime)}
             />
-            {clientEntry?.pocName && (
-                <CardChip ChipIcon={Person} value={clientEntry.pocName} />
-            )}
+            {clientEntry?.pocName && <CardChip ChipIcon={Person} value={clientEntry.pocName} />}
             <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip
-                    ChipIcon={Hourglass}
-                    value={startTime + " - " + endTime}
-                />
-                {totalAmount !== undefined && totalAmount !== null && (
-                    <CardChip ChipIcon={CreditCard} value={`Rs. ${totalAmount}`} />
-                )}
+                <CardChip ChipIcon={Hourglass} value={startTime + " - " + endTime} />
             </Box>
+            {totalAmount !== undefined && totalAmount !== null && (
+                <CardChip ChipIcon={CreditCard} value={`Rs. ${totalAmount}`} />
+            )}
         </Box>
     );
 };
