@@ -49,9 +49,9 @@ const pulse = keyframes`
 
 // Define color gradients
 const gradients = {
-    contact: "rgb(249, 212, 152)",
-    form: "linear-gradient(135deg, #aed581 0%, #7cb342 100%)",
-    faq: "rgb(249, 212, 152)",
+    contact: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+    form: "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)",
+    faq: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
 };
 
 const ContactUsPage = () => {
@@ -59,11 +59,44 @@ const ContactUsPage = () => {
     return (
         <Box
             sx={{
-                backgroundColor: theme.palette.background.default,
+                background: "linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)",
                 pt: 10,
                 minHeight: "100vh",
+                position: "relative",
+                overflow: "hidden",
             }}
         >
+            {/* Decorative Elements */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: -100,
+                    right: -100,
+                    width: 400,
+                    height: 400,
+                    background: "radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(59, 130, 246, 0.1) 50%, transparent 70%)",
+                    borderRadius: "50%",
+                    filter: "blur(70px)",
+                    animation: "float 10s ease-in-out infinite",
+                    "@keyframes float": {
+                        "0%, 100%": { transform: "translate(0, 0)" },
+                        "50%": { transform: "translate(-20px, 20px)" },
+                    },
+                }}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    bottom: -100,
+                    left: -100,
+                    width: 400,
+                    height: 400,
+                    background: "radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%)",
+                    borderRadius: "50%",
+                    filter: "blur(70px)",
+                    animation: "float 10s ease-in-out infinite reverse",
+                }}
+            />
             <Navbar />
             <Stack
                 direction={{ xs: "column", md: "row" }}
@@ -74,80 +107,92 @@ const ContactUsPage = () => {
             >
                 {/* Contact Information Section */}
                 <Paper
-                    elevation={3}
+                    elevation={0}
                     sx={{
-                        p: 3,
+                        p: 4,
                         maxWidth: "400px",
                         flexGrow: 1,
-                        background: gradients.contact,
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: 3,
                         animation: `${fadeIn} 0.6s ease-out`,
-                        transition: "transform 0.3s ease",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
-                            transform: "translateY(-5px)",
+                            transform: "translateY(-8px)",
+                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
+                            background: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >
-                    <Typography variant="h5" gutterBottom fontWeight="bold">
+                    <Typography variant="h5" gutterBottom fontWeight={800} sx={{ color: "#ffffff", fontSize: "1.5rem" }}>
                         Contact Information
                     </Typography>
-                    <Divider sx={{ mb: 2, borderColor: "rgba(255, 255, 255, 0.2)" }} />
-                    <Box display="flex" alignItems="center" mb={2}>
-                        <EmailIcon sx={{ mr: 1, animation: `${pulse} 2s infinite` }} />
+                    <Divider sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.1)" }} />
+                    <Box display="flex" alignItems="center" mb={3}>
+                        <EmailIcon sx={{ mr: 2, animation: `${pulse} 2s infinite`, color: "#a78bfa", fontSize: "1.5rem" }} />
                         <Typography variant="body1">
                             <Link
                                 href="mailto:bookandmanage@gmail.com"
                                 sx={{
-                                    color: "black",
-                                    "&:hover": { color: "blue" },
+                                    color: "rgba(255, 255, 255, 0.9)",
+                                    "&:hover": { color: "#a78bfa" },
                                     textDecoration: "none",
+                                    fontWeight: 500,
                                 }}
                             >
                                 bookandmanage@gmail.com
                             </Link>
                         </Typography>
                     </Box>
-                    <Box display="flex" alignItems="center" mb={2}>
-                        <PhoneIcon sx={{ mr: 1, animation: `${pulse} 2s infinite` }} />
-                        <Typography variant="body1">+91 73260 27500</Typography>
+                    <Box display="flex" alignItems="center" mb={3}>
+                        <PhoneIcon sx={{ mr: 2, animation: `${pulse} 2s infinite`, color: "#a78bfa", fontSize: "1.5rem" }} />
+                        <Typography variant="body1" sx={{ color: "rgba(255, 255, 255, 0.9)", fontWeight: 500 }}>+91 73260 27500</Typography>
                     </Box>
-                    <Box display="flex" alignItems="center" mb={2}>
-                        <LocationOnIcon sx={{ mr: 1, animation: `${pulse} 2s infinite` }} />
-                        <Typography variant="body1">
-                            {/* 89, 2nd Cross Road, Kaverappa Layout, */}
+                    <Box display="flex" alignItems="center" mb={3}>
+                        <LocationOnIcon sx={{ mr: 2, animation: `${pulse} 2s infinite`, color: "#a78bfa", fontSize: "1.5rem" }} />
+                        <Typography variant="body1" sx={{ color: "rgba(255, 255, 255, 0.9)", fontWeight: 500 }}>
                             Bangalore, Karnataka 560103
                         </Typography>
                     </Box>
-                    <Divider sx={{ mb: 2, borderColor: "rgba(255, 255, 255, 0.2)" }} />
-                    <Typography variant="h6" gutterBottom fontWeight="bold">
+                    <Divider sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.1)" }} />
+                    <Typography variant="h6" gutterBottom fontWeight={700} sx={{ color: "#ffffff", fontSize: "1.25rem" }}>
                         Follow Us
                     </Typography>
-                    <Box display="flex" gap={1}>
+                    <Box display="flex" gap={2}>
                         {[
                             {
                                 href: "https://wa.me/+917326027500",
                                 icon: <WhatsAppIcon />,
                                 color: "#25D366",
+                                bgColor: "rgba(37, 211, 102, 0.5)",
                             },
                             {
                                 href: "https://www.linkedin.com/company/book-manage/",
                                 icon: <LinkedInIcon />,
                                 color: "#0A66C2",
+                                bgColor: "rgba(10, 102, 194, 0.5)",
                             },
                             {
                                 href: "https://www.facebook.com/",
                                 icon: <FacebookIcon />,
                                 color: "#1877F2",
+                                bgColor: "rgba(24, 119, 242, 0.5)",
                             },
-                        ].map(({ href, icon, color }) => (
+                        ].map(({ href, icon, color, bgColor }) => (
                             <Link href={href} target="_blank" rel="noopener" key={href}>
                                 <IconButton
                                     sx={{
-                                        bgcolor: "rgba(255, 255, 255, 0.2)",
-                                        color: color,
+                                        bgcolor: bgColor,
+                                        color: "#ffffff",
+                                        border: "1px solid rgba(255, 255, 255, 0.4)",
                                         transition: "all 0.3s ease",
+                                        fontSize: "1.5rem",
                                         "&:hover": {
-                                            bgcolor: "white",
-                                            transform: "scale(1.1)",
+                                            bgcolor: bgColor.replace("0.5", "0.7"),
+                                            transform: "scale(1.15)",
+                                            boxShadow: `0 0 20px ${color}40`,
+                                            borderColor: color,
                                         },
                                     }}
                                 >
@@ -160,24 +205,29 @@ const ContactUsPage = () => {
 
                 {/* Contact Form Section */}
                 <Paper
-                    elevation={3}
+                    elevation={0}
                     sx={{
-                        p: 3,
+                        p: 4,
                         flexGrow: 2,
-                        backgroundColor: "#f5f5f5",
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: 3,
                         animation: `${fadeIn} 0.6s ease-out 0.2s`,
                         animationFillMode: "backwards",
-                        transition: "transform 0.3s ease",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
-                            transform: "translateY(-5px)",
+                            transform: "translateY(-8px)",
+                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
+                            background: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >
-                    <Typography variant="h5" gutterBottom fontWeight="bold">
+                    <Typography variant="h5" gutterBottom fontWeight={800} sx={{ color: "#ffffff", fontSize: "1.5rem" }}>
                         Get in Touch
                     </Typography>
-                    <Divider sx={{ mb: 2, borderColor: "rgba(255, 255, 255, 0.2)" }} />
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Divider sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.1)" }} />
+                    <Typography variant="body2" sx={{ mb: 3, color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.7 }}>
                         Have questions or need assistance? Fill out the form below and our team will
                         get back to you within 24-48 hours.
                     </Typography>
@@ -186,24 +236,29 @@ const ContactUsPage = () => {
 
                 {/* FAQ Section */}
                 <Paper
-                    elevation={3}
+                    elevation={0}
                     sx={{
-                        p: 3,
+                        p: 4,
                         flexGrow: 1,
                         maxWidth: "400px",
-                        background: gradients.faq,
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: 3,
                         animation: `${fadeIn} 0.6s ease-out 0.4s`,
                         animationFillMode: "backwards",
-                        transition: "transform 0.3s ease",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
-                            transform: "translateY(-5px)",
+                            transform: "translateY(-8px)",
+                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
+                            background: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >
-                    <Typography variant="h5" gutterBottom fontWeight="bold">
+                    <Typography variant="h5" gutterBottom fontWeight={800} sx={{ color: "#ffffff", fontSize: "1.5rem" }}>
                         Frequently Asked Questions
                     </Typography>
-                    <Divider sx={{ mb: 2, borderColor: "rgba(255, 255, 255, 0.2)" }} />
+                    <Divider sx={{ mb: 3, borderColor: "rgba(255, 255, 255, 0.1)" }} />
                     {[
                         {
                             question: "What services do you offer?",
@@ -221,28 +276,35 @@ const ContactUsPage = () => {
                         <Accordion
                             key={question}
                             sx={{
-                                background: "rgba(255, 255, 255, 0.1)",
-                                mb: 1,
+                                background: "rgba(255, 255, 255, 0.05)",
+                                mb: 2,
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                borderRadius: "8px !important",
                                 "&:before": {
                                     display: "none",
                                 },
                                 animation: `${fadeIn} 0.6s ease-out ${0.6 + index * 0.1}s`,
                                 animationFillMode: "backwards",
+                                transition: "all 0.3s ease",
+                                "&:hover": {
+                                    background: "rgba(139, 92, 246, 0.1)",
+                                    borderColor: "rgba(139, 92, 246, 0.3)",
+                                },
                             }}
                         >
                             <AccordionSummary
-                                expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+                                expandIcon={<ExpandMoreIcon sx={{ color: "#a78bfa" }} />}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                                 sx={{
                                     "&:hover": {
-                                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                        backgroundColor: "transparent",
                                     },
                                 }}
                             >
-                                <Typography variant="body1">{question}</Typography>
+                                <Typography variant="body1" sx={{ color: "rgba(255, 255, 255, 0.9)", fontWeight: 500 }}>{question}</Typography>
                             </AccordionSummary>
-                            <AccordionDetails>
+                            <AccordionDetails sx={{ color: "rgba(255, 255, 255, 0.7)", lineHeight: 1.7 }}>
                                 <Typography variant="body2">{answer}</Typography>
                             </AccordionDetails>
                         </Accordion>

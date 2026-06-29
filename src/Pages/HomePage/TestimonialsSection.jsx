@@ -65,61 +65,74 @@ export function TestimonialsSection() {
         <Box
             id="testimonials"
             sx={{
-                py: 12,
-                background:
-                    "linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)",
+                py: 16,
+                background: "linear-gradient(180deg, #16213e 0%, #0f0f1a 50%, #1a1a2e 100%)",
                 position: "relative",
                 overflow: "hidden",
             }}
         >
-            {/* Decorative Elements */}
+            {/* Enhanced Decorative Elements */}
             <Box
                 sx={{
                     position: "absolute",
-                    top: 80,
-                    left: 40,
-                    width: 128,
-                    height: 128,
+                    top: -100,
+                    left: -100,
+                    width: 400,
+                    height: 400,
                     background:
-                        "radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(249, 115, 22, 0.3) 100%)",
+                        "radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(249, 115, 22, 0.1) 50%, transparent 70%)",
                     borderRadius: "50%",
-                    filter: "blur(30px)",
+                    filter: "blur(60px)",
+                    animation: "float 12s ease-in-out infinite",
+                    "@keyframes float": {
+                        "0%, 100%": { transform: "translate(0, 0)" },
+                        "50%": { transform: "translate(20px, -20px)" },
+                    },
                 }}
             />
             <Box
                 sx={{
                     position: "absolute",
-                    bottom: 80,
-                    right: 40,
-                    width: 160,
-                    height: 160,
+                    bottom: -100,
+                    right: -100,
+                    width: 400,
+                    height: 400,
                     background:
-                        "radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%)",
+                        "radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, rgba(168, 85, 247, 0.1) 50%, transparent 70%)",
                     borderRadius: "50%",
-                    filter: "blur(30px)",
+                    filter: "blur(60px)",
+                    animation: "float 12s ease-in-out infinite reverse",
                 }}
             />
 
             <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10 }}>
                 {/* Section Header */}
-                <Box sx={{ textAlign: "center", mb: 8 }}>
+                <Box sx={{ textAlign: "center", mb: 12 }}>
                     <Chip
                         icon={<StarIcon />}
                         label="Trusted by Studios"
                         sx={{
-                            mb: 2,
-                            backgroundColor: "rgba(139, 92, 246, 0.1)",
-                            color: "primary.main",
+                            mb: 3,
+                            backgroundColor: "rgba(139, 92, 246, 0.2)",
+                            color: "#a78bfa",
                             fontWeight: 600,
+                            fontSize: "0.9rem",
+                            letterSpacing: 0.5,
+                            border: "1px solid rgba(139, 92, 246, 0.3)",
                         }}
                     />
                     <Typography
                         variant="h2"
                         sx={{
-                            fontSize: { xs: "2.5rem", lg: "3rem" },
-                            fontWeight: "bold",
-                            mb: 3,
-                            color: "text.primary",
+                            fontSize: { xs: "2.5rem", lg: "4rem" },
+                            fontWeight: 800,
+                            mb: 4,
+                            color: "#ffffff",
+                            letterSpacing: -1,
+                            background: "linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
                         }}
                     >
                         What Our Clients Say
@@ -127,10 +140,11 @@ export function TestimonialsSection() {
                     <Typography
                         variant="h6"
                         sx={{
-                            color: "text.secondary",
-                            maxWidth: 800,
+                            color: "rgba(255, 255, 255, 0.7)",
+                            maxWidth: 700,
                             mx: "auto",
-                            lineHeight: 1.6,
+                            lineHeight: 1.8,
+                            fontSize: { xs: "1rem", lg: "1.25rem" },
                         }}
                     >
                         Don&apos;t just take our word for it. Here&apos;s what studio owners are
@@ -143,8 +157,8 @@ export function TestimonialsSection() {
                     sx={{
                         display: "grid",
                         gridTemplateColumns: { xs: "1fr 1fr", lg: "1fr 1fr 1fr 1fr" },
-                        gap: 3,
-                        mb: 8,
+                        gap: 4,
+                        mb: 12,
                     }}
                 >
                     {stats.map((stat, index) => (
@@ -152,35 +166,49 @@ export function TestimonialsSection() {
                             key={index}
                             sx={{
                                 textAlign: "center",
-                                p: 3,
-                                backgroundColor: "rgba(255, 255, 255, 0.6)",
-                                backdropFilter: "blur(10px)",
-                                border: "1px solid rgba(255, 255, 255, 0.4)",
-                                transition: "all 0.3s ease",
+                                p: 4,
+                                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                                backdropFilter: "blur(20px)",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                borderRadius: 3,
+                                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                                opacity: 0,
+                                animation: "fadeInUp 0.6s ease forwards",
+                                animationDelay: `${index * 0.1}s`,
+                                "@keyframes fadeInUp": {
+                                    "0%": { opacity: 0, transform: "translateY(20px)" },
+                                    "100%": { opacity: 1, transform: "translateY(0)" },
+                                },
                                 "&:hover": {
-                                    backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                    transform: "scale(1.05)",
-                                    boxShadow: "0 20px 40px rgba(139, 92, 246, 0.15)",
+                                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                    transform: "translateY(-8px) scale(1.05)",
+                                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
                                 },
                             }}
                         >
                             <Typography
                                 variant="h3"
                                 sx={{
-                                    fontSize: { xs: "2.5rem", lg: "3rem" },
-                                    fontWeight: "bold",
-                                    background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                    fontSize: { xs: "2.5rem", lg: "3.5rem" },
+                                    fontWeight: 800,
+                                    background: "linear-gradient(135deg, #fbbf24 0%, #f97316 100%)",
                                     backgroundClip: "text",
                                     WebkitBackgroundClip: "text",
                                     WebkitTextFillColor: "transparent",
                                     mb: 1,
+                                    letterSpacing: -1,
                                 }}
                             >
                                 {stat.number}
                             </Typography>
                             <Typography
                                 variant="body2"
-                                sx={{ color: "text.secondary", fontWeight: 500 }}
+                                sx={{
+                                    color: "rgba(255, 255, 255, 0.8)",
+                                    fontWeight: 600,
+                                    fontSize: "1rem",
+                                    letterSpacing: 0.5,
+                                }}
                             >
                                 {stat.label}
                             </Typography>
@@ -193,86 +221,102 @@ export function TestimonialsSection() {
                     sx={{
                         display: "grid",
                         gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-                        gap: 4,
-                        mb: 8,
+                        gap: 5,
+                        mb: 12,
                     }}
                 >
                     {testimonials.map((testimonial, index) => (
                         <Card
                             key={index}
                             sx={{
-                                p: 4,
+                                p: 5,
                                 height: "100%",
-                                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                backdropFilter: "blur(10px)",
-                                border: "1px solid rgba(255, 255, 255, 0.2)",
-                                transition: "all 0.3s ease",
+                                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                                backdropFilter: "blur(20px)",
+                                border: "1px solid rgba(255, 255, 255, 0.1)",
+                                borderRadius: 3,
+                                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                                opacity: 0,
+                                animation: "fadeInUp 0.6s ease forwards",
+                                animationDelay: `${(index + 4) * 0.1}s`,
                                 "&:hover": {
-                                    backgroundColor: "rgba(255, 255, 255, 0.9)",
-                                    transform: "translateY(-4px)",
-                                    boxShadow: "0 20px 40px rgba(139, 92, 246, 0.15)",
+                                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                                    transform: "translateY(-12px)",
+                                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
                                 },
                             }}
                         >
-                            <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+                            <CardContent sx={{ p: 0, "&:last-child": { pb: null } }}>
                                 <Rating
                                     value={testimonial.rating}
                                     readOnly
                                     sx={{
-                                        mb: 2,
+                                        mb: 3,
                                         "& .MuiRating-iconFilled": {
                                             color: "#fbbf24",
+                                        },
+                                        "& .MuiRating-icon": {
+                                            fontSize: "1.5rem",
                                         },
                                     }}
                                 />
 
-                                <Box sx={{ position: "relative", mb: 3 }}>
+                                <Box sx={{ position: "relative", mb: 4 }}>
                                     <QuoteIcon
                                         sx={{
                                             position: "absolute",
-                                            top: -8,
-                                            left: -8,
-                                            fontSize: "2rem",
-                                            color: "primary.main",
-                                            opacity: 0.2,
+                                            top: -12,
+                                            left: -12,
+                                            fontSize: "3rem",
+                                            color: "rgba(139, 92, 246, 0.3)",
                                         }}
                                     />
                                     <Typography
                                         variant="body1"
                                         sx={{
-                                            color: "text.secondary",
-                                            lineHeight: 1.6,
-                                            pl: 3,
+                                            color: "rgba(255, 255, 255, 0.9)",
+                                            lineHeight: 1.8,
+                                            pl: 4,
                                             fontStyle: "italic",
+                                            fontSize: "1.05rem",
                                         }}
                                     >
                                         &quot;{testimonial.content}&quot;
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
                                     <Avatar
                                         src={testimonial.image}
                                         alt={testimonial.name}
                                         sx={{
-                                            width: 48,
-                                            height: 48,
-                                            transition: "transform 0.3s ease",
+                                            width: 56,
+                                            height: 56,
+                                            border: "2px solid rgba(139, 92, 246, 0.3)",
+                                            transition: "all 0.3s ease",
                                             "&:hover": {
                                                 transform: "scale(1.1)",
+                                                borderColor: "rgba(139, 92, 246, 0.6)",
                                             },
                                         }}
                                     />
                                     <Box sx={{ flex: 1 }}>
                                         <Typography
                                             variant="subtitle1"
-                                            sx={{ fontWeight: 600, color: "text.primary" }}
+                                            sx={{
+                                                fontWeight: 700,
+                                                color: "#ffffff",
+                                                fontSize: "1.1rem",
+                                            }}
                                         >
                                             {testimonial.name}
                                         </Typography>
                                         <Typography
                                             variant="body2"
-                                            sx={{ color: "text.secondary" }}
+                                            sx={{
+                                                color: "rgba(255, 255, 255, 0.7)",
+                                                fontSize: "0.95rem",
+                                            }}
                                         >
                                             {testimonial.role}
                                         </Typography>
@@ -284,10 +328,10 @@ export function TestimonialsSection() {
                                     <Box
                                         sx={{
                                             display: "flex",
-                                            gap: 2,
-                                            mt: 3,
-                                            pt: 3,
-                                            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+                                            gap: 3,
+                                            mt: 4,
+                                            pt: 4,
+                                            borderTop: "1px solid rgba(255, 255, 255, 0.1)",
                                         }}
                                     >
                                         {testimonial.metrics.map((metric, metricIndex) => (
@@ -295,12 +339,14 @@ export function TestimonialsSection() {
                                                 <Typography
                                                     variant="h6"
                                                     sx={{
-                                                        fontWeight: "bold",
+                                                        fontWeight: 800,
                                                         background:
-                                                            "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                                            "linear-gradient(135deg, #fbbf24 0%, #f97316 100%)",
                                                         backgroundClip: "text",
                                                         WebkitBackgroundClip: "text",
                                                         WebkitTextFillColor: "transparent",
+                                                        fontSize: "1.5rem",
+                                                        letterSpacing: -0.5,
                                                     }}
                                                 >
                                                     {metric.value}
@@ -308,8 +354,10 @@ export function TestimonialsSection() {
                                                 <Typography
                                                     variant="caption"
                                                     sx={{
-                                                        color: "text.secondary",
-                                                        fontSize: "0.75rem",
+                                                        color: "rgba(255, 255, 255, 0.7)",
+                                                        fontSize: "0.85rem",
+                                                        fontWeight: 500,
+                                                        letterSpacing: 0.3,
                                                     }}
                                                 >
                                                     {metric.label}
@@ -325,7 +373,15 @@ export function TestimonialsSection() {
 
                 {/* Trust Badges */}
                 <Box sx={{ textAlign: "center" }}>
-                    <Typography variant="body1" sx={{ color: "text.secondary", mb: 4 }}>
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            color: "rgba(255, 255, 255, 0.7)",
+                            mb: 5,
+                            fontSize: "1.1rem",
+                            fontWeight: 500,
+                        }}
+                    >
                         Trusted by leading studios worldwide
                     </Typography>
                     <TrustedPartners />

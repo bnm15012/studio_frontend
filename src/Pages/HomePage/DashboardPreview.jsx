@@ -33,63 +33,89 @@ export function DashboardPreview() {
         <Box
             id="dashboard"
             sx={{
-                py: 8,
+                py: 16,
                 background:
-                    "linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%)",
+                    "linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)",
                 position: "relative",
                 overflow: "hidden",
             }}
         >
-            {/* Decorative Elements */}
+            {/* Enhanced Decorative Elements */}
             <Box
                 sx={{
                     position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: 384,
-                    height: 384,
+                    top: -200,
+                    left: -200,
+                    width: 600,
+                    height: 600,
                     background:
-                        "radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%)",
+                        "radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(59, 130, 246, 0.1) 50%, transparent 70%)",
                     borderRadius: "50%",
-                    filter: "blur(60px)",
-                    transform: "translate(-50%, -50%)",
+                    filter: "blur(80px)",
+                    animation: "float 8s ease-in-out infinite",
+                    "@keyframes float": {
+                        "0%, 100%": { transform: "translate(0, 0)" },
+                        "50%": { transform: "translate(30px, -30px)" },
+                    },
                 }}
             />
             <Box
                 sx={{
                     position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    width: 384,
-                    height: 384,
+                    bottom: -200,
+                    right: -200,
+                    width: 600,
+                    height: 600,
                     background:
-                        "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%)",
+                        "radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%)",
                     borderRadius: "50%",
-                    filter: "blur(60px)",
-                    transform: "translate(50%, 50%)",
+                    filter: "blur(80px)",
+                    animation: "float 8s ease-in-out infinite reverse",
+                }}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 800,
+                    height: 800,
+                    background:
+                        "radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%)",
+                    borderRadius: "50%",
+                    filter: "blur(100px)",
                 }}
             />
 
             <Container maxWidth="xl" sx={{ position: "relative", zIndex: 10 }}>
                 {/* Section Header */}
-                <Box sx={{ textAlign: "center", mb: 4 }}>
+                <Box sx={{ textAlign: "center", mb: 12 }}>
                     <Chip
                         icon={<MonitorIcon />}
                         label="Powerful Dashboard"
                         sx={{
-                            mb: 2,
-                            backgroundColor: "rgba(139, 92, 246, 0.1)",
-                            color: "primary.main",
+                            mb: 3,
+                            backgroundColor: "rgba(139, 92, 246, 0.2)",
+                            color: "#a78bfa",
                             fontWeight: 600,
+                            fontSize: "0.9rem",
+                            letterSpacing: 0.5,
+                            border: "1px solid rgba(139, 92, 246, 0.3)",
                         }}
                     />
                     <Typography
                         variant="h2"
                         sx={{
-                            fontSize: { xs: "2.5rem", lg: "3rem" },
-                            fontWeight: "bold",
-                            mb: 3,
-                            color: "text.primary",
+                            fontSize: { xs: "2.5rem", lg: "4rem" },
+                            fontWeight: 800,
+                            mb: 4,
+                            color: "#ffffff",
+                            letterSpacing: -1,
+                            background: "linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
                         }}
                     >
                         See Your Studio at a Glance
@@ -97,10 +123,11 @@ export function DashboardPreview() {
                     <Typography
                         variant="h6"
                         sx={{
-                            color: "text.secondary",
-                            maxWidth: 800,
+                            color: "rgba(255, 255, 255, 0.7)",
+                            maxWidth: 700,
                             mx: "auto",
-                            lineHeight: 1.6,
+                            lineHeight: 1.8,
+                            fontSize: { xs: "1rem", lg: "1.25rem" },
                         }}
                     >
                         Our intuitive dashboard gives you complete control over your studio
@@ -113,7 +140,7 @@ export function DashboardPreview() {
                     sx={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 4,
+                        gap: 8,
                     }}
                 >
                     {dashboardFeatures.map((feature, index) => (
@@ -126,9 +153,16 @@ export function DashboardPreview() {
                                     md: index % 2 === 0 ? "row" : "row-reverse",
                                 },
                                 alignItems: "center",
-                                gap: 10,
+                                gap: 8,
                                 maxWidth: 1400,
                                 mx: "auto",
+                                opacity: 0,
+                                animation: "fadeInUp 0.8s ease forwards",
+                                animationDelay: `${index * 0.2}s`,
+                                "@keyframes fadeInUp": {
+                                    "0%": { opacity: 0, transform: "translateY(30px)" },
+                                    "100%": { opacity: 1, transform: "translateY(0)" },
+                                },
                             }}
                         >
                             <Box
@@ -136,14 +170,17 @@ export function DashboardPreview() {
                                 src={feature.image}
                                 alt={feature.title}
                                 sx={{
-                                    width: { xs: "100%", md: 580 },
-                                    height: { xs: 240, md: 340 },
+                                    width: { xs: "100%", md: 600 },
+                                    height: { xs: 250, md: 380 },
                                     objectFit: "contain",
-                                    transform: index % 2 === 0 ? "rotate(-5deg)" : "rotate(5deg)",
-                                    transition: "transform 0.3s ease",
+                                    borderRadius: 3,
+                                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.1)",
+                                    transform: index % 2 === 0 ? "rotate(-3deg)" : "rotate(3deg)",
+                                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                                     flexShrink: 0,
                                     "&:hover": {
-                                        transform: "rotate(0deg) scale(1.04)",
+                                        transform: "rotate(0deg) scale(1.05) translateY(-10px)",
+                                        boxShadow: "0 35px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.3)",
                                     },
                                 }}
                             />
@@ -154,20 +191,27 @@ export function DashboardPreview() {
                                         xs: "center",
                                         md: index % 2 === 0 ? "left" : "right",
                                     },
+                                    p: { xs: 2, md: 0 },
                                 }}
                             >
                                 <Typography
-                                    variant="h4"
-                                    sx={{ fontWeight: "bold", mb: 3, color: "text.primary" }}
+                                    variant="h3"
+                                    sx={{
+                                        fontWeight: 700,
+                                        mb: 3,
+                                        color: "#ffffff",
+                                        fontSize: { xs: "1.75rem", lg: "2.25rem" },
+                                        letterSpacing: -0.5,
+                                    }}
                                 >
                                     {feature.title}
                                 </Typography>
                                 <Typography
                                     variant="body1"
                                     sx={{
-                                        color: "text.secondary",
-                                        lineHeight: 1.8,
-                                        fontSize: "1.1rem",
+                                        color: "rgba(255, 255, 255, 0.8)",
+                                        lineHeight: 1.9,
+                                        fontSize: { xs: "1rem", lg: "1.15rem" },
                                     }}
                                 >
                                     {feature.description}

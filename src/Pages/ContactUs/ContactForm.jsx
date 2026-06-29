@@ -42,7 +42,16 @@ const ContactForm = () => {
                 margin: "0 auto",
             }}
         >
-            <Typography variant="h4" color="primary" textAlign="center" gutterBottom>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                    textAlign: "center", 
+                    mb: 4,
+                    color: "#ffffff",
+                    fontWeight: 700,
+                    fontSize: "1.75rem",
+                }}
+            >
                 Send Us a Message
             </Typography>
 
@@ -50,9 +59,16 @@ const ContactForm = () => {
                 <Alert
                     severity="error"
                     icon={<ErrorOutlineIcon />}
-                    sx={{ mb: 2 }}
+                    sx={{ 
+                        mb: 2,
+                        backgroundColor: "rgba(239, 68, 68, 0.1)",
+                        color: "#ffffff",
+                        "& .MuiAlert-icon": {
+                            color: "#EF4444",
+                        },
+                    }}
                     action={
-                        <IconButton size="small" onClick={() => setError(null)}>
+                        <IconButton size="small" onClick={() => setError(null)} sx={{ color: "#ffffff" }}>
                             <CloseIcon fontSize="inherit" />
                         </IconButton>
                     }
@@ -65,9 +81,16 @@ const ContactForm = () => {
                 <Alert
                     severity="success"
                     icon={<CheckCircleOutlineIcon />}
-                    sx={{ mb: 2 }}
+                    sx={{ 
+                        mb: 2,
+                        backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        color: "#ffffff",
+                        "& .MuiAlert-icon": {
+                            color: "#10B981",
+                        },
+                    }}
                     action={
-                        <IconButton size="small" onClick={() => setSubmitted(false)}>
+                        <IconButton size="small" onClick={() => setSubmitted(false)} sx={{ color: "#ffffff" }}>
                             <CloseIcon fontSize="inherit" />
                         </IconButton>
                     }
@@ -86,9 +109,25 @@ const ContactForm = () => {
                 required
                 variant="outlined"
                 InputLabelProps={{
-                    style: { color: "#333" },
+                    sx: { color: "rgba(255, 255, 255, 0.7)" },
                 }}
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+                sx={{ 
+                    "& .MuiOutlinedInput-root": { 
+                        borderRadius: "8px",
+                        "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&:hover fieldset": {
+                            borderColor: "rgba(139, 92, 246, 0.5)",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "#8B5CF6",
+                        },
+                    },
+                    "& .MuiOutlinedInput-input": {
+                        color: "#ffffff",
+                    },
+                }}
             />
             <TextField
                 label="Email"
@@ -101,9 +140,25 @@ const ContactForm = () => {
                 type="email"
                 variant="outlined"
                 InputLabelProps={{
-                    style: { color: "#333" },
+                    sx: { color: "rgba(255, 255, 255, 0.7)" },
                 }}
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+                sx={{ 
+                    "& .MuiOutlinedInput-root": { 
+                        borderRadius: "8px",
+                        "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&:hover fieldset": {
+                            borderColor: "rgba(139, 92, 246, 0.5)",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "#8B5CF6",
+                        },
+                    },
+                    "& .MuiOutlinedInput-input": {
+                        color: "#ffffff",
+                    },
+                }}
             />
             <TextField
                 label="Message"
@@ -117,15 +172,30 @@ const ContactForm = () => {
                 required
                 variant="outlined"
                 InputLabelProps={{
-                    style: { color: "#333" },
+                    sx: { color: "rgba(255, 255, 255, 0.7)" },
                 }}
-                sx={{ "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
+                sx={{ 
+                    "& .MuiOutlinedInput-root": { 
+                        borderRadius: "8px",
+                        "& fieldset": {
+                            borderColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                        "&:hover fieldset": {
+                            borderColor: "rgba(139, 92, 246, 0.5)",
+                        },
+                        "&.Mui-focused fieldset": {
+                            borderColor: "#8B5CF6",
+                        },
+                    },
+                    "& .MuiOutlinedInput-input": {
+                        color: "#ffffff",
+                    },
+                }}
             />
 
             <Button
                 type="submit"
                 variant="contained"
-                color="primary"
                 sx={{
                     mt: 3,
                     p: 1.5,
@@ -133,6 +203,15 @@ const ContactForm = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                        background: "linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)",
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 10px 20px rgba(139, 92, 246, 0.3)",
+                    },
                 }}
                 endIcon={<SendIcon />}
                 fullWidth

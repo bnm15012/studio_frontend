@@ -164,12 +164,12 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                           {plan.popular ? <StarIcon /> : <FlashOn />}
                         </Box>
                       </Box> */}
-                                        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
+                                        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1, color: "#ffffff" }}>
                                             {plan?.planType?.replace("_", " ")}
                                         </Typography>
                                         <Typography
                                             variant="body2"
-                                            sx={{ color: "text.secondary", mb: 2 }}
+                                            sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 2 }}
                                         >
                                             {plan?.description}
                                         </Typography>
@@ -191,7 +191,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                             <Typography
                                                 variant="body1"
                                                 sx={{
-                                                    color: "text.secondary",
+                                                    color: "rgba(255, 255, 255, 0.7)",
                                                     display: "inline",
                                                     ml: 1,
                                                 }}
@@ -224,7 +224,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                     {buttonText}
                                 </Button>
 
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3, color: "#ffffff" }}>
                                     What&apos;s included:
                                 </Typography>
                                 <List sx={{ p: 0 }}>
@@ -266,7 +266,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                             variant: "body1",
                                                             sx: {
                                                                 fontWeight: 500,
-                                                                color: "text.primary",
+                                                                color: "rgba(255, 255, 255, 0.9)",
                                                             },
                                                         },
                                                     }}
@@ -283,7 +283,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                     px: 0,
                                                     py: 1.5,
                                                     borderRadius: 2,
-                                                    opacity: 0.6,
+                                                    opacity: 0.85,
                                                 }}
                                             >
                                                 <ListItemIcon sx={{ minWidth: 40 }}>
@@ -291,14 +291,14 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                         sx={{
                                                             width: 36,
                                                             height: 36,
-                                                            background: "rgba(185, 19, 16, 0.1)",
-                                                            border: "1px solid rgba(185, 19, 16, 0.2)",
+                                                            background: "rgba(239, 68, 68, 0.2)",
+                                                            border: "1px solid rgba(239, 68, 68, 0.4)",
                                                         }}
                                                     >
                                                         {FeatureIcon ? (
-                                                            <FeatureIcon size={18} color="#b91310ff" />
+                                                            <FeatureIcon size={18} color="#EF4444" />
                                                         ) : (
-                                                            <Close sx={{ fontSize: "1.25rem", color: "#b91310ff" }} />
+                                                            <Close sx={{ fontSize: "1.25rem", color: "#EF4444" }} />
                                                         )}
                                                     </Avatar>
                                                 </ListItemIcon>
@@ -309,7 +309,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                             variant: "body1",
                                                             sx: {
                                                                 fontWeight: 500,
-                                                                color: "text.secondary",
+                                                                color: "rgba(255, 255, 255, 0.8)",
                                                             },
                                                         },
                                                     }}
