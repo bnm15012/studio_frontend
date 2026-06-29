@@ -1,18 +1,11 @@
 import { useMediaQuery } from "@mui/material";
-import { createContext, useContext } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { FEATURE_KEYS } from "./feature_keys";
+import { UIContext, useUI } from "../core/context/UIContext";
 
-const UIContext = createContext({
-    isMobile: false,
-    isBatchEnabled: false,
-    isEnabled: () => false,
-    isAdmin: false,
-    FEATURE_KEYS: FEATURE_KEYS,
-    DEBUG: false,
-});
+export { useUI };
 
 export const UIProvider = ({ children }) => {
     const settings = useSelector((state) => state.auth.settings);
@@ -36,5 +29,3 @@ export const UIProvider = ({ children }) => {
 UIProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
-
-export const useUI = () => useContext(UIContext);

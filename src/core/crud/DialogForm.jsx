@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import PropTypes from "prop-types";
 import StyledDialog from "../components/dialogs/StyledDialog";
 import { FieldLabel } from "../components/fields/StyledField";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "../context/UIContext";
 import SaveCancelButtons from "./components/SaveCancelButtons";
 import {
     getVisibleFields,

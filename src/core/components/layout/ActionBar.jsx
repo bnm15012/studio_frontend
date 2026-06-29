@@ -1,14 +1,14 @@
 import { FlexBetween } from "./FlexBox";
 import SearchField from "./SearchField";
-import { usePageSearch } from "../../../hooks/useSearch";
+import { usePageSearch } from "../../hooks/useSearch";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import QrForm from "../../../Components/QrForm";
+import QrForm from "../forms/QrForm";
 import { Box, Button, IconButton, Slide } from "@mui/material";
 import { Add, Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { useUI } from "../../../context/UIContext";
+import { useUI } from "../../context/UIContext";
 
 const ActionBar = ({
     filterOptions,

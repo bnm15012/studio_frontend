@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { usePageSearch } from "../../../hooks/useSearch";
+import { usePageSearch } from "../../hooks/useSearch";
 
 export const useTableData = ({
     tableCruds,

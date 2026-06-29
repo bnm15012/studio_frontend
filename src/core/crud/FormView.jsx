@@ -22,7 +22,7 @@ import Field from "../components/fields/Field";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../components/fields/StyledField";
 import { resolveFieldValue, bindGetOptions, isFieldEditable } from "../utils/fieldHelpers";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import { memo } from "react";
 import ViewTabs from "./ViewTabs";

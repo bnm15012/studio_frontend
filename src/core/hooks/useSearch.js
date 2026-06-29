@@ -1,4 +1,3 @@
-// usePageSearch.js
 import { useState, useCallback } from "react";
 
 const subscribers = new Set();

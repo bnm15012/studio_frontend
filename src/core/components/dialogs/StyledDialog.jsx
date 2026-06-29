@@ -13,7 +13,7 @@ import {
     useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useUI } from "../../../context/UIContext";
+import { useUI } from "../../context/UIContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;

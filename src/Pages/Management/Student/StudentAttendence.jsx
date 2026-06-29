@@ -10,7 +10,7 @@ import {
     getLocalDateTime,
     parseDateTime,
 } from "../../../core/utils/DateUtil";
-import QrForm from "../../../Components/QrForm";
+import QrForm from "../../../core/components/forms/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 

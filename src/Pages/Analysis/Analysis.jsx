@@ -24,7 +24,7 @@ import {
     Legend,
     Filler,
 } from "chart.js";
-import WidgetsOnPage from "../../Components/WidgetsOnPage";
+import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
 import { fetchReportData } from "./analysis.api";
 import Loading from "../../core/components/loading/Loading";
 import { useDispatch, useSelector } from "react-redux";

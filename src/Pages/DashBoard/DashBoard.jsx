@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../core/components/feedback/Alert";
 import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
-import WidgetsOnPage from "../../Components/WidgetsOnPage";
+import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
 import Loading from "../../core/components/loading/Loading";
 import { FlexBetween } from "../../core/components/layout/FlexBox";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
