@@ -199,7 +199,7 @@ const DashBoard = () => {
                             >
                                 <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
                                     <Typography variant="h4" sx={{ opacity: 0.9, my: "auto" }}>
-                                        Current Month Revenue
+                                        Current Month Income
                                     </Typography>
                                     <Typography variant="h5" sx={{ fontWeight: 800, my: "auto" }}>
                                         ₹{currentMonthIncome}
@@ -207,7 +207,7 @@ const DashBoard = () => {
                                 </FlexBetween>
                                 <FlexBetween gap={2} flexDirection={isMobile ? "column" : "row"}>
                                     <Typography variant="h4" sx={{ opacity: 0.9, my: "auto" }}>
-                                        Last Month Revenue
+                                        Last Month Income
                                     </Typography>
                                     <Typography variant="h5" sx={{ fontWeight: 800, my: "auto" }}>
                                         ₹{lastMonthIncome}

@@ -296,7 +296,8 @@ export function TestimonialsSection() {
                                                     variant="h6"
                                                     sx={{
                                                         fontWeight: "bold",
-                                                        background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                                        background:
+                                                            "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
                                                         backgroundClip: "text",
                                                         WebkitBackgroundClip: "text",
                                                         WebkitTextFillColor: "transparent",
@@ -306,7 +307,10 @@ export function TestimonialsSection() {
                                                 </Typography>
                                                 <Typography
                                                     variant="caption"
-                                                    sx={{ color: "text.secondary", fontSize: "0.75rem" }}
+                                                    sx={{
+                                                        color: "text.secondary",
+                                                        fontSize: "0.75rem",
+                                                    }}
                                                 >
                                                     {metric.label}
                                                 </Typography>

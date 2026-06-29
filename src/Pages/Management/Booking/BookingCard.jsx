@@ -6,13 +6,29 @@ import CardChip from "../../../Components/New/StyledCardComponents/CardChip";
 import { Person } from "@mui/icons-material";
 
 const BookingCard = ({ row }) => {
-    const { purpose, clientEntry, totalAmount, startTime, endTime, finalPaymentDate } = row;
+    const { purpose, clientEntry, totalAmount, startTime, endTime, paymentEntries } = row;
+    const getStatus = () => {
+        const dueAmount =
+            (row.totalAmount || 0) -
+            ((Array.isArray(paymentEntries) &&
+                paymentEntries
+                    .filter((p) => p.status == "COMPLETED")
+                    .map((p) => p.amount)
+                    .reduce((a, b) => a + b, 0)) ||
+                0);
+        if (dueAmount === 0) {
+            return "COMPLETED";
+        } else if (dueAmount > 0) {
+            return "PARTIALLY PAID";
+        }
+        return "PENDING";
+    };
     return (
         <>
             <CardHeader
                 fieldValue={purpose}
                 FieldIcon={Target}
-                badge={finalPaymentDate ? "Fully Paid" : "Pending Payment"}
+                badge={getStatus()}
                 enabled={!isPast(startTime)}
             />
             <CardChip label={"Client Name"} ChipIcon={Person} value={clientEntry?.pocName} />
@@ -43,11 +59,7 @@ BookingCard.propTypes = {
             PropTypes.instanceOf(Date),
             PropTypes.number,
         ]),
-        finalPaymentDate: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.instanceOf(Date),
-            PropTypes.number,
-        ]),
+        paymentEntries: PropTypes.array,
     }).isRequired,
 };
 

@@ -109,7 +109,8 @@ const Bookings = ({ ID }) => {
             }
 
             const paymentInit = {
-                actualAmount: 0,
+                type: "BOOKING",
+                actualAmount: row.totalAmount,
                 amount: row.totalAmount,
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
@@ -124,6 +125,7 @@ const Bookings = ({ ID }) => {
             } else {
                 throw new Error("Payment cancelled");
             }
+            modifiedData.paymentStatus = paymentStatusTypes[0];
             return modifiedData;
         },
         [awaitForDialog, currentBranch.branchId],
@@ -159,14 +161,16 @@ const Bookings = ({ ID }) => {
                 name: "paymentStatus",
                 label: "Payment Status",
                 section: "Payment Details",
-                type: "SELECT",
-                getValue: (value) => value && { value, key: value },
-                defaultValue: paymentStatusTypes[0],
-                extraProp: {
-                    addValue: false,
-                    getOptions: (s, p, l) =>
-                        paymentStatusTypes.map((value) => ({ value, key: value })),
+                getValue: (value, row) => {
+                    const dueAmount = (row.totalAmount || 0) - (Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0);
+                    if (dueAmount === 0) {
+                        return "COMPLETED";
+                    } else if (dueAmount > 0 && dueAmount != row?.totalAmount) {
+                        return "PARTIALLY PAID";
+                    }
+                    return "PENDING";
                 },
+                extraProp: { readOnly: true },
             },
             {
                 show: true,

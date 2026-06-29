@@ -19,6 +19,10 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
     }, [initialData]);
 
     const handleConfirm = () => {
+        if (formData.type === "BOOKING") {
+            delete formData.actualAmount;
+            delete formData.type;
+        }
         onSave(formData);
     };
 
@@ -35,12 +39,13 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3, py: 2 }}>
                 {!!formData.actualAmount && (
                     <Typography fontWeight="bolder" variant="h6">
-                        Actual Amount: {formData.actualAmount}
+                        {formData.type === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
+                        {formData.actualAmount}
                     </Typography>
                 )}
 
                 <TextField
-                    label="Final Amount"
+                    label={formData.type === "BOOKING" ? "Advance Amount" : "Final Amount"}
                     type="number"
                     value={formData.amount ?? ""}
                     fullWidth
