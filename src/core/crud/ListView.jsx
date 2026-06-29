@@ -23,7 +23,7 @@ import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
 import Actions from "./helper/Actions";
 import { useUI } from "../../context/UIContext";
 import FieldCell from "./components/FieldCell";
-import { getVisibleFields } from "./utils/fieldHelpers";
+import { getVisibleFields } from "../utils/fieldHelpers";
 import { useTheme } from "@emotion/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RowActions, getRowNumber, EmptyState } from "./components/shared";

@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import PropTypes from "prop-types";
 import Field from "../../components/fields/Field";
-import { resolveFieldValue, bindGetOptions } from "../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
 
 /**
  * FieldCell

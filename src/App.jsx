@@ -3,7 +3,7 @@ import { HashRouter as Router } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { themeSettings } from "./core/util/theme";
+import { themeSettings } from "./core/utils/theme";
 import { AllRoutes } from "./NavigationComponets/AllRoutes";
 import { AlertProvider } from "./core/components/feedback/Alert";
 import { clearCacheIfNewDay } from "./utils/cacheManager";

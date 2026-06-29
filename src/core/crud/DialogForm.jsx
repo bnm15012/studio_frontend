@@ -11,7 +11,7 @@ import {
     bindGetOptions,
     resolveFieldValue,
     isFieldEditable,
-} from "./utils/fieldHelpers";
+} from "../utils/fieldHelpers";
 
 export const DialogForm = (props) => {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;

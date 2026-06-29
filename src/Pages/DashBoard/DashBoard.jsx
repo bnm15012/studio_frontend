@@ -42,9 +42,7 @@ const DashBoard = () => {
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
     const token = useSelector((state) => state.auth.token);
-    const endDate = subscriptionPlan?.endDate
-        ? new Date(subscriptionPlan.endDate)
-        : new Date();
+    const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
     const allActivities = useSelector((state) => state.activities.items);
