@@ -13,7 +13,7 @@ import { memo, useState, useEffect, useMemo, useCallback } from "react";
 import Actions from "./helper/Actions";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "./components/shared";
-import { FlexEvenly } from "../components/layout/FlexBox";
+import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -55,6 +55,10 @@ const CardView = (props) => {
     const visibleFields = fields.filter((f) => f.show);
 
     const [selectedRows, setSelectedRows] = useState([]);
+    const onClickRow = useCallback(
+        (row) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
+        [actions],
+    );
 
     useEffect(() => {
         setSelectedRows([]);
@@ -83,9 +87,7 @@ const CardView = (props) => {
     );
 
     const handleSelectRow = useCallback((id, checked) => {
-        setSelectedRows((prev) =>
-            checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
-        );
+        setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)));
     }, []);
 
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
@@ -93,7 +95,6 @@ const CardView = (props) => {
 
     return (
         <Box>
-            {/* ── Multi-select toolbar ── */}
             {multi && selectedRows.length > 0 && (
                 <Toolbar
                     sx={{
@@ -133,7 +134,12 @@ const CardView = (props) => {
                         size="small"
                         sx={{ p: 0.5 }}
                     />
-                    <Typography variant="body2" fontWeight={500} color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                    <Typography
+                        variant="body2"
+                        fontWeight={500}
+                        color="text.secondary"
+                        sx={{ fontSize: "0.85rem" }}
+                    >
                         Select All ({data.length})
                     </Typography>
                 </Box>
@@ -153,7 +159,7 @@ const CardView = (props) => {
                                         if (multi) {
                                             handleSelectRow(rowId, !isItemSelected);
                                         } else {
-                                            handleViewOpen?.(row);
+                                            onClickRow && onClickRow(row);
                                         }
                                     }}
                                     role="button"
@@ -164,29 +170,35 @@ const CardView = (props) => {
                                             if (multi) {
                                                 handleSelectRow(rowId, !isItemSelected);
                                             } else {
-                                                handleViewOpen?.(row);
+                                                onClickRow && onClickRow(row);
                                             }
                                         }
                                     }}
                                     sx={{
+                                        cursor: onClickRow ? "pointer" : "auto",
                                         transition: "all 0.2s ease",
                                         ...(isItemSelected && {
                                             borderColor: theme.palette.primary.main,
-                                            backgroundColor: alpha(theme.palette.primary.main, 0.015),
+                                            backgroundColor: alpha(
+                                                theme.palette.primary.main,
+                                                0.015,
+                                            ),
                                             boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.08)}`,
                                         }),
                                     }}
                                 >
-                                    <Box display="flex" alignItems="stretch" sx={{ width: "100%", height: "100%" }}>
+                                    <FlexBetween sx={{ width: "100%", alignItems: "stretch" }}>
+                                        {/* Selection */}
                                         {multi && (
                                             <Box
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="center"
                                                 sx={{
+                                                    width: 30, // Fixed width
+                                                    flexShrink: 0,
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
                                                     pl: 1.5,
                                                     pr: 0.5,
-                                                    borderRight: `1px solid ${alpha(theme.palette.divider, 0.15)}`,
                                                     backgroundColor: isItemSelected
                                                         ? alpha(theme.palette.primary.main, 0.03)
                                                         : "transparent",
@@ -195,41 +207,62 @@ const CardView = (props) => {
                                                 <Checkbox
                                                     color="primary"
                                                     checked={isItemSelected}
-                                                    onChange={(e) => handleSelectRow(rowId, e.target.checked)}
+                                                    onChange={(e) =>
+                                                        handleSelectRow(rowId, e.target.checked)
+                                                    }
                                                     onClick={(e) => e.stopPropagation()}
                                                     size="small"
                                                     sx={{ p: 0.5 }}
                                                 />
                                             </Box>
                                         )}
-                                        <Box display="flex" flexDirection="column" sx={{ flexGrow: 1, minWidth: 0 }}>
-                                            <StyledCardContent sx={{ flexGrow: "1" }}>
-                                                {CardContentComponent ? (
-                                                    <CardContentComponent
-                                                        row={row}
-                                                        {...{ handleViewOpen }}
-                                                    />
-                                                ) : (
-                                                    <>
-                                                        {visibleFields.map((field) => (
-                                                            <FieldContainer key={field.name}>
-                                                                <FieldLabel>{field.label}</FieldLabel>
-                                                                {field?.getValue
-                                                                    ? field.getValue(
-                                                                          getNestedValue(row, field.name),
+
+                                        {/* Content */}
+                                        <StyledCardContent
+                                            sx={{
+                                                flex: 1,
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            {CardContentComponent ? (
+                                                <CardContentComponent
+                                                    row={row}
+                                                    {...{ handleViewOpen }}
+                                                />
+                                            ) : (
+                                                <>
+                                                    {visibleFields.map((field) => (
+                                                        <FieldContainer key={field.name}>
+                                                            <FieldLabel>{field.label}</FieldLabel>
+                                                            {field?.getValue
+                                                                ? field.getValue(
+                                                                      getNestedValue(
                                                                           row,
-                                                                      )?.value
-                                                                    : getNestedValue(row, field.name)}
-                                                            </FieldContainer>
-                                                        ))}
-                                                    </>
-                                                )}
-                                            </StyledCardContent>
+                                                                          field.name,
+                                                                      ),
+                                                                      row,
+                                                                  )?.value
+                                                                : getNestedValue(row, field.name)}
+                                                        </FieldContainer>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </StyledCardContent>
+
+                                        {/* Actions */}
+                                        <Box
+                                            sx={{
+                                                width: 35, // Fixed width
+                                                flexShrink: 0,
+                                                display: "flex",
+                                                justifyContent: "center",
+                                            }}
+                                        >
                                             <StyledCardActions>
                                                 <Actions actions={actions} row={row} />
                                             </StyledCardActions>
                                         </Box>
-                                    </Box>
+                                    </FlexBetween>
                                 </StyledMotionCard>
                             );
                         })}

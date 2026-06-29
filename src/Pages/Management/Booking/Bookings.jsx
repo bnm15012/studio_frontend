@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Button, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,10 +42,19 @@ const Bookings = ({ ID }) => {
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState(false);
     const api = useRef({});
-    const templates = useSelector((state) => state.genericTemplate.items)
+    const templates = useSelector((state) => state.genericTemplate.items);
 
     useEffect(() => {
-        dispatch(genericTemplateCruds.getAll(showAlert, () => { }, token, { searchTerm: "BOOKING" }, studio.studioId, false))
+        dispatch(
+            genericTemplateCruds.getAll(
+                showAlert,
+                () => {},
+                token,
+                { searchTerm: "BOOKING" },
+                studio.studioId,
+                false,
+            ),
+        );
     }, [dispatch, showAlert, studio.studioId, token]);
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
@@ -162,7 +171,14 @@ const Bookings = ({ ID }) => {
                 label: "Payment Status",
                 section: "Payment Details",
                 getValue: (value, row) => {
-                    const dueAmount = (row.totalAmount || 0) - (Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0);
+                    const dueAmount =
+                        (row.totalAmount || 0) -
+                        ((Array.isArray(row?.paymentEntries) &&
+                            row.paymentEntries
+                                .filter((p) => p.status == "COMPLETED")
+                                .map((p) => p.amount)
+                                .reduce((a, b) => a + b, 0)) ||
+                            0);
                     if (dueAmount === 0) {
                         return "COMPLETED";
                     } else if (dueAmount > 0 && dueAmount != row?.totalAmount) {
@@ -187,7 +203,13 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) => Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0,
+                getValue: (obj, row) =>
+                    (Array.isArray(row?.paymentEntries) &&
+                        row.paymentEntries
+                            .filter((p) => p.status == "COMPLETED")
+                            .map((p) => p.amount)
+                            .reduce((a, b) => a + b, 0)) ||
+                    0,
             },
             {
                 show: false,
@@ -196,7 +218,14 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) => (row.totalAmount || 0) - (Array.isArray(row?.paymentEntries) && (row.paymentEntries.filter(p => p.status == "COMPLETED").map((p) => p.amount).reduce((a, b) => a + b, 0)) || 0),
+                getValue: (obj, row) =>
+                    (row.totalAmount || 0) -
+                    ((Array.isArray(row?.paymentEntries) &&
+                        row.paymentEntries
+                            .filter((p) => p.status == "COMPLETED")
+                            .map((p) => p.amount)
+                            .reduce((a, b) => a + b, 0)) ||
+                        0),
             },
             {
                 show: true,
@@ -300,7 +329,7 @@ const Bookings = ({ ID }) => {
                     open={true}
                     isUser={true}
                     studio={studio}
-                    template={templates?.find(t => t.templateType === "BOOKING")}
+                    template={templates?.find((t) => t.templateType === "BOOKING")}
                     currentBranch={currentBranch}
                     onClose={() => setShowInvoice(false)}
                     bookingData={showInvoice}

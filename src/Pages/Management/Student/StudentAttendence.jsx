@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-    Box,
-    IconButton,
-    Paper,
-    Typography,
-} from "@mui/material";
+import { Box, IconButton, Paper, Typography } from "@mui/material";
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../../core/components/feedback/Alert";
-import { formatDate, getDateRangeLocal, getLocalDateTime, parseDateTime } from "../../../core/utils/DateUtil";
+import {
+    formatDate,
+    getDateRangeLocal,
+    getLocalDateTime,
+    parseDateTime,
+} from "../../../core/utils/DateUtil";
 import QrForm from "../../../Components/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -23,10 +23,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
     const allDates = useMemo(() => {
         if (!activityData) return [];
 
-        return getDateRangeLocal(
-            activityData.membershipStartDate,
-            activityData.membershipEndDate
-        );
+        return getDateRangeLocal(activityData.membershipStartDate, activityData.membershipEndDate);
     }, [activityData]);
 
     useEffect(() => {
@@ -56,96 +53,72 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
             showAlert("No changes", "error");
             return;
         }
-        const attendanceEntries = Object.entries(attendanceMap).map(
-            ([date, present]) => ({
-                date,
-                present,
-            })
+        const attendanceEntries = Object.entries(attendanceMap).map(([date, present]) => ({
+            date,
+            present,
+        }));
+        dispatch(
+            studentsAssignmentsCruds.update(
+                activityData.assignmentId,
+                {
+                    attendanceEntries,
+                },
+                token,
+                showAlert,
+                () => {},
+            ),
         );
-        dispatch(studentsAssignmentsCruds.update(activityData.assignmentId, {
-            attendanceEntries
-        }, token, showAlert, () => { }))
         onClose();
     };
 
-    const hasChange = useCallback((attendanceMap) => {
+    const hasChange = useCallback(
+        (attendanceMap) => {
+            const originalMap = {};
 
-        const originalMap = {};
+            activityData.attendanceEntries?.forEach((entry) => {
+                originalMap[entry.date] = entry.present;
+            });
 
-        activityData.attendanceEntries?.forEach(entry => {
-            originalMap[entry.date] = entry.present;
-        });
+            const allKeys = new Set([...Object.keys(originalMap), ...Object.keys(attendanceMap)]);
 
-        const allKeys = new Set([
-            ...Object.keys(originalMap),
-            ...Object.keys(attendanceMap),
-        ]);
-
-        return [...allKeys].some(key => {
-            return (originalMap[key] ?? false) !== (attendanceMap[key] ?? false);
-        });
-
-    }, [activityData]);
+            return [...allKeys].some(
+                (key) => (originalMap[key] ?? false) !== (attendanceMap[key] ?? false),
+            );
+        },
+        [activityData],
+    );
 
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
-    const startOfMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth(),
-        1
-    );
+    const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
-    const endOfMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth() + 1,
-        0
-    );
+    const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
     const membershipStartMonth = new Date(
         parseDateTime(activityData.membershipStartDate).getFullYear(),
         parseDateTime(activityData.membershipStartDate).getMonth(),
-        1
+        1,
     );
 
     const membershipEndMonth = new Date(
         parseDateTime(activityData.membershipEndDate).getFullYear(),
         parseDateTime(activityData.membershipEndDate).getMonth(),
-        1
+        1,
     );
 
-    const visibleMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth(),
-        1
-    );
+    const visibleMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
     const daysInMonth = [];
-    for (
-        let d = new Date(startOfMonth);
-        d <= endOfMonth;
-        d.setDate(d.getDate() + 1)
-    ) {
+    for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
         daysInMonth.push(new Date(d));
     }
 
     const handlePrevMonth = () => {
-        setCurrentMonth(
-            new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() - 1,
-                1
-            )
-        );
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
     };
 
     const handleNextMonth = () => {
-        setCurrentMonth(
-            new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth() + 1,
-                1
-            )
-        );
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
     };
 
     return (
@@ -156,7 +129,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                 title={`Student Attendance for activity: ${activityData?.activityName}`}
                 maxWidth={"sm"}
                 onConfirm={handleSave}
-                confirmText="Save Attendance"
+                confirmText="Save"
             >
                 {/* Header Info */}
                 <Box
@@ -175,7 +148,8 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                     <Box display={"flex"} gap={1}>
                         <QrForm
                             title="Attendance QR"
-                            qrValue={activityData.activityName + "/" + activityData.assignmentId} />
+                            qrValue={activityData.activityName + "/" + activityData.assignmentId}
+                        />
                         <Box>
                             <Typography variant="h6" fontWeight={700}>
                                 {activityData?.activityName}
@@ -189,10 +163,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
 
                     <Box display="flex" gap={3} flexWrap="wrap">
                         <Box>
-                            <Typography
-                                variant="caption"
-                                color="text.secondary"
-                            >
+                            <Typography variant="caption" color="text.secondary">
                                 Start Date
                             </Typography>
 
@@ -202,10 +173,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         </Box>
 
                         <Box>
-                            <Typography
-                                variant="caption"
-                                color="text.secondary"
-                            >
+                            <Typography variant="caption" color="text.secondary">
                                 End Date
                             </Typography>
 
@@ -215,16 +183,11 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         </Box>
 
                         <Box>
-                            <Typography
-                                variant="caption"
-                                color="text.secondary"
-                            >
+                            <Typography variant="caption" color="text.secondary">
                                 Membership
                             </Typography>
 
-                            <Typography fontWeight={600}>
-                                {(activityData?.membershipType)}
-                            </Typography>
+                            <Typography fontWeight={600}>{activityData?.membershipType}</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -248,7 +211,11 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         bgcolor="primary.main"
                         color="white"
                     >
-                        <IconButton onClick={handlePrevMonth} sx={{ color: "white" }} disabled={visibleMonth <= membershipStartMonth}>
+                        <IconButton
+                            onClick={handlePrevMonth}
+                            sx={{ color: "white" }}
+                            disabled={visibleMonth <= membershipStartMonth}
+                        >
                             <ChevronLeftIcon />
                         </IconButton>
 
@@ -259,7 +226,11 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             })}
                         </Typography>
 
-                        <IconButton onClick={handleNextMonth} sx={{ color: "white" }} disabled={visibleMonth >= membershipEndMonth}>
+                        <IconButton
+                            onClick={handleNextMonth}
+                            sx={{ color: "white" }}
+                            disabled={visibleMonth >= membershipEndMonth}
+                        >
                             <ChevronRightIcon />
                         </IconButton>
                     </Box>
@@ -275,11 +246,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         }}
                     >
                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                            <Box
-                                key={day}
-                                py={1}
-                                textAlign="center"
-                            >
+                            <Box key={day} py={1} textAlign="center">
                                 <Typography variant="caption" fontWeight={700}>
                                     {day}
                                 </Typography>
@@ -306,13 +273,9 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             const present = attendanceMap[key] || false;
                             const today = isToday(date);
 
-                            const membershipStart = parseDateTime(
-                                activityData.membershipStartDate
-                            );
+                            const membershipStart = parseDateTime(activityData.membershipStartDate);
 
-                            const membershipEnd = parseDateTime(
-                                activityData.membershipEndDate
-                            );
+                            const membershipEnd = parseDateTime(activityData.membershipEndDate);
 
                             // remove time part
                             membershipStart.setHours(0, 0, 0, 0);
@@ -322,8 +285,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             currentDate.setHours(0, 0, 0, 0);
 
                             const isDisabled =
-                                currentDate < membershipStart ||
-                                currentDate > membershipEnd;
+                                currentDate < membershipStart || currentDate > membershipEnd;
 
                             return (
                                 <Paper
@@ -337,9 +299,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                                     sx={{
                                         height: 30,
                                         minHeight: 30,
-                                        cursor: isDisabled
-                                            ? "not-allowed"
-                                            : "pointer",
+                                        cursor: isDisabled ? "not-allowed" : "pointer",
 
                                         borderRadius: 1.5,
 
@@ -355,39 +315,36 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                                         borderColor: isDisabled
                                             ? "grey.300"
                                             : present
-                                                ? "success.main"
-                                                : "divider",
+                                              ? "success.main"
+                                              : "divider",
 
                                         bgcolor: isDisabled
                                             ? "grey.50"
                                             : today
-                                                ? present
-                                                    ? "primary.dark"
-                                                    : "primary.light"
-                                                : present
-                                                    ? "primary.main"
-                                                    : "background.paper",
+                                              ? present
+                                                  ? "primary.dark"
+                                                  : "primary.light"
+                                              : present
+                                                ? "primary.main"
+                                                : "background.paper",
 
                                         color: isDisabled
                                             ? "text.disabled"
                                             : present || today
-                                                ? "white"
-                                                : "text.primary",
+                                              ? "white"
+                                              : "text.primary",
 
                                         opacity: isDisabled ? 0.45 : 1,
 
                                         "&:hover": isDisabled
                                             ? {}
                                             : {
-                                                transform: "translateY(-1px)",
-                                                boxShadow: 2,
-                                            },
+                                                  transform: "translateY(-1px)",
+                                                  boxShadow: 2,
+                                              },
                                     }}
                                 >
-                                    <Typography
-                                        variant="body2"
-                                        fontWeight={700}
-                                    >
+                                    <Typography variant="body2" fontWeight={700}>
                                         {date.getDate()}
                                     </Typography>
                                 </Paper>

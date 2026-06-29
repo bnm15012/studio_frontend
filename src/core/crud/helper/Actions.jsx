@@ -8,14 +8,7 @@ const Actions = ({ actions, row }) => {
     const visibleActions = actions.filter((a) => !a.hide);
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                width: "100%",
-            }}
-        >
+        <>
             {visibleActions.map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled = typeof enabled === "function" ? enabled(row) : enabled;
 
@@ -73,7 +66,7 @@ const Actions = ({ actions, row }) => {
                     </ButtonBase>
                 );
             })}
-        </Box>
+        </>
     );
 };
 

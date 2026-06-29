@@ -120,52 +120,52 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
      */
     const getById =
         (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
-            async (dispatch, getState) => {
-                if (id === "NEW") return;
+        async (dispatch, getState) => {
+            if (id === "NEW") return;
 
-                const cached = getState()[route].recordById[id];
-                if (cached && !forceRefresh) return cached;
+            const cached = getState()[route].recordById[id];
+            if (cached && !forceRefresh) return cached;
 
-                return withLoading(setLoading, async () => {
-                    try {
-                        const {
-                            data: { data },
-                        } = await api.get(`/${route}/get/${id}`, getHeader(token));
-                        const record = data[0];
-                        dispatch(actions.setRecord(record));
-                        return record;
-                    } catch (err) {
-                        console.error(err);
-                        showAlert(getApiMessage(err, `Failed to fetch ${route} by ID`), "error");
-                        return null;
-                    }
-                });
-            };
+            return withLoading(setLoading, async () => {
+                try {
+                    const {
+                        data: { data },
+                    } = await api.get(`/${route}/get/${id}`, getHeader(token));
+                    const record = data[0];
+                    dispatch(actions.setRecord(record));
+                    return record;
+                } catch (err) {
+                    console.error(err);
+                    showAlert(getApiMessage(err, `Failed to fetch ${route} by ID`), "error");
+                    return null;
+                }
+            });
+        };
 
     /**
      * Clears the slice and re-fetches the current page with the same filters.
      */
     const refresh =
         (showAlert, setLoading, token, infinite = false) =>
-            async (dispatch, getState) => {
-                const state = getState()[route];
-                dispatch(actions.clearData());
-                return dispatch(
-                    getAll(
-                        showAlert,
-                        setLoading,
-                        token,
-                        {
-                            page: 1,
-                            size: state.pageSize,
-                            searchTerm: state.searchTerm,
-                            ...state.filterKeys,
-                        },
-                        state.rootId,
-                        infinite,
-                    ),
-                );
-            };
+        async (dispatch, getState) => {
+            const state = getState()[route];
+            dispatch(actions.clearData());
+            return dispatch(
+                getAll(
+                    showAlert,
+                    setLoading,
+                    token,
+                    {
+                        page: 1,
+                        size: state.pageSize,
+                        searchTerm: state.searchTerm,
+                        ...state.filterKeys,
+                    },
+                    state.rootId,
+                    infinite,
+                ),
+            );
+        };
 
     return {
         add,

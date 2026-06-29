@@ -16,9 +16,7 @@ const TemplateCard = ({ row }) => {
                 badge={templateType}
                 enabled={true}
             />
-            {templateSubject && (
-                <CardChip ChipIcon={Subject} value={templateSubject} />
-            )}
+            {templateSubject && <CardChip ChipIcon={Subject} value={templateSubject} />}
         </Box>
     );
 };

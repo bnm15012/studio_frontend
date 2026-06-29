@@ -30,6 +30,7 @@ export const StyledCardContent = styled(CardContent)(({ theme }) => ({
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     position: "relative",
     justifyContent: "space-evenly",
+    flexDirection: "column",
     background: theme.palette.background.paper,
     padding: theme.spacing(0, 0.5),
     borderTop: `1px solid ${alpha(theme.palette.divider, 0.4)}`,
@@ -95,4 +96,5 @@ export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
 StyledMotionCard.propTypes = {
     children: PropTypes.node.isRequired,
     elevation: PropTypes.number,
+    sx: PropTypes.object,
 };
