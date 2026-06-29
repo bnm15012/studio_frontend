@@ -40,9 +40,9 @@ const scaleIn = keyframes`
 
 // Define gradients
 const gradients = {
-    main: "linear-gradient(135deg, #4fc3f7 0%, #00b0ff 100%)",
-    features: "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
-    highlight: "linear-gradient(135deg, #aed581 0%, #7cb342 100%)",
+    main: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+    features: "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)",
+    highlight: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
 };
 
 const AboutUsPage = () => {
@@ -51,10 +51,44 @@ const AboutUsPage = () => {
     return (
         <Box
             sx={{
-                backgroundColor: palette.background.default,
+                background: "linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)",
                 pt: 10,
+                minHeight: "100vh",
+                position: "relative",
+                overflow: "hidden",
             }}
         >
+            {/* Decorative Elements */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: -100,
+                    right: -100,
+                    width: 400,
+                    height: 400,
+                    background: "radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(59, 130, 246, 0.1) 50%, transparent 70%)",
+                    borderRadius: "50%",
+                    filter: "blur(70px)",
+                    animation: "float 10s ease-in-out infinite",
+                    "@keyframes float": {
+                        "0%, 100%": { transform: "translate(0, 0)" },
+                        "50%": { transform: "translate(-20px, 20px)" },
+                    },
+                }}
+            />
+            <Box
+                sx={{
+                    position: "absolute",
+                    bottom: -100,
+                    left: -100,
+                    width: 400,
+                    height: 400,
+                    background: "radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 70%)",
+                    borderRadius: "50%",
+                    filter: "blur(70px)",
+                    animation: "float 10s ease-in-out infinite reverse",
+                }}
+            />
             <Navbar />
             <FlexEvenlyColumn
                 gap={5}
@@ -67,16 +101,19 @@ const AboutUsPage = () => {
             >
                 {/* Introduction Section */}
                 <Paper
-                    elevation={3}
+                    elevation={0}
                     sx={{
-                        p: 4,
-                        background: gradients.main,
-                        color: "white",
+                        p: 5,
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                         borderRadius: 3,
                         animation: `${scaleIn} 0.6s ease-out`,
-                        transition: "transform 0.3s ease",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
-                            transform: "translateY(-5px)",
+                            transform: "translateY(-8px)",
+                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
+                            background: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >
@@ -85,18 +122,25 @@ const AboutUsPage = () => {
                             variant="h3"
                             textAlign="center"
                             sx={{
-                                fontWeight: 700,
+                                fontWeight: 800,
                                 width: "100%",
                                 position: "relative",
+                                fontSize: { xs: "1.75rem", lg: "2.5rem" },
+                                color: "#ffffff",
+                                letterSpacing: -0.5,
+                                background: "linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                backgroundClip: "text",
                                 "&:after": {
                                     content: '""',
                                     position: "absolute",
-                                    bottom: -8,
+                                    bottom: -12,
                                     left: "50%",
                                     transform: "translateX(-50%)",
                                     width: "80px",
                                     height: "3px",
-                                    background: "rgba(255, 255, 255, 0.5)",
+                                    background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
                                     borderRadius: "2px",
                                 },
                             }}
@@ -112,6 +156,8 @@ const AboutUsPage = () => {
                             px: { xs: 1, sm: 4 },
                             animation: `${fadeIn} 0.6s ease-out 0.3s`,
                             animationFillMode: "backwards",
+                            color: "rgba(255, 255, 255, 0.8)",
+                            fontSize: { xs: "1rem", lg: "1.15rem" },
                         }}
                     >
                         At Book & Manage, we provide a comprehensive system designed to help you
@@ -123,16 +169,20 @@ const AboutUsPage = () => {
 
                 {/* Features Section */}
                 <Paper
-                    elevation={3}
+                    elevation={0}
                     sx={{
-                        p: 4,
-                        background: "rgb(249, 225, 152)",
+                        p: 5,
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
                         borderRadius: 3,
                         animation: `${fadeIn} 0.6s ease-out 0.6s`,
                         animationFillMode: "backwards",
-                        transition: "transform 0.3s ease",
+                        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                         "&:hover": {
-                            transform: "translateY(-5px)",
+                            transform: "translateY(-8px)",
+                            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.3)",
+                            background: "rgba(255, 255, 255, 0.08)",
                         },
                     }}
                 >
@@ -140,18 +190,21 @@ const AboutUsPage = () => {
                         variant="h4"
                         sx={{
                             mb: 4,
-                            color: palette.primary.dark,
-                            fontWeight: 700,
+                            color: "#ffffff",
+                            fontWeight: 800,
                             textAlign: "center",
+                            fontSize: { xs: "1.5rem", lg: "2rem" },
+                            letterSpacing: -0.5,
                             position: "relative",
                             "&:after": {
                                 content: '""',
                                 position: "absolute",
-                                bottom: -8,
+                                bottom: -12,
                                 left: "50%",
                                 transform: "translateX(-50%)",
                                 width: "60px",
                                 height: "3px",
+                                background: "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
                                 borderRadius: "2px",
                             },
                         }}
@@ -187,20 +240,23 @@ const AboutUsPage = () => {
                         ].map(({ icon, title, description }, index) => (
                             <Paper
                                 key={title}
-                                elevation={2}
+                                elevation={0}
                                 sx={{
-                                    p: 3,
-                                    background: "white",
-                                    borderRadius: 2,
+                                    p: 3.5,
+                                    background: "rgba(255, 255, 255, 0.05)",
+                                    backdropFilter: "blur(10px)",
+                                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                                    borderRadius: 2.5,
                                     animation: `${slideIn} 0.5s ease-out ${0.8 + index * 0.1}s`,
                                     animationFillMode: "backwards",
-                                    transition: "all 0.3s ease",
+                                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                                     "&:hover": {
-                                        transform: "translateX(10px)",
-                                        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-                                        background: gradients.highlight,
+                                        transform: "translateX(15px)",
+                                        boxShadow: "0 20px 40px rgba(139, 92, 246, 0.2)",
+                                        background: "rgba(139, 92, 246, 0.15)",
+                                        borderColor: "rgba(139, 92, 246, 0.4)",
                                         "& .feature-title, & .feature-description": {
-                                            color: "white",
+                                            color: "#ffffff",
                                         },
                                     },
                                 }}
@@ -214,9 +270,10 @@ const AboutUsPage = () => {
                                             variant="h6"
                                             className="feature-title"
                                             sx={{
-                                                color: palette.primary.main,
-                                                fontWeight: 600,
-                                                mb: 0.5,
+                                                color: "#ffffff",
+                                                fontWeight: 700,
+                                                mb: 1,
+                                                fontSize: "1.1rem",
                                             }}
                                         >
                                             {title}
@@ -225,8 +282,9 @@ const AboutUsPage = () => {
                                             variant="body1"
                                             className="feature-description"
                                             sx={{
-                                                color: "#555",
-                                                lineHeight: 1.6,
+                                                color: "rgba(255, 255, 255, 0.7)",
+                                                lineHeight: 1.7,
+                                                fontSize: "0.95rem",
                                             }}
                                         >
                                             {description}
