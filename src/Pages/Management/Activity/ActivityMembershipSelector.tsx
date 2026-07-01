@@ -6,7 +6,7 @@ import { useUI } from "../../../context/UIContext";
 
 const ActivityMembershipSelector = ({ onSelect, selectedData, isMemberSHipToo = true }) => {
     const { isBatchEnabled } = useUI();
-    const activities = useSelector((state) => state.activities.items);
+    const activities = useSelector((state: any) => state.activities.items);
 
     const [selectedActivity, setSelectedActivity] = useState(
         activities.find((f) => f.activityId === selectedData?.activity?.activityId) || null,
@@ -59,9 +59,8 @@ const ActivityMembershipSelector = ({ onSelect, selectedData, isMemberSHipToo = 
 
         const firstBatch = batches[0] || {};
         const updatedBatchName = firstBatch.name || "";
-        const updatedBatchTime = `${firstBatch.startTime || "00:00"} - ${
-            firstBatch.endTime || "00:00"
-        }`;
+        const updatedBatchTime = `${firstBatch.startTime || "00:00"} - ${firstBatch.endTime || "00:00"
+            }`;
         const updatedAmount = firstBatch.price || 0;
 
         setDaysPerWeek(selectedDays);

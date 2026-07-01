@@ -1,5 +1,14 @@
 import api from "../../../core/utils/api";
 
+interface GetAllTemplatesParams {
+    studioId: string | number;
+    token: string | null | undefined;
+    searchTerm?: string;
+    templateType?: string;
+    page?: number;
+    size?: number;
+}
+
 export const getAllTemplatesAPI = async ({
     studioId,
     token,
@@ -7,7 +16,7 @@ export const getAllTemplatesAPI = async ({
     templateType = "",
     page = 1,
     size = 10,
-}) => {
+}: GetAllTemplatesParams) => {
     try {
         const response = await api.get(`/genericTemplate/getAll/${studioId}`, {
             headers: { Authorization: `${token}` },
@@ -25,7 +34,7 @@ export const getAllTemplatesAPI = async ({
             message: status.statusMessage,
             totalCount: status.totalCount,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message:

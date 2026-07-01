@@ -1,6 +1,5 @@
+import React, { useState, useRef } from "react";
 import { Box, MenuItem, Popper, Paper, TextField } from "@mui/material";
-import { useState, useRef } from "react";
-import PropTypes from "prop-types";
 
 const data = {
     instructor: {
@@ -53,14 +52,22 @@ const data = {
 };
 
 // flatten nested object keys like instructor.name, student.email
-const flattenVariables = (obj, prefix = "") =>
+const flattenVariables = (obj: any, prefix = ""): string[] =>
     Object.entries(obj).flatMap(([key, value]) =>
         typeof value === "object" ? flattenVariables(value, `${prefix}${key}_`) : `${prefix}${key}`,
     );
 
 const allVariables = flattenVariables(data);
 
-const TemplateEditor = ({
+interface TemplateEditorProps {
+    value: string;
+    setValue: (val: string) => void;
+    rows?: number;
+    label?: string;
+    disableVars?: boolean;
+}
+
+const TemplateEditor: React.FC<TemplateEditorProps> = ({
     value,
     setValue,
     rows = 1,
@@ -69,13 +76,13 @@ const TemplateEditor = ({
 }) => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [filter, setFilter] = useState("");
-    const textRef = useRef(null);
+    const textRef = useRef<HTMLTextAreaElement | HTMLInputElement | null>(null);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const newValue = e.target.value;
         setValue(newValue);
 
-        const cursorPos = e.target.selectionStart;
+        const cursorPos = e.target.selectionStart || 0;
         const beforeCursor = newValue.slice(0, cursorPos);
 
         // Match `{{` or `{{some.text`
@@ -90,11 +97,11 @@ const TemplateEditor = ({
         }
     };
 
-    const insertVariable = (variable) => {
+    const insertVariable = (variable: string) => {
         const input = textRef.current;
         if (!input) return;
 
-        const cursorPos = input.selectionStart;
+        const cursorPos = input.selectionStart || 0;
         const before = value.slice(0, cursorPos);
         const after = value.slice(cursorPos);
 
@@ -153,13 +160,6 @@ const TemplateEditor = ({
             </Popper>
         </Box>
     );
-};
-TemplateEditor.propTypes = {
-    value: PropTypes.string.isRequired,
-    setValue: PropTypes.func.isRequired,
-    rows: PropTypes.number,
-    label: PropTypes.string,
-    disableVars: PropTypes.bool,
 };
 
 export default TemplateEditor;

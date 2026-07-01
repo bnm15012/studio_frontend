@@ -1,5 +1,4 @@
-import { useMemo, useState } from "react";
-
+import React, { useMemo, useState } from "react";
 import {
     Box,
     Button,
@@ -9,20 +8,13 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
-
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import Field from "../../../core/components/fields/Field";
 import { FieldLabel } from "../../../core/components/fields/StyledField";
-
 import { useUI } from "../../../context/UIContext";
-
-// ─────────────────────────────────────────────────────────────
-// Fields
-// ─────────────────────────────────────────────────────────────
 
 const FORM_SECTIONS = [
     {
@@ -82,24 +74,18 @@ const FORM_SECTIONS = [
     },
 ];
 
-// ─────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────
-
-const EMPTY_DATA = {
+const EMPTY_DATA: Record<string, string> = {
     parentName: "",
     parentPhone: "",
     parentAddress: "",
     parentRelation: "",
-
     anyPastExperience: "",
     whereYouHereAboutUs: "",
     hobbiesInterests: "",
-
     medicalInfo: "",
 };
 
-const parseValue = (value) => {
+const parseValue = (value: any) => {
     try {
         if (!value) return EMPTY_DATA;
 
@@ -117,7 +103,7 @@ const parseValue = (value) => {
     }
 };
 
-const getFilledCount = (data) =>
+const getFilledCount = (data: Record<string, string>) =>
     Object.values(data).filter(
         (value) =>
             value !== null &&
@@ -125,11 +111,13 @@ const getFilledCount = (data) =>
             value !== ""
     ).length;
 
-// ─────────────────────────────────────────────────────────────
-// Component
-// ─────────────────────────────────────────────────────────────
+interface OtherInfoProps {
+    value: any;
+    setValue: (val: string) => void;
+    isEdit?: boolean;
+}
 
-const OtherInfo = ({
+const OtherInfo: React.FC<OtherInfoProps> = ({
     value,
     setValue,
     isEdit,
@@ -144,14 +132,12 @@ const OtherInfo = ({
     const [open, setOpen] = useState(false);
 
     const [formData, setFormData] =
-        useState(parsedValue);
+        useState<Record<string, string>>(parsedValue);
 
     const filledCount =
         getFilledCount(parsedValue);
 
     const hasData = filledCount > 0;
-
-    // ─────────────────────────────────────────────────────────
 
     const handleOpen = () => {
         setFormData(parseValue(value));
@@ -163,8 +149,8 @@ const OtherInfo = ({
     };
 
     const handleChange = (
-        fieldName,
-        fieldValue
+        fieldName: string,
+        fieldValue: string
     ) => {
         setFormData((prev) => ({
             ...prev,
@@ -174,20 +160,15 @@ const OtherInfo = ({
 
     const handleSave = () => {
         setValue(JSON.stringify(formData));
-
         setOpen(false);
     };
 
-    // ─────────────────────────────────────────────────────────
-
-    if (!isEnabled(FEATURE_KEYS.ENROLMENT)) {
+    if (!isEnabled?.(FEATURE_KEYS.ENROLMENT)) {
         return null;
     }
 
     return (
         <>
-            {/* Trigger Button */}
-
             <Box>
                 <Button
                     size="small"
@@ -210,17 +191,14 @@ const OtherInfo = ({
                         borderRadius: 2,
                         textTransform: "none",
                         fontWeight: 600,
-
                         ...(hasData && {
                             color: "white",
-
                             background: (theme) =>
                                 `linear-gradient(
                                     135deg,
                                     ${theme.palette.primary.main},
                                     ${theme.palette.primary.dark}
                                 )`,
-
                             boxShadow:
                                 "0 2px 8px rgba(0,0,0,0.15)",
                         }),
@@ -242,7 +220,6 @@ const OtherInfo = ({
                                 bgcolor:
                                     "rgba(255,255,255,0.25)",
                                 color: "white",
-
                                 "& .MuiChip-label": {
                                     px: "6px",
                                 },
@@ -251,8 +228,6 @@ const OtherInfo = ({
                     )}
                 </Button>
             </Box>
-
-            {/* Dialog */}
 
             <StyledDialog
                 open={open}
@@ -273,7 +248,7 @@ const OtherInfo = ({
             >
                 <Stack spacing={3} mt={1}>
                     {FORM_SECTIONS.map(
-                        (section, sectionIndex) => (
+                        (section) => (
                             <Paper
                                 key={section.title}
                                 elevation={0}
@@ -286,8 +261,6 @@ const OtherInfo = ({
                                         "divider",
                                 }}
                             >
-                                {/* Section Title */}
-
                                 <Typography
                                     variant="subtitle1"
                                     fontWeight={700}
@@ -299,8 +272,6 @@ const OtherInfo = ({
                                 <Divider
                                     sx={{ mb: 2 }}
                                 />
-
-                                {/* Fields */}
 
                                 <Stack spacing={2}>
                                     {section.fields.map(
@@ -328,13 +299,13 @@ const OtherInfo = ({
                                                 >
                                                     <Field
                                                         type={
-                                                            field.type
+                                                            field.type as any
                                                         }
                                                         value={
                                                             formData[
                                                             field
                                                                 .name
-                                                            ]
+                                                            ] || ""
                                                         }
                                                         isEdit={
                                                             isEdit ?? false

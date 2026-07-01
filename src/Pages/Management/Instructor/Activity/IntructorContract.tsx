@@ -16,13 +16,13 @@ const InstructorContract = ({ open, onClose, activityData }) => {
     const showAlert = useAlert();
     const pdfViewerRef = useRef();
     const [templates, setTemplates] = useState([]);
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [instructorData, setInstructorData] = useState({});
 
-    const tableState = useSelector((state) => state["instructors"]);
+    const tableState = useSelector((state: any) => state["instructors"]);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 

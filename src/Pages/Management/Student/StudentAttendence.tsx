@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
@@ -14,10 +14,16 @@ import QrForm from "../../../core/components/forms/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-const StudentAttendence = ({ open, onClose, activityData }) => {
-    const [attendanceMap, setAttendanceMap] = useState({});
+interface StudentAttendenceProps {
+    open: boolean;
+    onClose: () => void;
+    activityData: any;
+}
+
+const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, activityData }) => {
+    const [attendanceMap, setAttendanceMap] = useState<Record<string, boolean>>({});
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const showAlert = useAlert();
 
     const allDates = useMemo(() => {
@@ -29,9 +35,9 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
     useEffect(() => {
         if (!activityData) return;
 
-        const map = {};
+        const map: Record<string, boolean> = {};
 
-        activityData.attendanceEntries?.forEach((entry) => {
+        activityData.attendanceEntries?.forEach((entry: any) => {
             const key = entry.date;
             map[key] = entry.present;
         });
@@ -39,7 +45,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
         setAttendanceMap(map);
     }, [activityData]);
 
-    const toggleAttendance = (date) => {
+    const toggleAttendance = (date: Date) => {
         const key = formatDate(date);
         setAttendanceMap((prev) => ({
             ...prev,
@@ -58,7 +64,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
             present,
         }));
         dispatch(
-            studentsAssignmentsCruds.update(
+            (studentsAssignmentsCruds as any).update(
                 activityData.assignmentId,
                 {
                     attendanceEntries,
@@ -72,17 +78,17 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
     };
 
     const hasChange = useCallback(
-        (attendanceMap) => {
-            const originalMap = {};
+        (currentMap: Record<string, boolean>) => {
+            const originalMap: Record<string, boolean> = {};
 
-            activityData.attendanceEntries?.forEach((entry) => {
+            activityData.attendanceEntries?.forEach((entry: any) => {
                 originalMap[entry.date] = entry.present;
             });
 
-            const allKeys = new Set([...Object.keys(originalMap), ...Object.keys(attendanceMap)]);
+            const allKeys = new Set([...Object.keys(originalMap), ...Object.keys(currentMap)]);
 
             return [...allKeys].some(
-                (key) => (originalMap[key] ?? false) !== (attendanceMap[key] ?? false),
+                (key) => (originalMap[key] ?? false) !== (currentMap[key] ?? false),
             );
         },
         [activityData],
@@ -94,21 +100,19 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
 
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
-    const membershipStartMonth = new Date(
-        parseDateTime(activityData.membershipStartDate).getFullYear(),
-        parseDateTime(activityData.membershipStartDate).getMonth(),
-        1,
-    );
+    const membershipStartMonth = useMemo(() => {
+        const d = parseDateTime(activityData?.membershipStartDate || "");
+        return d ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date();
+    }, [activityData]);
 
-    const membershipEndMonth = new Date(
-        parseDateTime(activityData.membershipEndDate).getFullYear(),
-        parseDateTime(activityData.membershipEndDate).getMonth(),
-        1,
-    );
+    const membershipEndMonth = useMemo(() => {
+        const d = parseDateTime(activityData?.membershipEndDate || "");
+        return d ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date();
+    }, [activityData]);
 
     const visibleMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
-    const daysInMonth = [];
+    const daysInMonth: Date[] = [];
     for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
         daysInMonth.push(new Date(d));
     }
@@ -148,7 +152,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                     <Box display={"flex"} gap={1}>
                         <QrForm
                             title="Attendance QR"
-                            qrValue={activityData.activityName + "/" + activityData.assignmentId}
+                            qrValue={activityData?.activityName + "/" + activityData?.assignmentId}
                         />
                         <Box>
                             <Typography variant="h6" fontWeight={700}>
@@ -168,7 +172,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             </Typography>
 
                             <Typography fontWeight={600}>
-                                {getLocalDateTime(activityData.membershipStartDate)}
+                                {getLocalDateTime(activityData?.membershipStartDate)}
                             </Typography>
                         </Box>
 
@@ -178,7 +182,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             </Typography>
 
                             <Typography fontWeight={600}>
-                                {getLocalDateTime(activityData.membershipEndDate)}
+                                {getLocalDateTime(activityData?.membershipEndDate)}
                             </Typography>
                         </Box>
 
@@ -214,7 +218,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         <IconButton
                             onClick={handlePrevMonth}
                             sx={{ color: "white" }}
-                            disabled={visibleMonth <= membershipStartMonth}
+                            disabled={visibleMonth.getTime() <= membershipStartMonth.getTime()}
                         >
                             <ChevronLeftIcon />
                         </IconButton>
@@ -229,7 +233,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                         <IconButton
                             onClick={handleNextMonth}
                             sx={{ color: "white" }}
-                            disabled={visibleMonth >= membershipEndMonth}
+                            disabled={visibleMonth.getTime() >= membershipEndMonth.getTime()}
                         >
                             <ChevronRightIcon />
                         </IconButton>
@@ -273,19 +277,19 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                             const present = attendanceMap[key] || false;
                             const today = isToday(date);
 
-                            const membershipStart = parseDateTime(activityData.membershipStartDate);
-
-                            const membershipEnd = parseDateTime(activityData.membershipEndDate);
+                            const membershipStart = parseDateTime(activityData?.membershipStartDate || "");
+                            const membershipEnd = parseDateTime(activityData?.membershipEndDate || "");
 
                             // remove time part
-                            membershipStart.setHours(0, 0, 0, 0);
-                            membershipEnd.setHours(0, 0, 0, 0);
+                            if (membershipStart) membershipStart.setHours(0, 0, 0, 0);
+                            if (membershipEnd) membershipEnd.setHours(0, 0, 0, 0);
 
                             const currentDate = new Date(date);
                             currentDate.setHours(0, 0, 0, 0);
 
-                            const isDisabled =
-                                currentDate < membershipStart || currentDate > membershipEnd;
+                            const isDisabled = !membershipStart || !membershipEnd ||
+                                currentDate.getTime() < membershipStart.getTime() ||
+                                currentDate.getTime() > membershipEnd.getTime();
 
                             return (
                                 <Paper
@@ -300,24 +304,18 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                                         height: 30,
                                         minHeight: 30,
                                         cursor: isDisabled ? "not-allowed" : "pointer",
-
                                         borderRadius: 1.5,
-
                                         display: "flex",
                                         flexDirection: "column",
                                         alignItems: "center",
                                         justifyContent: "center",
-
                                         transition: "all 0.15s ease",
-
                                         border: "1px solid",
-
                                         borderColor: isDisabled
                                             ? "grey.300"
                                             : present
                                               ? "success.main"
                                               : "divider",
-
                                         bgcolor: isDisabled
                                             ? "grey.50"
                                             : today
@@ -327,15 +325,12 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
                                               : present
                                                 ? "primary.main"
                                                 : "background.paper",
-
                                         color: isDisabled
                                             ? "text.disabled"
                                             : present || today
                                               ? "white"
                                               : "text.primary",
-
                                         opacity: isDisabled ? 0.45 : 1,
-
                                         "&:hover": isDisabled
                                             ? {}
                                             : {
@@ -357,9 +352,7 @@ const StudentAttendence = ({ open, onClose, activityData }) => {
     );
 };
 
-export default StudentAttendence;
-
-const isToday = (date) => {
+const isToday = (date: Date) => {
     const today = new Date();
 
     return (
@@ -368,3 +361,5 @@ const isToday = (date) => {
         today.getDate() === date.getDate()
     );
 };
+
+export default StudentAttendence;

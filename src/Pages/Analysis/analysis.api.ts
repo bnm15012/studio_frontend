@@ -1,10 +1,16 @@
 import api from "../../core/utils/api";
 
+interface FetchReportDataParams {
+    token: string | null | undefined;
+    branchId: string | number;
+    year?: number;
+}
+
 export const fetchReportData = async ({
     token,
     branchId,
     year = new Date().getFullYear(),
-}) => {
+}: FetchReportDataParams) => {
     try {
         const response = await api.get(`/analysis/${year}/${branchId}`, {
             headers: {
@@ -19,7 +25,7 @@ export const fetchReportData = async ({
             data: processMonthlyStudioData(data),
             message: data.message || "Report data retrieved successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Report data fetch error:", error);
 
         const message =
@@ -28,7 +34,7 @@ export const fetchReportData = async ({
     }
 };
 
-function processMonthlyStudioData(rawData) {
+function processMonthlyStudioData(rawData: any) {
     const monthNames = [
         "January",
         "February",
@@ -44,29 +50,29 @@ function processMonthlyStudioData(rawData) {
         "December",
     ];
 
-    const monthlyLabels = [];
-    const monthlyIncome = [];
+    const monthlyLabels: string[] = [];
+    const monthlyIncome: number[] = [];
 
-    const expenseMap = {};
-    const paymentAmountMap = {
+    const expenseMap: Record<string, number> = {};
+    const paymentAmountMap: Record<string, number> = {
         STUDENT: 0,
         CLIENT: 0,
     };
 
-    rawData.data.forEach((entry) => {
+    rawData.data.forEach((entry: any) => {
         const monthIndex = entry.month - 1;
         const monthLabel = monthNames[monthIndex];
         monthlyLabels.push(monthLabel);
         monthlyIncome.push(entry.revenue ?? 0);
 
         // Aggregate expenses by category
-        entry.expenseEntries.forEach((expense) => {
+        entry.expenseEntries.forEach((expense: any) => {
             const category = expense.expenseCategory || "OTHER";
             expenseMap[category] = (expenseMap[category] || 0) + (expense.amount ?? 0);
         });
 
         // Aggregate payment amounts by payee type
-        entry.paymentEntries.forEach((payment) => {
+        entry.paymentEntries.forEach((payment: any) => {
             const payeeType = payment.payeeType?.toUpperCase();
             const amount = payment.amount ?? 0;
             if (payeeType) {
@@ -153,7 +159,7 @@ function processMonthlyStudioData(rawData) {
     };
 }
 
-function getExpenseVsPaymentData(rawData) {
+function getExpenseVsPaymentData(rawData: any) {
     const monthNames = [
         "January",
         "February",
@@ -169,17 +175,17 @@ function getExpenseVsPaymentData(rawData) {
         "December",
     ];
 
-    const monthlyLabels = [];
-    const monthlyExpenses = [];
-    const monthlyPayments = [];
+    const monthlyLabels: string[] = [];
+    const monthlyExpenses: number[] = [];
+    const monthlyPayments: number[] = [];
 
-    rawData.data.forEach((entry) => {
+    rawData.data.forEach((entry: any) => {
         const monthIndex = entry.month - 1;
         const monthLabel = monthNames[monthIndex];
         monthlyLabels.push(monthLabel);
 
-        const totalExpenses = entry.expenseEntries.reduce((sum, exp) => sum + exp.amount, 0);
-        const totalPayments = entry.paymentEntries.reduce((sum, pay) => sum + pay.amount, 0);
+        const totalExpenses = entry.expenseEntries.reduce((sum: number, exp: any) => sum + exp.amount, 0);
+        const totalPayments = entry.paymentEntries.reduce((sum: number, pay: any) => sum + pay.amount, 0);
 
         monthlyExpenses.push(totalExpenses);
         monthlyPayments.push(totalPayments);

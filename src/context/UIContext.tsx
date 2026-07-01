@@ -12,8 +12,8 @@ export interface UIProviderProps {
 }
 
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
-    const settings = useAppSelector((state) => state.auth.settings);
-    const user = useAppSelector((state) => state.auth.user);
+    const settings = useAppSelector((state: any) => state.auth.settings);
+    const user = useAppSelector((state: any) => state.auth.user);
     const isMobile = useMediaQuery("(max-width: 1000px)");
     const isAdmin = user?.role === "ADMIN";
     const DEBUG = import.meta.env.VITE_DEBUG === "true";

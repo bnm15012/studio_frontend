@@ -1,4 +1,5 @@
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useRef } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
@@ -8,7 +9,6 @@ import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
 import ActionBar from "../../../core/components/layout/ActionBar";
-import { useRef } from "react";
 
 const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 8;
@@ -20,7 +20,6 @@ const VIEWS = ["LIST", "CARD"];
 
 const FIELDS = [
     { show: true, name: "payeeType", label: "Payee Type", extraProp: { readOnly: true } },
-    // TODO: need to change for client too.
     {
         show: true,
         name: "payeeName",
@@ -32,10 +31,10 @@ const FIELDS = [
         name: "status",
         label: "Status",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => value && ({ key: value, value }),
+        getValue: (value: any) => value && ({ key: value, value }),
         defaultValue: STATUS[1],
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 STATUS.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                     .slice(page * limit, (page + 1) * limit)
                     .map((a) => ({ key: a, value: a })),
@@ -53,10 +52,10 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => value && ({ key: value, value }),
+        getValue: (value: any) => value && ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[1],
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                     .slice(page * limit, (page + 1) * limit)
                     .map((a) => ({ key: a, value: a })),
@@ -70,10 +69,12 @@ const FIELDS = [
         extraProp: { readOnly: true },
     },
 ];
-const Expenses = () => {
+
+const Expenses: React.FC = () => {
     const { isMobile } = useUI();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const api = useRef({});
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const api = useRef<any>({});
+
     return (
         <FlexBetweenColumn>
             <ActionBar api={api} add={false} />
@@ -81,15 +82,15 @@ const Expenses = () => {
                 <Views
                     apiRef={api}
                     actions={[
-                        { name: "delete", enabled: false, hide: true },
-                        { name: "edit", enabled: (row) => row.status !== "COMPLETED" },
-                    ]}
+                        { name: "delete", enabled: () => false, hide: true },
+                        { name: "edit", enabled: (row: any) => row.status !== "COMPLETED" },
+                    ] as any}
                     tableName={"payments"}
                     tableCruds={paymentCruds}
                     size={LIMIT}
                     key={"payments"}
-                    fields={FIELDS}
-                    rootId={currentBranch.branchId}
+                    fields={FIELDS as any}
+                    rootId={currentBranch?.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="name"

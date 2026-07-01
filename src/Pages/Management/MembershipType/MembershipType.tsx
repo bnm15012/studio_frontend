@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useRef } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import Views from "../../../core/crud/Views";
@@ -15,11 +15,14 @@ const FIELD_META = {
 
 const VIEWS = ["LIST"];
 
-const FIELDS = [{ show: true, name: "membershipPackage", label: "Membership Type" }, { show: true, name: "days", label: "Days" }];
+const FIELDS = [
+    { show: true, name: "membershipPackage", label: "Membership Type" },
+    { show: true, name: "days", label: "Days" },
+];
 
-const MembershipType = () => {
-    const api = useRef({});
-    const studio = useSelector((s) => s.auth.studio);
+const MembershipType: React.FC = () => {
+    const api = useRef<any>({});
+    const studio = useSelector((s: any) => s.auth.studio);
 
     return (
         <FlexBetweenColumn>
@@ -30,7 +33,7 @@ const MembershipType = () => {
                     tableCruds={membershipPackageCruds}
                     size={LIMIT}
                     key={"membershipPackages"}
-                    fields={FIELDS}
+                    fields={FIELDS as any}
                     rootId={studio.studioId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

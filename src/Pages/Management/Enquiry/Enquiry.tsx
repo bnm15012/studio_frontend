@@ -1,14 +1,14 @@
-import { useRef } from "react";
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useRef } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes.js";
+import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
 import { enquiryCruds } from "../../../api/all.api";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil.js";
-import Views from "../../../core/crud/Views.jsx";
-import { useUI } from "../../../context/UIContext.jsx";
-import EnquiryCardComponent from "./EnquiryCardComponent.jsx";
-import ActionBar from "../../../core/components/layout/ActionBar.jsx";
+import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
+import Views from "../../../core/crud/Views";
+import { useUI } from "../../../context/UIContext";
+import EnquiryCardComponent from "./EnquiryCardComponent";
+import ActionBar from "../../../core/components/layout/ActionBar";
 
 const LIMIT = 7;
 
@@ -32,10 +32,10 @@ const FIELDS = [
     { name: "enquiryPurpose", label: "Purpose", show: true },
 ];
 
-const Enquiry = () => {
+const Enquiry: React.FC = () => {
     const { isMobile } = useUI();
-    const api = useRef({});
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const api = useRef<any>({});
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
@@ -46,7 +46,7 @@ const Enquiry = () => {
                     tableCruds={enquiryCruds}
                     size={LIMIT}
                     key={"enquiries"}
-                    fields={FIELDS}
+                    fields={FIELDS as any}
                     rootId={currentBranch.branchId}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}

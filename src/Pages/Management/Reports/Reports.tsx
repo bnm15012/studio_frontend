@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
     Box,
     Button,
@@ -9,12 +10,10 @@ import {
     FormControl,
     useTheme,
 } from "@mui/material";
-
-import { useEffect, useRef, useState } from "react";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useSelector } from "react-redux";
+import { FlexBetween } from "../../../core/components/layout/FlexBox";
 import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "../../../core/utils/DateUtil";
 import { useAlert } from "../../../core/components/feedback/Alert";
 import Loading from "../../../core/components/loading/Loading";
@@ -22,25 +21,25 @@ import { reportsAPi } from "./reports.api";
 import { useUI } from "../../../context/UIContext";
 import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
 
-const Reports = () => {
-    const pdfViewerRef = useRef();
+const Reports: React.FC = () => {
+    const pdfViewerRef = useRef<any>(null);
     const theme = useTheme();
     const { isMobile } = useUI();
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const studio = useSelector((state) => state.auth.studio);
+    const token = useSelector((state: any) => state.auth.token);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const studio = useSelector((state: any) => state.auth.studio);
 
     const today = new Date();
 
-    const [startDateValue, setStartDate] = useState(
+    const [startDateValue, setStartDate] = useState<Date | null>(
         new Date(today.getFullYear(), today.getMonth(), 1),
     );
-    const [endDateValue, setEndDate] = useState(
+    const [endDateValue, setEndDate] = useState<Date | null>(
         new Date(today.getFullYear(), today.getMonth() + 1, 0),
     );
     const [loading, setLoading] = useState(false);
-    const [eiData, setEiData] = useState(null);
+    const [eiData, setEiData] = useState<any>(null);
     const [reportType, setReportType] = useState("incomeExpense");
     const [paymentStatus, setPaymentStatus] = useState("COMPLETED");
     const [paymentMethod, setPaymentMethod] = useState("All");
@@ -63,14 +62,16 @@ const Reports = () => {
             endYear: endDateValue.getFullYear(),
             startMonth: startDateValue.getMonth() + 1,
             startYear: startDateValue.getFullYear(),
-            studioId: studio.studioId,
+            studioId: studio?.studioId,
             paymentMethod,
-            branchId: currentBranch.branchId,
+            branchId: currentBranch?.branchId,
         };
         try {
             if (reportType === "incomeExpense") {
                 const { data, success, message } = await reportsAPi({
                     token,
+                    status: "",
+                    type: "incomeExpense",
                     ...commonPayload,
                 });
 
@@ -79,7 +80,7 @@ const Reports = () => {
                     const totalIncome = report.income;
                     const totalExpense = report.expense;
 
-                    const incomeFormatted = report.incomeEntries.map((entry, index) => [
+                    const incomeFormatted = report.incomeEntries.map((entry: any, index: number) => [
                         index + 1,
                         entry.studentName,
                         entry.paymentMode,
@@ -88,7 +89,7 @@ const Reports = () => {
                         `₹${entry.amount}`,
                     ]);
 
-                    const expenseFormatted = report.expenseEntries.map((entry, index) => [
+                    const expenseFormatted = report.expenseEntries.map((entry: any, index: number) => [
                         index + 1,
                         entry.description || entry.expenseCategory,
                         entry.paymentType,
@@ -97,19 +98,9 @@ const Reports = () => {
                         `₹${entry.amount}`,
                     ]);
 
-                    // const bookingFormatted = report.bookingEntries.map((entry, index) => [
-                    //   index + 1,
-                    //   entry.purpose,
-                    //   entry.notes,
-                    //   entry.paymentMode,
-                    //   getLocalDateTime(entry.finalPaymentDate),
-                    //   `₹${entry.totalAmount}`
-                    // ]);
-
                     setEiData({
                         income: incomeFormatted,
                         expenses: expenseFormatted,
-                        // bookings: bookingFormatted,
                         totalIncome,
                         totalExpense,
                     });
@@ -117,7 +108,6 @@ const Reports = () => {
                     setEiData({
                         income: [],
                         expenses: [],
-                        // bookings: [],
                         totalIncome: 0,
                         totalExpense: 0,
                     });
@@ -134,7 +124,7 @@ const Reports = () => {
                 if (success && data.length > 0) {
                     let totalAmount = 0;
 
-                    const formatted = data.map((entry, index) => {
+                    const formatted = data.map((entry: any, index: number) => {
                         totalAmount += entry.amount;
 
                         return [
@@ -147,19 +137,23 @@ const Reports = () => {
                             getLocalDateTime(entry.paymentDate),
                         ];
                     });
-                    paymentStatus === "PENDING"
-                        ? setEiData({
+                    if (paymentStatus === "PENDING") {
+                        setEiData({
                             pendingPaymentEntries: formatted,
                             totalPendingPayment: totalAmount,
-                        })
-                        : setEiData({
+                        });
+                    } else {
+                        setEiData({
                             completedPaymentEntries: formatted,
                             totalCompletedPayment: totalAmount,
                         });
+                    }
                 } else {
-                    paymentStatus === "PENDING"
-                        ? setEiData({ pendingPaymentEntries: [], totalPendingPayment: 0 })
-                        : setEiData({ completedPaymentEntries: [], totalCompletedPayment: 0 });
+                    if (paymentStatus === "PENDING") {
+                        setEiData({ pendingPaymentEntries: [], totalPendingPayment: 0 });
+                    } else {
+                        setEiData({ completedPaymentEntries: [], totalCompletedPayment: 0 });
+                    }
                 }
             }
         } catch (err) {
@@ -170,7 +164,7 @@ const Reports = () => {
         }
     };
 
-    const renderTable = (title, data, headers) => (
+    const renderTable = (title: string, data: any[], headers: string[]) => (
         <>
             <p style={{ fontSize: 18, marginBottom: 10 }}> {title}</p>
             <div>
@@ -211,13 +205,13 @@ const Reports = () => {
                                     pageBreakInside: "avoid",
                                 }}
                             >
-                                {row.map((cell, j) => (
+                                {row.map((cell: any, j: number) => (
                                     <td
                                         key={j}
                                         style={{
                                             ...styles.td,
                                             textAlign:
-                                                j == 0
+                                                j === 0
                                                     ? "center"
                                                     : j === row.length - 1
                                                         ? "right"
@@ -232,7 +226,7 @@ const Reports = () => {
                     </tbody>
                 </table>
                 {data.length === 0 && (
-                    <p colSpan={headers.length} style={styles.td}>
+                    <p style={styles.td}>
                         No data available!
                     </p>
                 )}{" "}
@@ -277,16 +271,14 @@ const Reports = () => {
                             format="dd/MM/yyyy"
                             label="Start Date"
                             value={startDateValue}
-                            onChange={setStartDate}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            onChange={(newValue) => setStartDate(newValue)}
                             slotProps={{ textField: { fullWidth: true } }}
                         />
                         <DatePicker
                             label="End Date"
                             format="dd/MM/yyyy"
                             value={endDateValue}
-                            onChange={setEndDate}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
+                            onChange={(newValue) => setEndDate(newValue)}
                             slotProps={{ textField: { fullWidth: true } }}
                         />
 
@@ -337,7 +329,7 @@ const Reports = () => {
                         <FlexBetween gap={2} sx={{ width: "100%" }}>
                             <Button
                                 variant="outlined"
-                                onClick={() => pdfViewerRef.current.downloadPDF()}
+                                onClick={() => pdfViewerRef.current?.downloadPDF()}
                                 fullWidth
                                 disabled={!eiData}
                             >
@@ -345,7 +337,7 @@ const Reports = () => {
                             </Button>
                             <Button
                                 variant="outlined"
-                                onClick={() => pdfViewerRef.current.printPDF()}
+                                onClick={() => pdfViewerRef.current?.printPDF()}
                                 fullWidth
                                 disabled={!eiData}
                             >
@@ -379,7 +371,6 @@ const Reports = () => {
                     fileName="Report.pdf"
                     header={
                         <>
-                            {/* <Typography variant="h6">{eiData?.income && eiData?.expenses ? <>INCOME & EXPENSE </> : <>PAYMENT</>} REPORT</Typography> */}
                             <Typography variant="body2">{formattedDateRange()}</Typography>
                             <Typography variant="body2">
                                 Generated on: {getLocalDateTime(getCurrentDateTimeLocal())}
@@ -407,10 +398,6 @@ const Reports = () => {
                                     "Date",
                                     "Amount",
                                 ])}
-
-                            {/* {eiData?.bookings && renderTable("Expenses", eiData.bookings,
-                ["No.", "Purpose", "Note", "Payment Mode", "Final Payment Date", "Total Amount"]
-              )} */}
 
                             {eiData?.pendingPaymentEntries &&
                                 renderTable("Payment Report", eiData.pendingPaymentEntries, [
@@ -489,7 +476,7 @@ const Reports = () => {
                                                                 Total{" "}
                                                                 {eiData?.totalPendingPayment != null
                                                                     ? "pending"
-                                                                    : "completd"}{" "}
+                                                                    : "completed"}{" "}
                                                                 amount
                                                             </strong>
                                                         </td>
@@ -516,7 +503,7 @@ const Reports = () => {
     );
 };
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
     table: {
         width: "100%",
         borderCollapse: "collapse",

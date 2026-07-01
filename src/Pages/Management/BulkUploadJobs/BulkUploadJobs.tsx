@@ -11,8 +11,8 @@ import UploadJobHistory from "./UploadJobHistory";
 
 const BulkUploadJobs = () => {
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,7 @@ const BulkUploadJobs = () => {
                     throw Error(message || "Failed to create bulk upload job", "error");
                 }
                 showAlert("File uploaded successfully!", "success");
-            } catch (error) {
+            } catch (error: any) {
                 showAlert("Error uploading file: " + error.message, "error");
             } finally {
                 setLoading(false);

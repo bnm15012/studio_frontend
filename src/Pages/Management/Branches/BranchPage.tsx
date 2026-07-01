@@ -45,7 +45,7 @@ const BranchPage = () => {
     const navigate = useNavigate();
     const api = useRef({});
     const studio = useSelector((s) => s.auth.studio);
-    const selectedBranch = useSelector((state) => state.branch.selectedBranch);
+    const selectedBranch = useSelector((state: any) => state.branch.selectedBranch);
 
     const beforeAdd = async (row) => {
         const updatedRow = { ...row };

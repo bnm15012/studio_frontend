@@ -67,7 +67,7 @@ const FIELDS = [
         section: "Personal Details",
         name: "instructorStatus",
         label: "Status",
-        getValue: (value) => (
+        getValue: (value: any) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
                 {value}
             </Box>
@@ -114,11 +114,11 @@ const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTI
 
 const Instructors = ({ ID }) => {
     const { isMobile } = useUI();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const api = useRef({});
     const apiInstructor = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
-    const allActivities = useSelector((state) => state.activities.items);
+    const allActivities = useSelector((state: any) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
         () => ({
@@ -150,8 +150,8 @@ const Instructors = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value) => value && { value, key: value },
-                        editable: (row) => row.assignmentId === "NEW",
+                        getValue: (value: any) => value && { value, key: value },
+                        editable: (row: any) => row.assignmentId === "NEW",
                         extraProp: {
                             getOptions: async (search, page, limit) =>
                                 allActivities
@@ -191,7 +191,7 @@ const Instructors = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Membership Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value) => (
+                        getValue: (value: any) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",

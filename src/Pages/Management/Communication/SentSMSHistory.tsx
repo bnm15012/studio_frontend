@@ -17,9 +17,9 @@ const SentSMSHistory = ({ newHistory }) => {
     const { isMobile } = useUI();
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
@@ -47,7 +47,7 @@ const SentSMSHistory = ({ newHistory }) => {
                 } else {
                     showAlert(message, "error");
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
                 showAlert("Failed to fetch expenses!", "error");
             } finally {

@@ -1,6 +1,14 @@
 import api from "../../../core/utils/api";
 
-export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday = false }) => {
+interface StudentApiParams {
+    branchId: string | number;
+    token: string | null | undefined;
+    page: number | string;
+    size: number | string;
+    birthday?: boolean;
+}
+
+export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday = false }: StudentApiParams) => {
     try {
         const response = await api.get(
             `/students/getAllStudentsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page}&size=${size}&birthday=${birthday ? 1 : 0}`,
@@ -17,7 +25,7 @@ export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched students successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: error.response?.data?.message || "Failed to fetch students",
@@ -31,36 +39,22 @@ export const getStudentNamesOncePerDay = async ({
     page,
     size,
     birthday = false,
-}) => {
-    // const todayKey = `getStudentNames_${branchId}_${birthday ? 'birthday' : 'all'}_page${page}_size${size}`;
-    // const dateKey = `${todayKey}_date`;
-
-    // const lastCallDate = localStorage.getItem(dateKey);
-    // const cachedResult = localStorage.getItem(todayKey);
-
-    // const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
-
-    // if (lastCallDate === today && cachedResult) {
-    //   const parsed = JSON.parse(cachedResult);
-    //   return { ...parsed, message: "Fetched from cache" };
-    // }
-
+}: StudentApiParams) => {
     const result = await getStudentNamesAPI({ branchId, token, page, size, birthday });
-
-    // if (result.success) {
-    //   localStorage.setItem(dateKey, today);
-    //   localStorage.setItem(todayKey, JSON.stringify(result));
-    // }
-
     return result;
 };
 
-export const addStudentAPI = async ({ newData, token }) => {
+interface AddStudentParams {
+    newData: any;
+    token: string | null | undefined;
+}
+
+export const addStudentAPI = async ({ newData, token }: AddStudentParams) => {
     try {
         const response = await api.post("/students/add", newData, {
             headers: {
                 Authorization: `${token}`,
-                "Form-Authorization": import.meta.env.VITE_APP_FORM_SIG,
+                "Form-Authorization": (import.meta as any).env.VITE_APP_FORM_SIG || "",
             },
         });
         const { data, status } = response.data;
@@ -69,7 +63,7 @@ export const addStudentAPI = async ({ newData, token }) => {
             success: true,
             message: status.statusMessage,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: error.response?.data?.status?.statusMessage || "Failed to add student",

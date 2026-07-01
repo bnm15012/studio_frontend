@@ -62,7 +62,7 @@ export const usePdfActions = ({
         await withTemporaryScaleReset(async () => {
             try {
                 await getPdfInstance().toPdf().save();
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
                 showAlert("Failed to download PDF", "error");
             } finally {

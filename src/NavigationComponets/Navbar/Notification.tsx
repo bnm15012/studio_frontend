@@ -57,7 +57,7 @@ const Notification: React.FC = () => {
             }));
 
             dispatch(setNotifications(birthdayNotifications));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
         } finally {

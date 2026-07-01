@@ -1,3 +1,4 @@
+import React from "react";
 import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
 import { useParams } from "react-router-dom";
 import Clients from "./Client/Clients";
@@ -8,18 +9,17 @@ import Activities from "./Activity/Activities";
 import Expenses from "./Expense/Expenses";
 import Payments from "./Payments/Payments";
 import Reports from "./Reports/Reports";
-import Enquiry from "./Enquiry/Enquiry.jsx";
+import Enquiry from "./Enquiry/Enquiry";
 import Communication from "./Communication/Communication";
 import Branches from "./Branches/Branches";
 import BranchPage from "./Branches/BranchPage";
-import BulkUploadJobs from "./BulkUploadJobs/BulkUploadJobs.jsx";
+import BulkUploadJobs from "./BulkUploadJobs/BulkUploadJobs";
 import TemplatesPage from "./TemplatesPage/TemplatesPage";
-import MembershipType from "./MembershipType/MembershipType.jsx";
-import Attendance from "./Attendance/Attendance.jsx";
+import MembershipType from "./MembershipType/MembershipType";
+import Attendance from "./Attendance/Attendance";
 
-const Management = () => {
-    const { page } = useParams();
-    const { ID } = useParams();
+const Management: React.FC = () => {
+    const { page, ID } = useParams<{ page: string; ID?: string }>();
 
     const renderComponent = () => {
         switch (page) {

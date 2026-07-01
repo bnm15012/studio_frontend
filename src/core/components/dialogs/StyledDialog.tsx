@@ -56,7 +56,7 @@ interface StyledDialogProps extends Omit<DialogProps, "open" | "onClose"> {
     closeIcon?: boolean;
     title?: string;
     children?: React.ReactNode;
-    confirmText?: string;
+    confirmText?: string | React.ReactNode;
     cancelText?: string;
     onConfirm?: () => void;
     confirmDisabled?: boolean;

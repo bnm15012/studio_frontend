@@ -17,7 +17,7 @@ export const getAllBranchAPI = async ({ studioId, token }) => {
             totalCount: status.totalCount,
             message: status.statusMessage || "Branchs fetched successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch Branchs!"),
@@ -35,7 +35,7 @@ export const addBranchAPI = async ({ branchData, token }) => {
             success: true,
             message: status.statusMessage || "Branch added successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to add Branch!"),
@@ -53,7 +53,7 @@ export const updateBranchAPI = async ({ branchId, branchData, token }) => {
             success: true,
             message: status.statusMessage || "Branch updated successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to update Branch!"),
@@ -76,7 +76,7 @@ export const toggleBranchAPI = async ({ branchId, active, token }) => {
             success: true,
             message: status.statusMessage || "Branch updated successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to update Branch!"),

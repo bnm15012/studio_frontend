@@ -1,4 +1,4 @@
-export const transformRegisterData = (data) => ({
+export const transformRegisterData = (data: any) => ({
     studioName: data.studioName,
     location: data.location,
     userName: data.userName,

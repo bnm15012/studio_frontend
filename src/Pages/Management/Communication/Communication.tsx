@@ -49,9 +49,9 @@ const initialTemplate = {
 const Communication = () => {
     const theme = useTheme();
     const { isMobile } = useUI();
-    const token = useSelector((state) => state.auth.token);
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const showAlert = useAlert();
 
     const [open, setOpen] = useState(false);
@@ -113,7 +113,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -128,7 +128,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -190,7 +190,7 @@ const Communication = () => {
             } else {
                 showAlert(response.message, "error");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to send message:", error);
             showAlert("Failed to send message", "error");
         } finally {

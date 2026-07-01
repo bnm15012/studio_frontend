@@ -18,7 +18,7 @@ const ACCESS_BUTTONS = {
 const ACCESS_RIGHTS = ["NONE", "FULL"];
 
 const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = false }) => {
-    const settings = useSelector((state) => state.auth.settings);
+    const settings = useSelector((state: any) => state.auth.settings);
     const [accessState, setAccessState] = useState({});
 
     const studioLevelAccess = Object.keys(settings)

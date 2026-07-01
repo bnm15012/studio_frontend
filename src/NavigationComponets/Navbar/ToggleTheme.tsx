@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 import { LightMode, DarkMode } from "@mui/icons-material";
 
 const ToggleTheme: React.FC = () => {
-    const mode = useAppSelector((state) => state.auth.mode);
+    const mode = useAppSelector((state: any) => state.auth.mode);
     const dispatch = useAppDispatch();
 
     return (

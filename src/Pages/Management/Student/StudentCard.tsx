@@ -1,16 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Box, Typography, IconButton, Tooltip, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import PropTypes from "prop-types";
 import { Mail, Phone, Copy } from "lucide-react";
 import { LocationOn } from "@mui/icons-material";
 import CardHeader from "../../../core/components/cards/CardHeader";
 
-/**
- * Compact inline info item — icon + value, no label.
- * Used for the phone/location split row.
- */
-const InfoItem = ({ icon, value, onClick, sx }) => {
+interface InfoItemProps {
+    icon: React.ReactNode;
+    value?: string | number | null;
+    onClick?: (e: React.MouseEvent) => void;
+    sx?: any;
+}
+
+const InfoItem: React.FC<InfoItemProps> = ({ icon, value, onClick, sx }) => {
     const theme = useTheme();
     if (!value) return null;
 
@@ -47,23 +49,17 @@ const InfoItem = ({ icon, value, onClick, sx }) => {
     );
 };
 
-InfoItem.propTypes = {
-    icon: PropTypes.node,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onClick: PropTypes.func,
-    sx: PropTypes.object,
-};
+interface EmailRowProps {
+    email?: string | null;
+}
 
-/**
- * Compact email row with copy button.
- */
-const EmailRow = ({ email }) => {
+const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
     const [copied, setCopied] = useState(false);
     const theme = useTheme();
 
     if (!email) return null;
 
-    const handleCopy = (e) => {
+    const handleCopy = (e: React.MouseEvent) => {
         e.stopPropagation();
         try {
             navigator.clipboard.writeText(email);
@@ -74,7 +70,7 @@ const EmailRow = ({ email }) => {
         }
     };
 
-    const handleClick = (e) => {
+    const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         window.open(`mailto:${email}`, "_self");
     };
@@ -120,25 +116,24 @@ const EmailRow = ({ email }) => {
     );
 };
 
-EmailRow.propTypes = {
-    email: PropTypes.string,
-};
+interface StudentCardProps {
+    row: {
+        name: string;
+        imageUrl?: string | null;
+        email?: string | null;
+        phone?: string | number | null;
+        dob?: string | null;
+        membershipStatus?: string | null;
+        address?: string | null;
+        emergencyContactNumber?: string | number | null;
+    };
+}
 
-/**
- * StudentCard — Compact native mobile list item.
- *
- * Layout:
- *   Row 1: Avatar + Name + Status chip
- *   Row 2: 📧 email                        📋
- *   Row 3: 📞 phone           📍 location
- *
- * Actions are rendered by the framework below this component.
- */
-const StudentCard = ({ row }) => {
+const StudentCard: React.FC<StudentCardProps> = ({ row }) => {
     const { name, email, phone, membershipStatus, imageUrl, address } = row;
     const theme = useTheme();
 
-    const handlePhoneClick = (e) => {
+    const handlePhoneClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (phone) window.open(`tel:${phone}`, "_self");
     };
@@ -147,10 +142,10 @@ const StudentCard = ({ row }) => {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             {/* Row 1: Header */}
             <CardHeader
-                badge={membershipStatus}
+                badge={membershipStatus || ""}
                 enabled={membershipStatus === "ACTIVE"}
                 fieldValue={name}
-                image={imageUrl}
+                image={imageUrl || ""}
             />
 
             {/* Row 2: Email */}
@@ -185,19 +180,6 @@ const StudentCard = ({ row }) => {
             )}
         </Box>
     );
-};
-
-StudentCard.propTypes = {
-    row: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        imageUrl: PropTypes.string,
-        email: PropTypes.string,
-        phone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        dob: PropTypes.string,
-        membershipStatus: PropTypes.string,
-        address: PropTypes.string,
-        emergencyContactNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    }).isRequired,
 };
 
 export default StudentCard;

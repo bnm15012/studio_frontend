@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import PropTypes from "prop-types";
 import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
 import Loading from "../../core/components/loading/Loading";
-import FormFields from "./FormFields.jsx";
+import FormFields from "./FormFields";
 import { loginApiCall, registerApiCall } from "./auth.api";
-import { useAlert } from "../../core/components/feedback/Alert.jsx";
-import { FlexBetween, FlexEvenly } from "../../core/components/layout/FlexBox.jsx";
+import { useAlert } from "../../core/components/feedback/Alert";
+import { FlexBetween, FlexEvenly } from "../../core/components/layout/FlexBox";
 
-const Form = ({ pageType, editProfile = false, user }) => {
+interface FormProps {
+    pageType: "Login" | "Register";
+    editProfile?: boolean;
+    user?: any;
+}
+
+const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
     const initialValuesRegister = {
         studioName: "",
         location: "",
@@ -32,17 +37,17 @@ const Form = ({ pageType, editProfile = false, user }) => {
     const navigate = useNavigate();
     const isLogin = pageType === "Login";
     const isRegister = pageType === "Register";
-    const [values, setValues] = useState(
+    const [values, setValues] = useState<any>(
         isLogin ? initialValuesLogin : editProfile ? user : initialValuesRegister,
     );
 
     const showAlert = useAlert();
 
-    const onChangehandle = (val, name) => {
+    const onChangehandle = (val: string, name: string) => {
         setValues({ ...values, [name]: val });
     };
 
-    const handleFormSubmit = async (e) => {
+    const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
@@ -63,7 +68,7 @@ const Form = ({ pageType, editProfile = false, user }) => {
                     showAlert(message || "Failed to register!", "error");
                 }
             }
-        } catch (error) {
+        } catch (error: any) {
             const message = error?.message || "An unexpected error occurred.";
             showAlert(message, "error");
         } finally {
@@ -87,7 +92,6 @@ const Form = ({ pageType, editProfile = false, user }) => {
                         values={values}
                         isRegister={isRegister}
                         isLogin={isLogin}
-                        editProfile={editProfile}
                     />
                 </>
                 <FlexEvenly>
@@ -144,16 +148,6 @@ const Form = ({ pageType, editProfile = false, user }) => {
             </form>
         </>
     );
-};
-
-Form.propTypes = {
-    pageType: PropTypes.oneOf(["Login", "Register"]).isRequired,
-    editProfile: PropTypes.bool,
-    user: PropTypes.shape({
-        userName: PropTypes.string,
-        email: PropTypes.string,
-        contactDetails: PropTypes.string,
-    }),
 };
 
 export default Form;

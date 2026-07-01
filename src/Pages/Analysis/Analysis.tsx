@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Box,
     Card,
@@ -10,7 +11,6 @@ import {
     useTheme,
 } from "@mui/material";
 import { Bar, Line, Pie } from "react-chartjs-2";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -44,7 +44,7 @@ ChartJS.register(
     Filler,
 );
 
-const chartOptions = {
+const chartOptions: any = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -78,29 +78,29 @@ const chartOptions = {
     },
 };
 
-const Analysis = () => {
+const Analysis: React.FC = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const years = useMemo(
         () => Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i),
         [],
     );
-    const [selectedYear, setSelectedYear] = useState(years[years.length - 1]);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const token = useSelector((state) => state.auth.token);
-    const [expenseData, setExpenseData] = useState();
-    const [incomeLineData, setIncomeLineData] = useState({});
-    const [incomeBarData, setIncomeBarData] = useState({});
-    const [paymentData, setPaymentData] = useState({});
-    const [activityData, setActivityData] = useState({});
+    const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
+    const [expenseData, setExpenseData] = useState<any>();
+    const [incomeLineData, setIncomeLineData] = useState<any>({});
+    const [incomeBarData, setIncomeBarData] = useState<any>({});
+    const [paymentData, setPaymentData] = useState<any>({});
+    const [activityData, setActivityData] = useState<any>({});
     const [loading, setLoading] = useState(false);
-    const analysisData = useSelector((state) => state.analysis.data);
+    const analysisData = useSelector((state: any) => state.analysis.data) || {};
 
     const loadDashboardData = useCallback(
-        async (year) => {
+        async (year: number) => {
             try {
                 setLoading(true);
-                let response;
+                let response: any;
                 if ("success" in analysisData && year === years[years.length - 1]) {
                     response = analysisData;
                 } else {
@@ -120,18 +120,20 @@ const Analysis = () => {
                     setIncomeBarData(response.data.expenseVsPaymentBarData);
                     setActivityData(response.data.activityData);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error fetching report data:", error);
             } finally {
                 setLoading(false);
             }
         },
-        [analysisData, years, token, currentBranch.branchId, dispatch],
+        [analysisData, years, token, currentBranch?.branchId, dispatch],
     );
 
     useEffect(() => {
-        loadDashboardData(selectedYear);
-    }, [selectedYear]);
+        if (currentBranch?.branchId) {
+            loadDashboardData(selectedYear);
+        }
+    }, [selectedYear, currentBranch?.branchId, loadDashboardData]);
 
     return (
         <WidgetsOnPage
@@ -154,7 +156,7 @@ const Analysis = () => {
                         <FormControl size="small" sx={{ minWidth: 150 }}>
                             <Select
                                 value={selectedYear}
-                                onChange={(e) => setSelectedYear(e.target.value)}
+                                onChange={(e) => setSelectedYear(e.target.value as number)}
                             >
                                 {years.map((year) => (
                                     <MenuItem key={year} value={year}>

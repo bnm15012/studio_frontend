@@ -1,6 +1,5 @@
-import PropTypes from "prop-types";
+import React, { useRef } from "react";
 import DialogContent from "@mui/material/DialogContent";
-import { useRef } from "react";
 import { getLocalDateTime } from "../../../core/utils/DateUtil";
 import { useUI } from "../../../context/UIContext";
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
@@ -8,8 +7,26 @@ import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
 import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
 
-const StudentInvoice = ({ open, onClose, activityData, studentData, studio, currentBranch, isUser = false }) => {
-    const pdfViewerRef = useRef();
+interface StudentInvoiceProps {
+    open: boolean;
+    onClose: () => void;
+    studentData: any;
+    activityData: any;
+    studio: any;
+    currentBranch: any;
+    isUser?: boolean;
+}
+
+const StudentInvoice: React.FC<StudentInvoiceProps> = ({
+    open,
+    onClose,
+    activityData,
+    studentData,
+    studio,
+    currentBranch,
+    isUser = false,
+}) => {
+    const pdfViewerRef = useRef<any>(null);
     const { isBatchEnabled } = useUI();
 
     return (
@@ -19,25 +36,25 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
             maxWidth="md"
             fullScreen={!isUser}
             confirmText={<Download />}
-            onConfirm={() => pdfViewerRef.current.downloadPDF()}
+            onConfirm={() => pdfViewerRef.current?.downloadPDF()}
             actions={isUser ? [
                 {
                     key: "email",
                     tip: "E-mail",
-                    onClick: () => pdfViewerRef.current.sendMail(studentData?.email),
+                    onClick: () => pdfViewerRef.current?.sendMail(studentData?.email),
                     component: <MailIcon />,
                 },
                 {
                     key: "whatsapp",
                     disabled: !activityData?.invoiceToken,
                     tip: "WhatsApp",
-                    onClick: () => pdfViewerRef.current.sendWhatsApp(studentData?.phone),
+                    onClick: () => pdfViewerRef.current?.sendWhatsApp(studentData?.phone),
                     component: <WhatsApp />,
                 },
                 {
                     key: "print",
                     tip: "Print",
-                    onClick: () => pdfViewerRef.current.printPDF(),
+                    onClick: () => pdfViewerRef.current?.printPDF(),
                     component: <PrinterIcon />,
                 },
             ] : []}
@@ -77,14 +94,14 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                     content={
                         <>
                             {/* Invoice Details */}
-                            <p
+                            <div
                                 style={{
                                     display: "flex",
                                     justifyContent: "space-between",
                                     marginTop: "2mm",
                                 }}
                             >
-                                <p>
+                                <div>
                                     <p style={{ margin: 0, textWrap: "wrap" }}>
                                         {currentBranch?.address}
                                     </p>
@@ -97,16 +114,16 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                                     {studio?.gstNumber && (
                                         <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
                                     )}
-                                </p>
-                                <p style={{ textAlign: "right" }}>
+                                </div>
+                                <div style={{ textAlign: "right" }}>
                                     <div>
                                         <strong>Bill To</strong>:
                                     </div>
                                     <div>{studentData?.name}</div>
                                     <div>{studentData?.phone}</div>
                                     <div>{studentData?.email}</div>
-                                </p>
-                            </p>
+                                </div>
+                            </div>
                             {/* Table */}
                             <table
                                 border={1}
@@ -283,8 +300,8 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                                                                         activityData?.activityAmount ||
                                                                         0,
                                                                     )
-                                                                ).toFixed(2),
-                                                            )}
+                                                                )
+                                                            ).toFixed(2)}
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -324,48 +341,14 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
     );
 };
 
-const tableHeaderStyle = {
+const tableHeaderStyle: React.CSSProperties = {
     textAlign: "left",
     padding: "8px",
 };
 
-const tableCellStyle = {
+const tableCellStyle: React.CSSProperties = {
     padding: "8px",
     textAlign: "left",
-};
-
-StudentInvoice.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    studentData: PropTypes.shape({
-        studentId: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        phone: PropTypes.string.isRequired,
-    }).isRequired,
-    activityData: PropTypes.shape({
-        studentId: PropTypes.number.isRequired,
-        activity: PropTypes.object,
-        activityName: PropTypes.string.isRequired,
-        activityAmount: PropTypes.number,
-        membershipType: PropTypes.string,
-        batchName: PropTypes.string,
-        batchTime: PropTypes.string,
-        daysPerWeek: PropTypes.number,
-        registrationDate: PropTypes.string,
-        membershipStartDate: PropTypes.string,
-        membershipEndDate: PropTypes.string,
-        membershipStatus: PropTypes.string,
-        paymentEntry: PropTypes.shape({
-            amount: PropTypes.number,
-            paymentDate: PropTypes.string,
-            status: PropTypes.string,
-            registrationFee: PropTypes.number,
-            totalBeforeTax: PropTypes.number,
-            totalAmount: PropTypes.number,
-            invoiceId: PropTypes.string,
-        }),
-    }),
 };
 
 export default StudentInvoice;

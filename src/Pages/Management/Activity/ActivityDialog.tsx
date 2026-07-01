@@ -29,16 +29,16 @@ import { membershipPackageCruds } from "../../../api/all.api";
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
 
     const [formData, setFormData] = useState({});
 
     const [loading, setLoading] = useState(false);
-    const studio = useSelector((state) => state.auth.studio);
-    const token = useSelector((state) => state.auth.token);
-    const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const token = useSelector((state: any) => state.auth.token);
+    const cachedMembershipTypes = useSelector((state: any) => state.membershipPackages.items);
     const membershipTypes = isMembershipTableEnabled
         ? [...cachedMembershipTypes.map(({ membershipPackage }) => membershipPackage)]
         : [];

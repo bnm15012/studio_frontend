@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useRef } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
@@ -30,18 +30,19 @@ const FIELDS = [
         name: "clientType",
         label: "Client Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => value && { value, key: value },
+        getValue: (value: any) => value && { value, key: value },
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 clientTypes.map((a) => ({ key: a, value: a })),
         },
     },
     { show: true, name: "notes", label: "Notes" },
 ];
-const Clients = () => {
+
+const Clients: React.FC = () => {
     const { isMobile } = useUI();
-    const api = useRef({});
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const api = useRef<any>({});
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
@@ -52,8 +53,8 @@ const Clients = () => {
                     tableCruds={clientCruds}
                     size={LIMIT}
                     key={"clients"}
-                    fields={FIELDS}
-                    rootId={currentBranch.branchId}
+                    fields={FIELDS as any}
+                    rootId={currentBranch?.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { DialogContent, Box } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
-import PropTypes from "prop-types";
 import StyledDialog from "../../core/components/dialogs/StyledDialog";
 
-const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
+interface SubscriptionPopupProps {
+    popupOn?: boolean;
+    setPopup?: (val: boolean) => void;
+}
+
+const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, setPopup }) => {
     const [open, setOpen] = useState(popupOn);
     const [isExpired, setIsExpired] = useState(false);
 
-    const studio = useSelector((state) => state.auth.studio);
-    const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
+    const studio = useSelector((state: any) => state.auth.studio) as any;
+    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan) as any;
 
     useEffect(() => {
         setOpen(popupOn);
@@ -20,7 +24,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
         const checkSubscription = () => {
             const currentDate = new Date();
             const endDate = subscriptionPlan ? new Date(subscriptionPlan.endDate) : null;
-            if (currentDate > endDate) {
+            if (endDate && currentDate.getTime() > endDate.getTime()) {
                 setOpen(true);
                 setIsExpired(true);
             }
@@ -33,7 +37,7 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
 
     const handleClose = () => {
         setOpen(false);
-        setPopup && setPopup(false);
+        if (setPopup) setPopup(false);
     };
 
     return (
@@ -80,11 +84,6 @@ const SubscriptionPopup = ({ popupOn = false, setPopup }) => {
             )}
         </>
     );
-};
-
-SubscriptionPopup.propTypes = {
-    popupOn: PropTypes.bool,
-    setPopup: PropTypes.func,
 };
 
 export default SubscriptionPopup;

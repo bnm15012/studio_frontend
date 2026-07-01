@@ -29,9 +29,9 @@ const Attendance = () => {
     const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const allActivities = useSelector((state) => state.activities.items);
+    const token = useSelector((state: any) => state.auth.token);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const allActivities = useSelector((state: any) => state.activities.items);
     const api = useRef({});
     const [showAttendence, setShowAttendence] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -94,7 +94,7 @@ const Attendance = () => {
                 name: "membershipStatus",
                 label: "Membership Status",
                 defaultValue: "INACTIVE",
-                getValue: (value) => (
+                getValue: (value: any) => (
                     <Box
                         sx={{
                             color: value === "ACTIVE" ? "green" : "red",

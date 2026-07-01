@@ -13,7 +13,7 @@ export const createBulkUploadJobAPI = async (jobData, token) => {
             data: data,
             message: status.statusMessage || "Started uploading data, will be processed shortly.",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: error.response
@@ -38,7 +38,7 @@ export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }) => {
             totalCount: status.totalCount,
             message: status?.statusMessage || "Fetched bulk upload jobs successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: error.response?.data?.message || "Failed to fetch bulk upload jobs",

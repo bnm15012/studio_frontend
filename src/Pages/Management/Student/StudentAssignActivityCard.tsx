@@ -1,14 +1,29 @@
-import PropTypes from "prop-types";
+import React from "react";
 import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
 import { useTheme, Box } from "@mui/material";
-
 import CardHeader from "../../../core/components/cards/CardHeader";
 import CardChip from "../../../core/components/cards/CardChip";
 import { getLocalDateTime } from "../../../core/utils/DateUtil";
 import { Class, Task } from "@mui/icons-material";
 import ShowMoreDialog from "../../../core/crud/ShowMoreDialog";
 
-const StudentAssignActivityCard = ({ row }) => {
+interface StudentAssignActivityCardProps {
+    row: {
+        activityName?: string;
+        batchName?: string;
+        batchTime?: string;
+        registrationDate?: string;
+        membershipStartDate?: string;
+        membershipEndDate?: string;
+        membershipType?: string;
+        membershipStatus?: string;
+        activityAmount?: number | string;
+        daysPerWeek?: number | string;
+        paymentEntry?: any;
+    };
+}
+
+const StudentAssignActivityCard: React.FC<StudentAssignActivityCardProps> = ({ row }) => {
     const theme = useTheme();
     const {
         activityName,
@@ -37,30 +52,30 @@ const StudentAssignActivityCard = ({ row }) => {
                 </span>
             </>
         ) : (
-            `Rs. ${paymentEntry?.amount}`
+            `Rs. ${paymentEntry?.amount || 0}`
         );
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                badge={membershipStatus}
+                badge={membershipStatus || ""}
                 enabled={membershipStatus === "ACTIVE"}
-                fieldValue={activityName}
+                fieldValue={activityName || ""}
                 FieldIcon={Activity}
-                image={null}
+                image={undefined}
             />
             <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip value={registrationDate} type="DATE" ChipIcon={Calendar} />
-                <CardChip value={amountDisplay} ChipIcon={Wallet} />
+                <CardChip value={registrationDate || ""} type="DATE" ChipIcon={Calendar} />
+                <CardChip value={amountDisplay as any} ChipIcon={Wallet} />
             </Box>
             <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip value={`${daysPerWeek} days/week`} ChipIcon={Calendar} />
+                <CardChip value={`${daysPerWeek || 0} days/week`} ChipIcon={Calendar} />
                 <ShowMoreDialog title={"More Activity Details"}>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75, py: 1 }}>
                         <CardChip value={`Batch: ${batchName || "-"}`} ChipIcon={Class} />
                         <CardChip value={`Time: ${batchTime || "-"}`} ChipIcon={Clock1} />
-                        <CardChip value={membershipStartDate} type="DATE" ChipIcon={TimerReset} />
-                        <CardChip value={membershipEndDate} type="DATE" ChipIcon={TimerReset} />
+                        <CardChip value={membershipStartDate || ""} type="DATE" ChipIcon={TimerReset} />
+                        <CardChip value={membershipEndDate || ""} type="DATE" ChipIcon={TimerReset} />
                         <CardChip value={`Type: ${membershipType || "-"}`} ChipIcon={Task} />
                         <CardChip
                             value={
@@ -75,22 +90,6 @@ const StudentAssignActivityCard = ({ row }) => {
             </Box>
         </Box>
     );
-};
-
-StudentAssignActivityCard.propTypes = {
-    row: PropTypes.shape({
-        activityName: PropTypes.string,
-        batchName: PropTypes.string,
-        batchTime: PropTypes.string,
-        registrationDate: PropTypes.string,
-        membershipStartDate: PropTypes.string,
-        membershipEndDate: PropTypes.string,
-        membershipType: PropTypes.string,
-        membershipStatus: PropTypes.string,
-        activityAmount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        daysPerWeek: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        paymentEntry: PropTypes.object,
-    }).isRequired,
 };
 
 export default StudentAssignActivityCard;

@@ -35,20 +35,20 @@ const Bookings = ({ ID }) => {
     const { isMobile } = useUI();
     const dispatch = useDispatch();
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const [calendarAnchor, setCalendarAnchor] = useState(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState(false);
     const api = useRef({});
-    const templates = useSelector((state) => state.genericTemplate.items);
+    const templates = useSelector((state: any) => state.genericTemplate.items);
 
     useEffect(() => {
         dispatch(
             genericTemplateCruds.getAll(
                 showAlert,
-                () => {},
+                () => { },
                 token,
                 { searchTerm: "BOOKING" },
                 studio.studioId,

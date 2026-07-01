@@ -10,7 +10,7 @@ import { Close, Done } from "@mui/icons-material";
 
 const ReceipentsListDialog = ({ onClose, messageId }) => {
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ const ReceipentsListDialog = ({ onClose, messageId }) => {
             } else {
                 showAlert(message, "error");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             showAlert("Failed to fetch message recipients!", "error");
         } finally {

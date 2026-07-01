@@ -35,7 +35,7 @@ const Branches = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const api = useRef({});
-    const studio = useSelector((state) => state.auth.studio);
+    const studio = useSelector((state: any) => state.auth.studio);
 
     return (
         <FlexBetweenColumn>

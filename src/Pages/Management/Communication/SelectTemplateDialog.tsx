@@ -19,15 +19,15 @@ const SelectTemplateDialog = ({ open, onClose, data }) => {
 
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
-    const token = useSelector((state) => state.auth.token);
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [editableMessage, setEditableMessage] = useState("");
 
-    const allTemplates = useSelector((state) =>
+    const allTemplates = useSelector((state: any) =>
         state.genericTemplate.items.filter(
             (template) => template.templateType === "COMMUNICATION" && template.id
         )

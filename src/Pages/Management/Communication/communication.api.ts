@@ -22,7 +22,7 @@ const getHeaders = (token, otherHeader = {}, params = {}) => ({
 //             totalCount: status.totalCount,
 //             message: status.statusMessage || "Templates fetched successfully!",
 //         };
-//     } catch (error) {
+//     } catch (error: any) {
 //         return {
 //             success: false,
 //             message: getErrorMessage(error, "Failed to fetch Templates!"),
@@ -58,7 +58,7 @@ export const sendMessageApi = async ({ token, payload, file = null, page = 1, si
             success: true,
             message: status.statusMessage || "Message sent successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to send message!"),
@@ -79,7 +79,7 @@ export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
             totalCount: status.totalCount,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch Templates!"),
@@ -98,7 +98,7 @@ export const getMessageRecipientsAPI = async ({ token, messageId }) => {
             success: true,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch Templates!"),
@@ -111,7 +111,7 @@ export const sendWhatsAppMessage = async ({ token, phone, message, payload }) =>
     window.open(whatsappUrl, "_blank");
     try {
         await sendMessageApi({ token, payload });
-    } catch (error) {
+    } catch (error: any) {
 
     }
     return {

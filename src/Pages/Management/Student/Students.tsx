@@ -1,24 +1,24 @@
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import Views from "../../../core/crud/Views";
 import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
-import StudentCard from "./StudentCard.jsx";
+import StudentCard from "./StudentCard";
 import { useUI } from "../../../context/UIContext";
-import PropTypes from "prop-types";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useAlert } from "../../../core/components/feedback/Alert";
 import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
-import StudentInvoice from "./StudentInvoice.jsx";
+import StudentInvoice from "./StudentInvoice";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
-import StudentAssignActivityCard from "./StudentAssignActivityCard.jsx";
-import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil.js";
-import ActionBar from "../../../core/components/layout/ActionBar.jsx";
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import StudentAttendence from "./StudentAttendence.jsx";
-import OtherInfo from "./OtherInfo.jsx";
+import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
+import StudentAssignActivityCard from "./StudentAssignActivityCard";
+import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil";
+import ActionBar from "../../../core/components/layout/ActionBar";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import StudentAttendence from "./StudentAttendence";
+import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
-import SelectTemplateDialog from "../Communication/SelectTemplateDialog.jsx";
+import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
 
 const size = 7;
 
@@ -57,7 +57,7 @@ const FIELDS = [
         name: "dob",
         label: "Date of Birth",
         type: "DATE",
-        extraProp: { includeCurrentTime: false }
+        extraProp: { includeCurrentTime: false },
     },
     {
         show: false,
@@ -65,7 +65,7 @@ const FIELDS = [
         name: "age",
         label: "Age",
         type: "NUMBER",
-        getValue: (_, row) => {
+        getValue: (_: any, row: any) => {
             if (!row.dob) return null;
 
             const dob = new Date(row.dob);
@@ -79,14 +79,14 @@ const FIELDS = [
             const age = today.getFullYear() - dob.getFullYear();
             return hasBirthdayPassed ? age : age - 1;
         },
-        extraProp: { readOnly: true }
+        extraProp: { readOnly: true },
     },
     {
         show: true,
         section: "Personal Details",
         name: "membershipStatus",
         label: "Status",
-        getValue: (value) => (
+        getValue: (value: any) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
                 {value}
             </Box>
@@ -101,10 +101,10 @@ const FIELDS = [
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value) => value && { key: value, value },
+        getValue: (value: any) => value && { key: value, value },
         defaultValue: "MALE",
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 ["MALE", "FEMALE", "NOT_TO_SAY"]
                     .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                     .slice(page * limit, (page + 1) * limit)
@@ -123,26 +123,32 @@ const FIELDS = [
         },
     },
 ];
+
 const VIEWS = ["LIST", "CARD", "FORM"];
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
-const Students = ({ ID }) => {
-    const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const allActivities = useSelector((state) => state.activities.items);
+interface StudentsProps {
+    ID?: string | number;
+}
 
-    const cachedMembershipTypes = useSelector((state) => state.membershipPackages.items);
-    const [showInvoice, setShowInvoice] = useState(false);
-    const [showAttendence, setShowAttendence] = useState(false);
-    const tableState = useSelector((state) => state["students"]);
-    const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
-    const [openTemplateDialog, setOpenTemplateDialog] = useState(false);
-    const api = useRef({});
-    const apiStudent = useRef({});
-    let extraField = []
-    if (isEnabled(FEATURE_KEYS.ENROLMENT)) {
+const Students: React.FC<StudentsProps> = ({ ID }) => {
+    const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const allActivities = useSelector((state: any) => state.activities.items) || [];
+    const cachedMembershipTypes = useSelector((state: any) => state.membershipPackages.items);
+    const showAlert = useAlert();
+
+    const [showInvoice, setShowInvoice] = useState<any>(false);
+    const [showAttendence, setShowAttendence] = useState<any>(false);
+    const tableState = useSelector((state: any) => state["students"]) || { recordById: {} };
+    const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
+    const api = useRef<any>({});
+    const apiStudent = useRef<any>({});
+    let extraField: any[] = [];
+    if (isEnabled?.(FEATURE_KEYS.ENROLMENT)) {
         extraField = [
             {
                 show: false,
@@ -151,16 +157,16 @@ const Students = ({ ID }) => {
                 label: "",
                 type: "CUSTOM",
                 extraProp: {
-                    CustomComponent: OtherInfo
-                }
-            }
-        ]
+                    CustomComponent: OtherInfo,
+                },
+            },
+        ];
     }
 
     const awaitForDialog = useCallback(
-        (paymentInit) =>
+        (paymentInit: any) =>
             new Promise((resolve) => {
-                const handleSave = (data) => {
+                const handleSave = (data: any) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -180,24 +186,17 @@ const Students = ({ ID }) => {
     );
 
     const beforeAdd = useCallback(
-        async (row) => {
+        async (row: any) => {
             const modifiedData = { ...row };
 
             let paymentInit = {
-                actualAmount: 0,
-                amount: 0,
+                actualAmount: modifiedData.activityAmount || 0,
+                amount: modifiedData.activityAmount || 0,
                 status: PAYMENT_STATUS[0],
                 paymentType: PAYMENT_TYPE[0],
             };
 
-            paymentInit = {
-                actualAmount: modifiedData.activityAmount,
-                amount: modifiedData.activityAmount,
-                status: PAYMENT_STATUS[0],
-                paymentType: PAYMENT_TYPE[0],
-            };
-
-            const paymentData = await awaitForDialog(paymentInit);
+            const paymentData: any = await awaitForDialog(paymentInit);
 
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
@@ -210,19 +209,20 @@ const Students = ({ ID }) => {
     );
 
     const getBatchEntries = useCallback(
-        (activityName, membershipType, daysPerWeek, batchName) =>
+        (activityName: string, membershipType?: string, daysPerWeek?: any, batchName?: string) =>
             allActivities
-                .find((a) => a.activityType === activityName)
+                .find((a: any) => a.activityType === activityName)
                 ?.batchEntries?.filter(
-                    (b) =>
+                    (b: any) =>
                         (!membershipType || b.planType === membershipType) &&
                         (!daysPerWeek || b.daysPerWeek === daysPerWeek) &&
                         (!batchName || b.name === batchName),
                 ) || null,
         [allActivities],
     );
+
     const overRideOnChange = useCallback(
-        (value, obj, fieldPath) => {
+        (value: any, obj: any, fieldPath: string) => {
             if (!value) return obj;
 
             const newObj = { ...obj };
@@ -237,7 +237,7 @@ const Students = ({ ID }) => {
                 newObj.activityAmount = entry?.price;
                 newObj.membershipEndDate =
                     entry?.planType &&
-                    getEndDateBySubscriptionPlan(newObj.membershipStartDate, entry?.planType);
+                    getEndDateBySubscriptionPlan(newObj.membershipStartDate, entry?.planType, cachedMembershipTypes);
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(newObj.activityName, value);
                 const entry = entries?.length === 1 ? entries[0] : undefined;
@@ -245,7 +245,8 @@ const Students = ({ ID }) => {
                 newObj.batchName = entry?.name;
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     newObj.membershipStartDate,
-                    value, cachedMembershipTypes
+                    value,
+                    cachedMembershipTypes,
                 );
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
@@ -267,12 +268,13 @@ const Students = ({ ID }) => {
             } else if (fieldPath === "membershipStartDate") {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     value,
-                    newObj.membershipType, cachedMembershipTypes
+                    newObj.membershipType,
+                    cachedMembershipTypes,
                 );
             }
             return newObj;
         },
-        [getBatchEntries],
+        [getBatchEntries, cachedMembershipTypes],
     );
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -293,19 +295,19 @@ const Students = ({ ID }) => {
                     {
                         name: "Document",
                         icon: <ReceiptIcon />,
-                        enabled: (row) => row.paymentEntry?.status === "COMPLETED",
+                        enabled: (row: any) => row.paymentEntry?.status === "COMPLETED",
                         sx: { color: "blue" },
-                        onClick: (row) => {
+                        onClick: (row: any) => {
                             setShowInvoice(row);
                         },
                     },
                     {
-                        hide: !isEnabled(FEATURE_KEYS.ATTENDANCE),
+                        hide: !isEnabled?.(FEATURE_KEYS.ATTENDANCE),
                         name: "Attendance",
                         icon: <HowToRegIcon />,
-                        enabled: (row) => true,
+                        enabled: () => true,
                         sx: { color: "blue" },
-                        onClick: (row) => {
+                        onClick: (row: any) => {
                             setShowAttendence(row);
                         },
                     },
@@ -316,16 +318,16 @@ const Students = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value) => value && { value, key: value },
-                        editable: (row) => row.assignmentId === "NEW",
+                        getValue: (value: string) => value && { value, key: value },
+                        editable: (row: any) => row.assignmentId === "NEW",
                         extraProp: {
-                            getOptions: async (search, page, limit) =>
+                            getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
-                                    .filter((a) =>
+                                    .filter((a: any) =>
                                         a.activityType.toLowerCase().includes(search.toLowerCase()),
                                     )
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a) => ({ key: a.activityType, value: a.activityType })),
+                                    .map((a: any) => ({ key: a.activityType, value: a.activityType })),
                         },
                         validation: { required: true },
                     },
@@ -334,27 +336,27 @@ const Students = ({ ID }) => {
                         name: "membershipType",
                         label: "Membership Type",
                         type: "SELECT",
-                        editable: (row) => row.assignmentId === "NEW",
-                        getValue: (value) => value && { value, key: value },
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        getValue: (value: any) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search, page, limit, row) => {
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
                                 const batchEntries = allActivities.find(
-                                    (a) => a.activityType === row["activityName"],
+                                    (a: any) => a.activityType === row["activityName"],
                                 )?.batchEntries;
                                 return [
                                     ...new Set(
                                         batchEntries
-                                            ?.filter((b) =>
+                                            ?.filter((b: any) =>
                                                 b.planType
                                                     .toLowerCase()
                                                     .includes(search.toLowerCase()),
                                             )
-                                            .map((b) => b.planType),
+                                            .map((b: any) => b.planType),
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a) => ({ key: a, value: a }));
+                                    .map((a: any) => ({ key: a, value: a }));
                             },
                         },
                         validation: { required: true },
@@ -363,19 +365,19 @@ const Students = ({ ID }) => {
                         show: true,
                         name: "daysPerWeek",
                         label: "Days Per week",
-                        editable: (row) => row.assignmentId === "NEW",
+                        editable: (row: any) => row.assignmentId === "NEW",
                         type: "SELECT",
-                        getValue: (value) => value && { value, key: value },
+                        getValue: (value: any) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search, page, limit, row) => {
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
                                 const batchEntries = allActivities
-                                    .find((a) => a.activityType === row["activityName"])
+                                    .find((a: any) => a.activityType === row["activityName"])
                                     ?.batchEntries?.filter(
-                                        (b) => b.planType === row["membershipType"],
+                                        (b: any) => b.planType === row["membershipType"],
                                     );
-                                return [...new Set(batchEntries?.map((b) => b.daysPerWeek))].map(
-                                    (a) => ({
+                                return [...new Set(batchEntries?.map((b: any) => b.daysPerWeek))].map(
+                                    (a: any) => ({
                                         key: a,
                                         value: a,
                                     }),
@@ -385,33 +387,33 @@ const Students = ({ ID }) => {
                         validation: { required: true },
                     },
                     {
-                        show: isEnabled(FEATURE_KEYS.BATCH),
+                        show: isEnabled?.(FEATURE_KEYS.BATCH),
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
-                        editable: (row) => row.assignmentId === "NEW",
-                        getValue: (value) => value && { value, key: value },
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        getValue: (value: any) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search, page, limit, row) => {
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
                                 const batchEntries = allActivities
-                                    .find((a) => a.activityType === row["activityName"])
+                                    .find((a: any) => a.activityType === row["activityName"])
                                     ?.batchEntries?.filter(
-                                        (b) =>
+                                        (b: any) =>
                                             b.planType === row["membershipType"] &&
                                             b.daysPerWeek === row["daysPerWeek"],
                                     );
                                 return [
                                     ...new Set(
                                         batchEntries
-                                            ?.filter((b) =>
+                                            ?.filter((b: any) =>
                                                 b.name.toLowerCase().includes(search.toLowerCase()),
                                             )
-                                            .map((b) => b.name),
+                                            .map((b: any) => b.name),
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a) => ({ key: a, value: a }));
+                                    .map((a: any) => ({ key: a, value: a }));
                             },
                         },
                         validation: { required: true },
@@ -420,13 +422,19 @@ const Students = ({ ID }) => {
                         show: true,
                         name: "activityAmount",
                         label: "Amount",
-                        getValue: (v, row, isEdit) => {
+                        getValue: (v: any, row: any, isEdit: boolean) => {
                             if (!isEdit) {
                                 if (!row || !row.paymentEntry) return null;
-                                return <>
-                                    Rs. {row.paymentEntry.amount}{" "}
-                                    {row.paymentEntry.actualAmount && row.paymentEntry.actualAmount !== row.paymentEntry.amount && (<span style={{ textDecoration: "line-through", color: "red", }}>Rs. {row.paymentEntry.actualAmount}</span>)}
-                                </>
+                                return (
+                                    <>
+                                        Rs. {row.paymentEntry.amount}{" "}
+                                        {row.paymentEntry.actualAmount && row.paymentEntry.actualAmount !== row.paymentEntry.amount && (
+                                            <span style={{ textDecoration: "line-through", color: "red" }}>
+                                                Rs. {row.paymentEntry.actualAmount}
+                                            </span>
+                                        )}
+                                    </>
+                                );
                             } else {
                                 return v;
                             }
@@ -435,7 +443,7 @@ const Students = ({ ID }) => {
                         validation: { required: true },
                     },
                     {
-                        show: isEnabled(FEATURE_KEYS.BATCH),
+                        show: isEnabled?.(FEATURE_KEYS.BATCH),
                         name: "batchTime",
                         label: "Batch Time",
                         extraProp: { readOnly: true },
@@ -446,7 +454,6 @@ const Students = ({ ID }) => {
                         name: "registrationDate",
                         label: "Registration Date",
                         type: "DATE",
-                        // extraProp: { readOnly: true },
                         defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
                     },
@@ -457,7 +464,6 @@ const Students = ({ ID }) => {
                         type: "DATE",
                         defaultValue: getCurrentDateTimeLocal(),
                         validation: { required: true },
-                        // extraProp: { min: getCurrentDateTimeLocal() },
                     },
                     {
                         show: true,
@@ -469,11 +475,11 @@ const Students = ({ ID }) => {
                         extraProp: { min: getCurrentDateTimeLocal(), readOnly: true },
                     },
                     {
-                        show: isEnabled(FEATURE_KEYS.PAYMENT_DATE),
+                        show: isEnabled?.(FEATURE_KEYS.PAYMENT_DATE),
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",
-                        editable: (row) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
+                        editable: (row: any) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
                         defaultValue: getCurrentDateTimeLocal(),
                     },
                     {
@@ -510,14 +516,14 @@ const Students = ({ ID }) => {
                         show: false,
                         name: "paymentEntry.branchId",
                         label: "Payee",
-                        defaultValue: currentBranch.branchId,
+                        defaultValue: currentBranch?.branchId,
                     },
                     {
                         show: true,
                         name: "membershipStatus",
                         label: "Membership Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value) => (
+                        getValue: (value: any) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",
@@ -545,7 +551,7 @@ const Students = ({ ID }) => {
             FEATURE_KEYS.PAYMENT_DATE,
             allActivities,
             beforeAdd,
-            currentBranch.branchId,
+            currentBranch?.branchId,
             isEnabled,
             overRideOnChange,
         ],
@@ -563,12 +569,12 @@ const Students = ({ ID }) => {
             )}
             <Views
                 formKey={ID}
-                beforeAdd={(row) => {
+                beforeAdd={(row: any) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
                 }}
-                beforeUpdate={async (row) => {
+                beforeUpdate={async (row: any) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
@@ -577,23 +583,24 @@ const Students = ({ ID }) => {
                     {
                         name: "WhatsApp",
                         icon: <WhatsApp />,
-                        enabled: (row) => true,
+                        enabled: () => true,
                         sx: { color: "green" },
-                        onClick: (row) => {
+                        onClick: (row: any) => {
                             if (row.studentId) {
-                                setOpenTemplateDialog({ open: true, data: row })
+                                setOpenTemplateDialog({ open: true, data: row });
                             } else {
-                                showAlert("No student data available, please try again", "error")
+                                showAlert("No student data available, please try again", "error");
                             }
                         },
-                    }]}
+                    },
+                ]}
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}
-                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
-                rootId={currentBranch.branchId}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD] as any}
+                rootId={currentBranch?.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"
@@ -614,7 +621,7 @@ const Students = ({ ID }) => {
             {openPaymentDialog && (
                 <PaymentEntryDialog
                     open={true}
-                    onSave={(data) => openPaymentDialog?.onSave?.(data)}
+                    onSave={(data: any) => openPaymentDialog?.onSave?.(data)}
                     onClose={() => openPaymentDialog?.onClose?.()}
                     initialData={openPaymentDialog.paymentInit}
                     paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
@@ -637,16 +644,12 @@ const Students = ({ ID }) => {
                         raw: openTemplateDialog.data,
                         phoneNumber: openTemplateDialog.data.phone,
                         email: openTemplateDialog.data.email,
-                        notificationType: "WHATSAPP"
+                        notificationType: "WHATSAPP",
                     }}
                 />
             )}
         </FlexBetweenColumn>
     );
-};
-
-Students.propTypes = {
-    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Students;

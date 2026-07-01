@@ -1,10 +1,16 @@
 import api from "../../../core/utils/api";
 
-export const updatePaymentAPI = async ({ paymentId, paymentData, token }) => {
+interface UpdatePaymentParams {
+    paymentId: string | number;
+    paymentData: any;
+    token: string | null | undefined;
+}
+
+export const updatePaymentAPI = async ({ paymentId, paymentData, token }: UpdatePaymentParams) => {
     try {
         const response = await api.put(`/payments/update/${paymentId}`, paymentData, {
             headers: {
-                Authorization: token,
+                Authorization: `${token}`,
             },
         });
         return {
@@ -12,7 +18,7 @@ export const updatePaymentAPI = async ({ paymentId, paymentData, token }) => {
             data: response.data.data[0],
             message: response.data.status.statusMessage,
         };
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
             message: error.response?.data?.message || "Failed to update payment",

@@ -26,7 +26,7 @@ const PaymentList = ({ data, field }) => {
     const paidAmount = value.reduce((acc, curr) => acc + curr.amount, 0);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [paymentFormData, setPaymentFormData] = useState();
@@ -120,7 +120,7 @@ const PaymentList = ({ data, field }) => {
                             name: "status",
                             label: "Status",
                             type: "SELECT",
-                            getValue: (value) => value && ({ key: value, value }),
+                            getValue: (value: any) => value && ({ key: value, value }),
                             extraProp: {
                                 getOptions: async (search, page, limit) =>
                                     ["PENDING", "COMPLETED"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))
@@ -132,7 +132,7 @@ const PaymentList = ({ data, field }) => {
                             name: "paymentType",
                             label: "Payment Category",
                             type: "SELECT",
-                            getValue: (value) => value && ({ key: value, value }),
+                            getValue: (value: any) => value && ({ key: value, value }),
                             extraProp: {
                                 getOptions: async (search, page, limit) =>
                                     ["CASH", "UPI"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))

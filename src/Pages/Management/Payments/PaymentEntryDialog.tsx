@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
     FormControl,
     Select,
@@ -7,23 +8,38 @@ import {
     Box,
     Typography,
 } from "@mui/material";
-import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 
-const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus, paymentType }) => {
-    const [formData, setFormData] = useState(initialData || {});
+interface PaymentEntryDialogProps {
+    open: boolean;
+    onClose: () => void;
+    onSave: (data: any) => void;
+    initialData?: any;
+    paymentStatus: Array<{ value: string; label: string }>;
+    paymentType: Array<{ value: string; label: string }>;
+}
+
+const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
+    open,
+    onClose,
+    onSave,
+    initialData,
+    paymentStatus,
+    paymentType,
+}) => {
+    const [formData, setFormData] = useState<any>(initialData || {});
 
     useEffect(() => {
-        if (initialData) setFormData(initialData);
+        if (initialData) setFormData({ ...initialData });
     }, [initialData]);
 
     const handleConfirm = () => {
-        if (formData.type === "BOOKING") {
-            delete formData.actualAmount;
-            delete formData.type;
+        const data = { ...formData };
+        if (data.type === "BOOKING") {
+            delete data.actualAmount;
+            delete data.type;
         }
-        onSave(formData);
+        onSave(data);
     };
 
     return (
@@ -50,7 +66,7 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
                     value={formData.amount ?? ""}
                     fullWidth
                     onChange={(e) =>
-                        setFormData((prev) => ({
+                        setFormData((prev: any) => ({
                             ...prev,
                             amount: Number(e.target.value),
                         }))
@@ -67,7 +83,7 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
                         value={formData.status || ""}
                         label="Payment Status"
                         onChange={(e) =>
-                            setFormData((prev) => ({ ...prev, status: e.target.value }))
+                            setFormData((prev: any) => ({ ...prev, status: e.target.value }))
                         }
                     >
                         {paymentStatus?.map((status) => (
@@ -84,7 +100,7 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
                         value={formData.paymentType || ""}
                         label="Payment Type"
                         onChange={(e) =>
-                            setFormData((prev) => ({ ...prev, paymentType: e.target.value }))
+                            setFormData((prev: any) => ({ ...prev, paymentType: e.target.value }))
                         }
                     >
                         {paymentType?.map((type) => (
@@ -97,31 +113,6 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
             </Box>
         </StyledDialog>
     );
-};
-
-PaymentEntryDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
-    initialData: PropTypes.shape({
-        amount: PropTypes.number,
-        actualAmount: PropTypes.number,
-        status: PropTypes.string,
-        paymentType: PropTypes.string,
-        paymentDate: PropTypes.string,
-    }),
-    paymentStatus: PropTypes.arrayOf(
-        PropTypes.shape({
-            value: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
-        }),
-    ).isRequired,
-    paymentType: PropTypes.arrayOf(
-        PropTypes.shape({
-            value: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
-        }),
-    ).isRequired,
 };
 
 export default PaymentEntryDialog;

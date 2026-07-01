@@ -1,8 +1,27 @@
+import React from "react";
 import { TextField } from "@mui/material";
 import { FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
-import PropTypes from "prop-types";
 
-const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
+interface FormFieldsValues {
+    studioName?: string;
+    userName?: string;
+    email?: string;
+    password?: string;
+    contactDetails?: string;
+    location?: string;
+    address?: string;
+    state?: string;
+    pincode?: string;
+}
+
+interface FormFieldsProps {
+    onChangehandle: (val: string, key: string) => void;
+    values: FormFieldsValues;
+    isRegister: boolean;
+    isLogin: boolean;
+}
+
+const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegister, isLogin }) => (
     <>
         <FlexEvenlyColumn>
             {isRegister && (
@@ -12,7 +31,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="Studio Name"
                         onChange={(e) => onChangehandle(e.target.value, "studioName")}
-                        value={values.studioName}
+                        value={values.studioName || ""}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -20,7 +39,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="User Name"
                         onChange={(e) => onChangehandle(e.target.value, "userName")}
-                        value={values.userName}
+                        value={values.userName || ""}
                         sx={{ width: "100%" }}
                     />
                 </>
@@ -35,7 +54,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         ? onChangehandle(e.target.value, "userName")
                         : onChangehandle(e.target.value, "email")
                 }
-                value={values.email}
+                value={values.email || ""}
                 sx={{ width: "100%" }}
             />
             {isLogin && (
@@ -45,7 +64,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                     type={"password"}
                     label={"password"}
                     onChange={(e) => onChangehandle(e.target.value, "password")}
-                    value={values.password}
+                    value={values.password || ""}
                     sx={{ width: "100%" }}
                 />
             )}
@@ -55,11 +74,12 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         variant="standard"
                         required
                         label="Phone"
-                        onInput={(e) => {
-                            e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
+                        onInput={(e: React.FormEvent<HTMLDivElement>) => {
+                            const target = e.target as HTMLInputElement;
+                            target.value = target.value.replace(/[^0-9]/g, "").slice(0, 10);
                         }}
                         onChange={(e) => onChangehandle(e.target.value, "contactDetails")}
-                        value={values.contactDetails}
+                        value={values.contactDetails || ""}
                         sx={{ width: "100%" }}
                         slotProps={{
                             htmlInput: {
@@ -68,7 +88,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                             input: {
                                 pattern: "[0-9]*",
                                 inputMode: "numeric",
-                            },
+                            } as any,
                         }}
                     />
                     <TextField
@@ -76,7 +96,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="City"
                         onChange={(e) => onChangehandle(e.target.value, "location")}
-                        value={values.location}
+                        value={values.location || ""}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -84,7 +104,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="Address"
                         onChange={(e) => onChangehandle(e.target.value, "address")}
-                        value={values.address}
+                        value={values.address || ""}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -92,7 +112,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="State"
                         onChange={(e) => onChangehandle(e.target.value, "state")}
-                        value={values.state}
+                        value={values.state || ""}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -100,7 +120,7 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
                         required
                         label="Pincode"
                         onChange={(e) => onChangehandle(e.target.value, "pincode")}
-                        value={values.pincode}
+                        value={values.pincode || ""}
                         sx={{ width: "100%" }}
                         slotProps={{
                             htmlInput: {
@@ -113,22 +133,5 @@ const FormFields = ({ onChangehandle, values, isRegister, isLogin }) => (
         </FlexEvenlyColumn>
     </>
 );
-
-FormFields.propTypes = {
-    onChangehandle: PropTypes.func.isRequired,
-    values: PropTypes.shape({
-        studioName: PropTypes.string,
-        userName: PropTypes.string,
-        email: PropTypes.string,
-        password: PropTypes.string,
-        contactDetails: PropTypes.string,
-        location: PropTypes.string,
-        address: PropTypes.string,
-        state: PropTypes.string,
-        pincode: PropTypes.string,
-    }).isRequired,
-    isRegister: PropTypes.bool.isRequired,
-    isLogin: PropTypes.bool.isRequired,
-};
 
 export default FormFields;

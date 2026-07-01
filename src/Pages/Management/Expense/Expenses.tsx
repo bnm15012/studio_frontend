@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
+import React, { useRef } from "react";
+import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
@@ -20,7 +20,7 @@ const categories = [
     "OTHER",
 ];
 const LIMIT = 7;
-const PAYMENT_TYPE = ["CASH", "UPI"]
+const PAYMENT_TYPE = ["CASH", "UPI"];
 const FIELD_META = {
     primary: "expenseId",
     root: "branchId",
@@ -44,9 +44,9 @@ const FIELDS = [
         label: "Expense Category",
         type: FIELD_TYPES.SELECT,
         validation: { required: true },
-        getValue: (value) => value && { key: value, value },
+        getValue: (value: any) => value && { key: value, value },
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 categories
                     .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                     .slice(page * limit, (page + 1) * limit)
@@ -58,10 +58,10 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value) => value && ({ key: value, value }),
+        getValue: (value: any) => value && ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[0],
         extraProp: {
-            getOptions: async (search, page, limit) =>
+            getOptions: async (search: string, page: number, limit: number) =>
                 PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                     .slice(page * limit, (page + 1) * limit)
                     .map((a) => ({ key: a, value: a })),
@@ -76,10 +76,11 @@ const FIELDS = [
         defaultValue: 0,
     },
 ];
-const Expenses = () => {
+
+const Expenses: React.FC = () => {
     const { isMobile } = useUI();
-    const api = useRef({});
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
+    const api = useRef<any>({});
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
@@ -90,8 +91,8 @@ const Expenses = () => {
                     tableCruds={expenseCruds}
                     size={LIMIT}
                     key={"expenses"}
-                    fields={FIELDS}
-                    rootId={currentBranch.branchId}
+                    fields={FIELDS as any}
+                    rootId={currentBranch?.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

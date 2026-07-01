@@ -14,9 +14,9 @@ const Activities = () => {
     const showAlert = useAlert();
     const { isBatchEnabled } = useUI();
 
-    const allActivities = useSelector((state) => state.activities.items);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const token = useSelector((state) => state.auth.token);
+    const allActivities = useSelector((state: any) => state.activities.items);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const token = useSelector((state: any) => state.auth.token);
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(false);
@@ -115,7 +115,7 @@ const Activities = () => {
                 );
                 setDialogOpen(false);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             showAlert("Error saving activity!", "error");
         }

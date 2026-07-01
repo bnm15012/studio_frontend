@@ -85,7 +85,7 @@ const WhatsAppConfiguration: React.FC = () => {
                         }
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 setPolling(false);
                 clearInterval(interval);
                 console.error(error);
@@ -114,7 +114,7 @@ const WhatsAppConfiguration: React.FC = () => {
             } else {
                 showAlert(message || "Failed to disconnect WhatsApp", "error");
             }
-        } catch (error) {
+        } catch (error: any) {
             showAlert("Error disconnecting WhatsApp", "error");
             console.error(error);
         } finally {

@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     DialogContent,
-    IconButton,
     Box,
     Typography,
     CircularProgress,
@@ -11,26 +10,25 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Html5Qrcode } from "html5-qrcode";
-
 import StyledDialog from "../../../core/components/dialogs/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../../../core/components/feedback/Alert";
 import { useUI } from "../../../context/UIContext";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 
-const MarkPresentDialog = () => {
+const MarkPresentDialog: React.FC = () => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const { isEnabled, FEATURE_KEYS } = useUI();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [scanResult, setScanResult] = useState(null);
-    const [scanStatus, setScanStatus] = useState(null); // success | fail
+    const [scanResult, setScanResult] = useState<string | null>(null);
+    const [scanStatus, setScanStatus] = useState<string | null>(null); // success | fail
     const [message, setMessage] = useState("");
 
-    const scannerRef = useRef(null);
-    const timeOutRef = useRef(null);
+    const scannerRef = useRef<Html5Qrcode | null>(null);
+    const timeOutRef = useRef<any>(null);
     const isProcessingRef = useRef(false);
 
     useEffect(() => {
@@ -97,9 +95,10 @@ const MarkPresentDialog = () => {
                                 initScanner();
                             }
                         }, 3000);
-                    }
+                    },
+                    () => {}
                 );
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Scanner Error:", err);
                 if (!isMounted) return;
 
@@ -125,18 +124,18 @@ const MarkPresentDialog = () => {
 
             if (scannerRef.current) {
                 scannerRef.current.stop().then(() => {
-                    scannerRef.current.clear();
+                    scannerRef.current?.clear();
                 }).catch(() => { });
             }
         };
     }, [open]);
 
-    const markPresent = async (assignmentId) => {
+    const markPresent = async (assignmentId: string) => {
         try {
-            await dispatch(studentsAssignmentsCruds.markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
+            await (dispatch as any)(studentsAssignmentsCruds.markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
             setScanStatus("success");
             setMessage("Attendance Marked");
-        } catch (error) {
+        } catch (error: any) {
             setScanStatus("fail");
             setMessage(
                 error?.response?.data?.status?.statusMessage ||
@@ -167,7 +166,7 @@ const MarkPresentDialog = () => {
 
     return (
         <>
-            {isEnabled(FEATURE_KEYS.ATTENDANCE) && (
+            {isEnabled?.(FEATURE_KEYS.ATTENDANCE) && (
                 <Button
                     variant="contained"
                     color="primary"
@@ -191,7 +190,6 @@ const MarkPresentDialog = () => {
                         gap={2}
                         minHeight={400}
                     >
-                        {/* Always keep qr-reader in DOM to avoid Html5Qrcode crashing when unmounted */}
                         <Box sx={{ display: scanStatus ? "none" : "block", width: "100%", maxWidth: 350 }}>
                             <Typography variant="h6" align="center" gutterBottom>
                                 Scan Attendance QR
