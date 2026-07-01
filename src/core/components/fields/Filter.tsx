@@ -13,7 +13,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DateTime from "./DateTime";
 import { getCurrentDateLocal } from "../../utils/DateUtil";
 
-interface FilterOption {
+export interface FilterOption {
     name: string;
     key: string;
     values?: string[];
@@ -21,7 +21,7 @@ interface FilterOption {
 
 interface FilterProps {
     filterOptions?: FilterOption[];
-    onChange?: (filters: Record<string, any>) => void;
+    onChange?: (filters: Record<string, string>) => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
@@ -31,8 +31,8 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
         filterOptions.filter((f) => f.key === "date").map((f) => [f.key, getCurrentDateLocal()]),
     );
 
-    const [selected, setSelected] = useState<Record<string, any>>(defaultSelected);
-    const [tempSelected, setTempSelected] = useState<Record<string, any>>(defaultSelected);
+    const [selected, setSelected] = useState<Record<string, string | null>>(defaultSelected);
+    const [tempSelected, setTempSelected] = useState<Record<string, string | null>>(defaultSelected);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);

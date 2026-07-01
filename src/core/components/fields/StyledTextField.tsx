@@ -11,7 +11,7 @@ interface ValidationRules {
 }
 
 interface StyledTextFieldProps {
-    value?: any;
+    value?: string;
     setValue: (val: string) => void;
     rows?: number;
     label?: string;

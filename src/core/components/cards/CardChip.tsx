@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, SxProps, Theme } from "@mui/material";
 import { getLocalDateTime } from "../../utils/DateUtil";
 import { CalendarMonth } from "@mui/icons-material";
 
@@ -9,9 +9,9 @@ import { CalendarMonth } from "@mui/icons-material";
  */
 interface CardChipProps {
     label?: string;
-    value?: any;
+    value?: string | number | null;
     type?: "DATE" | "DATETIME" | "STR";
-    ChipIcon?: React.ComponentType<any>;
+    ChipIcon?: React.ComponentType<{ sx?: SxProps<Theme> }>;
 }
 
 const CardChip: React.FC<CardChipProps> = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {

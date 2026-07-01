@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
 
-type SearchHandler = (term: string, filter: any) => void;
+type SearchHandler = (term: string, filter: Record<string, string>) => void;
 
 const subscribers = new Set<SearchHandler>();
 
 export const usePageSearch = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filter, setFilter] = useState<any>({});
+    const [filter, setFilter] = useState<Record<string, string>>({});
 
     const subscribe = useCallback((handler: SearchHandler) => {
         subscribers.add(handler);
@@ -16,7 +16,7 @@ export const usePageSearch = () => {
         };
     }, []);
 
-    const triggerSearch = (term: string, filter: any) => {
+    const triggerSearch = (term: string, filter: Record<string, string>) => {
         setSearchTerm(term);
         setFilter(filter);
         subscribers.forEach((handler) => handler(term, filter));

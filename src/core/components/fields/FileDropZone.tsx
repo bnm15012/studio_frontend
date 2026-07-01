@@ -19,7 +19,7 @@ interface FileDropZoneProps {
     isCircular?: boolean | string;
     size?: string;
     acceptedFileFormats?: DropzoneProps["accept"];
-    onDrop: (acceptedFiles: File[], rejectedFiles?: any[]) => void;
+    onDrop: (acceptedFiles: File[], rejectedFiles?: File[]) => void;
     placeholderText?: string;
 }
 
@@ -37,7 +37,7 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
     const theme = useTheme();
     const [width, height] = size ? size.split(" ") : ["200px", "200px"];
 
-    const handleDrop = (acceptedFiles: File[], rejectedFiles: any[]) => {
+    const handleDrop = (acceptedFiles: File[], rejectedFiles: File[]) => {
         onDrop?.(acceptedFiles, rejectedFiles);
     };
 

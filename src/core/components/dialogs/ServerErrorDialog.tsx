@@ -58,7 +58,7 @@ const checkServerStatus = async (): Promise<boolean> => {
             },
         );
         return response.status === 200;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Server is down or unreachable:", error);
         return false;
     }

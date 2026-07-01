@@ -1,6 +1,6 @@
 import React from "react";
 import { Delete, Edit, OpenInNew } from "@mui/icons-material";
-import { ActionItem } from "../helper/Actions";
+import { ActionItem } from "../../types";
 
 // Icon elements as module-level constants — created once, not on every defaultActions() call.
 const EditIcon = <Edit />;
@@ -10,10 +10,10 @@ const FormIcon = <OpenInNew />;
 interface DefaultActionsProps {
     loading: boolean;
     editMode?: "FORM" | "INLINE" | string;
-    formKey?: any;
-    handleEdit: (row: any) => void;
-    handleDeleteClick: (row: any) => void;
-    openFormView: (row: any) => void;
+    formKey?: unknown;
+    handleEdit: (row: unknown) => void;
+    handleDeleteClick: (row: unknown) => void;
+    openFormView: (row: unknown) => void;
 }
 
 export const defaultActions = ({

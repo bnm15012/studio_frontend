@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, Theme } from "@mui/material";
 import styled from "@emotion/styled";
 import { FlexBetween } from "./FlexBox";
 import { SearchIcon } from "lucide-react";
 import Filter from "../fields/Filter";
 
-const StyledSearchField = styled(Box)(({ theme }: any) => ({
+const StyledSearchField = styled(Box)(({ theme }: { theme: Theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -35,11 +35,13 @@ const buttonSx = {
     },
 };
 
+import { FilterOption } from "../fields/Filter";
+
 interface SearchFieldProps {
-    handleSearch: (term: string, filterKeys: Record<string, any>) => void;
-    filterOptions?: any[];
+    handleSearch: (term: string, filterKeys: Record<string, string>) => void;
+    filterOptions?: FilterOption[];
     placeHolder?: string;
-    handleFilterKeys?: (keys: Record<string, any>) => void;
+    handleFilterKeys?: (keys: Record<string, string>) => void;
 }
 
 const SearchField: React.FC<SearchFieldProps> = ({
@@ -49,7 +51,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
     handleFilterKeys = () => {},
 }) => {
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [filterKeys, setFilterKeys] = useState<Record<string, any>>({});
+    const [filterKeys, setFilterKeys] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
@@ -90,7 +92,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
             {filterOptions.length > 0 && (
                 <Filter
                     filterOptions={filterOptions}
-                    onChange={(o: Record<string, any>) => {
+                    onChange={(o: Record<string, string>) => {
                         setFilterKeys(o);
                         handleFilterKeys(o);
                         handleSearch(searchTerm, o);

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Select, MenuItem, CircularProgress, Typography } from "@mui/material";
 
 interface InfiniteSelectOption {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface InfiniteSelectFieldProps {
-    currentValue: any;
-    onChange: (val: any) => void;
+    currentValue: unknown;
+    onChange: (val: unknown) => void;
     getOptions: (page: number, size: number) => Promise<{ data: InfiniteSelectOption[]; total: number }>;
     valueField?: string;
     keyField?: string;
@@ -40,8 +40,8 @@ const InfiniteSelectField: React.FC<InfiniteSelectFieldProps> = ({
                     return [...prev, ...uniqueNewOptions];
                 });
                 setTotal(response.total);
-            } catch (err: any) {
-                setError(err.message || "Failed to fetch options");
+            } catch (err: unknown) {
+                setError(err instanceof Error ? err.message : "Failed to fetch options");
             } finally {
                 setLoading(false);
             }

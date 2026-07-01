@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardActions, Box } from "@mui/material";
+import { Card, CardContent, CardActions, Box, SxProps, Theme } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { motion } from "framer-motion";
 
@@ -71,8 +71,8 @@ const StyledCardBase = styled(MotionCard)(({ theme }) => ({
 interface StyledMotionCardProps {
     children: React.ReactNode;
     elevation?: number;
-    sx?: any;
-    [key: string]: any;
+    sx?: SxProps<Theme>;
+    [key: string]: unknown;
 }
 
 export const StyledMotionCard: React.FC<StyledMotionCardProps> = ({ children, elevation = 3, ...props }) => {

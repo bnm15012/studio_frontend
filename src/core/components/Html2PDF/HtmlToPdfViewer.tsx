@@ -11,11 +11,11 @@ const indianMobileRegex = /^[6-9]\d{9}$/;
 interface HtmlToPdfViewerProps {
     content: React.ReactNode;
     header?: React.ReactNode;
-    studio: any;
+    studio: { logo: string; studioName: string };
     fileName?: string;
     footer?: React.ReactNode;
-    remainingPayload?: any;
-    whatsAppPayload?: any;
+    remainingPayload?: Record<string, unknown>;
+    whatsAppPayload?: Record<string, unknown>;
 }
 
 export interface HtmlToPdfViewerRef {

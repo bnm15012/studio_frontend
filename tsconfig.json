@@ -18,6 +18,8 @@
     /* Linting / Strictness */
     "strict": true,
     "noImplicitAny": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,

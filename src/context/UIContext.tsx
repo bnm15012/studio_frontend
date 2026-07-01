@@ -1,20 +1,27 @@
-import { useMediaQuery } from "@mui/material";
 import React from "react";
 import { useAppSelector } from "../state";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { FEATURE_KEYS } from "./feature_keys";
-import { UIContext, useUI } from "../core/context/UIContext";
 
-export { useUI };
+import {
+    createUIContext,
+    UIContextType,
+} from "../core/context/UIContext";
 
-export interface UIProviderProps {
-    children: React.ReactNode;
+export interface AppUIContext extends UIContextType {
+    isBatchEnabled: boolean;
+    isEnabled: (feature: string) => boolean;
+    isAdmin: boolean;
+    FEATURE_KEYS: Record<string, string>;
+    DEBUG: boolean;
 }
 
-export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
+export const { UIProvider, useUI, UIContext } = createUIContext<AppUIContext>();
+
+export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const settings = useAppSelector((state: any) => state.auth.settings);
     const user = useAppSelector((state: any) => state.auth.user);
-    const isMobile = useMediaQuery("(max-width: 1000px)");
+
     const isAdmin = user?.role === "ADMIN";
     const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
@@ -22,10 +29,16 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
     return (
-        <UIContext.Provider
-            value={{ isMobile, isBatchEnabled, isEnabled, isAdmin, FEATURE_KEYS, DEBUG }}
+        <UIProvider
+            value={{
+                isBatchEnabled,
+                isEnabled,
+                isAdmin,
+                FEATURE_KEYS,
+                DEBUG,
+            }}
         >
             {children}
-        </UIContext.Provider>
+        </UIProvider>
     );
 };

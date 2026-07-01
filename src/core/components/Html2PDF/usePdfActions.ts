@@ -1,14 +1,14 @@
 // src/hooks/usePdfActions.ts
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useAlert } from "../feedback/Alert";
 import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
+import { useAppSelector } from "../../../state";
 
 interface UsePdfActionsProps {
     contentRef: React.RefObject<HTMLElement | null>;
-    pdfOptions: any;
+    pdfOptions: Record<string, unknown>;
     fileName: string;
-    remainingPayload?: any;
+    remainingPayload?: Record<string, unknown>;
 }
 
 export const usePdfActions = ({
@@ -17,9 +17,9 @@ export const usePdfActions = ({
     fileName,
     remainingPayload = {},
 }: UsePdfActionsProps) => {
-    const token = useSelector((s: any) => s.auth.token);
-    const studio = useSelector((s: any) => s.auth.studio);
-    const currentBranch = useSelector((s: any) => s.branch.currentBranch);
+    const token = useAppSelector((s) => s.auth.token);
+    const studio = useAppSelector((s) => s.auth.studio);
+    const currentBranch = useAppSelector((s) => s.branch.currentBranch);
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
@@ -28,8 +28,17 @@ export const usePdfActions = ({
         if (!contentRef.current) {
             throw new Error("Content ref is empty. Cannot generate PDF.");
         }
-        return (window as any).html2pdf().set(pdfOptions).from(contentRef.current);
+        const html2pdf = (window as unknown as { html2pdf: () => Html2PdfInstance }).html2pdf();
+        return html2pdf.set(pdfOptions).from(contentRef.current);
     };
+
+interface Html2PdfInstance {
+    set: (opts: Record<string, unknown>) => Html2PdfInstance;
+    from: (el: HTMLElement) => Html2PdfInstance;
+    outputPdf: (type: string) => Promise<Blob>;
+    toPdf: () => { save: () => Promise<void>; get: (key: string) => { then: (cb: (pdf: { output: (type: string) => string; autoPrint: () => void }) => void) => void } };
+    save: () => Promise<void>;
+}
 
     // New helper to temporarily reset scale before PDF generation
     const withTemporaryScaleReset = async <T>(pdfAction: () => Promise<T> | T): Promise<T | undefined> => {
@@ -62,7 +71,7 @@ export const usePdfActions = ({
         await withTemporaryScaleReset(async () => {
             try {
                 await getPdfInstance().toPdf().save();
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(error);
                 showAlert("Failed to download PDF", "error");
             } finally {
@@ -78,7 +87,7 @@ export const usePdfActions = ({
                 await getPdfInstance()
                     .toPdf()
                     .get("pdf")
-                    .then((pdf: any) => {
+                    .then((pdf: { output: (type: string) => string; autoPrint: () => void }) => {
                         if (contentRef.current) {
                             contentRef.current.classList.remove("generating-pdf");
                         }
@@ -107,7 +116,7 @@ export const usePdfActions = ({
             };
 
             showAlert(`Sending ${type}...`, "info");
-            const { success, message } = await (sendMessageApi as any)({
+            const { success, message } = await (sendMessageApi as unknown as (args: { token: string | null; payload: Record<string, unknown>; file: File | null }) => Promise<{ success: boolean; message: string }>)({
                 token,
                 payload,
                 file: pdfBlob ? new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }) : null,
@@ -122,7 +131,7 @@ export const usePdfActions = ({
         }
     };
 
-    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: any) => {
+    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: { phone: string; name: string; studioName: string; invoiceToken: string }) => {
         sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
         const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken}`;
         const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName}`;
@@ -131,7 +140,7 @@ export const usePdfActions = ({
     };
 
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = (payload: any) => redirectToWhatsApp(payload);
+    const sendWhatsApp = (payload: { phone: string; name: string; studioName: string; invoiceToken: string }) => redirectToWhatsApp(payload);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

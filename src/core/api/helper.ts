@@ -7,7 +7,7 @@ export const getHeader = (token: string | null | undefined) => ({
  * Extract a human-readable error message from an Axios error response,
  * falling back to `fallback` when the server provides no message.
  */
-export const getApiMessage = (err: any, fallback: string): string =>
+export const getApiMessage = (err: { response?: { data?: { status?: { statusMessage?: string } } } }, fallback: string): string =>
     err?.response?.data?.status?.statusMessage ?? fallback;
 
 /**
@@ -26,11 +26,24 @@ export const withLoading = async <T>(
     }
 };
 
+interface CacheState {
+    rootId: unknown;
+    currentPage: unknown;
+    searchTerm: unknown;
+    filterKeys: Record<string, unknown>;
+}
+
+interface CacheParams {
+    page?: unknown;
+    searchTerm?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Returns true when the slice state already contains the data being requested,
  * meaning the thunk can safely skip a network call.
  */
-export const isCacheValid = (state: any, rootId: any, params: any): boolean =>
+export const isCacheValid = (state: CacheState, rootId: unknown, params: CacheParams): boolean =>
     state.rootId === rootId &&
     state.currentPage === params?.page &&
     params?.searchTerm === state.searchTerm &&

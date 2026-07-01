@@ -2,11 +2,23 @@ import React, { useState, useRef } from "react";
 import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
-import { useSelector } from "react-redux";
 import StyledDialog from "../dialogs/StyledDialog";
 import { useUI } from "../../context/UIContext";
+import { useAppSelector } from "../../../state";
 
-interface QrFormProps {
+interface Html2PdfInstance {
+    set: (opts: Record<string, unknown>) => Html2PdfInstance;
+    from: (el: HTMLElement) => Html2PdfInstance;
+    save: () => void;
+    toPdf: () => { get: (key: string) => { then: (cb: (pdf: PdfInstance) => void) => void } };
+}
+
+interface PdfInstance {
+    output: (type: string) => Blob;
+    autoPrint: () => void;
+}
+
+export interface QrFormProps {
     link?: string;
     qrSize?: number;
     title?: string;
@@ -24,7 +36,7 @@ const QrForm: React.FC<QrFormProps> = ({
     const { isMobile } = useUI();
     const [open, setOpen] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch) || {};
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch) || {};
     const qrLink = typeof qrValue === "string"
         ? qrValue
         : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
@@ -34,8 +46,8 @@ const QrForm: React.FC<QrFormProps> = ({
 
     const handleDownloadPDF = () => {
         if (!qrRef.current) return;
-        (window as any)
-            .html2pdf()
+        const html2pdf = (window as unknown as { html2pdf: () => Html2PdfInstance }).html2pdf();
+        html2pdf
             .set({
                 filename: `QRCode-${link || qrValue}.pdf`,
                 image: { type: "jpeg", quality: 1 },
@@ -48,8 +60,8 @@ const QrForm: React.FC<QrFormProps> = ({
 
     const handlePrintPDF = () => {
         if (!qrRef.current) return;
-        (window as any)
-            .html2pdf()
+        const html2pdf = (window as unknown as { html2pdf: () => Html2PdfInstance }).html2pdf();
+        html2pdf
             .set({
                 image: { type: "jpeg", quality: 1 },
                 html2canvas: { scale: 4, useCORS: true },
@@ -58,7 +70,7 @@ const QrForm: React.FC<QrFormProps> = ({
             .from(qrRef.current)
             .toPdf()
             .get("pdf")
-            .then((pdf: any) => {
+            .then((pdf: PdfInstance) => {
                 const blob = pdf.output("blob");
                 const blobUrl = URL.createObjectURL(blob);
                 const printWindow = window.open(blobUrl, "_blank");

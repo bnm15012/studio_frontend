@@ -1,17 +1,5 @@
 import { getNestedValue } from "../../utils/objectHelpers";
-
-export interface FieldDef {
-    name: string;
-    show?: boolean;
-    view?: boolean;
-    getValue?: (raw: any, row: any, isEdit: boolean) => any;
-    editable?: (row: any) => boolean;
-    extraProp?: {
-        getOptions?: (search: string, page: number, limit: number, row?: any) => Promise<any>;
-        [key: string]: any;
-    };
-    [key: string]: any;
-}
+import { FieldDef, ExtraProp } from "../types";
 
 /**
  * Returns the fields that should be visible in list/card/dialog views.
@@ -30,7 +18,7 @@ export const getVisibleFields = (fields: FieldDef[]): FieldDef[] =>
  * @param isEdit - editing mode flag
  * @returns resolved value
  */
-export const resolveFieldValue = (field: FieldDef, row: any, isEdit: boolean): any => {
+export const resolveFieldValue = (field: FieldDef, row: Record<string, unknown>, isEdit: boolean): unknown => {
     const raw = getNestedValue(row, field.name);
     return field?.getValue ? field.getValue(raw, row, isEdit) : raw;
 };
@@ -43,7 +31,7 @@ export const resolveFieldValue = (field: FieldDef, row: any, isEdit: boolean): a
  * @param isEditing - editing state flag
  * @returns boolean indicating if editable
  */
-export const isFieldEditable = (field: FieldDef, row: any, isEditing: boolean): boolean => {
+export const isFieldEditable = (field: FieldDef, row: Record<string, unknown>, isEditing: boolean): boolean => {
     if (!isEditing) return false;
     return field?.editable ? field.editable(row) : true;
 };
@@ -55,7 +43,7 @@ export const isFieldEditable = (field: FieldDef, row: any, isEditing: boolean): 
  * @param row       - current data row
  * @returns patched extraProp object
  */
-export const bindGetOptions = (extraProp: FieldDef["extraProp"], row: any): FieldDef["extraProp"] => {
+export const bindGetOptions = (extraProp: ExtraProp, row: Record<string, unknown>): ExtraProp => {
     if (!extraProp?.getOptions) return extraProp ?? {};
     return {
         ...extraProp,

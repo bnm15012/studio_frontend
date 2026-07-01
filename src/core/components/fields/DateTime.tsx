@@ -110,7 +110,7 @@ const DateTime: React.FC<DateTimeProps> = ({
                     ".MuiPickersPopper-root .MuiPaper-root": {
                         borderRadius: 12,
                         backgroundColor: theme.palette.background.paper,
-                        boxShadow: (theme as any).shadows[2],
+                            boxShadow: theme.shadows[2],
                         padding: "8px",
                     },
                     ".MuiClock-root": {

@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, SxProps, Theme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import React from "react";
 
@@ -12,7 +12,7 @@ import React from "react";
  *   - Compact (compact=true): icon + value only, single line, no label — for native mobile list items
  */
 interface CardInfoRowProps {
-    Icon: React.ComponentType<any> | React.ReactElement;
+    Icon: React.ComponentType<{ sx?: SxProps<Theme> }> | React.ReactElement;
     label?: string;
     value?: React.ReactNode;
     onClick?: (e: React.MouseEvent) => void;
@@ -34,9 +34,9 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
     const iconColor = theme.palette.text.secondary;
     const isClickable = Boolean(onClick);
 
-    const renderIcon = (customSx: any) => {
+    const renderIcon = (customSx: SxProps<Theme>) => {
         if (React.isValidElement(Icon)) {
-            const element = Icon as React.ReactElement<any>;
+            const element = Icon as React.ReactElement<{ sx?: SxProps<Theme> }>;
             return React.cloneElement(element, {
                 sx: {
                     ...customSx,
@@ -44,7 +44,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                 },
             });
         }
-        const IconComponent = Icon as React.ComponentType<any>;
+        const IconComponent = Icon as React.ComponentType<{ sx?: SxProps<Theme> }>;
         return <IconComponent sx={customSx} />;
     };
 

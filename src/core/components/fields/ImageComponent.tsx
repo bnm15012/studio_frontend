@@ -28,7 +28,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
     dirName = "default",
 }) => {
     const showAlert = useAlert();
-    const token = useAppSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state: { auth: { token: string | null } }) => state.auth.token);
     const [previewUrl, setPreviewUrl] = useState<string>(value || "/assets/defaultUserPic.png");
     const [uploading, setUploading] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
                     showAlert(result.message, "error");
                     setPreviewUrl(value || "/assets/defaultUserPic.png");
                 }
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(error);
                 showAlert("An error occurred during image upload.", "error");
                 setPreviewUrl(value || "/assets/defaultUserPic.png");

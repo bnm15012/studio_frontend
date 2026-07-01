@@ -9,25 +9,27 @@ import ImageComponent from "./ImageComponent";
 import ImageDialog from "../../crud/ImageDialog";
 import StyledCheckbox from "./StyledCheckbox";
 
+import { SelectOption } from "../../types";
+
 interface ExtraProp {
-    min?: any;
-    max?: any;
+    min?: string | number;
+    max?: string | number;
     rows?: number;
-    getOptions?: (...args: any[]) => Promise<any>;
+    getOptions?: (search: string, page: number, limit: number) => Promise<SelectOption[]>;
     readOnly?: boolean;
-    CustomComponent?: React.ComponentType<any>;
+    CustomComponent?: React.ComponentType<Record<string, unknown>>;
     defaultImage?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface FieldProps {
-    value?: any;
-    setValue?: (val: any) => void;
+    value?: unknown;
+    setValue?: (val: unknown) => void;
     isEdit?: boolean;
     placeholder?: string;
     label?: string;
     type?: string;
-    validation?: Record<string, any>;
+    validation?: Record<string, unknown>;
     extraProp?: ExtraProp;
 }
 

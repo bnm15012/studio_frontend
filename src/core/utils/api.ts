@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { AnyAction } from "@reduxjs/toolkit";
 import { store, RootState } from "../../state";
 import { setToken } from "../../state/authSlice";
 import { logoutUser } from "../../state/thunks";
@@ -64,7 +65,7 @@ api.interceptors.response.use(
                                 console.error("Token refresh failed after 5 attempts.");
 
                                 // Remove data from localStorage
-                                store.dispatch(logoutUser() as any);
+                                store.dispatch(logoutUser() as unknown as AnyAction);
 
                                 // Redirect to home page
                                 window.location.href = "/"; // Redirect to the home page

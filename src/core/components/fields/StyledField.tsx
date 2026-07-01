@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Typography, Box } from "@mui/material";
-import { Theme } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles";
 
 export const FieldContainer = styled(Box)(({ theme }: { theme?: Theme }) => ({
     display: "flex" as const,
@@ -17,14 +17,14 @@ export const FieldLabel = styled(Typography)(({ theme }: { theme?: Theme }) => (
     fontSize: "0.7rem",
     textTransform: "uppercase" as const,
     letterSpacing: "0.07em",
-    color: (theme as any)?.palette?.text?.disabled,
+    color: theme?.palette?.text?.disabled,
     lineHeight: 1.4,
 }));
 
 export const FieldValue = styled(Box)(({ theme }: { theme?: Theme }) => ({
     fontWeight: 500,
     fontSize: "0.925rem",
-    color: (theme as any)?.palette?.text?.primary,
+    color: theme?.palette?.text?.primary,
     lineHeight: 1.55,
     wordBreak: "break-word" as const,
 }));

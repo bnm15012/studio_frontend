@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
 import StyledDialog from "./StyledDialog";
 
+import { GenericItem } from "../../types";
+
 interface MultiSelectDialogProps {
     open: boolean;
     onClose: () => void;
-    fetchOptions: (page: number, size: number) => Promise<{ data: any[]; totalCount: number }>;
-    data: any[];
-    setData: (val: any[]) => void;
+    fetchOptions: (page: number, size: number) => Promise<{ data: GenericItem[]; totalCount: number }>;
+    data: GenericItem[];
+    setData: (val: GenericItem[]) => void;
     valueKey?: string;
     labelKey?: string;
 }
@@ -21,8 +23,8 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
     valueKey = "value",
     labelKey = "label",
 }) => {
-    const [options, setOptions] = useState<any[]>([]);
-    const [selected, setSelected] = useState<any[]>(data);
+    const [options, setOptions] = useState<GenericItem[]>([]);
+    const [selected, setSelected] = useState<GenericItem[]>(data);
     const [loading, setLoading] = useState<boolean>(false);
     const size = 10;
     const pageFetched = useRef<number[]>([]);
@@ -36,7 +38,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
             setTotalRecords(totalCount);
             setOptions((prev) => {
                 const merged = [...prev, ...data];
-                const uniqueMap = new Map<any, any>();
+                const uniqueMap = new Map<string | number | undefined, GenericItem>();
                 merged.forEach((item) => {
                     uniqueMap.set(item[valueKey], item);
                 });

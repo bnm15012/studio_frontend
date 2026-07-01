@@ -1,11 +1,11 @@
 import React from "react";
-import { Chip, Box, Typography, Avatar, useTheme } from "@mui/material";
+import { Chip, Box, Typography, Avatar, useTheme, SxProps, Theme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { FlexBetween } from "../layout/FlexBox";
 import Field from "../fields/Field";
 import PersonIcon from "@mui/icons-material/Person";
 
-const getBadgeStyles = (badge: any, enabled: boolean | undefined, theme: any) => {
+const getBadgeStyles = (badge: React.ReactNode, enabled: boolean | undefined, theme: Theme) => {
     if (!badge) return {};
     if (typeof badge !== "string") {
         const isActive = enabled;
@@ -53,11 +53,11 @@ const getBadgeStyles = (badge: any, enabled: boolean | undefined, theme: any) =>
 
 interface CardHeaderProps {
     enabled?: boolean;
-    FieldIcon?: React.ComponentType<any>;
+    FieldIcon?: React.ComponentType<{ sx?: SxProps<Theme> }>;
     image?: string;
     fieldValue?: string | number;
-    badge?: any;
-    badgeSx?: any;
+    badge?: React.ReactNode;
+    badgeSx?: SxProps<Theme>;
     subtitle?: string;
 }
 

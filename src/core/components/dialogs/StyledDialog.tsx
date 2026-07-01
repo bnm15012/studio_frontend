@@ -12,6 +12,8 @@ import {
     Tooltip,
     useTheme,
     DialogProps,
+    SxProps,
+    Theme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useUI } from "../../context/UIContext";
@@ -25,7 +27,7 @@ const Transition = forwardRef(function Transition(
 
 type TitleBgKey = "success" | "warning" | "error" | "info";
 
-const TITLE_BGs = (theme: any): Record<TitleBgKey, string> => ({
+const TITLE_BGs = (theme: Theme): Record<TitleBgKey, string> => ({
     success: `linear-gradient(to bottom, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     warning: `linear-gradient(to bottom, ${theme.palette.warning.main}, ${theme.palette.warning.dark})`,
     error: `linear-gradient(to bottom, ${theme.palette.error.main}, ${theme.palette.error.dark})`,
@@ -42,7 +44,7 @@ const StyledDialogBase = styled(Dialog)(() => ({
 export interface DialogAction {
     key: string;
     tip?: string;
-    sx?: any;
+    sx?: SxProps<Theme>;
     onClick?: () => void;
     variant?: "text" | "outlined" | "contained";
     color?: "primary" | "secondary" | "error" | "warning" | "info" | "success" | "inherit";

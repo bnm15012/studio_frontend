@@ -1,31 +1,46 @@
-import { useMediaQuery } from "@mui/material";
 import React, { createContext, useContext } from "react";
+import { useMediaQuery } from "@mui/material";
 
 export interface UIContextType {
     isMobile: boolean;
-    isBatchEnabled?: boolean;
-    isEnabled?: (feature: any) => boolean;
-    isAdmin?: boolean;
-    FEATURE_KEYS?: any;
-    DEBUG?: boolean;
 }
 
-export const UIContext = createContext<UIContextType>({
-    isMobile: false,
-});
+export function createUIContext<T extends UIContextType>() {
+    const Context = createContext<T | undefined>(undefined);
 
-export interface UIProviderProps {
-    children: React.ReactNode;
-    value?: UIContextType;
+    interface UIProviderProps {
+        children: React.ReactNode;
+        value?: Omit<T, "isMobile">;
+    }
+
+    const UIProvider: React.FC<UIProviderProps> = ({ children, value }) => {
+        const isMobile = useMediaQuery("(max-width: 1000px)");
+
+        const contextValue = {
+            isMobile,
+            ...(value ?? {}),
+        } as T;
+
+        return (
+            <Context.Provider value={contextValue}>
+                {children}
+            </Context.Provider>
+        );
+    };
+
+    const useUI = () => {
+        const context = useContext(Context);
+
+        if (!context) {
+            throw new Error("useUI must be used within UIProvider");
+        }
+
+        return context;
+    };
+
+    return {
+        UIProvider,
+        useUI,
+        UIContext: Context,
+    };
 }
-
-export const UIProvider: React.FC<UIProviderProps> = ({ children, value }) => {
-    const isMobile = useMediaQuery("(max-width: 1000px)");
-
-    // Support custom value override, default to fallback
-    const contextValue = value || { isMobile };
-
-    return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>;
-};
-
-export const useUI = () => useContext(UIContext);

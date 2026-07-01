@@ -152,7 +152,7 @@ export const colorTokens = {
 };
 
 export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
-    shadows: colorTokens.shadows[mode] as any,
+    shadows: colorTokens.shadows[mode],
     palette: {
         mode: mode,
         ...(mode === "dark"

@@ -1,24 +1,11 @@
 import { ButtonBase, Box, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import React from "react";
-
-export interface ActionItem {
-    name: string;
-    onClick?: (row: any) => void;
-    icon?: React.ReactNode;
-    sx?: {
-        color?: string;
-        [key: string]: any;
-    };
-    hide?: boolean;
-    enabled?: boolean | ((row: any) => boolean);
-    multi?: boolean;
-    help?: string;
-}
+import { ActionItem } from "../../types";
 
 interface ActionsProps {
     actions: ActionItem[];
-    row: any;
+    row: unknown;
 }
 
 const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
@@ -72,7 +59,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
                         >
                             {icon
                                 ? React.isValidElement(icon)
-                                    ? React.cloneElement(icon as React.ReactElement<any>, {
+                                    ? React.cloneElement(icon as React.ReactElement, {
                                           sx: {
                                               fontSize: "1.2rem",
                                               color: "inherit",

@@ -131,13 +131,13 @@ interface FormBuilderProps {
     form: {
         name: string;
         fields: FieldDef[];
-        onSubmit: (arg: { newData: any; formSignature: string }) => Promise<{ success: boolean; message: string }>;
+        onSubmit: (arg: { newData: Record<string, unknown>; formSignature: string }) => Promise<{ success: boolean; message: string }>;
     };
     branchId?: string | number;
 }
 
 const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
-    const FORM_SIG = (import.meta as any).env.VITE_APP_FORM_SIG || "";
+    const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG || "";
 
     const theme = useTheme();
     const showAlert = useAlert();
@@ -145,7 +145,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     const [loading, setLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const [formState, setFormState] = useState<any>({
+    const [formState, setFormState] = useState<Record<string, unknown>>({
         _form_sig: FORM_SIG,
     });
 
@@ -170,7 +170,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // ==============================
 
     useEffect(() => {
-        const initialState: Record<string, any> = {
+        const initialState: Record<string, unknown> = {
             _form_sig: FORM_SIG,
         };
 
@@ -180,7 +180,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
             }
         });
 
-        setFormState((prev: any) => ({
+        setFormState((prev: Record<string, unknown>) => ({
             ...initialState,
             ...prev,
         }));
@@ -190,7 +190,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // Validation
     // ==============================
 
-    const validateField = (label: string, value: any, validation: any) => {
+    const validateField = (label: string, value: unknown, validation: Record<string, unknown> | undefined) => {
         if (validation?.required && (value === undefined || value === null || value === "")) {
             throw Error(`${label} is required`);
         }
@@ -208,8 +208,8 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // Change Handler
     // ==============================
 
-    const handleChange = (key: string, value: any) => {
-        setFormState((prev: any) => ({
+    const handleChange = (key: string, value: unknown) => {
+        setFormState((prev: Record<string, unknown>) => ({
             ...prev,
             [key]: value,
         }));
@@ -251,10 +251,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
             } else {
                 showAlert(message, "error");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
 
-            showAlert(error?.message || "Failed to submit form", "error");
+            showAlert(error instanceof Error ? error.message : "Failed to submit form", "error");
         }
 
         setLoading(false);

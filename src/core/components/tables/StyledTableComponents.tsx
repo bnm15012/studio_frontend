@@ -26,7 +26,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
         backgroundColor: theme.palette.background.paper,
     },
     "&:nth-of-type(odd)": {
-        backgroundColor: (theme.palette.background as any).odd || theme.palette.background.default,
+        backgroundColor: (theme.palette.background as { odd?: string }).odd || theme.palette.background.default,
     },
     "&:last-child td, &:last-child th": {
         border: 0,
