@@ -3,12 +3,12 @@ import { useMediaQuery, Dialog, Box, IconButton } from "@mui/material";
 import WidgetWrapper from "@/core/components/layout/WidgetWrapper";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 
 const SignupDialog = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const isNonMobileScreens = useMediaQuery("(min-width: 650px)");
 
     return (

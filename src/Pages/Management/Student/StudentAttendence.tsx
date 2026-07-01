@@ -1,9 +1,8 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
-import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "@/core/components/feedback/Alert";
 import {
     formatDate,
@@ -23,7 +22,7 @@ interface StudentAttendenceProps {
 
 const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, activityData }) => {
     const [attendanceMap, setAttendanceMap] = useState<Record<string, boolean>>({});
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const token = useAppSelector((state) => state.auth.token);
     const showAlert = useAlert();
 

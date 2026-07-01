@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/state";
+import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useEffect, useCallback } from "react";
 import {
     Typography,
@@ -16,7 +16,6 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
@@ -29,7 +28,7 @@ import { membershipPackageCruds } from "../../../api/all.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
@@ -37,9 +36,9 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const [formData, setFormData] = useState<any>({});
 
     const [loading, setLoading] = useState(false);
-    const studio = useAppSelector((state: any) => state.auth.studio);
-    const token = useAppSelector((state: any) => state.auth.token);
-    const cachedMembershipTypes = useAppSelector((state: any) => state.membershipPackages.items);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const membershipTypes = isMembershipTableEnabled
         ? [...cachedMembershipTypes.map(({ membershipPackage }) => membershipPackage)]
         : [];
@@ -51,10 +50,10 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                 setLoading,
                 token,
                 { size: 100 },
-                studio.studioId,
+                studio!.studioId,
             ),
         );
-    }, [dispatch, studio.studioId, token, showAlert]);
+    }, [dispatch, studio!.studioId, token, showAlert]);
 
     useEffect(() => {
         isMembershipTableEnabled && !cachedMembershipTypes.length && fetchMembershipTypesData();

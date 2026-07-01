@@ -1,6 +1,6 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Loading from "@/core/components/loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
@@ -21,10 +21,10 @@ const dialogNames = [
 ];
 
 const ProfilePage: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
-    const admin = useAppSelector((state: any) => state.auth.user);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const admin = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
     const [tabValue, setTabValue] = useState(0);
     const dialog = useAppSelector(dialogOnTop() as any) as string;
     const { DEBUG, isMobile } = useUI();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/state";
 import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
 import Loading from "@/core/components/loading/Loading";
 import FormFields from "./FormFields";
@@ -33,7 +33,7 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
 
     const { palette } = useTheme();
     const [loading, setLoading] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isLogin = pageType === "Login";
     const isRegister = pageType === "Register";

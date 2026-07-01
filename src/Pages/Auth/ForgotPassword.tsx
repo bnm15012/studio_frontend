@@ -9,21 +9,21 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import { useState } from "react";
 import { FlexBetween, FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
 import Loading from "@/core/components/loading/Loading";
 import { changePasswordApiCall, sendOTPRequest } from "./auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { validatePassword } from "../../utils/validationConstraints.js";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
 
 const ForgotPassword = () => {
     const showAlert = useAlert();
     const theme = useTheme();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

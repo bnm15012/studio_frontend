@@ -3,12 +3,12 @@ import { Dialog, Box, IconButton, useMediaQuery, useTheme } from "@mui/material"
 import WidgetWrapper from "@/core/components/layout/WidgetWrapper";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import CloseIcon from "@mui/icons-material/Close";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/state";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
 import { useAppSelector } from "@/state";
 
 const LoginDialog = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width: 650px)");
 

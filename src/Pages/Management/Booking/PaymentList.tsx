@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/state";
+import { useAppSelector, useAppDispatch } from "@/state";
 import PropTypes from "prop-types";
 import { Typography, Box, Button, IconButton } from "@mui/material";
 import {
@@ -13,7 +13,6 @@ import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
 import { useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import { useDispatch, useSelector } from "react-redux";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
 import DialogForm from "@/core/crud/DialogForm";
@@ -29,7 +28,7 @@ const PaymentList = ({ data, field }) => {
     const showAlert = useAlert();
     const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [paymentFormData, setPaymentFormData] = useState<any>();
 
     if (!value?.length) {
@@ -48,7 +47,7 @@ const PaymentList = ({ data, field }) => {
     const handleSave = async () => {
         if (!paymentFormData) return;
         if (paymentFormData.id !== "NEW") {
-            dispatch(paymentCruds.update(paymentFormData.id, paymentFormData, token, showAlert, setLoading, true));
+            dispatch(paymentCruds.update(paymentFormData.id, paymentFormData, token, showAlert, setLoading));
         } else {
             dispatch(paymentCruds.add({
                 payeeType: "BOOKING",

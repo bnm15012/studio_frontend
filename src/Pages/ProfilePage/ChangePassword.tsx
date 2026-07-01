@@ -1,9 +1,8 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState } from "react";
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../Auth/auth.api";
 import { validatePassword } from "../../utils/validationConstraints";
 import { closeLastDialog } from "../../state/dialogSlice";
@@ -20,7 +19,7 @@ interface ChangePasswordProps {
 const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
     const showAlert = useAlert();
     const theme = useTheme();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const token = useAppSelector((state) => state.auth.token);
 
     const [password, setPassword] = useState("");

@@ -1,9 +1,8 @@
-import { useAppSelector } from "@/state";
+import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Button, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { useDispatch, useSelector } from "react-redux";
 import CalendarView from "./Celendar/CalendarView.jsx";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes.js";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
@@ -34,16 +33,16 @@ const VIEWS = ["LIST", "CARD"];
 
 const Bookings = ({ ID }) => {
     const { isMobile } = useUI();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const showAlert = useAlert();
-    const token = useAppSelector((state: any) => state.auth.token);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState<any>(null);
     const api = useRef({});
-    const templates = useAppSelector((state: any) => state.genericTemplate.items);
+    const templates = useAppSelector((state) => state.genericTemplate.items);
 
     useEffect(() => {
         dispatch(
@@ -52,11 +51,11 @@ const Bookings = ({ ID }) => {
                 () => { },
                 token,
                 { searchTerm: "BOOKING" },
-                studio.studioId,
+                studio!.studioId,
                 false,
             ),
         );
-    }, [dispatch, showAlert, studio.studioId, token]);
+    }, [dispatch, showAlert, studio!.studioId, token]);
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const pendingPaymentRef = useRef<any>(null);

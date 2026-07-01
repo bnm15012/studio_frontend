@@ -1,21 +1,21 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { setSettings } from "../../state/authSlice";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 const SettingsTab: React.FC = () => {
-    const dispatch = useDispatch();
-    const token = useAppSelector((state: any) => state.auth.token);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const dispatch = useAppDispatch();
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
     const showAlert = useAlert();
 
-    const initialConfigurations = useAppSelector((state: any) => state.auth.settings) || {};
+    const initialConfigurations = useAppSelector((state) => state.auth.settings) || ({} as Record<string, boolean>);
 
-    const [configurations, setConfigurations] = useState<Record<string, boolean>>(initialConfigurations);
+    const [configurations, setConfigurations] = useState<Record<string, boolean>>(initialConfigurations as unknown as Record<string, boolean>);
     const [isChanged, setIsChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 

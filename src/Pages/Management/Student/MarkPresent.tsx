@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useRef, useState } from "react";
 import {
     DialogContent,
@@ -12,14 +12,13 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Html5Qrcode } from "html5-qrcode";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useUI } from "../../../context/UIContext";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 
 const MarkPresentDialog: React.FC = () => {
     const showAlert = useAlert();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { isEnabled, FEATURE_KEYS } = useUI();
     const token = useAppSelector((state) => state.auth.token);
     const [open, setOpen] = useState(false);

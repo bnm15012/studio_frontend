@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { HashRouter as Router } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "@/core/utils/theme";
@@ -10,12 +10,12 @@ import { clearCacheIfNewDay } from "./utils/cacheManager";
 import { loadInitialDataAPI } from "./utils/loadInitialData";
 import { UIProvider } from "./context/UIContext";
 import ServerErrorDialog from '@/core/components/dialogs/ServerErrorDialog';
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 
 const App: React.FC = () => {
     const mode = useAppSelector((state) => state.auth.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode) as any), [mode]);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const token = useAppSelector((state) => state.auth.token);
 
     useEffect(() => {

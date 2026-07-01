@@ -38,15 +38,15 @@ const DashBoard: React.FC = () => {
     const { isAdmin, isMobile } = useUI();
     const showAlert = useAlert();
 
-    const user = useAppSelector((state: any) => state.auth.user);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const user = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const subscriptionPlan = useAppSelector((state: any) => state.auth.subscriptionPlan);
-    const token = useAppSelector((state: any) => state.auth.token);
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
+    const token = useAppSelector((state) => state.auth.token);
     const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    const allActivities = useAppSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
     const [loading, setLoading] = useState(false);
     const [data, setDashboardData] = useState<any[] | null>(null);
 

@@ -58,10 +58,10 @@ const VIEWS = ["LIST", "CARD"];
 const TemplatesPage: React.FC = () => {
     const { isMobile } = useUI();
 
-    useAppSelector((state: any) => state.activities.items)?.forEach((x: any) =>
+    useAppSelector((state) => state.activities.items)?.forEach((x: any) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
     );
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
 
     const api = useRef<any>({});
 

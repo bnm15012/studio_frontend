@@ -13,7 +13,7 @@ interface ActivityMembershipSelectorProps {
 
 const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({ onSelect, selectedData, isMemberSHipToo = true }) => {
     const { isBatchEnabled } = useUI();
-    const activities = useAppSelector((state: any) => state.activities.items);
+    const activities = useAppSelector((state) => state.activities.items);
 
     const [selectedActivity, setSelectedActivity] = useState<any>(
         activities.find((f: any) => f.activityId === selectedData?.activity?.activityId) || null,

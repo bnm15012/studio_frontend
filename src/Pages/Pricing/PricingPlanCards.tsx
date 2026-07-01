@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
@@ -18,7 +18,6 @@ import {
 import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
 import { Check as CheckIcon, Close } from "@mui/icons-material";
 import { getAllPlans } from "./plans.api";
-import { useDispatch, useSelector } from "react-redux";
 import PaymentDialog from "../RazorPay/Payment";
 import Loading from "@/core/components/loading/Loading";
 import { openDialog } from "../../state/dialogSlice";
@@ -30,7 +29,7 @@ interface PricingPlanCardsProps {
 }
 
 const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get Started", AMC = false }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
     const [selectedPlan, setSelectedPlan] = useState<any>(null);
     const [dialogPlanOpen, setPanDialogOpen] = useState(false);

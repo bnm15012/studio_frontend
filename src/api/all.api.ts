@@ -2,68 +2,45 @@ import { createCrudModule } from "@/core/api/createCrudModule";
 import api from "@/core/utils/api";
 import { getApiMessage, withLoading } from "@/core/api/helper";
 import { PayloadAction } from "@reduxjs/toolkit";
+import {
+    Branch,
+    User,
+    Instructor,
+    InstructorAssignment,
+    Student,
+    StudentAssignment,
+    Client,
+    Booking,
+    Expense,
+    MembershipPackage,
+    Enquiry,
+    Payment,
+    Activity,
+    GenericTemplate,
+    BulkUploadJob,
+} from "@/api/types";
+import { GenericState } from "@/core/state/stateTypes";
 
-interface CrudConfig {
-    key: string;
-    route: string;
-    idKey?: string;
-}
+export const usersCruds = createCrudModule<User>({ route: "users", idKey: "userId" });
+export const instructorsCruds = createCrudModule<Instructor>({ route: "instructors", idKey: "instructorId" });
+export const instructorsAssignmentsCruds = createCrudModule<InstructorAssignment>({ route: "instructorActivities", idKey: "assignmentId" });
+export const studentsCruds = createCrudModule<Student>({ route: "students", idKey: "studentId" });
+export const clientCruds = createCrudModule<Client>({ route: "clients", idKey: "clientId" });
+export const bookingCruds = createCrudModule<Booking>({ route: "booking" });
+export const expenseCruds = createCrudModule<Expense>({ route: "expenses", idKey: "expenseId" });
+export const membershipPackageCruds = createCrudModule<MembershipPackage>({ route: "membershipPackages" });
+export const enquiryCruds = createCrudModule<Enquiry>({ route: "enquiries", idKey: "enquiryId" });
+export const paymentCruds = createCrudModule<Payment>({ route: "payments" });
+export const genericTemplateCruds = createCrudModule<GenericTemplate>({ route: "genericTemplate" });
+export const activityCruds = createCrudModule<Activity>({ route: "activities", idKey: "activityId" });
 
-const crudConfigs: CrudConfig[] = [
-    { key: "users", route: "users", idKey: "userId" },
-    { key: "instructors", route: "instructors", idKey: "instructorId" },
-    { key: "instructorsAssignments", route: "instructorActivities", idKey: "assignmentId" },
-    { key: "students", route: "students", idKey: "studentId" },
-    { key: "client", route: "clients", idKey: "clientId" },
-    { key: "booking", route: "booking" },
-    { key: "expense", route: "expenses", idKey: "expenseId" },
-    { key: "membershipPackage", route: "membershipPackages" },
-    { key: "enquiry", route: "enquiries", idKey: "enquiryId" },
-    { key: "payment", route: "payments" },
-    { key: "genericTemplate", route: "genericTemplate" },
-    { key: "activity", route: "activities", idKey: "activityId" },
-];
-
-const modules: Record<string, any> = {};
-crudConfigs.forEach(({ key, route, idKey }) => {
-    modules[`${key}Cruds`] = createCrudModule({ route, idKey });
-});
-
-export const {
-    usersCruds,
-    instructorsCruds,
-    instructorsAssignmentsCruds,
-    studentsCruds,
-    clientCruds,
-    bookingCruds,
-    expenseCruds,
-    membershipPackageCruds,
-    enquiryCruds,
-    paymentCruds,
-    genericTemplateCruds,
-    activityCruds,
-} = modules as {
-    usersCruds: any;
-    instructorsCruds: any;
-    instructorsAssignmentsCruds: any;
-    studentsCruds: any;
-    clientCruds: any;
-    bookingCruds: any;
-    expenseCruds: any;
-    membershipPackageCruds: any;
-    enquiryCruds: any;
-    paymentCruds: any;
-    genericTemplateCruds: any;
-    activityCruds: any;
-};
-
-export const studentsAssignmentsCruds = createCrudModule({
+export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
     route: "studentActivities",
     idKey: "assignmentId",
     extraCruds: ({ actions, getHeader, route }) => ({
         markAttendanceBulk:
             (
-                payload: any,
+                payload: { activityAssignmentIds: (string | number)[]; present: boolean; date: string },
                 token: string | null | undefined,
                 showAlert: (msg: string, type: string) => void,
                 setLoading: (loading: boolean) => void,
@@ -85,7 +62,7 @@ export const studentsAssignmentsCruds = createCrudModule({
                 },
         markAttendanceQR:
             (
-                assignmentId: any,
+                assignmentId: string | number,
                 token: string | null | undefined,
                 showAlert: (msg: string, type: string) => void,
                 setLoading: (loading: boolean) => void,
@@ -124,15 +101,20 @@ export const studentsAssignmentsCruds = createCrudModule({
     }),
 });
 
-export const branchCruds = createCrudModule<any>({
+export interface BranchState extends GenericState<Branch> {
+    currentBranch: Branch | null;
+    selectedBranch: Branch | null;
+}
+
+export const branchCruds = createCrudModule<Branch, BranchState>({
     route: "branch",
     idKey: "branchId",
     extraState: { currentBranch: null, selectedBranch: null },
     extraReducers: {
-        setCurrentBranch(state, action: PayloadAction<{ data: any[]; rootId: string | number }>) {
+        setCurrentBranch(state, action: PayloadAction<Branch>) {
             state.currentBranch = action.payload;
         },
-        setSelectedBranch(state, action: PayloadAction<{ data: any[]; rootId: string | number }>) {
+        setSelectedBranch(state, action: PayloadAction<Branch>) {
             state.selectedBranch = action.payload;
         },
     },

@@ -3,6 +3,10 @@ import type { AlertColor } from "@mui/material/Alert";
 import type { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
 export type AppDispatch = ThunkDispatch<any, any, UnknownAction>;
 
+export interface Entity {
+    [key: string]: unknown;
+}
+
 export interface SelectOption {
     key: string | number;
     value: string;
@@ -95,7 +99,7 @@ export interface CrudState<T = GenericItem> {
     [key: string]: unknown;
 }
 
-export interface CrudThunks<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface CrudThunks<T extends Entity = Entity> {
     add: (
         newData: Partial<T> | Record<string, unknown>,
         token: string | null | undefined,

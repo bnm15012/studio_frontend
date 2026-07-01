@@ -1,47 +1,31 @@
 import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
-export interface Entity {
-    [key: string]: unknown;
-}
+import { Entity, GenericState } from "./stateTypes";
 
-export interface GenericState<T> {
-    rootId: string | number;
-    items: T[];
-    recordById: Record<string | number, T>;
-    searchTerm: string;
-    filterKeys: Entity;
-    totalCount: number;
-    totalPages: number;
-    currentPage: number;
-    pageSize: number;
-    [key: string]: unknown;
-}
-
-
-export interface CreateGenericSliceOptions<T extends Entity> {
+export interface CreateGenericSliceOptions<T extends Entity, S extends GenericState<T>> {
     name: string;
     idKey?: string;
-    extraState?: Partial<GenericState<T>> & Entity;
+    extraState?: Partial<S>;
     extraReducers?: Record<string, any>;
 }
 
-export function createGenericSlice<T extends Entity>({
+export function createGenericSlice<T extends Entity, S extends GenericState<T>>({
     name,
     idKey = "id",
-    extraState = {},
+    extraState,
     extraReducers = {},
-}: CreateGenericSliceOptions<T>) {
-    const initialState: GenericState<T> = {
+}: CreateGenericSliceOptions<T, S>) {
+    const initialState: S = {
         rootId: 0,
-        items: [],
-        recordById: {},
+        items: [] as T[],
+        recordById: {} as Record<string | number, T>,
         searchTerm: "",
         filterKeys: {},
         totalCount: 0,
         totalPages: 0,
         currentPage: 0,
         pageSize: 0,
-        ...extraState,
-    };
+        ...(extraState),
+    } as S;
 
     const slice = createSlice({
         name,

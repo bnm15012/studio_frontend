@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { DialogContent, Typography, Box, Divider } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useDispatch } from "react-redux";
 import { createOrder, verifyPayment } from "./RazorPay.api";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
 import { getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 
 interface PlanItem {
     id: string;
@@ -25,13 +24,13 @@ interface PaymentDialogProps {
 
 const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) => {
     const showAlert = useAlert();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
-    const token = useAppSelector((state: any) => state.auth.token);
-    const user = useAppSelector((state: any) => state.auth.user);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const user = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const subscriptionPlan = useAppSelector((state: any) => state.auth.subscriptionPlan);
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
 
     useEffect(() => {
         if (!(window as any).Razorpay) {
@@ -49,7 +48,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                 token,
                 plan: plan.planType,
                 branchId: currentBranch?.branchId,
-                studioId: studio?.studioId,
+                studioId: studio?.studioId!,
             });
 
             if (success) {
@@ -155,9 +154,9 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                         <strong>End Date:</strong>{" "}
                         {getLocalDateTime(
                             getEndDateBySubscriptionPlan(
-                                subscriptionPlan?.endDate
-                                    ? subscriptionPlan.endDate
-                                    : getCurrentDateTimeLocal(),
+                                (subscriptionPlan?.endDate
+                                    ? subscriptionPlan.endDate!
+                                    : getCurrentDateTimeLocal()) as string,
                                 plan.planType,
                             ),
                         )}

@@ -1,7 +1,6 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box, Chip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useUI } from "../../../context/UIContext";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -29,10 +28,10 @@ const VIEWS = ["LIST", "CARD"];
 const Attendance = () => {
     const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
     const showAlert = useAlert();
-    const dispatch = useDispatch();
-    const token = useAppSelector((state: any) => state.auth.token);
+    const dispatch = useAppDispatch();
+    const token = useAppSelector((state) => state.auth.token);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const allActivities = useAppSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
     const api = useRef({});
     const [showAttendence, setShowAttendence] = useState<any>(false);
     const [loading, setLoading] = useState(false);
@@ -42,11 +41,11 @@ const Attendance = () => {
     const filterOptions = useMemo(
         () => [
             { name: "date", key: "date" },
-            { name: "Limit", key: "size", values: [10, 20, 30, 100, 150, 200] },
+            { name: "Limit", key: "size", values: ["10", "20", "30", "100", "150", "200"] },
             {
                 name: "Activity",
                 key: "activityName",
-                values: allActivities.map((a) => a.activityType),
+                values: allActivities.map((a) => a.activityType).filter((v): v is string => !!v),
             },
         ],
         [allActivities],

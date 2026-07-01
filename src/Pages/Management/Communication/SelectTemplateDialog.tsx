@@ -1,7 +1,6 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import { useEffect, useState } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { useDispatch, useSelector } from "react-redux";
 import { genericTemplateCruds } from "../../../api/all.api";
 import Loading from "@/core/components/loading/Loading";
 import { sendWhatsAppMessage } from "./communication.api";
@@ -21,20 +20,20 @@ interface SelectTemplateDialogProps {
 }
 
 const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const showAlert = useAlert();
 
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
-    const token = useAppSelector((state: any) => state.auth.token);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
     const [editableMessage, setEditableMessage] = useState("");
 
-    const allTemplates = useAppSelector((state: any) =>
+    const allTemplates = useAppSelector((state) =>
         (state.genericTemplate?.items || []).filter(
             (template: any) => template.templateType === "COMMUNICATION" && template.id
         )

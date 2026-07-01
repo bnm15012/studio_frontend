@@ -7,6 +7,7 @@ import {
     createUIContext,
     UIContextType,
 } from "@/core/context/UIContext";
+import { Branch, User } from "@/api/types";
 
 export interface AppUIContext extends UIContextType {
     isBatchEnabled: boolean;
@@ -14,6 +15,8 @@ export interface AppUIContext extends UIContextType {
     isAdmin: boolean;
     FEATURE_KEYS: Record<string, string>;
     DEBUG: boolean;
+    user: User;
+    currentBranch: Branch;
 }
 
 export const { UIProvider, useUI, UIContext } = createUIContext<AppUIContext>();
@@ -21,11 +24,18 @@ export const { UIProvider, useUI, UIContext } = createUIContext<AppUIContext>();
 export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const settings = useAppSelector((state) => state.auth.settings);
     const user = useAppSelector((state) => state.auth.user);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
-    const isAdmin = user?.role === "ADMIN";
+    if (!user || !currentBranch) {
+        throw new Error(
+            "AppUIProvider requires an authenticated user and currentBranch."
+        );
+    }
+
+    const isAdmin = user.role === "ADMIN";
     const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
-    const { isEnabled } = useFeatureFlags(settings, user?.userAccessEntry);
+    const { isEnabled } = useFeatureFlags(settings, user.userAccessEntry);
     const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
     return (
@@ -36,9 +46,12 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
                 isAdmin,
                 FEATURE_KEYS,
                 DEBUG,
+                user,
+                currentBranch,
             }}
         >
             {children}
         </UIProvider>
     );
 };
+

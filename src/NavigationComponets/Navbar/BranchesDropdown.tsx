@@ -8,18 +8,11 @@ import { loadInitialDataAPI } from "../../utils/loadInitialData";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import { useUI } from "../../context/UIContext";
-
-export interface Branch {
-    branchId: string | number;
-    name: string;
-    isActive: boolean;
-    [key: string]: any;
-}
+import type { Branch } from "@/api/types";
 
 const BranchesDropdown: React.FC = () => {
-    const { isMobile } = useUI();
-    const branches = useAppSelector((state: any) => state.branch.items) || [];
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch) || {};
+    const { isMobile, currentBranch } = useUI();
+    const branches: Branch[] = useAppSelector((state) => state.branch.items) || [];
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -32,15 +25,15 @@ const BranchesDropdown: React.FC = () => {
     const handleBranchSelect = (branch: Branch) => {
         if (!branch.isActive) return;
         dispatch((branchCruds.actions as any).setCurrentBranch(branch));
-        dispatch(clearAllstate() as any);
-        dispatch(loadInitialDataAPI() as any);
+        dispatch(clearAllstate());
+        dispatch(loadInitialDataAPI());
         navigate("/dashboard");
         handleClose();
     };
 
     return (
         <FlexBetween height="100%" alignItems="center">
-            <Tooltip title={currentBranch?.name || "Select Branch"} placement="bottom">
+            <Tooltip title={currentBranch.name} placement="bottom">
                 <Button sx={{ alignItems: "center", p: 1 }} onClick={handleClick}>
                     <FlexBetween color={"whitesmoke"} alignItems="center" width="100%">
                         <Typography
@@ -50,7 +43,7 @@ const BranchesDropdown: React.FC = () => {
                         >
                             {isMobile
                                 ? String(currentBranch.name || "B").charAt(0)
-                                : currentBranch.name || "Select Branch"}
+                                : currentBranch.name}
                         </Typography>
                         <ArrowDropDown fontSize="small" />
                     </FlexBetween>

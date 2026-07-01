@@ -22,7 +22,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
     const { isMobile } = useUI();
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const token = useAppSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);

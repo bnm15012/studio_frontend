@@ -1,23 +1,25 @@
-import { createGenericSlice, GenericState } from "../state/createGenericSlice";
+import { createGenericSlice } from "../state/createGenericSlice";
 import { getHeader } from "./helper";
 import { createCrudThunks } from "./thunk";
+import { Entity } from "../types";
+import { GenericState } from "../state/stateTypes";
 
-export interface CreateCrudModuleOptions<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface CreateCrudModuleOptions<T extends Entity, S extends GenericState<T>> {
     route: string;
     idKey?: string;
     extraCruds?: (opts: { actions: Record<string, any>; getHeader: typeof getHeader; route: string }) => Record<string, any>;
-    extraState?: Partial<GenericState<T>> & Record<string, unknown>;
+    extraState?: Partial<S>;
     extraReducers?: Record<string, any>;
 }
 
-export function createCrudModule<T extends Record<string, unknown> = Record<string, unknown>>({
+export function createCrudModule<T extends Entity = Entity, S extends GenericState<T> =  GenericState<T>>({
     route,
     idKey = "id",
     extraCruds = () => ({}),
-    extraState = {},
+    extraState,
     extraReducers = {},
-}: CreateCrudModuleOptions<T>) {
-    const { actions, getInitialState, reducer } = createGenericSlice<T>({
+}: CreateCrudModuleOptions<T, S>) {
+    const { actions, getInitialState, reducer } = createGenericSlice<T, S>({
         name: route,
         idKey,
         extraState,

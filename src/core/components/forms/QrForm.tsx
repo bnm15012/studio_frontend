@@ -4,7 +4,6 @@ import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import StyledDialog from "../dialogs/StyledDialog";
 import { useUI } from "@/context/UIContext";
-import { useAppSelector } from "../../../state";
 
 interface Html2PdfInstance {
     set: (opts: Record<string, unknown>) => Html2PdfInstance;
@@ -33,10 +32,9 @@ const QrForm: React.FC<QrFormProps> = ({
     buttonVariant = "contained",
     qrValue = false,
 }) => {
-    const { isMobile } = useUI();
+    const { isMobile, currentBranch } = useUI();
     const [open, setOpen] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch) || {};
     const qrLink = typeof qrValue === "string"
         ? qrValue
         : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;

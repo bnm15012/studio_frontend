@@ -88,21 +88,21 @@ const FIELDS = [
         name: "membershipStatus",
         label: "Status",
         getValue: (value: any) => (
-            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                {value}
-            </Box>
-        ),
-        defaultValue: "ACTIVE",
-        extraProp: { readOnly: true },
-    },
-    {
-        show: false,
-        section: "Personal Details",
-        name: "gender",
-        label: "Gender",
-        type: "SELECT",
-        validation: { required: true },
-        getValue: (value: any) => value && { key: value, value },
+                <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
+                    {value as string}
+                </Box>
+            ),
+            defaultValue: "ACTIVE",
+            extraProp: { readOnly: true },
+        },
+        {
+            show: false,
+            section: "Personal Details",
+            name: "gender",
+            label: "Gender",
+            type: "SELECT",
+            validation: { required: true },
+            getValue: (value: any) => value && { key: value, value },
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -135,15 +135,15 @@ interface StudentsProps {
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const allActivities = useAppSelector((state: any) => state.activities.items) || [];
-    const cachedMembershipTypes = useAppSelector((state: any) => state.membershipPackages.items);
+    const allActivities = useAppSelector((state) => state.activities.items) || [];
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
 
     const [showInvoice, setShowInvoice] = useState<any>(false);
     const [showAttendence, setShowAttendence] = useState<any>(false);
-    const tableState = useAppSelector((state: any) => state["students"]) || { recordById: {} };
+    const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
     const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
     const api = useRef<any>({});
@@ -197,7 +197,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 paymentType: PAYMENT_TYPE[0],
             };
 
-            const paymentData: any = await awaitForDialog(paymentInit);
+            const paymentData: any | null = await awaitForDialog(paymentInit);
 
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
@@ -325,7 +325,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
                                     .filter((a: any) =>
-                                        a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                        (a.activityType as string).toLowerCase().includes(search.toLowerCase()),
                                     )
                                     .slice(page * limit, (page + 1) * limit)
                                     .map((a: any) => ({ key: a.activityType, value: a.activityType })),
@@ -338,7 +338,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Membership Type",
                         type: "SELECT",
                         editable: (row: any) => row.assignmentId === "NEW",
-                        getValue: (value: any) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
                             getOptions: async (search: string, page: number, limit: number, row: any) => {
@@ -347,9 +347,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                 )?.batchEntries;
                                 return [
                                     ...new Set(
-                                        batchEntries
+                                        (batchEntries as any[])
                                             ?.filter((b: any) =>
-                                                b.planType
+                                                (b.planType as string)
                                                     .toLowerCase()
                                                     .includes(search.toLowerCase()),
                                             )
@@ -357,7 +357,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a: any) => ({ key: a, value: a }));
+                                    .map((a: unknown) => ({ key: a, value: a }));
                             },
                         },
                         validation: { required: true },
@@ -368,7 +368,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Days Per week",
                         editable: (row: any) => row.assignmentId === "NEW",
                         type: "SELECT",
-                        getValue: (value: any) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
                             getOptions: async (search: string, page: number, limit: number, row: any) => {
@@ -377,8 +377,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                     ?.batchEntries?.filter(
                                         (b: any) => b.planType === row["membershipType"],
                                     );
-                                return [...new Set(batchEntries?.map((b: any) => b.daysPerWeek))].map(
-                                    (a: any) => ({
+                                return [...new Set((batchEntries as any[])?.map((b: any) => b.daysPerWeek))].map(
+                                    (a: unknown) => ({
                                         key: a,
                                         value: a,
                                     }),
@@ -393,7 +393,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Batch Name",
                         type: "SELECT",
                         editable: (row: any) => row.assignmentId === "NEW",
-                        getValue: (value: any) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
                             getOptions: async (search: string, page: number, limit: number, row: any) => {
@@ -406,15 +406,15 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                     );
                                 return [
                                     ...new Set(
-                                        batchEntries
+                                        (batchEntries as any[])
                                             ?.filter((b: any) =>
-                                                b.name.toLowerCase().includes(search.toLowerCase()),
+                                                (b.name as string).toLowerCase().includes(search.toLowerCase()),
                                             )
                                             .map((b: any) => b.name),
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a: any) => ({ key: a, value: a }));
+                                    .map((a: unknown) => ({ key: a, value: a }));
                             },
                         },
                         validation: { required: true },
@@ -423,7 +423,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "activityAmount",
                         label: "Amount",
-                        getValue: (v: any, row: any, isEdit: boolean) => {
+                        getValue: (v: unknown, row: any, isEdit: boolean) => {
                             if (!isEdit) {
                                 if (!row || !row.paymentEntry) return null;
                                 return (
@@ -480,7 +480,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",
-                        editable: (row: any) => row?.paymentEntry?.paymentStatus !== "COMPLETED",
+                        editable: (row: any) => (row?.paymentEntry as any)?.paymentStatus !== "COMPLETED",
                         defaultValue: getCurrentDateTimeLocal(),
                     },
                     {
@@ -524,14 +524,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Membership Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value: any) => (
+                        getValue: (value: unknown) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",
                                     fontWeight: "bolder",
                                 }}
                             >
-                                {value}
+                                {value as string}
                             </Box>
                         ),
                         extraProp: { readOnly: true },
@@ -624,7 +624,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     open={true}
                     onSave={(data: any) => openPaymentDialog?.onSave?.(data)}
                     onClose={() => openPaymentDialog?.onClose?.()}
-                    initialData={openPaymentDialog.paymentInit}
+                    initialData={openPaymentDialog?.paymentInit}
                     paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
                     paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
                 />

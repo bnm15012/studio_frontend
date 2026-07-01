@@ -1,28 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface User {
-    id?: string | number;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    role?: string;
-    [key: string]: any;
-}
-
-export interface Studio {
-    id?: string | number;
-    name?: string;
-    [key: string]: any;
-}
-
-export interface SubscriptionPlan {
-    id?: string | number;
-    name?: string;
-    [key: string]: any;
-}
+import { User, Studio, SubscriptionPlan } from "@/api/types";
 
 export interface Setting {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface AuthState {

@@ -1,9 +1,9 @@
 import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
-import { CrudThunks } from "../types";
-import { GenericState } from "../state/createGenericSlice";
+import { CrudThunks, Entity } from "../types";
+import { GenericState } from "@/core/state/stateTypes";
 
-export interface CrudThunksOptions<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface CrudThunksOptions<T extends Entity = Entity> {
     actions: {
         setRecord: (record: T) => { type: string; payload: T };
         addItem: (item: T) => { type: string; payload: T };
@@ -20,7 +20,7 @@ export interface CrudThunksOptions<T extends Record<string, unknown> = Record<st
     route: string;
 }
 
-export function createCrudThunks<T extends Record<string, unknown> = Record<string, unknown>>({ actions, idKey, route }: CrudThunksOptions<T>) {
+export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, route }: CrudThunksOptions<T>) {
     const add =
         (
             newData: Partial<T> | Record<string, unknown>,

@@ -19,10 +19,10 @@ import {
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { openDialog } from "../../state/dialogSlice";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/state";
 
 export function HeroSection() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
     const [scrollY, setScrollY] = useState(0);
 

@@ -30,7 +30,7 @@ const SubscriptionTab: React.FC = () => {
         );
     }
 
-    const endDate = new Date(subscriptionPlan.endDate);
+    const endDate = subscriptionPlan.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
     const timeDiff = endDate.getTime() - today.getTime();
     const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
@@ -42,14 +42,18 @@ const SubscriptionTab: React.FC = () => {
                     <InfoRow
                         icon={AssignmentIcon}
                         label="Plan Type"
-                        value={subscriptionPlan.subscriptionPlan}
+                        value={subscriptionPlan.subscriptionPlan || subscriptionPlan.name || ""}
                     />
                     <Divider />
 
                     <InfoRow
                         icon={EventAvailableIcon}
                         label="Start Date"
-                        value={new Date(subscriptionPlan.startDate).toLocaleDateString("en-GB")}
+                        value={
+                            subscriptionPlan.startDate
+                                ? new Date(subscriptionPlan.startDate).toLocaleDateString("en-GB")
+                                : ""
+                        }
                     />
                     <Divider />
 
@@ -63,7 +67,7 @@ const SubscriptionTab: React.FC = () => {
                     <InfoRow
                         icon={CalendarTodayIcon}
                         label="Status"
-                        value={subscriptionPlan.status}
+                        value={subscriptionPlan.status || ""}
                         valueIcon={
                             subscriptionPlan.status === "ACTIVE" ? CheckCircleIcon : CancelIcon
                         }
@@ -78,13 +82,13 @@ const SubscriptionTab: React.FC = () => {
                     />
                     <Divider />
 
-                    <InfoRow icon={PaymentIcon} label="Order ID" value={subscriptionPlan.orderId} />
+                    <InfoRow icon={PaymentIcon} label="Order ID" value={subscriptionPlan.orderId || ""} />
                     <Divider />
 
                     <InfoRow
                         icon={PaymentIcon}
                         label="Payment ID"
-                        value={subscriptionPlan.paymentId}
+                        value={subscriptionPlan.paymentId || ""}
                     />
                     <Divider />
 

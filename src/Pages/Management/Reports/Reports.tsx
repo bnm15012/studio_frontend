@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import {
     Box,
     Button,
-    TextField,
     Typography,
     MenuItem,
     Select,
@@ -13,23 +12,22 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useSelector } from "react-redux";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
 import { reportsAPi } from "./reports.api";
 import { useUI } from "../../../context/UIContext";
-import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 const Reports: React.FC = () => {
-    const pdfViewerRef = useRef<any>(null);
+    const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
     const theme = useTheme();
     const { isMobile } = useUI();
     const showAlert = useAlert();
-    const token = useAppSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
 
     const today = new Date();
 
@@ -63,7 +61,7 @@ const Reports: React.FC = () => {
             endYear: endDateValue.getFullYear(),
             startMonth: startDateValue.getMonth() + 1,
             startYear: startDateValue.getFullYear(),
-            studioId: studio?.studioId,
+            studioId: studio?.studioId!,
             paymentMethod,
             branchId: currentBranch?.branchId,
         };
@@ -157,15 +155,15 @@ const Reports: React.FC = () => {
                     }
                 }
             }
-        } catch (err: any) {
-            console.error(err);
+        } catch (error: unknown) {
+            console.error(error);
             showAlert("Failed to fetch report data.", "error");
         } finally {
             setLoading(false);
         }
     };
 
-    const renderTable = (title: string, data: any[], headers: string[]) => (
+    const renderTable = (title: string, data: any[][], headers: string[]) => (
         <>
             <p style={{ fontSize: 18, marginBottom: 10 }}> {title}</p>
             <div>
@@ -368,7 +366,7 @@ const Reports: React.FC = () => {
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
-                    studio={studio as any}
+                    studio={studio as { logo: string; studioName: string }}
                     fileName="Report.pdf"
                     header={
                         <>

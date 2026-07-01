@@ -1,11 +1,10 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Field from "@/core/components/fields/Field";
-import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
@@ -25,7 +24,7 @@ interface CommunicationConfigsProps {
 const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) => {
     const showAlert = useAlert();
     const { isAdmin } = useUI();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const [editProf, setEditProf] = useState(false);

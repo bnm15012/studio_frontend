@@ -123,7 +123,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const api = useRef<any>({});
     const apiInstructor = useRef<any>({});
     const [generateContractDoc, setGenerateContractDoc] = useState<any>(null);
-    const allActivities = useAppSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
         () => ({
@@ -161,7 +161,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                             getOptions: async (search, page, limit) =>
                                 allActivities
                                     .filter((a) =>
-                                        a.activityType.toLowerCase().includes(search.toLowerCase()),
+                                        a.activityType!.toLowerCase().includes(search.toLowerCase()),
                                     )
                                     .slice(page * limit, (page + 1) * limit)
                                     .map((a) => ({ key: a.activityType, value: a.activityType })),

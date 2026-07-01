@@ -1,7 +1,6 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import Loading from "@/core/components/loading/Loading";
@@ -13,17 +12,17 @@ import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: any }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<any>(null);
     const [templates, setTemplates] = useState<any[]>([]);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const token = useAppSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [instructorData, setInstructorData] = useState<any>({});
 
-    const tableState = useAppSelector((state: any) => state["instructors"]);
+    const tableState = useAppSelector((state) => state["instructors"]);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
@@ -32,7 +31,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
             try {
                 setLoading(true);
                 const res = await getAllTemplatesAPI({
-                    studioId: studio.studioId,
+                    studioId: studio!.studioId!,
                     token,
                     templateType: "INSTRUCTOR_CONTRACT",
                 });
@@ -49,7 +48,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
         };
 
         fetchTemplates();
-    }, [dispatch, showAlert, studio.studioId, token]);
+    }, [dispatch, showAlert, studio!.studioId, token]);
 
     useEffect(() => {
         instructorData && setInstructorData(tableState.recordById[activityData.instructorId] || {});
@@ -100,7 +99,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                 <HtmlToPdfViewer
                     fileName={`Instructor-Contract-${instructorData.name}.pdf`}
                     ref={pdfViewerRef}
-                    studio={studio}
+                    studio={studio as { logo: string; studioName: string }}
                     header={
                         <p>
                             <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>

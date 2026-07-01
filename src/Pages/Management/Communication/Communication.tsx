@@ -50,8 +50,8 @@ const initialTemplate = {
 const Communication = () => {
     const theme = useTheme();
     const { isMobile } = useUI();
-    const token = useAppSelector((state: any) => state.auth.token);
-    const studio = useAppSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const showAlert = useAlert();
 
@@ -68,7 +68,7 @@ const Communication = () => {
     const fetchTemplates = useCallback(async () => {
         try {
             const res = await getAllTemplatesAPI({
-                studioId: studio?.studioId,
+                studioId: studio?.studioId!,
                 token,
                 templateType: "COMMUNICATION",
             });

@@ -16,7 +16,7 @@ interface ReceipentsListDialogProps {
 
 const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, messageId }) => {
     const showAlert = useAlert();
-    const token = useAppSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [history, setHistory] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 

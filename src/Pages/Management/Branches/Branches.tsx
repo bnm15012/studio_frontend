@@ -1,8 +1,7 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import { useRef } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
@@ -33,7 +32,7 @@ const FIELDS = [
 
 const Branches = () => {
     const { isMobile } = useUI();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const api = useRef<any>({});
     const studio = useAppSelector((state) => state.auth.studio);
@@ -44,7 +43,7 @@ const Branches = () => {
             <Box>
                 <Views
                     tableName={"branch"}
-                    tableCruds={branchCruds as any}
+                    tableCruds={branchCruds}
                     actions={[
                         { name: "delete", hide: true, enabled: false, onClick: () => { } },
                         {

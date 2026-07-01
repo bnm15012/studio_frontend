@@ -8,15 +8,15 @@ import {
 } from "./whatsapp.api";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/state";
 import { branchCruds } from "../../api/all.api";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppSelector } from "@/state";
 
 const WhatsAppConfiguration: React.FC = () => {
     const showAlert = useAlert();
-    const token = useAppSelector((state: any) => state.auth.token);
-    const dispatch = useDispatch();
+    const token = useAppSelector((state) => state.auth.token);
+    const dispatch = useAppDispatch();
     const [webWhastAppQrCode, setWebWhastAppQrCode] = useState<string | false | undefined>();
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [whatsAppStatus, setWhatsAppStatus] = useState<string>(currentBranch?.whatsAppStatus ?? "");
@@ -40,7 +40,7 @@ const WhatsAppConfiguration: React.FC = () => {
             setLoading(true);
             const { data, message, success } = await createWhatsAppCredentialsAPI({
                 branchId: currentBranch.branchId,
-                token,
+                token: token!,
             });
             if (success) {
                 if (data?.[0]?.webWhatsAppStatus === "ACTIVE") {
@@ -68,7 +68,7 @@ const WhatsAppConfiguration: React.FC = () => {
             try {
                 const { success, data } = await checkWhatsAppConnectionAPI({
                     branchId: currentBranch.branchId,
-                    token,
+                    token: token!,
                 });
                 if (success) {
                     if (data.webWhatsAppStatus === "ACTIVE") {
@@ -106,7 +106,7 @@ const WhatsAppConfiguration: React.FC = () => {
             setLoading(true);
             const { success, message, data } = await logoutWhatsAppConnectionAPI({
                 branchId: currentBranch.branchId,
-                token,
+                token: token!,
             });
             if (success) {
                 if (data.webWhatsAppStatus === "LOGOUT") updateWhatsAppStatus("LOGOUT");

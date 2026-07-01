@@ -1,8 +1,7 @@
-import { useAppSelector } from "@/state";
+import { useAppSelector, useAppDispatch } from "@/state";
 import { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useDispatch, useSelector } from "react-redux";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { activityCruds } from "../../../api/all.api";
@@ -15,10 +14,10 @@ const Activities = () => {
     const showAlert = useAlert();
     const { isBatchEnabled } = useUI();
 
-    const allActivities = useAppSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
     const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const token = useAppSelector((state: any) => state.auth.token);
-    const dispatch = useDispatch();
+    const token = useAppSelector((state) => state.auth.token);
+    const dispatch = useAppDispatch();
 
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -151,7 +150,7 @@ const Activities = () => {
                     {allActivities.map((activity, index) => (
                         <Box key={activity.activityId}>
                             <ActivityCard
-                                activity={activity}
+                                activity={activity as any}
                                 onEdit={handleEditActivity}
                                 onDelete={handleDeleteActivity}
                             />

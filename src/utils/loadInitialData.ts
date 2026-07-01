@@ -7,9 +7,11 @@ import { AppDispatch, RootState } from "../state";
  *  - All membership packages for the current studio
  */
 export const loadInitialDataAPI = () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const { branch, auth } = getState() as any;
-    const branchId = branch.currentBranch?.branchId;
-    const studioId = branch.currentBranch?.studioId;
+    const state = getState();
+    const { auth } = state;
+    const currentBranch = state.branch.currentBranch as any;
+    const branchId = currentBranch?.branchId;
+    const studioId = currentBranch?.studioId;
     const token = auth.token;
 
     const noop = () => {};

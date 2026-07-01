@@ -1,4 +1,5 @@
 import api from "@/core/utils/api";
+import { Enquiry } from "./types";
 
 export interface EnquiryAPIParams {
     newData: any;
@@ -7,7 +8,7 @@ export interface EnquiryAPIParams {
 
 export interface EnquiryAPIResponse {
     success: boolean;
-    data?: any;
+    data?: Enquiry[];
     message: string;
     totalCount?: number;
 }

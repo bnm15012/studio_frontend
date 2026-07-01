@@ -15,7 +15,7 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
     const [isExpired, setIsExpired] = useState(false);
 
     const studio = useAppSelector((state) => state.auth.studio) as any;
-    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan) as any;
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
 
     useEffect(() => {
         setOpen(popupOn);
@@ -24,7 +24,7 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
     useEffect(() => {
         const checkSubscription = () => {
             const currentDate = new Date();
-            const endDate = subscriptionPlan ? new Date(subscriptionPlan.endDate) : null;
+            const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : null;
             if (endDate && currentDate.getTime() > endDate.getTime()) {
                 setOpen(true);
                 setIsExpired(true);

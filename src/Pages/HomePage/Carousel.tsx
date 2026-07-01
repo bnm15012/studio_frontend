@@ -3,7 +3,7 @@ import { Box, IconButton, Typography, Button, Fade, Slide, useTheme, alpha } fro
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/state";
 import { openDialog } from "../../state/dialogSlice";
 
 const images = [
@@ -29,7 +29,7 @@ const images = [
 
 const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const theme = useTheme();
 
     const handleNext = useCallback(
