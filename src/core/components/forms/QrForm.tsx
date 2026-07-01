@@ -3,7 +3,7 @@ import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
 import StyledDialog from "../dialogs/StyledDialog";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import { useAppSelector } from "../../../state";
 
 interface Html2PdfInstance {

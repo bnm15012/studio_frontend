@@ -40,7 +40,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
                 const merged = [...prev, ...data];
                 const uniqueMap = new Map<string | number | undefined, GenericItem>();
                 merged.forEach((item) => {
-                    uniqueMap.set(item[valueKey], item);
+                    uniqueMap.set(item[valueKey] as string | number | undefined, item);
                 });
                 return Array.from(uniqueMap.values());
             });
@@ -92,7 +92,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
             <DialogContent dividers style={{ maxHeight: "400px", overflow: "auto" }}>
                 {options.map((option, index) => (
                     <MenuItem
-                        key={option[labelKey]}
+                        key={option[labelKey] as string | number}
                         onClick={() => {
                             const exists = selected.some(
                                 (sel) => sel[valueKey] === option[valueKey],
@@ -114,7 +114,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
                             tabIndex={-1}
                             disableRipple
                         />
-                        <ListItemText primary={option[labelKey]} />
+                        <ListItemText primary={option[labelKey] as React.ReactNode} />
                     </MenuItem>
                 ))}
                 <div ref={observerRef} style={{ height: 40, textAlign: "center" }}>

@@ -45,11 +45,11 @@ const StyledTextField: React.FC<StyledTextFieldProps> = ({
 
         if (validation.required && !value) {
             setError("This field is required");
-        } else if (validation.regex && !validation.regex.test(value)) {
+        } else if (validation.regex && !validation.regex.test(value ?? "")) {
             setError(validation.message || "Invalid format");
-        } else if (validation.minLength && value.length < validation.minLength) {
+        } else if (validation.minLength && (value ?? "").length < validation.minLength) {
             setError(`Minimum ${validation.minLength} characters required`);
-        } else if (validation.maxLength && value.length > validation.maxLength) {
+        } else if (validation.maxLength && (value ?? "").length > validation.maxLength) {
             setError(`Maximum ${validation.maxLength} characters allowed`);
         } else {
             setError("");

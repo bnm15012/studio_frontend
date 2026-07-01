@@ -1,26 +1,23 @@
-import { createGenericSlice } from "../state/createGenericSlice";
+import { createGenericSlice, GenericState } from "../state/createGenericSlice";
 import { getHeader } from "./helper";
 import { createCrudThunks } from "./thunk";
 
-export interface CreateCrudModuleOptions {
+export interface CreateCrudModuleOptions<T extends Record<string, unknown> = Record<string, unknown>> {
     route: string;
     idKey?: string;
     extraCruds?: (opts: { actions: Record<string, any>; getHeader: typeof getHeader; route: string }) => Record<string, any>;
-    extraState?: Record<string, unknown>;
-    extraReducers?: Record<string, unknown>;
+    extraState?: Partial<GenericState<T>> & Record<string, unknown>;
+    extraReducers?: Record<string, any>;
 }
 
-/**
- * Creates a complete CRUD slice + thunk set for a given API route.
- */
-export function createCrudModule({
+export function createCrudModule<T extends Record<string, unknown> = Record<string, unknown>>({
     route,
     idKey = "id",
     extraCruds = () => ({}),
     extraState = {},
     extraReducers = {},
-}: CreateCrudModuleOptions) {
-    const { actions, getInitialState, reducer } = createGenericSlice({
+}: CreateCrudModuleOptions<T>) {
+    const { actions, getInitialState, reducer } = createGenericSlice<T>({
         name: route,
         idKey,
         extraState,
@@ -32,7 +29,7 @@ export function createCrudModule({
         initialState: getInitialState(),
         reducer,
         removeAll: actions.clearData,
-        ...createCrudThunks({ actions, idKey, route }),
+        ...createCrudThunks<T>({ actions, idKey, route } as any),
     };
 
     return {

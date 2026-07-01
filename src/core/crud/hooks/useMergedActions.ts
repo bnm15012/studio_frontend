@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { defaultActions } from "../constant/defaultActions";
-import { ActionItem } from "../helper/Actions";
+import { ActionItem } from "../../types";
 
 export const useMergedActions = (actions: ActionItem[], args: Record<string, unknown>): ActionItem[] =>
     useMemo(() => {

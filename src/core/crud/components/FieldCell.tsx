@@ -1,7 +1,8 @@
 import React from "react";
 import { Button } from "@mui/material";
 import Field from "../../components/fields/Field";
-import { resolveFieldValue, bindGetOptions, FieldDef } from "../../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
+import { FieldDef } from "../../types";
 
 /**
  * FieldCell

@@ -13,7 +13,8 @@ import { Box, IconButton, Typography, SxProps, Theme } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { motion } from "framer-motion";
-import Actions, { ActionItem } from "../helper/Actions";
+import Actions from "../helper/Actions";
+import { ActionItem } from "../../types";
 
 // ── FadeIn ─────────────────────────────────────────────────────────────────
 interface FadeInProps {

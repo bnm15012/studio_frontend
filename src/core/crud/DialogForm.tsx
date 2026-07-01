@@ -4,15 +4,15 @@ import { FlexBetween } from "../components/layout/FlexBox";
 import { Box } from "@mui/material";
 import StyledDialog from "../components/dialogs/StyledDialog";
 import { FieldLabel } from "../components/fields/StyledField";
-import { useUI } from "../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import SaveCancelButtons from "./components/SaveCancelButtons";
 import {
     getVisibleFields,
     bindGetOptions,
     resolveFieldValue,
     isFieldEditable,
-    FieldDef,
 } from "../utils/fieldHelpers";
+import { FieldDef } from "../types";
 
 interface DialogFormProps {
     data: Record<string, unknown>;

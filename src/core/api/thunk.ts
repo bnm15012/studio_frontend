@@ -1,18 +1,17 @@
-// ── Thunks ─────────────────────────────────────────────────────────────
-
 import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
 import { CrudThunks } from "../types";
+import { GenericState } from "../state/createGenericSlice";
 
-export interface CrudThunksOptions {
+export interface CrudThunksOptions<T extends Record<string, unknown> = Record<string, unknown>> {
     actions: {
-        setRecord: (record: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
-        addItem: (item: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
-        prependItem: (item: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
+        setRecord: (record: T) => { type: string; payload: T };
+        addItem: (item: T) => { type: string; payload: T };
+        prependItem: (item: T) => { type: string; payload: T };
         updateItem: (item: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
         removeItem: (id: string | number) => { type: string; payload: string | number };
-        appendItems: (payload: { data: Record<string, unknown>[]; rootId: unknown }) => { type: string; payload: { data: Record<string, unknown>[]; rootId: unknown } };
-        setItems: (payload: { data: Record<string, unknown>[]; rootId: unknown }) => { type: string; payload: { data: Record<string, unknown>[]; rootId: unknown } };
+        appendItems: (payload: { data: T[]; rootId: unknown }) => { type: string; payload: { data: T[]; rootId: unknown } };
+        setItems: (payload: { data: T[]; rootId: unknown }) => { type: string; payload: { data: T[]; rootId: unknown } };
         setInfo: (info: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
         clearData: () => { type: string };
         [key: string]: unknown;
@@ -21,27 +20,27 @@ export interface CrudThunksOptions {
     route: string;
 }
 
-export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) => {
+export function createCrudThunks<T extends Record<string, unknown> = Record<string, unknown>>({ actions, idKey, route }: CrudThunksOptions<T>) {
     const add =
         (
-            newData: Record<string, unknown>,
+            newData: Partial<T> | Record<string, unknown>,
             token: string | null | undefined,
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
             prepend?: boolean,
         ) =>
-            async (dispatch: unknown, getState: unknown) => {
+            async (dispatch: any, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
-                        const state = (getState as () => Record<string, unknown>)()[route] as Record<string, unknown>;
+                        const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
                         const {
                             data: { data },
                         } = await api.post(`/${route}/add`, newData, getHeader(token));
 
                         if ((state.recordById as Record<string, unknown>)["NEW"]) {
-                            dispatch(actions.setRecord(data[0]));
+                            dispatch(actions.setRecord((data as T[])[0]));
                         }
-                        dispatch(prepend ? actions.prependItem((data as Record<string, unknown>[])[0]) : actions.addItem((data as Record<string, unknown>[])[0]));
+                        dispatch(prepend ? actions.prependItem((data as T[])[0]) : actions.addItem((data as T[])[0]));
                     } catch (err: any) {
                         console.error(err);
                         showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
@@ -49,33 +48,28 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                 });
             };
 
-    /**
-     * PUT /{route}/update/{id}
-     * Updates an existing record and refreshes both the list item and the
-     * recordById cache if it exists.
-     */
     const update =
         (
             id: string | number,
-            updatedData: Record<string, unknown>,
+            updatedData: Partial<T> | Record<string, unknown>,
             token: string | null | undefined,
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
         ) =>
-            async (dispatch: unknown, getState: unknown) => {
+            async (dispatch: any, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
-                        const state = (getState as () => Record<string, unknown>)()[route] as Record<string, unknown>;
+                        const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
                         const { data } = await api.put(
                             `/${route}/update/${id}`,
                             updatedData,
                             getHeader(token),
                         );
-                        const record = (data.data as Record<string, unknown>[])[0];
-                        if ((state.recordById as Record<string, unknown>)[id]) {
+                        const record = (data.data as T[])[0];
+                        if ((state.recordById as unknown as Record<string, unknown>)[id]) {
                             dispatch(actions.setRecord(record));
                         }
-                        dispatch(actions.updateItem(record));
+                        dispatch(actions.updateItem(record as unknown as Record<string, unknown>));
                     } catch (err: any) {
                         console.error(err);
                         showAlert(getApiMessage(err, `Failed to update ${route}`), "error");
@@ -83,9 +77,6 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                 });
             };
 
-    /**
-     * DELETE /{route}/delete/{id}
-     */
     const remove =
         (
             id: string | number,
@@ -93,7 +84,7 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
         ) =>
-            async (dispatch: unknown) => {
+            async (dispatch: any) => {
                 await withLoading(setLoading, async () => {
                     try {
                         await api.delete(`/${route}/delete/${id}`, getHeader(token));
@@ -105,11 +96,6 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                 });
             };
 
-    /**
-     * GET /{route}/getAll/{rootId}
-     * Skips the request when the slice cache is already valid for the given
-     * page/searchTerm/filterKeys combination.
-     */
     const getAll =
         (
             showAlert: (msg: string, type: string) => void,
@@ -119,12 +105,12 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
             rootId: string | number,
             infinite?: boolean,
         ) =>
-            async (dispatch: unknown, getState: unknown) => {
-                const state = (getState as () => Record<string, unknown>)()[route] as Record<string, unknown>;
+            async (dispatch: any, getState: unknown) => {
+                const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
 
                 if (rootId === "NEW") return;
                 if (isCacheValid(state as Parameters<typeof isCacheValid>[0], rootId, params)) return;
-                if (!params?.page && state.items.length) return;
+                if (!params?.page && (state.items as unknown[]).length) return;
 
                 await withLoading(setLoading, async () => {
                     try {
@@ -137,8 +123,8 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
 
                         const action =
                             infinite && params?.searchTerm === state.searchTerm
-                                ? actions.appendItems({ data: data as Record<string, unknown>[], rootId })
-                                : actions.setItems({ data: data as Record<string, unknown>[], rootId });
+                                ? actions.appendItems({ data: data as T[], rootId })
+                                : actions.setItems({ data: data as T[], rootId });
 
                         dispatch(action);
                         dispatch(
@@ -157,10 +143,6 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                 });
             };
 
-    /**
-     * GET /{route}/get/{id}
-     * Returns the cached record when available (unless `forceRefresh` is true).
-     */
     const getById =
         (
             id: string | number,
@@ -169,10 +151,10 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
             setLoading: (loading: boolean) => void,
             { forceRefresh = false }: { forceRefresh?: boolean } = {},
         ) =>
-            async (dispatch: unknown, getState: unknown) => {
+            async (dispatch: any, getState: unknown) => {
                 if (id === "NEW") return;
 
-                const cached = (((getState as () => Record<string, unknown>)()[route] as Record<string, unknown>).recordById as Record<string, unknown>)[id];
+                const cached = ((getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>).recordById[id];
                 if (cached && !forceRefresh) return cached;
 
                 return withLoading(setLoading, async () => {
@@ -180,7 +162,7 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                         const {
                             data: { data },
                         } = await api.get(`/${route}/get/${id}`, getHeader(token));
-                        const record = (data as Record<string, unknown>[])[0];
+                        const record = (data as T[])[0];
                         dispatch(actions.setRecord(record));
                         return record;
                     } catch (err: any) {
@@ -191,9 +173,6 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
                 });
             };
 
-    /**
-     * Clears the slice and re-fetches the current page with the same filters.
-     */
     const refresh =
         (
             showAlert: (msg: string, type: string) => void,
@@ -201,8 +180,8 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
             token: string | null | undefined,
             infinite = false,
         ) =>
-            async (dispatch: unknown, getState: unknown) => {
-                const state = (getState as () => Record<string, unknown>)()[route] as Record<string, unknown>;
+            async (dispatch: any, getState: unknown) => {
+                const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
                 dispatch(actions.clearData());
                 return dispatch(
                     getAll(
@@ -228,5 +207,5 @@ export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) =
         getAll,
         getById,
         refresh,
-    };
-};
+    } as unknown as CrudThunks<T>;
+}

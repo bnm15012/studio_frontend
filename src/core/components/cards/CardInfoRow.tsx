@@ -37,11 +37,11 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
     const renderIcon = (customSx: SxProps<Theme>) => {
         if (React.isValidElement(Icon)) {
             const element = Icon as React.ReactElement<{ sx?: SxProps<Theme> }>;
-            return React.cloneElement(element, {
+            return React.cloneElement(element as React.ReactElement, {
                 sx: {
                     ...customSx,
                     ...(element.props?.sx || {}),
-                },
+                } as SxProps<Theme>,
             });
         }
         const IconComponent = Icon as React.ComponentType<{ sx?: SxProps<Theme> }>;

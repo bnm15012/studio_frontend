@@ -88,23 +88,23 @@ export interface CrudState<T = GenericItem> {
     [key: string]: unknown;
 }
 
-export interface CrudThunks {
+export interface CrudThunks<T extends Record<string, unknown> = Record<string, unknown>> {
     add: (
-        newData: unknown,
+        newData: Partial<T> | Record<string, unknown>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         prepend?: boolean,
     ) => (dispatch: unknown, getState: unknown) => Promise<void>;
     update: (
-        id: unknown,
-        updatedData: unknown,
+        id: string | number,
+        updatedData: Partial<T> | Record<string, unknown>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
     ) => (dispatch: unknown, getState: unknown) => Promise<void>;
     remove: (
-        id: unknown,
+        id: string | number,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
@@ -118,12 +118,12 @@ export interface CrudThunks {
         infinite?: boolean,
     ) => (dispatch: unknown, getState: unknown) => Promise<void>;
     getById: (
-        id: unknown,
+        id: string | number,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         options?: { forceRefresh?: boolean },
-    ) => (dispatch: unknown, getState: unknown) => Promise<unknown>;
+    ) => (dispatch: unknown, getState: unknown) => Promise<T | null>;
     refresh: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,

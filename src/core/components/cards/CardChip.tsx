@@ -16,7 +16,7 @@ interface CardChipProps {
 
 const CardChip: React.FC<CardChipProps> = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {
     const theme = useTheme();
-    const displayValue = type === "STR" ? value || "-" : getLocalDateTime(value, type);
+    const displayValue = type === "STR" ? value || "-" : getLocalDateTime(value as string | null | undefined, type);
 
     return (
         <Box display="flex" alignItems="center" gap={0.75} sx={{ minWidth: 0 }}>

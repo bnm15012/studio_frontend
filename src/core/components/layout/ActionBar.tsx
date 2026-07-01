@@ -7,7 +7,7 @@ import QrForm from "../forms/QrForm";
 import { Box, Button, IconButton, Slide } from "@mui/material";
 import { Add, Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import { FilterOption } from "../fields/Filter";
 import { QrFormProps } from "../forms/QrForm";
 

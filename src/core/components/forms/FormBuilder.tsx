@@ -5,7 +5,8 @@ import { Box, Typography, Button, Paper, Grid, Divider } from "@mui/material";
 import Field from "../fields/Field";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { resolveFieldValue, bindGetOptions, FieldDef } from "../../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
+import { FieldDef } from "@/core/types";
 
 // ==============================
 // Styled Components

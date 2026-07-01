@@ -62,7 +62,7 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
 
         const activeFilters = Object.fromEntries(
             Object.entries(tempSelected).filter(([, value]) => value),
-        );
+        ) as Record<string, string>;
 
         onChange?.(activeFilters);
         handleClose();

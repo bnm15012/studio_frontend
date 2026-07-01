@@ -76,8 +76,8 @@ const InfiniteSelectField: React.FC<InfiniteSelectFieldProps> = ({
                 }}
             >
                 {options.map((option) => (
-                    <MenuItem key={option[keyField]} value={option[keyField]}>
-                        {option[valueField] ?? option.name}
+                    <MenuItem key={option[keyField] as string | number} value={option[keyField] as number}>
+                        {(option[valueField] ?? option.name) as React.ReactNode}
                     </MenuItem>
                 ))}
                 {loading && (

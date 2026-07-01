@@ -1,11 +1,14 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+export interface Entity {
+    [key: string]: unknown;
+}
 
-export interface GenericState {
+export interface GenericState<T> {
     rootId: string | number;
-    items: Record<string, unknown>[];
-    recordById: Record<string | number, Record<string, unknown>>;
+    items: T[];
+    recordById: Record<string | number, T>;
     searchTerm: string;
-    filterKeys: Record<string, unknown>;
+    filterKeys: Entity;
     totalCount: number;
     totalPages: number;
     currentPage: number;
@@ -13,23 +16,21 @@ export interface GenericState {
     [key: string]: unknown;
 }
 
-export interface CreateGenericSliceOptions {
+
+export interface CreateGenericSliceOptions<T extends Entity> {
     name: string;
     idKey?: string;
-    extraState?: Record<string, unknown>;
+    extraState?: Partial<GenericState<T>> & Entity;
     extraReducers?: Record<string, any>;
 }
 
-/**
- * Creates a generic Redux slice with standard CRUD reducers for list views.
- */
-export function createGenericSlice({
+export function createGenericSlice<T extends Entity>({
     name,
     idKey = "id",
     extraState = {},
     extraReducers = {},
-}: CreateGenericSliceOptions) {
-    const initialState: GenericState = {
+}: CreateGenericSliceOptions<T>) {
+    const initialState: GenericState<T> = {
         rootId: 0,
         items: [],
         recordById: {},
@@ -46,13 +47,11 @@ export function createGenericSlice({
         name,
         initialState,
         reducers: {
-            /** Replace the full item list and update rootId. */
-            setItems(state, { payload: { data, rootId } }: PayloadAction<{ data: Record<string, unknown>[]; rootId: string | number }>) {
+            setItems(state, { payload: { data, rootId } }: PayloadAction<{ data: T[]; rootId: string | number }>) {
                 state.rootId = rootId;
-                state.items = data;
+                state.items = data as Draft<T[]>;
             },
 
-            /** Update pagination / search metadata without replacing items. */
             setInfo(
                 state,
                 {
@@ -61,7 +60,7 @@ export function createGenericSlice({
                     totalCount: number;
                     currentPage: number;
                     searchTerm?: string;
-                    filterKeys?: Record<string, unknown>;
+                    filterKeys?: Entity;
                     pageSize: number;
                 }>,
             ) {
@@ -73,94 +72,65 @@ export function createGenericSlice({
                 state.totalPages = Math.ceil(payload.totalCount / (payload.pageSize ?? 1));
             },
 
-            /** Append a single item to the end of the list. */
-            addItem(state, { payload }: PayloadAction<Record<string, unknown>>) {
-                state.items.push(payload);
+            addItem(state, { payload }: PayloadAction<T>) {
+                state.items.push(payload as Draft<T>);
             },
 
-            /** Insert a single item at the beginning of the list. */
-            prependItem(state, { payload }: PayloadAction<Record<string, unknown>>) {
-                state.items = [payload, ...state.items];
+            prependItem(state, { payload }: PayloadAction<T>) {
+                state.items = [payload as Draft<T>, ...state.items];
             },
 
-            /**
-             * Append multiple items for infinite scroll.
-             * Resets the list first when rootId changes.
-             * De-duplicates by idKey before inserting.
-             */
-            appendItems(state, { payload: { data, rootId } }: PayloadAction<{ data: Record<string, unknown>[]; rootId: string | number }>) {
+            appendItems(state, { payload: { data, rootId } }: PayloadAction<{ data: T[]; rootId: string | number }>) {
                 if (state.rootId !== rootId) {
                     state.rootId = rootId;
                     state.items = [];
                 }
-                const existingIds = new Set(state.items.map((item) => item[idKey]));
-                const newItems = data.filter((item) => !existingIds.has(item[idKey]));
-                state.items.push(...newItems);
+                const existingIds = new Set(state.items.map((item) => (item as Entity)[idKey]));
+                const newItems = data.filter((item) => !existingIds.has((item as Entity)[idKey]));
+                state.items.push(...(newItems as Draft<T[]>));
             },
 
-            /**
-             * Update one or many items in the list.
-             *
-             * Accepts two forms:
-             *   - `{ predicate: (item) => bool, data: partialItem }` — update all matching items
-             *   - `updatedItem` — match by idKey and merge
-             */
-            updateItem(state, { payload }: PayloadAction<Record<string, unknown>>) {
-                if (payload && typeof payload === "object" && "predicate" in payload) {
+            updateItem(state, action: PayloadAction<T | { predicate: (item: T) => boolean; data: Partial<T> }>) {
+                if ("predicate" in action.payload) {
+                    const { predicate, data } = action.payload;
                     state.items = state.items.map((item) =>
-                        payload.predicate(item) ? { ...item, ...payload.data } : item,
+                        predicate(item) ? { ...item, ...data } : item,
                     );
                 } else {
                     state.items = state.items.map((item) =>
-                        item[idKey] === payload[idKey] ? { ...item, ...payload } : item,
+                        (item as T)[idKey] === action.payload[idKey] ? { ...item, ...action.payload } : item,
                     );
                 }
             },
 
-            /**
-             * Bulk-update items in the list.
-             *
-             * Accepts two forms:
-             *   - `{ predicate, data }` — update all matching items
-             *   - `updatedItems[]` — matched by idKey via a Map for O(n) performance
-             */
-            updateItems(state, { payload }: PayloadAction<Record<string, unknown> | Record<string, unknown>[]>) {
+            updateItems(state, { payload }: PayloadAction<Entity | Entity[]>) {
                 if (payload && typeof payload === "object" && "predicate" in payload) {
                     state.items = state.items.map((item) =>
-                        payload.predicate(item) ? { ...item, ...payload.data } : item,
-                    );
+                        (payload as any).predicate(item) ? { ...item, ...(payload as any).data } : item,
+                    ) as any;
                     return;
                 }
                 if (Array.isArray(payload)) {
-                    const byId = new Map(payload.map((item) => [item[idKey], item]));
+                    const byId = new Map(payload.map((item) => [(item as Entity)[idKey], item]));
                     state.items = state.items.map((item) => {
-                        const updated = byId.get(item[idKey]);
-                        return updated ? { ...item, ...updated } : item;
-                    });
+                        const updated = byId.get((item as Entity)[idKey]);
+                        return updated ? { ...item, ...updated } as T : item;
+                    }) as any;
                 }
             },
 
-            /**
-             * Remove item(s) from the list.
-             *
-             * Accepts:
-             *   - a predicate `(item) => bool` — remove all matching
-             *   - a raw id value — remove by idKey
-             */
-            removeItem(state, { payload }: PayloadAction<((item: Record<string, unknown>) => boolean) | string | number>) {
+            removeItem(state, { payload }: PayloadAction<((item: T) => boolean) | string | number>) {
                 if (typeof payload === "function") {
-                    state.items = state.items.filter((item) => !payload(item));
+                    state.items = state.items.filter((item) => !(payload as (item: T) => boolean)(item as T));
                 } else {
-                    state.items = state.items.filter((item) => item[idKey] !== payload);
+                    state.items = state.items.filter((item) => (item as Entity)[idKey] !== payload);
                 }
             },
 
-            /** Store a single record in the recordById cache. */
-            setRecord(state, { payload }: PayloadAction<Record<string, unknown>>) {
-                state.recordById[payload[idKey]] = payload;
+            setRecord(state, { payload }: PayloadAction<T>) {
+                (state.recordById as Record<string | number, Entity>)[(payload as Entity)[idKey] as string | number] = payload as unknown as Entity;
             },
 
-            /** Reset the entire slice back to initialState. */
             clearData() {
                 return initialState;
             },

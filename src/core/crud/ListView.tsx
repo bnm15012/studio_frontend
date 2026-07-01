@@ -19,10 +19,12 @@ import {
     StyledTableRow,
 } from "../components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import Actions, { ActionItem } from "./helper/Actions";
-import { useUI } from "../context/UIContext";
+import Actions from "./helper/Actions";
+import { ActionItem } from "../types";
+import { useUI } from "@/context/UIContext";
 import FieldCell from "./components/FieldCell";
-import { getVisibleFields, FieldDef } from "../utils/fieldHelpers";
+import { getVisibleFields } from "../utils/fieldHelpers";
+import { FieldDef } from "../types";
 import { AnimatePresence, motion } from "framer-motion";
 import { RowActions, getRowNumber, EmptyState } from "./components/shared";
 

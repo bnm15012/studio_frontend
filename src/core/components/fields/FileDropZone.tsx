@@ -1,5 +1,5 @@
 import React from "react";
-import Dropzone, { DropzoneProps } from "react-dropzone";
+import Dropzone, { DropzoneProps, FileRejection, DropEvent } from "react-dropzone";
 import { Box, CircularProgress, Typography, IconButton, useTheme } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -37,8 +37,8 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
     const theme = useTheme();
     const [width, height] = size ? size.split(" ") : ["200px", "200px"];
 
-    const handleDrop = (acceptedFiles: File[], rejectedFiles: File[]) => {
-        onDrop?.(acceptedFiles, rejectedFiles);
+    const handleDrop = <T extends File>(acceptedFiles: T[], fileRejections: FileRejection[], event: DropEvent) => {
+        onDrop?.(acceptedFiles as File[], fileRejections as unknown as File[]);
     };
 
     const borderRadius =

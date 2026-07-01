@@ -60,36 +60,36 @@ const Field: React.FC<FieldProps> = ({
 
         switch (type) {
             case "SELECT":
-                return <SelectionField {...commonProps} getOptions={getOptions!} />;
+                return <SelectionField {...(commonProps as any)} getOptions={getOptions as any} />;
             case "BOOL":
-                return <StyledSwitch {...commonProps} />;
+                return <StyledSwitch {...(commonProps as any)} />;
             case "DATE":
-                return <DateTime {...commonProps} format="DATE" placeholder={placeholderText} />;
+                return <DateTime {...(commonProps as any)} format="DATE" placeholder={placeholderText} />;
             case "DATETIME":
                 return (
-                    <DateTime {...commonProps} format="DATETIME" placeholder={placeholderText} />
+                    <DateTime {...(commonProps as any)} format="DATETIME" placeholder={placeholderText} />
                 );
             case "EDITOR":
                 return (
-                    <TemplateEditor {...commonProps} rows={rows} />
+                    <TemplateEditor {...(commonProps as any)} rows={rows} />
                 );
             case "IMAGE_DIALOG":
                 return (
                     <ImageDialog
-                        image={value}
+                        image={value as any}
                         setImage={setValueFn}
                         isEdit={true}
                         defaultImage={extraProp?.defaultImage}
                     />
                 );
             case "CUSTOM":
-                return CustomComponent ? <CustomComponent {...commonProps} isEdit={true} /> : null;
+                return CustomComponent ? <CustomComponent {...(commonProps as any)} isEdit={true} /> : null;
             case "IMAGE":
-                return <ImageComponent allowEdit={isEdit} {...commonProps} />;
+                return <ImageComponent allowEdit={isEdit} {...(commonProps as any)} />;
             default:
                 return (
                     <StyledTextField
-                        {...commonProps}
+                        {...(commonProps as any)}
                         rows={rows}
                         placeholder={placeholderText}
                         type={type}
@@ -101,22 +101,22 @@ const Field: React.FC<FieldProps> = ({
     const getValue = (): React.ReactNode => {
         switch (type) {
             case "BOOL":
-                return <StyledSwitch {...commonProps} readOnly={true} />;
+                return <StyledSwitch {...(commonProps as any)} readOnly={true} />;
             case "CHECK":
-                return <StyledCheckbox {...commonProps} readOnly={true} />;
+                return <StyledCheckbox {...(commonProps as any)} readOnly={true} />;
             case "SELECT":
-                return value?.value;
+                return (value as any)?.value;
             case "DATE":
             case "DATETIME":
-                return getLocalDateTime(value, type);
+                return getLocalDateTime(value as any, type);
             case "CUSTOM":
-                return CustomComponent ? <CustomComponent {...commonProps} /> : null;
+                return CustomComponent ? <CustomComponent {...(commonProps as any)} /> : null;
             case "IMAGE":
                 return renderInputField();
             case "IMAGE_DIALOG":
-                return <ImageDialog image={value} setImage={setValueFn} isEdit={false} />;
+                return <ImageDialog image={value as any} setImage={setValueFn} isEdit={false} />;
             default:
-                return value || "N/A";
+                return (value as React.ReactNode) || "N/A";
         }
     };
 

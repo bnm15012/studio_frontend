@@ -14,10 +14,8 @@ import { useCrudAction } from "./hooks/useCrudAction";
 import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
-import { useUI } from "../../context/UIContext";
-import { FieldDef } from "../utils/fieldHelpers";
-import { ActionItem } from "./helper/Actions";
-import { CrudThunks } from "../types";
+import { useUI } from "@/context/UIContext";
+import { FieldDef, ActionItem, CrudThunks } from "../types";
 import { useAppSelector } from "../../state";
 
 interface ViewsProps {

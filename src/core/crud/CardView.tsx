@@ -9,11 +9,12 @@ import {
     StyledCardContent,
 } from "../components/cards/StyledCard";
 import { getNestedValue } from "../../utils/objectHelpers";
-import Actions, { ActionItem } from "./helper/Actions";
+import Actions from "./helper/Actions";
+import { ActionItem } from "../types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "./components/shared";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { FieldDef } from "../utils/fieldHelpers";
+import { FieldDef } from "../types";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
