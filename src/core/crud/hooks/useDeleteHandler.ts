@@ -1,5 +1,20 @@
 import { useCallback, useState } from "react";
 
+interface UseDeleteHandlerProps {
+    tableCruds: any;
+    token: string | null | undefined;
+    showAlert: (msg: string, type?: any) => void;
+    setLoading: (loading: boolean) => void;
+    dispatch: any;
+    navigate: (path: string) => void;
+    tableName: string;
+    consts: React.MutableRefObject<{
+        primaryKey: string;
+        [key: string]: any;
+    }>;
+    formKey?: string | number | null;
+}
+
 export const useDeleteHandler = ({
     tableCruds,
     token,
@@ -10,12 +25,12 @@ export const useDeleteHandler = ({
     tableName,
     consts,
     formKey,
-}) => {
+}: UseDeleteHandlerProps) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteId, setDeleteId] = useState(null);
+    const [deleteId, setDeleteId] = useState<any>(null);
 
     const handleDeleteClick = useCallback(
-        (row) => {
+        (row: any) => {
             setDeleteId(row[consts.current.primaryKey]);
             setDeleteDialogOpen(true);
         },

@@ -1,16 +1,37 @@
+import React, { useState } from "react";
 import { Tabs, Tab, Box, Button } from "@mui/material";
-import { useState } from "react";
 import { FlexBetween } from "../components/layout/FlexBox";
 import Views from "./Views";
 import { Add } from "@mui/icons-material";
-import PropTypes from "prop-types";
 
-const ViewTabs = ({ viewFields, editingId, formKey, currentView }) => {
+interface ViewFieldItem {
+    label?: string;
+    api?: React.RefObject<{
+        addNewRow?: (editingId: any) => void;
+    } | null> | {
+        current?: {
+            addNewRow?: (editingId: any) => void;
+        } | null;
+    };
+    viewProps?: any;
+}
+
+interface ViewTabsProps {
+    viewFields: ViewFieldItem[];
+    editingId?: string | number | null;
+    formKey?: string | number | null;
+    currentView?: string;
+}
+
+const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, currentView }) => {
     const [tabIndex, setTabIndex] = useState(0);
 
-    const handleChange = (event, newValue) => {
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
     };
+
+    const currentViewField = viewFields[tabIndex];
+    const hasAddNewRow = typeof (currentViewField?.api as any)?.current?.addNewRow === "function";
 
     return (
         <Box>
@@ -27,10 +48,10 @@ const ViewTabs = ({ viewFields, editingId, formKey, currentView }) => {
                     ))}
                 </Tabs>
 
-                {editingId !== "NEW" && viewFields[tabIndex]?.api?.current?.addNewRow && (
+                {editingId !== "NEW" && hasAddNewRow && (
                     <Button
                         variant="contained"
-                        onClick={() => viewFields[tabIndex]?.api?.current?.addNewRow(editingId)}
+                        onClick={() => (currentViewField?.api as any)?.current?.addNewRow(editingId)}
                         sx={{ ml: 1 }}
                     >
                         <Add style={{ color: "whitesmoke" }} />
@@ -50,10 +71,4 @@ const ViewTabs = ({ viewFields, editingId, formKey, currentView }) => {
     );
 };
 
-ViewTabs.propTypes = {
-    formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    currentView: PropTypes.string,
-    viewFields: PropTypes.array.isRequired,
-    editingId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
 export default ViewTabs;

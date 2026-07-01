@@ -1,3 +1,4 @@
+import React from "react";
 import { Typography, Paper, Box, Stack, useTheme, keyframes } from "@mui/material";
 import { FlexBetween, FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
@@ -44,7 +45,7 @@ const gradients = {
     highlight: "linear-gradient(135deg, #aed581 0%, #7cb342 100%)",
 };
 
-const AboutUsPage = () => {
+const AboutUsPage: React.FC = () => {
     const { palette } = useTheme();
 
     return (

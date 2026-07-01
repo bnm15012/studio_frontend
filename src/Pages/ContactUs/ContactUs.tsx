@@ -1,3 +1,4 @@
+import React from "react";
 import ContactForm from "./ContactForm";
 import {
     Box,
@@ -54,7 +55,7 @@ const gradients = {
     faq: "rgb(249, 212, 152)",
 };
 
-const ContactUsPage = () => {
+const ContactUsPage: React.FC = () => {
     const theme = useTheme();
     return (
         <Box
@@ -113,7 +114,6 @@ const ContactUsPage = () => {
                     <Box display="flex" alignItems="center" mb={2}>
                         <LocationOnIcon sx={{ mr: 1, animation: `${pulse} 2s infinite` }} />
                         <Typography variant="body1">
-                            {/* 89, 2nd Cross Road, Kaverappa Layout, */}
                             Bangalore, Karnataka 560103
                         </Typography>
                     </Box>

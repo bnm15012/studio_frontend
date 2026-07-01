@@ -1,11 +1,18 @@
+import React from "react";
 import { LocationOn } from "@mui/icons-material";
-import PropTypes from "prop-types";
 import { Box, Typography, useTheme } from "@mui/material";
 
 /**
  * CardLocation — Compact address display row. No label.
  */
-const CardLocation = ({ address, city, state, pincode }) => {
+interface CardLocationProps {
+    address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string | number;
+}
+
+const CardLocation: React.FC<CardLocationProps> = ({ address, city, state, pincode }) => {
     const theme = useTheme();
     const displayValue =
         address ||
@@ -32,13 +39,6 @@ const CardLocation = ({ address, city, state, pincode }) => {
             </Typography>
         </Box>
     );
-};
-
-CardLocation.propTypes = {
-    address: PropTypes.string,
-    city: PropTypes.string,
-    state: PropTypes.string,
-    pincode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default CardLocation;

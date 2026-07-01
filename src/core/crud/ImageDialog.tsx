@@ -1,12 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { DialogContent, Button, IconButton } from "@mui/material";
-import PropTypes from "prop-types";
 import StyledDialog from "../components/dialogs/StyledDialog";
 import ImageComponent from "../components/fields/ImageComponent";
 import { Upload } from "lucide-react";
 import { FlexEvenly } from "../components/layout/FlexBox";
 
-const ImageDialog = ({ image, isEdit, setImage, defaultImage }) => {
+interface ImageDialogProps {
+    image?: string | null;
+    isEdit?: boolean;
+    defaultImage?: string;
+    setImage: (val: string | null) => void;
+}
+
+const ImageDialog: React.FC<ImageDialogProps> = ({ image, isEdit = false, setImage, defaultImage }) => {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -16,7 +22,7 @@ const ImageDialog = ({ image, isEdit, setImage, defaultImage }) => {
         <>
             <FlexEvenly>
                 {isEdit && (
-                    <IconButton variant="contained" onClick={handleOpen}>
+                    <IconButton onClick={handleOpen}>
                         <Upload />
                     </IconButton>
                 )}
@@ -37,7 +43,7 @@ const ImageDialog = ({ image, isEdit, setImage, defaultImage }) => {
                         dirName="instructor_contract"
                         size="30rem 100%"
                         setValue={setImage}
-                        value={image || defaultImage}
+                        value={image || defaultImage || ""}
                         isCircular={false}
                         allowEdit={isEdit}
                     />
@@ -45,13 +51,6 @@ const ImageDialog = ({ image, isEdit, setImage, defaultImage }) => {
             </StyledDialog>
         </>
     );
-};
-
-ImageDialog.propTypes = {
-    image: PropTypes.string,
-    isEdit: PropTypes.bool,
-    defaultImage: PropTypes.string,
-    setImage: PropTypes.func.isRequired,
 };
 
 export default ImageDialog;

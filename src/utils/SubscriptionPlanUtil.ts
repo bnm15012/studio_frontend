@@ -1,6 +1,6 @@
 import { addDays } from "../core/utils/DateUtil";
 
-const subscriptionPlans = {
+const subscriptionPlans: Record<string, number> = {
     REGISTRATION: 0,
     TRIAL: 7,
     MONTHLY: 30,
@@ -10,7 +10,7 @@ const subscriptionPlans = {
     AMC: 365,
 };
 
-const parsePlanDays = (planName, membershipTypes) => {
+const parsePlanDays = (planName: string | null | undefined, membershipTypes?: any[]): number => {
     if (!planName) return 0;
 
     const name = planName.toLowerCase();
@@ -20,13 +20,17 @@ const parsePlanDays = (planName, membershipTypes) => {
             return subscriptionPlans[key];
         }
     }
-    const packag = membershipTypes.filter(m => m.membershipPackage === planName)?.[0];
-    if (packag) return packag?.days;
+    const packag = membershipTypes?.filter((m) => m.membershipPackage === planName)?.[0];
+    if (packag) return packag?.days || 0;
 
     return 0;
 };
 
-const getEndDateBySubscriptionPlan = (startDate, planName, membershipTypes) => {
+const getEndDateBySubscriptionPlan = (
+    startDate: string,
+    planName: string | null | undefined,
+    membershipTypes?: any[],
+): string | null => {
     const days = parsePlanDays(planName, membershipTypes);
     return addDays(startDate, days);
 };

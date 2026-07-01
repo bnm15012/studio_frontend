@@ -1,8 +1,26 @@
+import React from "react";
 import { Box, Typography } from "@mui/material";
-import PropTypes from "prop-types";
 import StyledDialog from "../dialogs/StyledDialog";
 
-export const ConfirmationDialog = ({ type, value, error, open, onClose, onConfirm, disabled }) => (
+interface ConfirmationDialogProps {
+    type: "email" | "mobile" | string;
+    value?: string;
+    error?: string;
+    open: boolean;
+    onClose: () => void;
+    onConfirm: () => void | Promise<void>;
+    disabled?: boolean;
+}
+
+export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
+    type,
+    value,
+    error,
+    open,
+    onClose,
+    onConfirm,
+    disabled,
+}) => (
     <StyledDialog
         title={type === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
         open={open}
@@ -27,13 +45,3 @@ export const ConfirmationDialog = ({ type, value, error, open, onClose, onConfir
         </Box>
     </StyledDialog>
 );
-
-ConfirmationDialog.propTypes = {
-    type: PropTypes.oneOf(["email", "mobile"]).isRequired,
-    value: PropTypes.string,
-    error: PropTypes.string,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-};

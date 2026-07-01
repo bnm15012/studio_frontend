@@ -1,7 +1,7 @@
+import React from "react";
 import Field from "../components/fields/Field";
 import { FlexBetween } from "../components/layout/FlexBox";
 import { Box } from "@mui/material";
-import PropTypes from "prop-types";
 import StyledDialog from "../components/dialogs/StyledDialog";
 import { FieldLabel } from "../components/fields/StyledField";
 import { useUI } from "../context/UIContext";
@@ -11,12 +11,26 @@ import {
     bindGetOptions,
     resolveFieldValue,
     isFieldEditable,
+    FieldDef,
 } from "../utils/fieldHelpers";
 
-export const DialogForm = (props) => {
+interface DialogFormProps {
+    data: any;
+    fields: FieldDef[];
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    handleChange: (value: any, rowId: any, fieldName: string) => void;
+    handleSave: (rowId: any) => void | Promise<void>;
+    setClose: () => void;
+    [key: string]: any;
+}
+
+export const DialogForm: React.FC<DialogFormProps> = (props) => {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
     const { isMobile } = useUI();
-    const id = data[fieldsMeta.primary];
+    const id = data?.[fieldsMeta.primary];
     const visibleFields = getVisibleFields(fields);
 
     return (
@@ -70,19 +84,6 @@ export const DialogForm = (props) => {
             </FlexBetween>
         </StyledDialog>
     );
-};
-
-DialogForm.propTypes = {
-    data: PropTypes.object,
-    fields: PropTypes.array,
-    dialogProps: PropTypes.object,
-    fieldsMeta: PropTypes.shape({
-        primary: PropTypes.string,
-        root: PropTypes.string,
-    }),
-    handleChange: PropTypes.func,
-    handleSave: PropTypes.func,
-    setClose: PropTypes.func,
 };
 
 export default DialogForm;

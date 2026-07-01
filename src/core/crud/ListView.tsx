@@ -1,3 +1,4 @@
+import React, { memo, useCallback, useState, useMemo, useEffect } from "react";
 import {
     TableBody,
     TableHead,
@@ -9,7 +10,7 @@ import {
     Chip,
     Box,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 
 import {
     StyledTable,
@@ -17,34 +18,51 @@ import {
     StyledTableContainer,
     StyledTableRow,
 } from "../components/tables/StyledTableComponents";
-import PropTypes from "prop-types";
-import { memo, useCallback, useState, useMemo, useEffect } from "react";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import Actions from "./helper/Actions";
+import Actions, { ActionItem } from "./helper/Actions";
 import { useUI } from "../context/UIContext";
 import FieldCell from "./components/FieldCell";
-import { getVisibleFields } from "../utils/fieldHelpers";
-import { useTheme } from "@emotion/react";
+import { getVisibleFields, FieldDef } from "../utils/fieldHelpers";
 import { AnimatePresence, motion } from "framer-motion";
 import { RowActions, getRowNumber, EmptyState } from "./components/shared";
 
 // ── Shared motion variants ─────────────────────────────────────────────────
-// Used by both desktop rows and mobile cards so the animation feels uniform.
 const rowVariants = {
     hidden: { opacity: 0, y: 8 },
-    visible: (i) => ({
+    visible: (i: number) => ({
         opacity: 1,
         y: 0,
-        transition: { duration: 0.22, ease: "easeOut", delay: i * 0.04 },
+        transition: { duration: 0.22, ease: "easeOut" as any, delay: i * 0.04 },
     }),
     exit: { opacity: 0, transition: { duration: 0.15 } },
 };
 
-// Motion-enhanced table row — keeps all existing StyledTableRow styles.
+// Motion-enhanced table row
 const MotionTableRow = motion.create(StyledTableRow);
 
+interface MobileRowCardProps {
+    row: any;
+    rowIndex: number;
+    fields: FieldDef[];
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    editingId?: any;
+    multi?: boolean;
+    tableState: any;
+    handleSave?: (rowId: any) => void | Promise<void>;
+    handleCancel?: () => void;
+    handleChange: (value: any, rowId: any, fieldName: string) => void;
+    handleViewOpen?: (row: any) => void;
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: any) => void;
+    selectedRows: any[];
+    theme: any;
+    actions: ActionItem[];
+}
+
 // ── Mobile card for a single row ───────────────────────────────────────────
-const MobileRowCard = ({
+const MobileRowCard: React.FC<MobileRowCardProps> = ({
     row,
     rowIndex,
     fields,
@@ -176,26 +194,31 @@ const MobileRowCard = ({
     );
 };
 
-MobileRowCard.propTypes = {
-    row: PropTypes.object,
-    rowIndex: PropTypes.number,
-    fields: PropTypes.array,
-    fieldsMeta: PropTypes.object,
-    editingId: PropTypes.any,
-    multi: PropTypes.bool,
-    tableState: PropTypes.object,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
-    handleChange: PropTypes.func,
-    handleViewOpen: PropTypes.func,
-    handleSelectRow: PropTypes.func,
-    selectedRows: PropTypes.array,
-    theme: PropTypes.object,
-    actions: PropTypes.array,
-};
+interface DesktopTableProps {
+    fields: FieldDef[];
+    data: any[];
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    editingId?: any;
+    multi?: boolean;
+    tableState: any;
+    loading?: boolean;
+    handleSave?: (rowId: any) => void | Promise<void>;
+    handleCancel?: () => void;
+    handleChange: (value: any, rowId: any, fieldName: string) => void;
+    handleViewOpen?: (row: any) => void;
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: any) => void;
+    handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    selectedRows: any[];
+    visibleRowIds: any[];
+    actions: ActionItem[];
+    onClickRow?: (row: any) => void;
+}
 
 // ── Desktop table ──────────────────────────────────────────────────────────
-const DesktopTable = ({
+const DesktopTable: React.FC<DesktopTableProps> = ({
     fields,
     data,
     fieldsMeta,
@@ -218,8 +241,10 @@ const DesktopTable = ({
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
     const isIndeterminate = selectedRows.length > 0 && selectedRows.length < visibleRowIds.length;
 
+    const TableContainerCo = StyledTableContainer as any;
+
     return (
-        <StyledTableContainer component={Paper}>
+        <TableContainerCo component={Paper}>
             <StyledTable>
                 <TableHead>
                     <StyledTableRow>
@@ -317,32 +342,31 @@ const DesktopTable = ({
                     )}
                 </TableBody>
             </StyledTable>
-        </StyledTableContainer>
+        </TableContainerCo>
     );
 };
 
-DesktopTable.propTypes = {
-    fields: PropTypes.array,
-    data: PropTypes.array,
-    fieldsMeta: PropTypes.object,
-    editingId: PropTypes.any,
-    multi: PropTypes.bool,
-    tableState: PropTypes.object,
-    loading: PropTypes.bool,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
-    handleChange: PropTypes.func,
-    handleViewOpen: PropTypes.func,
-    handleSelectRow: PropTypes.func,
-    handleSelectAll: PropTypes.func,
-    selectedRows: PropTypes.array,
-    visibleRowIds: PropTypes.array,
-    actions: PropTypes.array,
-    onClickRow: PropTypes.func,
-};
+interface ListViewProps {
+    fields: FieldDef[];
+    data: any[];
+    editingId?: any;
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    actions: ActionItem[];
+    handleChange: (value: any, rowId: any, fieldName: string) => void;
+    handleSave?: (rowId: any) => void | Promise<void>;
+    loading?: boolean;
+    handleCancel?: () => void;
+    tableState: any;
+    handlePageChange: (page: number) => void;
+    handleViewOpen?: (row: any) => void;
+    multi?: boolean;
+}
 
 // ── ListView ───────────────────────────────────────────────────────────────
-const ListView = ({
+const ListView: React.FC<ListViewProps> = ({
     fields,
     data,
     editingId,
@@ -361,11 +385,11 @@ const ListView = ({
     const theme = useTheme();
 
     const onClickRow = useCallback(
-        (row) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
+        (row: any) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
         [actions],
     );
 
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRows, setSelectedRows] = useState<any[]>([]);
 
     useEffect(() => {
         setSelectedRows([]);
@@ -387,13 +411,13 @@ const ListView = ({
     );
 
     const handleSelectAll = useCallback(
-        (event) => {
+        (event: React.ChangeEvent<HTMLInputElement>) => {
             setSelectedRows(event.target.checked ? visibleRowIds : []);
         },
         [visibleRowIds],
     );
 
-    const handleSelectRow = useCallback((event, id) => {
+    const handleSelectRow = useCallback((event: React.ChangeEvent<HTMLInputElement>, id: any) => {
         event.stopPropagation();
         setSelectedRows((prev) =>
             event.target.checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
@@ -416,6 +440,8 @@ const ListView = ({
         theme,
         actions,
     };
+
+    const pageCount = Math.ceil((tableState.totalCount ?? 0) / (tableState.pageSize ?? 10)) ?? 0;
 
     return (
         <>
@@ -494,7 +520,7 @@ const ListView = ({
             <FlexBetween m={1} flexDirection={"row-reverse"} sx={{ flexWrap: "wrap", gap: 1 }}>
                 <Pagination
                     page={tableState.currentPage ?? 0}
-                    count={Math.ceil(tableState.totalCount / tableState.pageSize) ?? 0}
+                    count={pageCount}
                     onChange={(e, p) => handlePageChange(p)}
                     color="primary"
                     shape="rounded"
@@ -505,34 +531,6 @@ const ListView = ({
             </FlexBetween>
         </>
     );
-};
-
-ListView.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.object),
-    tableState: PropTypes.object,
-    fields: PropTypes.array,
-    loading: PropTypes.bool,
-    editingId: PropTypes.any,
-    fieldsMeta: PropTypes.shape({
-        primary: PropTypes.string,
-        root: PropTypes.string,
-    }),
-    handleChange: PropTypes.func,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
-    handlePageChange: PropTypes.func,
-    handleViewOpen: PropTypes.func,
-    multi: PropTypes.bool,
-    actions: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-            onClick: PropTypes.func,
-            icon: PropTypes.element,
-            sx: PropTypes.object,
-            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-            multi: PropTypes.bool,
-        }),
-    ),
 };
 
 export default memo(ListView);

@@ -1,13 +1,15 @@
+import React, { useEffect } from "react";
 import { Typography, Box, Stack, Divider, useTheme } from "@mui/material";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
-import { useEffect } from "react";
 import Footer from "../../Components/Footer";
 
-const TermsConditionPage = () => {
+const TermsConditionPage: React.FC = () => {
     const theme = useTheme();
+
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    }, []);
+
     return (
         <>
             <Navbar />

@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Box,
     Typography,
@@ -20,7 +21,7 @@ import XIcon from "@mui/icons-material/X";
 import ImageComponent from "../core/components/fields/ImageComponent";
 import { useNavigate } from "react-router-dom";
 
-const Footer = () => {
+const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
     const navigate = useNavigate();
 
@@ -86,12 +87,13 @@ const Footer = () => {
                                     mb: 3,
                                 }}
                             >
-                                <ImageComponent
-                                    size={"48px"}
-                                    value={"/logo.png"}
-                                    isCircular={false}
-                                    sx={{ flexShrink: 0 }}
-                                />
+                                <Box sx={{ flexShrink: 0 }}>
+                                    <ImageComponent
+                                        size={"48px"}
+                                        value={"/logo.png"}
+                                        isCircular={false}
+                                    />
+                                </Box>
                                 <Typography
                                     variant="h6"
                                     sx={{
@@ -279,8 +281,6 @@ const Footer = () => {
                                             onClick={(e) => {
                                                 if (isNonActionable) {
                                                     e.preventDefault();
-                                                } else {
-                                                    // Let the default navigation handle it
                                                 }
                                             }}
                                             sx={{
@@ -355,6 +355,7 @@ const Footer = () => {
                                 />
                                 <Button
                                     variant="contained"
+                                    type="button"
                                     sx={{
                                         minWidth: "auto",
                                         px: 2,
@@ -386,7 +387,6 @@ const Footer = () => {
                             gap: 3,
                         }}
                     >
-                        {/* 89, 2nd Cross Road, Kaverappa Layout, */}
                         {[
                             { icon: EmailIcon, title: "Email", content: "bookandmanage@gmail.com" },
                             { icon: PhoneIcon, title: "Phone", content: "+91 73260 27500" },
@@ -475,7 +475,7 @@ const Footer = () => {
                             <Link
                                 key={item}
                                 onClick={() => {
-                                    navigate(`/${item.toLowerCase().replaceAll(" ", "-")}`);
+                                    navigate(`/${item.toLowerCase().replace(/\s+/g, "-")}`);
                                 }}
                                 sx={{
                                     color: "rgba(255, 255, 255, 0.7)",

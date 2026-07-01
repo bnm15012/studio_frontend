@@ -1,9 +1,14 @@
+import React from "react";
 import { Box, useTheme } from "@mui/material";
 import ContactForm from "./ContactForm";
-import PropTypes from "prop-types";
 import StyledDialog from "../../core/components/dialogs/StyledDialog";
 
-const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
+interface ContactUsDialogProps {
+    open: boolean;
+    setOpenContactUsForm: () => void;
+}
+
+const ContactUsDialog: React.FC<ContactUsDialogProps> = ({ open, setOpenContactUsForm }) => {
     const theme = useTheme();
     return (
         <StyledDialog onClose={setOpenContactUsForm} closeIcon={true} open={open}>
@@ -17,10 +22,6 @@ const ContactUsDialog = ({ open, setOpenContactUsForm }) => {
             </Box>
         </StyledDialog>
     );
-};
-ContactUsDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    setOpenContactUsForm: PropTypes.func.isRequired,
 };
 
 export default ContactUsDialog;

@@ -1,8 +1,17 @@
+import React from "react";
 import { Box, Typography, Container, Chip, Accordion, AccordionSummary, AccordionDetails, Paper } from "@mui/material";
 import { Star as StarIcon, ExpandMore as ExpandMoreIcon, Check as CheckIcon, Close as CloseIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import PricingPlanCards from "./PricingPlanCards";
 
-const comparisonRows = [
+interface ComparisonRow {
+    feature: string;
+    bnm: boolean | string;
+    gymmaster: boolean | string;
+    fitbudd: boolean | string;
+    glofox: boolean | string;
+}
+
+const comparisonRows: ComparisonRow[] = [
     { feature: "PDF Invoice & Receipt Generator", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
     { feature: "Expense Management", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
     { feature: "Activity & Batch Management", bnm: true, gymmaster: "partial", fitbudd: "partial", glofox: false },
@@ -12,7 +21,7 @@ const comparisonRows = [
     { feature: "Student Attendance Tracking", bnm: true, gymmaster: false, fitbudd: false, glofox: false },
 ];
 
-const PricingSection = () => {
+const PricingSection: React.FC = () => {
     const faqs = [
         {
             question: "Is there a free trial?",

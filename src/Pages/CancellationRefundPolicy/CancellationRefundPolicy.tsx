@@ -1,13 +1,15 @@
+import React, { useEffect } from "react";
 import { Typography, Box, Stack, Divider, useTheme } from "@mui/material";
 import Footer from "../../Components/Footer";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
-import { useEffect } from "react";
 
-const CancellationRefundPolicy = () => {
+const CancellationRefundPolicy: React.FC = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    }, []);
+
     const theme = useTheme();
+
     return (
         <>
             <Navbar />
@@ -77,7 +79,7 @@ const CancellationRefundPolicy = () => {
                         <Typography variant="h6" gutterBottom>
                             5. Contact Information
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" component="div">
                             If you have any questions about our cancellation or refund policy,
                             please contact us at: <br />
                             Email:{" "}
@@ -92,7 +94,7 @@ const CancellationRefundPolicy = () => {
                                 bookandmanage@gmail.com
                             </a>{" "}
                             <br />
-                            Phone:
+                            Phone:{" "}
                             <span style={{ color: theme.palette.primary.main }}>
                                 +91 73260 27500
                             </span>

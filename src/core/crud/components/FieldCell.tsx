@@ -1,7 +1,7 @@
+import React from "react";
 import { Button } from "@mui/material";
-import PropTypes from "prop-types";
 import Field from "../../components/fields/Field";
-import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions, FieldDef } from "../../utils/fieldHelpers";
 
 /**
  * FieldCell
@@ -14,7 +14,21 @@ import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
  *
  * Replaces repeated inline <Field /> blocks across ListView, DialogForm, and CardView.
  */
-const FieldCell = ({ field, row, isEdit, handleChange, handleViewOpen }) => {
+interface FieldCellProps {
+    field: FieldDef;
+    row: any;
+    isEdit: boolean;
+    handleChange?: (value: any, rowId: any, fieldName: string) => void;
+    handleViewOpen?: (row: any) => void;
+}
+
+const FieldCell: React.FC<FieldCellProps> = ({
+    field,
+    row,
+    isEdit,
+    handleChange,
+    handleViewOpen,
+}) => {
     if (field.view) {
         return (
             <Button
@@ -51,23 +65,6 @@ const FieldCell = ({ field, row, isEdit, handleChange, handleViewOpen }) => {
             validation={field.validation}
         />
     );
-};
-
-FieldCell.propTypes = {
-    field: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        type: PropTypes.string,
-        view: PropTypes.bool,
-        getValue: PropTypes.func,
-        extraProp: PropTypes.object,
-        validation: PropTypes.object,
-    }).isRequired,
-    row: PropTypes.object.isRequired,
-    isEdit: PropTypes.bool,
-    /** Called with (value, rowId, fieldName) */
-    handleChange: PropTypes.func,
-    /** Called with (row) when a "view" field button is clicked */
-    handleViewOpen: PropTypes.func,
 };
 
 export default FieldCell;

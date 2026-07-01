@@ -1,5 +1,5 @@
-// utils/cacheManager.js
-export const clearCacheIfNewDay = () => {
+// utils/cacheManager.ts
+export const clearCacheIfNewDay = (): void => {
     const lastClearDate = localStorage.getItem("lastCacheClearDate");
     const today = new Date().toDateString();
 
@@ -7,7 +7,7 @@ export const clearCacheIfNewDay = () => {
         const preservedKeys = ["token", "user"]; // Add any keys you don't want to delete
 
         // Save preserved values
-        const preservedData = {};
+        const preservedData: Record<string, string | null> = {};
         preservedKeys.forEach((key) => {
             preservedData[key] = localStorage.getItem(key);
         });

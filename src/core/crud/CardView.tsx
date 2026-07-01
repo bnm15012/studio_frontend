@@ -1,6 +1,6 @@
+import React, { memo, useState, useEffect, useMemo, useCallback } from "react";
 import { Button, Box, Checkbox, Toolbar, Chip, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
-import PropTypes from "prop-types";
 import { FieldContainer, FieldLabel } from "../components/fields/StyledField";
 import {
     StyledMotionCard,
@@ -9,11 +9,11 @@ import {
     StyledCardContent,
 } from "../components/cards/StyledCard";
 import { getNestedValue } from "../../utils/objectHelpers";
-import { memo, useState, useEffect, useMemo, useCallback } from "react";
-import Actions from "./helper/Actions";
+import Actions, { ActionItem } from "./helper/Actions";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "./components/shared";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
+import { FieldDef } from "../utils/fieldHelpers";
 
 const LoadMoreContainer = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -37,7 +37,23 @@ const LoadMoreButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const CardView = (props) => {
+interface CardViewProps {
+    fields: FieldDef[];
+    data: any[];
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    loading?: boolean;
+    actions: ActionItem[];
+    handleViewOpen?: (row: any) => void;
+    tableState: any;
+    handleLoadMore: () => void | Promise<void>;
+    CardContentComponent?: React.ComponentType<any>;
+    multi?: boolean;
+}
+
+const CardView: React.FC<CardViewProps> = (props) => {
     const {
         fields,
         data,
@@ -51,12 +67,13 @@ const CardView = (props) => {
         multi = false,
     } = props;
     const theme = useTheme();
-    const hasMore = data.length < tableState.totalCount;
+    const hasMore = data.length < (tableState.totalCount ?? 0);
     const visibleFields = fields.filter((f) => f.show);
 
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRows, setSelectedRows] = useState<any[]>([]);
+    const hasClickRow = actions?.some((a) => a.name === "form" && !a.hide);
     const onClickRow = useCallback(
-        (row) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
+        (row: any) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
         [actions],
     );
 
@@ -80,13 +97,13 @@ const CardView = (props) => {
     );
 
     const handleSelectAll = useCallback(
-        (event) => {
+        (event: React.ChangeEvent<HTMLInputElement>) => {
             setSelectedRows(event.target.checked ? visibleRowIds : []);
         },
         [visibleRowIds],
     );
 
-    const handleSelectRow = useCallback((id, checked) => {
+    const handleSelectRow = useCallback((id: any, checked: boolean) => {
         setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)));
     }, []);
 
@@ -164,7 +181,7 @@ const CardView = (props) => {
                                     }}
                                     role="button"
                                     tabIndex={0}
-                                    onKeyDown={(e) => {
+                                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                                         if (e.key === "Enter" || e.key === " ") {
                                             e.preventDefault();
                                             if (multi) {
@@ -175,7 +192,7 @@ const CardView = (props) => {
                                         }
                                     }}
                                     sx={{
-                                        cursor: onClickRow ? "pointer" : "auto",
+                                        cursor: hasClickRow ? "pointer" : "auto",
                                         transition: "all 0.2s ease",
                                         ...(isItemSelected && {
                                             borderColor: theme.palette.primary.main,
@@ -241,6 +258,7 @@ const CardView = (props) => {
                                                                           field.name,
                                                                       ),
                                                                       row,
+                                                                      false,
                                                                   )?.value
                                                                 : getNestedValue(row, field.name)}
                                                         </FieldContainer>
@@ -279,31 +297,6 @@ const CardView = (props) => {
             )}
         </Box>
     );
-};
-
-CardView.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.object),
-    tableState: PropTypes.object,
-    fields: PropTypes.array,
-    fieldsMeta: PropTypes.shape({
-        primary: PropTypes.string,
-        root: PropTypes.string,
-    }),
-    loading: PropTypes.bool,
-    handleLoadMore: PropTypes.func,
-    CardContentComponent: PropTypes.elementType,
-    handleViewOpen: PropTypes.func,
-    multi: PropTypes.bool,
-    actions: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string,
-            onClick: PropTypes.func,
-            icon: PropTypes.element,
-            sx: PropTypes.object,
-            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-            multi: PropTypes.bool,
-        }),
-    ),
 };
 
 export default memo(CardView);

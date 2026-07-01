@@ -1,5 +1,5 @@
-import { StrictMode } from "react";
-import App from "./App.jsx";
+import React, { StrictMode } from "react";
+import App from "./App";
 import { createRoot } from "react-dom/client";
 import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";

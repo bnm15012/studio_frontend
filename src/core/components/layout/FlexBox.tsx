@@ -10,22 +10,30 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 
-const commonProps = { display: "flex", position: "relative" };
+export const FlexBetween = styled(Box)({
+    display: "flex",
+    position: "relative",
+    justifyContent: "space-between",
+});
 
-export const FlexBetween = styled(Box)(commonProps, { justifyContent: "space-between" });
-
-export const FlexEvenly = styled(Box)(commonProps, {
+export const FlexEvenly = styled(Box)({
+    display: "flex",
+    position: "relative",
     justifyContent: "space-evenly",
     alignItems: "center",
 });
 
-export const FlexEvenlyColumn = styled(Box)(commonProps, {
+export const FlexEvenlyColumn = styled(Box)({
+    display: "flex",
+    position: "relative",
     justifyContent: "space-evenly",
     flexDirection: "column",
     height: "100%",
 });
 
-export const FlexBetweenColumn = styled(Box)(commonProps, {
+export const FlexBetweenColumn = styled(Box)({
+    display: "flex",
+    position: "relative",
     justifyContent: "space-between",
     flexDirection: "column",
 });

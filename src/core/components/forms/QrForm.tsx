@@ -1,5 +1,4 @@
-import { useState, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useRef } from "react";
 import { Button, Typography, Box } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
@@ -7,7 +6,15 @@ import { useSelector } from "react-redux";
 import StyledDialog from "../dialogs/StyledDialog";
 import { useUI } from "../../context/UIContext";
 
-const QrForm = ({
+interface QrFormProps {
+    link?: string;
+    qrSize?: number;
+    title?: string;
+    buttonVariant?: "text" | "outlined" | "contained";
+    qrValue?: string | boolean;
+}
+
+const QrForm: React.FC<QrFormProps> = ({
     link,
     qrSize = 256,
     title = "QR Code",
@@ -16,9 +23,9 @@ const QrForm = ({
 }) => {
     const { isMobile } = useUI();
     const [open, setOpen] = useState(false);
-    const qrRef = useRef(null);
-    const currentBranch = useSelector((state) => state.branch.currentBranch) || {};
-    const qrLink = qrValue
+    const qrRef = useRef<HTMLDivElement>(null);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch) || {};
+    const qrLink = typeof qrValue === "string"
         ? qrValue
         : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;
 
@@ -27,7 +34,7 @@ const QrForm = ({
 
     const handleDownloadPDF = () => {
         if (!qrRef.current) return;
-        window
+        (window as any)
             .html2pdf()
             .set({
                 filename: `QRCode-${link || qrValue}.pdf`,
@@ -41,7 +48,7 @@ const QrForm = ({
 
     const handlePrintPDF = () => {
         if (!qrRef.current) return;
-        window
+        (window as any)
             .html2pdf()
             .set({
                 image: { type: "jpeg", quality: 1 },
@@ -51,14 +58,16 @@ const QrForm = ({
             .from(qrRef.current)
             .toPdf()
             .get("pdf")
-            .then((pdf) => {
+            .then((pdf: any) => {
                 const blob = pdf.output("blob");
                 const blobUrl = URL.createObjectURL(blob);
                 const printWindow = window.open(blobUrl, "_blank");
-                printWindow.onload = function () {
-                    printWindow.focus();
-                    printWindow.print();
-                };
+                if (printWindow) {
+                    printWindow.onload = function () {
+                        printWindow.focus();
+                        printWindow.print();
+                    };
+                }
             });
     };
 
@@ -112,9 +121,9 @@ const QrForm = ({
                     style={{ textAlign: "center", padding: "10px", marginTop: "20px" }}
                 >
                     <Box
-                        padding={2}
-                        backgroundColor="white"
                         sx={{
+                            padding: 2,
+                            backgroundColor: "white",
                             display: "inline-block",
                             maxWidth: "100%",
                             boxSizing: "border-box",
@@ -141,14 +150,6 @@ const QrForm = ({
             </StyledDialog>
         </>
     );
-};
-
-QrForm.propTypes = {
-    link: PropTypes.string,
-    qrValue: PropTypes.string,
-    title: PropTypes.string,
-    qrSize: PropTypes.number,
-    buttonVariant: PropTypes.string,
 };
 
 export default QrForm;

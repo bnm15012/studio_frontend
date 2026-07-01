@@ -66,8 +66,8 @@ const DateTime: React.FC<DateTimeProps> = ({
         }
     };
 
-    const minDate = minVal ? parseDateTime(minVal) : undefined;
-    const maxDate = maxVal ? parseDateTime(maxVal) : undefined;
+    const minDate = (minVal ? parseDateTime(minVal) : undefined) || undefined;
+    const maxDate = (maxVal ? parseDateTime(maxVal) : undefined) || undefined;
 
     const commonProps = {
         value: localDateTime,

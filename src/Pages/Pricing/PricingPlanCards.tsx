@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -15,26 +16,28 @@ import {
 } from "@mui/material";
 import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
 import { Check as CheckIcon, Close } from "@mui/icons-material";
-import { useCallback, useEffect, useState } from "react";
 import { getAllPlans } from "./plans.api";
-// import { setPricingPlans } from '../../state/authSlice';
 import { useDispatch, useSelector } from "react-redux";
 import PaymentDialog from "../RazorPay/Payment";
 import Loading from "../../core/components/loading/Loading";
 import { openDialog } from "../../state/dialogSlice";
-import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 
-const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
+interface PricingPlanCardsProps {
+    buttonText?: string;
+    AMC?: boolean;
+}
+
+const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get Started", AMC = false }) => {
     const dispatch = useDispatch();
     const theme = useTheme();
-    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [selectedPlan, setSelectedPlan] = useState<any>(null);
     const [dialogPlanOpen, setPanDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [allPlans, setAllPlans] = useState(null); //useSelector((state) => state.auth.pricingPlans));
-    const user = useSelector((state) => state.auth.user);
+    const [allPlans, setAllPlans] = useState<any[] | null>(null);
+    const user = useSelector((state: any) => state.auth.user);
 
-    const getFeatureIcon = (featureName) => {
+    const getFeatureIcon = (featureName: string) => {
         const lowerName = featureName.toLowerCase();
         if (lowerName.includes("student")) return Users;
         if (lowerName.includes("payment")) return CreditCard;
@@ -55,7 +58,8 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
       ${alpha(theme.palette.primary.main, 0.05)},
       ${alpha(theme.palette.primary.main, 0.1)}
     )`;
-    const handlePayment = async (plan) => {
+
+    const handlePayment = async (plan: any) => {
         if (!user) {
             dispatch(openDialog("loginDialog"));
         } else {
@@ -74,12 +78,14 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
         const { data, success } = await getAllPlans({ AMC });
         if (success) {
             setAllPlans(data);
-            // dispatch(setPricingPlans({ pricingPlans: data }));
         }
         setIsLoading(false);
     }, [AMC]);
+
     useEffect(() => {
-        !allPlans && fetchPlans();
+        if (!allPlans) {
+            fetchPlans();
+        }
     }, [allPlans, fetchPlans]);
 
     return (
@@ -96,7 +102,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
         >
             {isLoading && <Loading />}
             {allPlans &&
-                allPlans.map((plan, index) => (
+                allPlans.map((plan: any, index: number) => (
                     <Box key={index}>
                         <Card
                             sx={{
@@ -118,7 +124,6 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                 },
                             }}
                         >
-                            {/* //crown */}
                             {plan.popular && (
                                 <Chip
                                     icon={<Crown color="white" />}
@@ -141,29 +146,6 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                 sx={{ textAlign: "center", pb: 4 }}
                                 title={
                                     <Box>
-                                        {/* <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          mb: 2,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            p: 2,
-                            borderRadius: 2,
-                            background: plan.popular
-                              ? 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)'
-                              : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)',
-                            transition: 'transform 0.3s ease',
-                            '&:hover': {
-                              transform: 'scale(1.1)',
-                            },
-                          }}
-                        >
-                          {plan.popular ? <StarIcon /> : <FlashOn />}
-                        </Box>
-                      </Box> */}
                                         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
                                             {plan?.planType?.replace("_", " ")}
                                         </Typography>
@@ -228,7 +210,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                     What&apos;s included:
                                 </Typography>
                                 <List sx={{ p: 0 }}>
-                                    {plan?.enabledFeatures.map((feature, featureIndex) => {
+                                    {plan?.enabledFeatures.map((feature: string, featureIndex: number) => {
                                         const FeatureIcon = getFeatureIcon(feature);
                                         return (
                                             <ListItem
@@ -268,13 +250,13 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                                 fontWeight: 500,
                                                                 color: "text.primary",
                                                             },
-                                                        },
+                                                        } as any,
                                                     }}
                                                 />
                                             </ListItem>
                                         );
                                     })}
-                                    {plan?.disabledFeatures.map((feature, featureIndex) => {
+                                    {plan?.disabledFeatures.map((feature: string, featureIndex: number) => {
                                         const FeatureIcon = getFeatureIcon(feature);
                                         return (
                                             <ListItem
@@ -311,7 +293,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                                 fontWeight: 500,
                                                                 color: "text.secondary",
                                                             },
-                                                        },
+                                                        } as any,
                                                     }}
                                                 />
                                             </ListItem>
@@ -334,8 +316,4 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
     );
 };
 
-PricingPlanCards.propTypes = {
-    buttonText: PropTypes.string,
-    AMC: PropTypes.bool,
-};
 export default PricingPlanCards;

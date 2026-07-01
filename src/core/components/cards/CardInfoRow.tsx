@@ -1,6 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import PropTypes from "prop-types";
 import React from "react";
 
 /**
@@ -12,10 +11,42 @@ import React from "react";
  *   - Default: icon + label (small) + value (below label)
  *   - Compact (compact=true): icon + value only, single line, no label — for native mobile list items
  */
-const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false, compact = false }) => {
+interface CardInfoRowProps {
+    Icon: React.ComponentType<any> | React.ReactElement;
+    label?: string;
+    value?: React.ReactNode;
+    onClick?: (e: React.MouseEvent) => void;
+    action?: React.ReactNode;
+    hoverable?: boolean;
+    compact?: boolean;
+}
+
+const CardInfoRow: React.FC<CardInfoRowProps> = ({
+    Icon,
+    label,
+    value,
+    onClick,
+    action,
+    hoverable = false,
+    compact = false,
+}) => {
     const theme = useTheme();
     const iconColor = theme.palette.text.secondary;
     const isClickable = Boolean(onClick);
+
+    const renderIcon = (customSx: any) => {
+        if (React.isValidElement(Icon)) {
+            const element = Icon as React.ReactElement<any>;
+            return React.cloneElement(element, {
+                sx: {
+                    ...customSx,
+                    ...(element.props?.sx || {}),
+                },
+            });
+        }
+        const IconComponent = Icon as React.ComponentType<any>;
+        return <IconComponent sx={customSx} />;
+    };
 
     if (compact) {
         return (
@@ -38,17 +69,7 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false, c
                         flexShrink: 0,
                     }}
                 >
-                    {React.isValidElement(Icon) ? (
-                        React.cloneElement(Icon, {
-                            sx: {
-                                color: iconColor,
-                                fontSize: "1rem",
-                                ...(Icon.props.sx || {}),
-                            },
-                        })
-                    ) : (
-                        <Icon sx={{ color: iconColor, fontSize: "1rem" }} />
-                    )}
+                    {renderIcon({ color: iconColor, fontSize: "1rem" })}
                 </Box>
                 <Typography
                     variant="body2"
@@ -107,17 +128,7 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false, c
                 }}
                 onClick={onClick}
             >
-                {React.isValidElement(Icon) ? (
-                    React.cloneElement(Icon, {
-                        sx: {
-                            color: theme.palette.primary.main,
-                            fontSize: "1.2rem",
-                            ...(Icon.props.sx || {}),
-                        },
-                    })
-                ) : (
-                    <Icon sx={{ color: theme.palette.primary.main, fontSize: "1.2rem" }} />
-                )}
+                {renderIcon({ color: theme.palette.primary.main, fontSize: "1.2rem" })}
             </Box>
 
             <Box
@@ -160,16 +171,6 @@ const CardInfoRow = ({ Icon, label, value, onClick, action, hoverable = false, c
             )}
         </Box>
     );
-};
-
-CardInfoRow.propTypes = {
-    Icon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.node]).isRequired,
-    label: PropTypes.string,
-    value: PropTypes.node,
-    onClick: PropTypes.func,
-    action: PropTypes.node,
-    hoverable: PropTypes.bool,
-    compact: PropTypes.bool,
 };
 
 export default CardInfoRow;

@@ -1,13 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Box, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { Phone, Copy, Mail } from "lucide-react";
-import PropTypes from "prop-types";
 
 /**
  * ContactSection — Compact inline email/phone display.
  * Icon + value + optional copy button. No label.
  */
-const ContactSection = ({ contact }) => {
+interface ContactSectionProps {
+    contact?: string;
+}
+
+const ContactSection: React.FC<ContactSectionProps> = ({ contact }) => {
     const [copied, setCopied] = useState(false);
     const theme = useTheme();
 
@@ -15,7 +18,7 @@ const ContactSection = ({ contact }) => {
 
     const isEmail = contact.includes("@");
 
-    const handleCopy = (e) => {
+    const handleCopy = (e: React.MouseEvent) => {
         e.stopPropagation();
         try {
             navigator.clipboard.writeText(contact);
@@ -26,7 +29,7 @@ const ContactSection = ({ contact }) => {
         }
     };
 
-    const handleClick = (e) => {
+    const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!contact) return;
         const link = isEmail ? `mailto:${contact}` : `tel:${contact}`;
@@ -76,10 +79,6 @@ const ContactSection = ({ contact }) => {
             </Tooltip>
         </Box>
     );
-};
-
-ContactSection.propTypes = {
-    contact: PropTypes.string.isRequired,
 };
 
 export default ContactSection;

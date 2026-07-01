@@ -1,12 +1,11 @@
 import DialogForm from "./DialogForm";
 import FormView from "./FormView";
-import PropTypes from "prop-types";
 import ListView from "./ListView";
 import CardView from "./CardView";
 import StyledDialog from "../components/dialogs/StyledDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import { useAlert } from "../components/feedback/Alert";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -16,8 +15,37 @@ import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useUI } from "../../context/UIContext";
+import { FieldDef } from "../utils/fieldHelpers";
+import { ActionItem } from "./helper/Actions";
 
-const Views = (props) => {
+interface ViewsProps {
+    formKey?: string | number | null;
+    tableName: string;
+    overRideOnChange?: (...args: any[]) => any;
+    size?: number;
+    rootId?: string | number | null;
+    tableCruds?: any;
+    fields: FieldDef[];
+    fieldsMeta: {
+        primary: string;
+        root?: string;
+    };
+    apiRef?: any;
+    dialogProps?: any;
+    defaultParams?: any;
+    beforeAdd?: (...args: any[]) => any;
+    beforeUpdate?: (...args: any[]) => any;
+    cardLayout?: "vertical" | "horizontal";
+    fieldToDisplayOnDelete?: string;
+    currentView?: string;
+    showAddButton?: boolean;
+    CardContentComponent?: React.ComponentType<any>;
+    actions?: ActionItem[];
+    multi?: boolean;
+    editMode?: "FORM" | "DIALOG" | "INLINE";
+}
+
+const Views: React.FC<ViewsProps> = (props) => {
     const {
         formKey,
         dialogProps,
@@ -34,7 +62,7 @@ const Views = (props) => {
         editMode = "INLINE",
         multi = false,
         defaultParams = {},
-        size,
+        size = 10,
         rootId,
         beforeAdd,
         beforeUpdate,
@@ -52,11 +80,11 @@ const Views = (props) => {
     const navigate = useNavigate();
     const { isMobile } = useUI();
 
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [loading, setLoading] = useState(false);
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
-    const [viewRow, setViewRow] = useState(null);
+    const [viewRow, setViewRow] = useState<any>(null);
 
     const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
         tableCruds,
@@ -96,9 +124,9 @@ const Views = (props) => {
         beforeAdd,
         beforeUpdate,
         overRideOnChange,
-    });
+    }) as any;
 
-    const handleViewOpen = (row) => {
+    const handleViewOpen = (row: any) => {
         setViewRow(row);
         setViewDialogOpen(true);
     };
@@ -107,6 +135,7 @@ const Views = (props) => {
         setViewRow(null);
         setViewDialogOpen(false);
     };
+
     const {
         handleDeleteClick,
         deleteDialogOpen,
@@ -123,14 +152,14 @@ const Views = (props) => {
         formKey,
         tableName,
         consts,
-    });
+    }) as any;
 
     const refreshData = useCallback(() => {
         dispatch(tableCruds.refresh(showAlert, setLoading, token));
     }, [dispatch, showAlert, tableCruds, token]);
 
     const openFormView = useCallback(
-        (row) => {
+        (row: any) => {
             navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
         },
         [navigate, tableName],
@@ -191,8 +220,10 @@ const Views = (props) => {
     };
 
     useEffect(() => {
-        apiRef.current.addNewRow = addNewRow;
-        apiRef.current.refreshData = refreshData;
+        if (apiRef && "current" in apiRef) {
+            apiRef.current.addNewRow = addNewRow;
+            apiRef.current.refreshData = refreshData;
+        }
     }, [addNewRow, apiRef, refreshData]);
 
     const didInitNewRow = useRef(false);
@@ -247,7 +278,7 @@ const Views = (props) => {
                         {...commonProps}
                         {...commonStableProps}
                         {...dialogProps}
-                        data={data.find((d) => d[consts.current.primaryKey] === editingId)}
+                        data={data.find((d: any) => d[consts.current.primaryKey] === editingId)}
                     />
                 )}
             {viewDialogOpen && (
@@ -295,7 +326,7 @@ const Views = (props) => {
                     onConfirm={handleDeleteConfirm}
                     id={deleteId}
                     displayData={`${tableName} for ${
-                        data.find((d) => d[consts.current.primaryKey] === deleteId)?.[
+                        data.find((d: any) => d[consts.current.primaryKey] === deleteId)?.[
                             fieldToDisplayOnDelete
                         ]
                     }`}
@@ -303,35 +334,6 @@ const Views = (props) => {
             )}
         </>
     );
-};
-
-Views.propTypes = {
-    formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    tableName: PropTypes.string.isRequired,
-    overRideOnChange: PropTypes.func,
-    size: PropTypes.number.isRequired,
-    rootId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    tableCruds: PropTypes.any,
-    fields: PropTypes.array,
-    fieldsMeta: PropTypes.shape({
-        primary: PropTypes.string,
-        root: PropTypes.string,
-    }),
-    apiRef: PropTypes.shape({
-        current: PropTypes.object,
-    }),
-    dialogProps: PropTypes.object,
-    defaultParams: PropTypes.object,
-    beforeAdd: PropTypes.func,
-    beforeUpdate: PropTypes.func,
-    cardLayout: PropTypes.oneOf(["vertical", "horizontal"]),
-    fieldToDisplayOnDelete: PropTypes.string,
-    currentView: PropTypes.string,
-    showAddButton: PropTypes.bool,
-    CardContentComponent: PropTypes.elementType,
-    actions: PropTypes.arrayOf(Object),
-    multi: PropTypes.bool,
-    editMode: PropTypes.oneOf(["FORM", "DIALOG", "INLINE"]),
 };
 
 export default Views;

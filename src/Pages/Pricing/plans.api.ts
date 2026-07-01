@@ -1,6 +1,10 @@
 import api from "../../core/utils/api";
 
-export const getAllPlans = async ({ AMC }) => {
+interface GetAllPlansParams {
+    AMC?: string | boolean;
+}
+
+export const getAllPlans = async ({ AMC }: GetAllPlansParams) => {
     try {
         const response = await api.get("/plans/getAll", {
             headers: { "Content-Type": "application/json" },

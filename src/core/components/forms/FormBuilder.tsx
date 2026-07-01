@@ -1,14 +1,11 @@
-import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAlert } from "../feedback/Alert";
 import { styled, useTheme } from "@mui/material/styles";
 import { Box, Typography, Button, Paper, Grid, Divider } from "@mui/material";
-
 import Field from "../fields/Field";
-
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions, FieldDef } from "../../utils/fieldHelpers";
 
 // ==============================
 // Styled Components
@@ -130,8 +127,17 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 // Component
 // ==============================
 
-const FormBuilder = ({ form, branchId }) => {
-    const FORM_SIG = import.meta.env.VITE_APP_FORM_SIG;
+interface FormBuilderProps {
+    form: {
+        name: string;
+        fields: FieldDef[];
+        onSubmit: (arg: { newData: any; formSignature: string }) => Promise<{ success: boolean; message: string }>;
+    };
+    branchId?: string | number;
+}
+
+const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
+    const FORM_SIG = (import.meta as any).env.VITE_APP_FORM_SIG || "";
 
     const theme = useTheme();
     const showAlert = useAlert();
@@ -139,7 +145,7 @@ const FormBuilder = ({ form, branchId }) => {
     const [loading, setLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<any>({
         _form_sig: FORM_SIG,
     });
 
@@ -147,7 +153,7 @@ const FormBuilder = ({ form, branchId }) => {
     // Group Fields By Section
     // ==============================
 
-    const sectionMap = {};
+    const sectionMap: Record<string, FieldDef[]> = {};
 
     form.fields.forEach((field) => {
         const section = field.section || "General Information";
@@ -164,7 +170,7 @@ const FormBuilder = ({ form, branchId }) => {
     // ==============================
 
     useEffect(() => {
-        const initialState = {
+        const initialState: Record<string, any> = {
             _form_sig: FORM_SIG,
         };
 
@@ -174,7 +180,7 @@ const FormBuilder = ({ form, branchId }) => {
             }
         });
 
-        setFormState((prev) => ({
+        setFormState((prev: any) => ({
             ...initialState,
             ...prev,
         }));
@@ -184,7 +190,7 @@ const FormBuilder = ({ form, branchId }) => {
     // Validation
     // ==============================
 
-    const validateField = (label, value, validation) => {
+    const validateField = (label: string, value: any, validation: any) => {
         if (validation?.required && (value === undefined || value === null || value === "")) {
             throw Error(`${label} is required`);
         }
@@ -202,8 +208,8 @@ const FormBuilder = ({ form, branchId }) => {
     // Change Handler
     // ==============================
 
-    const handleChange = (key, value) => {
-        setFormState((prev) => ({
+    const handleChange = (key: string, value: any) => {
+        setFormState((prev: any) => ({
             ...prev,
             [key]: value,
         }));
@@ -213,7 +219,7 @@ const FormBuilder = ({ form, branchId }) => {
     // Submit
     // ==============================
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
@@ -226,7 +232,7 @@ const FormBuilder = ({ form, branchId }) => {
 
             // Validate all fields
             form.fields.forEach(({ name, validation, label }) => {
-                validateField(label, formState[name], validation);
+                validateField(label || name, formState[name], validation);
             });
 
             setLoading(true);
@@ -234,7 +240,7 @@ const FormBuilder = ({ form, branchId }) => {
             const { success, message } = await form.onSubmit({
                 newData: {
                     ...cleanData,
-                    branchId: parseInt(branchId),
+                    branchId: branchId ? parseInt(String(branchId)) : undefined,
                 },
                 formSignature: FORM_SIG,
             });
@@ -245,7 +251,7 @@ const FormBuilder = ({ form, branchId }) => {
             } else {
                 showAlert(message, "error");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
 
             showAlert(error?.message || "Failed to submit form", "error");
@@ -409,16 +415,6 @@ const FormBuilder = ({ form, branchId }) => {
             </Box>
         </FormContainer>
     );
-};
-
-FormBuilder.propTypes = {
-    form: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        fields: PropTypes.array.isRequired,
-        onSubmit: PropTypes.func.isRequired,
-    }).isRequired,
-
-    branchId: PropTypes.number,
 };
 
 export default FormBuilder;

@@ -1,9 +1,8 @@
+import React from "react";
 import { Button, Box } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-import { useTheme } from "@emotion/react";
-import PropTypes from "prop-types";
 
 /**
  * SaveCancelButtons
@@ -11,16 +10,19 @@ import PropTypes from "prop-types";
  * Reusable Save + Cancel button pair, used in:
  *  - FormView sticky save bar
  *  - DialogForm action buttons
- *
- * Props:
- *  - onSave    : called when Save is clicked
- *  - onCancel  : called when Cancel is clicked
- *  - loading   : disables both buttons while true
- *  - size      : MUI button size ("small" | "medium")
- *  - saveLabel : override Save button text (default "Save changes")
- *  - hideLabels: if true shows icons only (for compact/mobile use)
  */
-const SaveCancelButtons = ({
+interface SaveCancelButtonsProps {
+    onSave: (event: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
+    onCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    loading?: boolean;
+    size?: "small" | "medium" | "large";
+    saveLabel?: string;
+    cancelLabel?: string;
+    hideLabels?: boolean;
+    fullWidth?: boolean;
+}
+
+const SaveCancelButtons: React.FC<SaveCancelButtonsProps> = ({
     onSave,
     onCancel,
     loading = false,
@@ -79,17 +81,6 @@ const SaveCancelButtons = ({
             </Button>
         </Box>
     );
-};
-
-SaveCancelButtons.propTypes = {
-    onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    loading: PropTypes.bool,
-    size: PropTypes.oneOf(["small", "medium", "large"]),
-    saveLabel: PropTypes.string,
-    cancelLabel: PropTypes.string,
-    hideLabels: PropTypes.bool,
-    fullWidth: PropTypes.bool,
 };
 
 export default SaveCancelButtons;

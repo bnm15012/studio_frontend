@@ -1,13 +1,25 @@
-// src/hooks/usePdfActions.js
+// src/hooks/usePdfActions.ts
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useAlert } from "../feedback/Alert";
 import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
 
-export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPayload }) => {
-    const token = useSelector((s) => s.auth.token);
-    const studio = useSelector((s) => s.auth.studio);
-    const currentBranch = useSelector((s) => s.branch.currentBranch);
+interface UsePdfActionsProps {
+    contentRef: React.RefObject<HTMLElement | null>;
+    pdfOptions: any;
+    fileName: string;
+    remainingPayload?: any;
+}
+
+export const usePdfActions = ({
+    contentRef,
+    pdfOptions,
+    fileName,
+    remainingPayload = {},
+}: UsePdfActionsProps) => {
+    const token = useSelector((s: any) => s.auth.token);
+    const studio = useSelector((s: any) => s.auth.studio);
+    const currentBranch = useSelector((s: any) => s.branch.currentBranch);
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
@@ -16,15 +28,14 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         if (!contentRef.current) {
             throw new Error("Content ref is empty. Cannot generate PDF.");
         }
-        // contentRef.current.classList.add("generating-pdf");
-        return window.html2pdf().set(pdfOptions).from(contentRef.current);
+        return (window as any).html2pdf().set(pdfOptions).from(contentRef.current);
     };
 
     // New helper to temporarily reset scale before PDF generation
-    const withTemporaryScaleReset = async (pdfAction) => {
+    const withTemporaryScaleReset = async <T>(pdfAction: () => Promise<T> | T): Promise<T | undefined> => {
         if (!contentRef.current) {
             showAlert("Content not available for PDF generation.", "error");
-            return;
+            return undefined;
         }
 
         const originalTransform = contentRef.current.style.transform;
@@ -47,7 +58,6 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         await withTemporaryScaleReset(async () => getPdfInstance().outputPdf("blob"));
 
     const downloadPDF = async () => {
-        // Made async to await withTemporaryScaleReset
         setLoading(true);
         await withTemporaryScaleReset(async () => {
             try {
@@ -64,12 +74,11 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
     const printPDF = async () => {
         setLoading(true);
         await withTemporaryScaleReset(async () => {
-            // Await the wrapper
             try {
                 await getPdfInstance()
                     .toPdf()
                     .get("pdf")
-                    .then((pdf) => {
+                    .then((pdf: any) => {
                         if (contentRef.current) {
                             contentRef.current.classList.remove("generating-pdf");
                         }
@@ -85,23 +94,23 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         });
     };
 
-    const sendFile = async ({ type, contentLabel }) => {
+    const sendFile = async ({ type, contentLabel }: { type: string; contentLabel: string }) => {
         setLoading(true);
         try {
             const pdfBlob = type === "WHATSAPP" ? null : await createPdfBlob();
             const payload = {
-                branchId: currentBranch.branchId,
-                studioId: studio.studioId,
+                branchId: currentBranch?.branchId,
+                studioId: studio?.studioId,
                 content: contentLabel,
                 notificationType: type,
                 ...remainingPayload,
             };
 
             showAlert(`Sending ${type}...`, "info");
-            const { success, message } = await sendMessageApi({
+            const { success, message } = await (sendMessageApi as any)({
                 token,
                 payload,
-                file: new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }),
+                file: pdfBlob ? new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" }) : null,
             });
 
             showAlert(message || `${type} sent`, success ? "success" : "error");
@@ -113,7 +122,7 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
         }
     };
 
-    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }) => {
+    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: any) => {
         sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
         const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken}`;
         const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName}`;
@@ -122,7 +131,7 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
     };
 
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = (payload) => redirectToWhatsApp(payload);
+    const sendWhatsApp = (payload: any) => redirectToWhatsApp(payload);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

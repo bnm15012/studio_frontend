@@ -69,13 +69,13 @@ const Field: React.FC<FieldProps> = ({
                 );
             case "EDITOR":
                 return (
-                    <TemplateEditor {...commonProps} rows={rows} placeholder={placeholderText} />
+                    <TemplateEditor {...commonProps} rows={rows} />
                 );
             case "IMAGE_DIALOG":
                 return (
                     <ImageDialog
                         image={value}
-                        setImage={setValue}
+                        setImage={setValueFn}
                         isEdit={true}
                         defaultImage={extraProp?.defaultImage}
                     />
@@ -112,7 +112,7 @@ const Field: React.FC<FieldProps> = ({
             case "IMAGE":
                 return renderInputField();
             case "IMAGE_DIALOG":
-                return <ImageDialog image={value} setImage={setValue} isEdit={false} />;
+                return <ImageDialog image={value} setImage={setValueFn} isEdit={false} />;
             default:
                 return value || "N/A";
         }

@@ -1,6 +1,11 @@
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Min 8 chars, 1 uppercase, 1 number, 1 special char
 
-export const validatePassword = (password) => {
+export interface ValidationResult {
+    valid: boolean;
+    message: string;
+}
+
+export const validatePassword = (password: string | null | undefined): ValidationResult => {
     if (!password) return { valid: false, message: "Password is required." };
     if (!passwordRegex.test(password))
         return {
@@ -11,8 +16,18 @@ export const validatePassword = (password) => {
     return { valid: true, message: "" };
 };
 
-export const validateAndProcessDates = ({ startDate, endDate, showAlert }) => {
-    const isValidDate = (date) => date && !isNaN(new Date(date).getTime());
+export interface DateValidationParams {
+    startDate: string | Date | null | undefined;
+    endDate: string | Date | null | undefined;
+    showAlert: (msg: string) => void;
+}
+
+export const validateAndProcessDates = ({
+    startDate,
+    endDate,
+    showAlert,
+}: DateValidationParams): boolean => {
+    const isValidDate = (date: any): boolean => !!date && !isNaN(new Date(date).getTime());
 
     if (!isValidDate(startDate)) {
         console.error("Invalid start date:", startDate);
@@ -26,7 +41,7 @@ export const validateAndProcessDates = ({ startDate, endDate, showAlert }) => {
         return false;
     }
 
-    if (endDate < startDate) {
+    if (new Date(endDate!) < new Date(startDate!)) {
         showAlert("End date must be after the start date.");
         return false;
     }

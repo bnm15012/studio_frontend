@@ -1,16 +1,35 @@
 import { ButtonBase, Box, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import PropTypes from "prop-types";
 import React from "react";
 
-const Actions = ({ actions, row }) => {
+export interface ActionItem {
+    name: string;
+    onClick: (row: any) => void;
+    icon?: React.ReactNode;
+    sx?: {
+        color?: string;
+        [key: string]: any;
+    };
+    hide?: boolean;
+    enabled?: boolean | ((row: any) => boolean);
+    multi?: boolean;
+    help?: string;
+}
+
+interface ActionsProps {
+    actions: ActionItem[];
+    row: any;
+}
+
+const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
     const theme = useTheme();
     const visibleActions = actions.filter((a) => !a.hide);
 
     return (
         <>
             {visibleActions.map(({ name, enabled, onClick, icon, sx }) => {
-                const isEnabled = typeof enabled === "function" ? enabled(row) : enabled;
+                const isEnabled =
+                    typeof enabled === "function" ? enabled(row) : (enabled ?? true);
 
                 return (
                     <ButtonBase
@@ -53,7 +72,7 @@ const Actions = ({ actions, row }) => {
                         >
                             {icon
                                 ? React.isValidElement(icon)
-                                    ? React.cloneElement(icon, {
+                                    ? React.cloneElement(icon as React.ReactElement<any>, {
                                           sx: {
                                               fontSize: "1.2rem",
                                               color: "inherit",
@@ -68,20 +87,6 @@ const Actions = ({ actions, row }) => {
             })}
         </>
     );
-};
-
-Actions.propTypes = {
-    actions: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            onClick: PropTypes.func.isRequired,
-            icon: PropTypes.element,
-            sx: PropTypes.object,
-            hide: PropTypes.bool,
-            enabled: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-        }),
-    ),
-    row: PropTypes.object.isRequired,
 };
 
 export default Actions;

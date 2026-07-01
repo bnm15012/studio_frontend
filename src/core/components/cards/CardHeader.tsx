@@ -1,11 +1,11 @@
+import React from "react";
 import { Chip, Box, Typography, Avatar, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import PropTypes from "prop-types";
 import { FlexBetween } from "../layout/FlexBox";
 import Field from "../fields/Field";
 import PersonIcon from "@mui/icons-material/Person";
 
-const getBadgeStyles = (badge, enabled, theme) => {
+const getBadgeStyles = (badge: any, enabled: boolean | undefined, theme: any) => {
     if (!badge) return {};
     if (typeof badge !== "string") {
         const isActive = enabled;
@@ -51,7 +51,25 @@ const getBadgeStyles = (badge, enabled, theme) => {
     };
 };
 
-const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge, badgeSx, subtitle }) => {
+interface CardHeaderProps {
+    enabled?: boolean;
+    FieldIcon?: React.ComponentType<any>;
+    image?: string;
+    fieldValue?: string | number;
+    badge?: any;
+    badgeSx?: any;
+    subtitle?: string;
+}
+
+const CardHeader: React.FC<CardHeaderProps> = ({
+    enabled,
+    FieldIcon = PersonIcon,
+    image,
+    fieldValue,
+    badge,
+    badgeSx,
+    subtitle,
+}) => {
     const theme = useTheme();
     const computedBadgeStyles = getBadgeStyles(badge, enabled, theme);
 
@@ -130,13 +148,4 @@ const CardHeader = ({ enabled, FieldIcon = PersonIcon, image, fieldValue, badge,
     );
 };
 
-CardHeader.propTypes = {
-    FieldIcon: PropTypes.elementType,
-    badgeSx: PropTypes.object,
-    fieldValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    image: PropTypes.string,
-    badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.element]),
-    enabled: PropTypes.bool,
-    subtitle: PropTypes.string,
-};
 export default CardHeader;

@@ -1,4 +1,17 @@
-export const SUBSCRIPTION_PLANS = [
+export interface SubscriptionFeature {
+    name: string;
+    include: boolean;
+}
+
+export interface SubscriptionPlanDef {
+    id: string;
+    name: string;
+    price: number;
+    days: number;
+    features: SubscriptionFeature[];
+}
+
+export const SUBSCRIPTION_PLANS: SubscriptionPlanDef[] = [
     {
         id: "MONTHLY",
         name: "Monthly Plan",

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { HashRouter as Router } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -11,16 +11,16 @@ import { loadInitialDataAPI } from "./utils/loadInitialData";
 import { UIProvider } from "./context/UIContext";
 import ServerErrorDialog from "./core/components/dialogs/ServerErrorDialog";
 
-const App = () => {
-    const mode = useSelector((state) => state.auth.mode);
-    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+const App: React.FC = () => {
+    const mode = useSelector((state: any) => state.auth.mode);
+    const theme = useMemo(() => createTheme(themeSettings(mode) as any), [mode]);
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
 
     useEffect(() => {
         clearCacheIfNewDay();
         if (token) {
-            dispatch(loadInitialDataAPI());
+            dispatch(loadInitialDataAPI() as any);
         }
     }, [dispatch, token]);
 

@@ -1,4 +1,4 @@
-export const getA4Dimensions = () => {
+export const getA4Dimensions = (): { width: number; height: number } => {
     const div = document.createElement("div");
     div.style.width = "1in";
     div.style.position = "absolute";
@@ -11,22 +11,22 @@ export const getA4Dimensions = () => {
     return { width, height };
 };
 
-export const createPage = () => {
+export const createPage = (): HTMLDivElement => {
     const div = document.createElement("div");
     div.className = "pdf-page";
     const { width, height } = getA4Dimensions();
     div.style.width = width + "px";
     div.style.height = height + "px";
     div.style.position = "relative"; // Ensure relative positioning for absolute children
-      return div;
+    return div;
 };
 
-export const createTable = () => {
+export const createTable = (): HTMLTableElement => {
     const table = document.createElement("table");
     return table;
 };
 
-export const paginate = (preview, source) => {
+export const paginate = (preview: HTMLDivElement | null, source: HTMLDivElement | null): void => {
     if (!preview || !source) return;
 
     preview.innerHTML = "";
@@ -44,7 +44,7 @@ export const paginate = (preview, source) => {
 
         // ✅ Normal content (no table)
         if (!table) {
-            let blockCloneContainer = block.cloneNode(false); // Clone only the container (no children)
+            let blockCloneContainer = block.cloneNode(false) as HTMLDivElement; // Clone only the container (no children)
             page.appendChild(blockCloneContainer);
 
             // If the block has no child nodes (e.g. <hr>), we are done
@@ -66,10 +66,10 @@ export const paginate = (preview, source) => {
                     preview.appendChild(page);
 
                     // Create a new container on the new page
-                    const newContainer = block.cloneNode(false);
+                    const newContainer = block.cloneNode(false) as HTMLDivElement;
                     page.appendChild(newContainer);
                     newContainer.appendChild(childClone);
-                    
+
                     // Update our reference to blockCloneContainer for subsequent children
                     blockCloneContainer = newContainer;
                 }
@@ -79,8 +79,8 @@ export const paginate = (preview, source) => {
 
         // ✅ Block WITH table
         const tableHeader = table.querySelector("thead")?.cloneNode(true);
-        const rowsToPaginate = Array.from(table.rows).filter(row => !row.closest("thead"));
-        
+        const rowsToPaginate = Array.from(table.rows).filter((row) => !row.closest("thead"));
+
         let newTable = createTable();
         if (tableHeader) newTable.appendChild(tableHeader);
         page.appendChild(newTable);

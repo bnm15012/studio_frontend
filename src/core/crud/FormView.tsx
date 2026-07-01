@@ -25,7 +25,7 @@ import { useUI } from "../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
-import Actions from "./helper/Actions";
+import Actions, { ActionItem } from "./helper/Actions";
 import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
@@ -65,8 +65,8 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
 
 export interface FieldInfo {
     name: string;
-    label: string;
-    type: string;
+    label?: string;
+    type?: string;
     section?: string;
     extraProp?: any;
     validation?: any;
@@ -85,7 +85,7 @@ export interface FormViewProps {
     handleSave: (formKey: any) => void;
     handleCancel: () => void;
     currentView?: string;
-    actions?: any[];
+    actions?: ActionItem[];
 }
 
 const FormView: React.FC<FormViewProps> = (props) => {
@@ -107,7 +107,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
     const { isMobile } = useUI();
     const theme = useTheme();
 
-    const normalFields = fields.filter((f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type));
+    const normalFields = fields.filter((f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type || ""));
     const imageField = fields.find((f) => f.type === "IMAGE");
     const viewFields = fields.filter((f) => f.type === "VIEW");
     const component = fields.find((f) => f.type === "COMPONENT");
@@ -182,7 +182,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
                 <Box sx={{ display: "flex", gap: 0.5 }}>
                     {!editingId ? (
                         <>
-                            <Actions actions={actions} row={data} />
+                            <Actions actions={actions || []} row={data} />
                             <IconButton>
                                 {loading ? (
                                     <CircularProgress size={18} />

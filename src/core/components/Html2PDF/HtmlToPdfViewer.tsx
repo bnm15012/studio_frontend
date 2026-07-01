@@ -1,5 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import PropTypes from "prop-types";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import Loading from "../loading/Loading";
 import { usePdfActions } from "./usePdfActions";
@@ -9,11 +8,28 @@ import "./html2pdf.css";
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const indianMobileRegex = /^[6-9]\d{9}$/;
 
-const HtmlToPdfViewer = forwardRef(
+interface HtmlToPdfViewerProps {
+    content: React.ReactNode;
+    header?: React.ReactNode;
+    studio: any;
+    fileName?: string;
+    footer?: React.ReactNode;
+    remainingPayload?: any;
+    whatsAppPayload?: any;
+}
+
+export interface HtmlToPdfViewerRef {
+    downloadPDF: () => void | Promise<void>;
+    printPDF: () => void | Promise<void>;
+    sendMail: (email: string) => void;
+    sendWhatsApp: (mobile: string) => void;
+}
+
+const HtmlToPdfViewer = forwardRef<HtmlToPdfViewerRef, HtmlToPdfViewerProps>(
     ({ content, header, studio, fileName = "document", footer, remainingPayload = {}, whatsAppPayload = {} }, ref) => {
-        const previewRef = useRef(null);
-        const sourceRef = useRef(null);
-        const containerRef = useRef(null);
+        const previewRef = useRef<HTMLDivElement>(null);
+        const sourceRef = useRef<HTMLDivElement>(null);
+        const containerRef = useRef<HTMLDivElement>(null);
         const [dialogOpen, setDialogOpen] = useState(false);
         const [dialogType, setDialogType] = useState("");
         const [inputValue, setInputValue] = useState("");
@@ -35,14 +51,14 @@ const HtmlToPdfViewer = forwardRef(
         });
 
         // Dialog functions
-        const openDialog = (type, value) => {
+        const openDialog = (type: string, value: string) => {
             setDialogType(type);
             setInputValue(value);
             setInputError("");
             setDialogOpen(true);
         };
 
-        const validateInput = (type, value) => {
+        const validateInput = (type: string, value: string) => {
             if (type === "email") return emailRegex.test(value) ? "" : "Invalid email address";
             if (type === "mobile")
                 return indianMobileRegex.test(value) ? "" : "Invalid Indian mobile number";
@@ -98,7 +114,7 @@ const HtmlToPdfViewer = forwardRef(
                 previewElement.style.height = "";
                 containerRef.current.style.height = "";
 
-                const firstPage = previewElement.firstChild;
+                const firstPage = previewElement.firstChild as HTMLElement;
                 const contentNaturalWidth = firstPage.offsetWidth;
                 const contentNaturalHeight = previewElement.scrollHeight;
 
@@ -136,7 +152,7 @@ const HtmlToPdfViewer = forwardRef(
                 window.removeEventListener("resize", adjustPreviewScale);
                 resizeObserver.disconnect();
             };
-        }, [content]);
+        }, [content, studio, footer]); // Include all external props in dependencies to re-run on change
 
         return (
             <>
@@ -193,12 +209,5 @@ const HtmlToPdfViewer = forwardRef(
 );
 
 HtmlToPdfViewer.displayName = "HtmlToPdfViewer";
-HtmlToPdfViewer.propTypes = {
-    content: PropTypes.node.isRequired,
-    header: PropTypes.node,
-    fileName: PropTypes.string,
-    remainingPayload: PropTypes.object,
-    footer: PropTypes.node,
-};
 
 export default HtmlToPdfViewer;

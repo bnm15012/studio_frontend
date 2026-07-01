@@ -1,25 +1,25 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Alert, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CloseIcon from "@mui/icons-material/Close";
 
-const ContactForm = () => {
+const ContactForm: React.FC = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         message: "",
     });
     const [submitted, setSubmitted] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.name || !formData.email || !formData.message) {
             setError("All fields are required.");

@@ -1,7 +1,7 @@
+import React from "react";
 import { Card, CardContent, CardActions, Box } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { motion } from "framer-motion";
-import PropTypes from "prop-types";
 
 export const StyledCardContainer = styled(Box)(({ theme }) => ({
     display: "grid",
@@ -68,7 +68,14 @@ const StyledCardBase = styled(MotionCard)(({ theme }) => ({
     },
 }));
 
-export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
+interface StyledMotionCardProps {
+    children: React.ReactNode;
+    elevation?: number;
+    sx?: any;
+    [key: string]: any;
+}
+
+export const StyledMotionCard: React.FC<StyledMotionCardProps> = ({ children, elevation = 3, ...props }) => {
     const theme = useTheme();
     return (
         <StyledCardBase
@@ -91,10 +98,4 @@ export const StyledMotionCard = ({ children, elevation = 3, ...props }) => {
             {children}
         </StyledCardBase>
     );
-};
-
-StyledMotionCard.propTypes = {
-    children: PropTypes.node.isRequired,
-    elevation: PropTypes.number,
-    sx: PropTypes.object,
 };

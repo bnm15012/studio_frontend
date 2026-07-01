@@ -6,7 +6,7 @@ export interface UseTableDataParams {
     tableCruds: any;
     tableName: string;
     token: string | null | undefined;
-    showAlert: (msg: string, type: string) => void;
+    showAlert: (msg: string, type?: any) => void;
     size: number;
     rootId: any;
     currentView: string;

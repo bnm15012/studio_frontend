@@ -1,6 +1,13 @@
 import api from "../../core/utils/api";
 
-export const createOrder = async ({ token, plan, studioId, branchId }) => {
+interface CreateOrderProps {
+    token: string | null | undefined;
+    plan: string;
+    studioId: string | number;
+    branchId: string | number;
+}
+
+export const createOrder = async ({ token, plan, studioId, branchId }: CreateOrderProps) => {
     try {
         const response = await api.post(
             `/subscription/createOrder`,
@@ -23,7 +30,7 @@ export const createOrder = async ({ token, plan, studioId, branchId }) => {
     }
 };
 
-export const verifyPayment = async (token, paymentDetails) => {
+export const verifyPayment = async (token: string | null | undefined, paymentDetails: any) => {
     try {
         const response = await api.post(`/subscription/verifyPayment`, paymentDetails, {
             headers: {

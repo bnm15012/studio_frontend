@@ -1,13 +1,15 @@
+import React, { useEffect } from "react";
 import { Typography, Box, Stack, Divider, useTheme } from "@mui/material";
 import Footer from "../../Components/Footer";
 import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
-import { useEffect } from "react";
 
-const PrivacyPolicyPage = () => {
+const PrivacyPolicyPage: React.FC = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    }, []);
+
     const theme = useTheme();
+
     return (
         <>
             <Navbar />
@@ -27,7 +29,7 @@ const PrivacyPolicyPage = () => {
                         <Typography variant="h6" gutterBottom>
                             1. Information We Collect
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" component="div">
                             We collect information from you when you register on our platform,
                             subscribe to our services, or contact us. The types of personal
                             information we collect include:
@@ -45,7 +47,7 @@ const PrivacyPolicyPage = () => {
                         <Typography variant="h6" gutterBottom>
                             2. How We Use Your Information
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" component="div">
                             The information we collect is used for the following purposes:
                             <ul>
                                 <li>To provide and personalize our services</li>
@@ -97,7 +99,7 @@ const PrivacyPolicyPage = () => {
                         <Typography variant="h6" gutterBottom>
                             6. Your Rights and Choices
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" component="div">
                             You have the right to:
                             <ul>
                                 <li>Access, correct, or delete your personal data</li>
@@ -134,7 +136,7 @@ const PrivacyPolicyPage = () => {
                         <Typography variant="h6" gutterBottom>
                             8. Contact Us
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" component="div">
                             If you have any questions about this Privacy Policy or our practices,
                             please contact us at: <br />
                             Email:{" "}
@@ -149,7 +151,7 @@ const PrivacyPolicyPage = () => {
                                 bookandmanage@gmail.com
                             </a>{" "}
                             <br />
-                            Phone:
+                            Phone:{" "}
                             <span style={{ color: theme.palette.primary.main }}>
                                 +91 73260 27500
                             </span>
