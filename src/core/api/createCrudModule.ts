@@ -2,15 +2,16 @@ import { createGenericSlice } from "../state/createGenericSlice";
 import { getHeader } from "./helper";
 import { createCrudThunks } from "./thunk";
 
+export interface CreateCrudModuleOptions {
+    route: string;
+    idKey?: string;
+    extraCruds?: (opts: { actions: any; getHeader: any; route: string }) => any;
+    extraState?: Record<string, any>;
+    extraReducers?: Record<string, any>;
+}
+
 /**
  * Creates a complete CRUD slice + thunk set for a given API route.
- *
- * @param {object} opts
- * @param {string}   opts.route         - API route segment (e.g. "students")
- * @param {string}   [opts.idKey="id"]  - Primary key field name
- * @param {Function} [opts.extraCruds]  - Factory for extra thunks, receives { actions, getHeader, route }
- * @param {object}   [opts.extraState]  - Extra initial state merged into the slice
- * @param {object}   [opts.extraReducers] - Extra reducers merged into the slice
  */
 export function createCrudModule({
     route,
@@ -18,7 +19,7 @@ export function createCrudModule({
     extraCruds = () => ({}),
     extraState = {},
     extraReducers = {},
-}) {
+}: CreateCrudModuleOptions) {
     const { actions, getInitialState, reducer } = createGenericSlice({
         name: route,
         idKey,

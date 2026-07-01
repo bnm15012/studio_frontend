@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
@@ -52,7 +52,7 @@ const persistConfig = {
     storage,
     version: 10,
     whitelist: ["auth", "branch"],
-    migrate: (state) => {
+    migrate: (state: any) => {
         const currentVersion = state?._persist?.version;
         if (currentVersion !== 10) {
             return Promise.resolve(undefined);
@@ -75,6 +75,9 @@ export const store = configureStore({
         }),
 });
 
-// Custom hooks
-export const useAppDispatch = () => useDispatch();
-export const useAppSelector = useSelector;
+// Custom hooks & Redux Types
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

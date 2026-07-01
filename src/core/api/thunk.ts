@@ -3,30 +3,39 @@
 import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
 
-/**
- * POST /{route}/add
- * Adds a new record. Dispatches `prependItem` when `prepend` is true.
- */
+export interface CrudThunksOptions {
+    actions: any;
+    idKey: string;
+    route: string;
+}
 
-export const createCrudThunks = ({ actions, idKey, route }) => {
-    const add = (newData, token, showAlert, setLoading, prepend) => async (dispatch, getState) => {
-        await withLoading(setLoading, async () => {
-            try {
-                const state = getState()[route];
-                const {
-                    data: { data },
-                } = await api.post(`/${route}/add`, newData, getHeader(token));
+export const createCrudThunks = ({ actions, idKey, route }: CrudThunksOptions) => {
+    const add =
+        (
+            newData: any,
+            token: string | null | undefined,
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+            prepend?: boolean,
+        ) =>
+        async (dispatch: any, getState: any) => {
+            await withLoading(setLoading, async () => {
+                try {
+                    const state = getState()[route];
+                    const {
+                        data: { data },
+                    } = await api.post(`/${route}/add`, newData, getHeader(token));
 
-                if (state.recordById["NEW"]) {
-                    dispatch(actions.setRecord(data[0]));
+                    if (state.recordById["NEW"]) {
+                        dispatch(actions.setRecord(data[0]));
+                    }
+                    dispatch(prepend ? actions.prependItem(data[0]) : actions.addItem(data[0]));
+                } catch (err) {
+                    console.error(err);
+                    showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
                 }
-                dispatch(prepend ? actions.prependItem(data[0]) : actions.addItem(data[0]));
-            } catch (err) {
-                console.error(err);
-                showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
-            }
-        });
-    };
+            });
+        };
 
     /**
      * PUT /{route}/update/{id}
@@ -34,7 +43,14 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
      * recordById cache if it exists.
      */
     const update =
-        (id, updatedData, token, showAlert, setLoading) => async (dispatch, getState) => {
+        (
+            id: any,
+            updatedData: any,
+            token: string | null | undefined,
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+        ) =>
+        async (dispatch: any, getState: any) => {
             await withLoading(setLoading, async () => {
                 try {
                     const state = getState()[route];
@@ -58,17 +74,24 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
     /**
      * DELETE /{route}/delete/{id}
      */
-    const remove = (id, token, showAlert, setLoading) => async (dispatch) => {
-        await withLoading(setLoading, async () => {
-            try {
-                await api.delete(`/${route}/delete/${id}`, getHeader(token));
-                dispatch(actions.removeItem(id));
-            } catch (err) {
-                console.error(err);
-                showAlert(getApiMessage(err, `Failed to delete ${route}`), "error");
-            }
-        });
-    };
+    const remove =
+        (
+            id: any,
+            token: string | null | undefined,
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+        ) =>
+        async (dispatch: any) => {
+            await withLoading(setLoading, async () => {
+                try {
+                    await api.delete(`/${route}/delete/${id}`, getHeader(token));
+                    dispatch(actions.removeItem(id));
+                } catch (err) {
+                    console.error(err);
+                    showAlert(getApiMessage(err, `Failed to delete ${route}`), "error");
+                }
+            });
+        };
 
     /**
      * GET /{route}/getAll/{rootId}
@@ -76,7 +99,15 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
      * page/searchTerm/filterKeys combination.
      */
     const getAll =
-        (showAlert, setLoading, token, params, rootId, infinite) => async (dispatch, getState) => {
+        (
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+            token: string | null | undefined,
+            params: any,
+            rootId: any,
+            infinite?: boolean,
+        ) =>
+        async (dispatch: any, getState: any) => {
             const state = getState()[route];
 
             if (rootId === "NEW") return;
@@ -119,8 +150,14 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
      * Returns the cached record when available (unless `forceRefresh` is true).
      */
     const getById =
-        (id, token, showAlert, setLoading, { forceRefresh = false } = {}) =>
-        async (dispatch, getState) => {
+        (
+            id: any,
+            token: string | null | undefined,
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+            { forceRefresh = false } = {},
+        ) =>
+        async (dispatch: any, getState: any) => {
             if (id === "NEW") return;
 
             const cached = getState()[route].recordById[id];
@@ -146,8 +183,13 @@ export const createCrudThunks = ({ actions, idKey, route }) => {
      * Clears the slice and re-fetches the current page with the same filters.
      */
     const refresh =
-        (showAlert, setLoading, token, infinite = false) =>
-        async (dispatch, getState) => {
+        (
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+            token: string | null | undefined,
+            infinite = false,
+        ) =>
+        async (dispatch: any, getState: any) => {
             const state = getState()[route];
             dispatch(actions.clearData());
             return dispatch(

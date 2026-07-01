@@ -1,5 +1,5 @@
 // ✅ Parse "YYYY-MM-DD HH:mm:ss" → Date (LOCAL)
-export const parseDateTime = (str) => {
+export const parseDateTime = (str: string | null | undefined): Date | null => {
     if (!str) return null;
 
     const [d, t = "00:00:00"] = str.split(" ");
@@ -9,20 +9,20 @@ export const parseDateTime = (str) => {
     const [h = 0, min = 0, s = 0] = t.split(":").map(Number);
 
     const date = new Date(y, m - 1, day, h, min, s);
-    return isNaN(date) ? null : date;
+    return isNaN(date.getTime()) ? null : date;
 };
 
 // ✅ Format Date → "YYYY-MM-DD HH:mm:ss"
-export const formatDateTime = (date) => {
-    if (!(date instanceof Date) || isNaN(date)) return null;
+export const formatDateTime = (date: Date | null | undefined): string | null => {
+    if (!(date instanceof Date) || isNaN(date.getTime())) return null;
 
-    const pad = (n) => String(n).padStart(2, "0");
+    const pad = (n: number) => String(n).padStart(2, "0");
 
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 };
 
 // ✅ Add days (LOCAL)
-export const addDays = (date, days) => {
+export const addDays = (date: string, days: number): string | null => {
     const parsed = parseDateTime(date);
     if (!parsed) throw new Error("Invalid date");
 
@@ -31,7 +31,7 @@ export const addDays = (date, days) => {
 };
 
 // ✅ Check if today (LOCAL)
-export const isToday = (dateString) => {
+export const isToday = (dateString: string | null | undefined): boolean => {
     const date = parseDateTime(dateString);
     if (!date) return false;
 
@@ -45,7 +45,7 @@ export const isToday = (dateString) => {
 };
 
 // ✅ Check if past (LOCAL)
-export const isPast = (dateString) => {
+export const isPast = (dateString: string | null | undefined): boolean => {
     const date = parseDateTime(dateString);
     if (!date) return false;
 
@@ -53,19 +53,19 @@ export const isPast = (dateString) => {
 };
 
 // ✅ Current local datetime
-export const getCurrentDateTimeLocal = () => formatDateTime(new Date());
+export const getCurrentDateTimeLocal = (): string | null => formatDateTime(new Date());
 
-export const getCurrentDateLocal = () => formatDate(new Date(), "YYYY-MM-DD");
+export const getCurrentDateLocal = (): string => formatDate(new Date(), "YYYY-MM-DD");
 
 // ✅ Generic formatter
-export const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
-    if (!(dateObj instanceof Date) || isNaN(dateObj)) {
+export const formatDate = (dateObj: Date, format = "YYYY-MM-DD HH:mm:ss"): string => {
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
         throw new Error("Invalid Date object");
     }
 
-    const pad = (n) => String(n).padStart(2, "0");
+    const pad = (n: number) => String(n).padStart(2, "0");
 
-    const map = {
+    const map: Record<string, string | number> = {
         YYYY: dateObj.getFullYear(),
         MM: pad(dateObj.getMonth() + 1),
         DD: pad(dateObj.getDate()),
@@ -74,11 +74,11 @@ export const formatDate = (dateObj, format = "YYYY-MM-DD HH:mm:ss") => {
         ss: pad(dateObj.getSeconds()),
     };
 
-    return format.replace(/YYYY|MM|DD|HH|mm|ss/g, (k) => map[k]);
+    return format.replace(/YYYY|MM|DD|HH|mm|ss/g, (k) => String(map[k]));
 };
 
 // ✅ Display helper
-export const getLocalDateTime = (date, format = "DATE") => {
+export const getLocalDateTime = (date: string | null | undefined, format = "DATE"): string => {
     const localDate = parseDateTime(date);
     if (!localDate) return "N/A";
 
@@ -98,7 +98,7 @@ export const getLocalDateTime = (date, format = "DATE") => {
 };
 
 // ✅ Time ago
-export const getTimePassed = (dateString) => {
+export const getTimePassed = (dateString: string | null | undefined): string => {
     const date = parseDateTime(dateString);
     if (!date) return "N/A";
 
@@ -118,11 +118,13 @@ export const getTimePassed = (dateString) => {
     return `${days} days ago`;
 };
 
-export const getDateRangeLocal = (startDate, endDate) => {
-    const dates = [];
+export const getDateRangeLocal = (startDate: string, endDate: string): Date[] => {
+    const dates: Date[] = [];
 
     const current = parseDateTime(startDate);
     const end = parseDateTime(endDate);
+
+    if (!current || !end) return [];
 
     current.setHours(0, 0, 0, 0);
     end.setHours(0, 0, 0, 0);

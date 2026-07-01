@@ -12,13 +12,14 @@ import {
 import { clearAnalysisState } from "./analysisSlice";
 import { clearAuthState } from "./authSlice";
 import { clearAllDialogs } from "./dialogSlice";
+import { AppDispatch } from "./index";
 
 /**
  * Logs the user out and clears auth + branch state.
  * Call this on explicit logout — does NOT clear branch-scoped data
  * (use `clearAllstate` after switching branches or for a full reset).
  */
-export const logoutUser = () => (dispatch) => {
+export const logoutUser = () => (dispatch: AppDispatch) => {
     dispatch(clearAuthState());
     dispatch(branchCruds.removeAll());
     dispatch(clearAllDialogs());
@@ -31,7 +32,7 @@ export const logoutUser = () => (dispatch) => {
  * NOTE: Does NOT clear users, students assignments, or instructors assignments —
  * those are global/settings-level slices that survive branch changes.
  */
-export const clearAllstate = () => (dispatch) => {
+export const clearAllstate = () => (dispatch: AppDispatch) => {
     dispatch(clearAllDialogs());
     dispatch(activityCruds.removeAll());
     dispatch(clearAnalysisState());

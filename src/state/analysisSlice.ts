@@ -1,7 +1,10 @@
-// src/store/analysisSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface AnalysisState {
+    data: Record<string, any>;
+}
+
+const initialState: AnalysisState = {
     data: {},
 };
 
@@ -9,7 +12,7 @@ const analysisSlice = createSlice({
     name: "analysis",
     initialState,
     reducers: {
-        setAnalysisData(state, action) {
+        setAnalysisData(state, action: PayloadAction<Record<string, any>>) {
             state.data = action.payload;
         },
         clearAnalysisState: () => initialState,

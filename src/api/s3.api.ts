@@ -1,6 +1,16 @@
 import api from "../core/utils/api";
 
-export const generatePresignUrl = async (fileName, token, contentType = "application/pdf") => {
+export interface PresignUrlResponse {
+    success: boolean;
+    data?: any;
+    message: string;
+}
+
+export const generatePresignUrl = async (
+    fileName: string,
+    token: string | null | undefined,
+    contentType = "application/pdf",
+): Promise<PresignUrlResponse> => {
     const data = {
         data: {
             fileName,
@@ -11,23 +21,28 @@ export const generatePresignUrl = async (fileName, token, contentType = "applica
     try {
         const response = await api.post("/generatePresignUrl", data, {
             headers: {
-                Authorization: `${token}`,
+                Authorization: token ?? "",
                 "Content-Type": "application/json",
             },
         });
         return {
             success: true,
             data: response.data.data,
-            message: response.status.statusMessage,
+            message: response.data.status?.statusMessage || "Success",
         };
-    } catch (error) {
+    } catch (error: any) {
         const message =
             error?.response?.data?.status?.statusMessage || "Failed to fetch dashboard data";
         return { success: false, message };
     }
 };
 
-export const uploadToS3 = async (file, uploadUrl, token, showAlert) => {
+export const uploadToS3 = async (
+    file: File,
+    uploadUrl: string,
+    token: string | null | undefined,
+    showAlert: (msg: string, type: string) => void,
+): Promise<boolean> => {
     if (!file || !uploadUrl) {
         showAlert("Missing file or upload URL", "error");
         return false;
@@ -47,10 +62,9 @@ export const uploadToS3 = async (file, uploadUrl, token, showAlert) => {
         }
         showAlert("File uploaded successfully!", "success");
         return true;
-    } catch (err) {
+    } catch (err: any) {
         showAlert("Error uploading file: " + err.message, "error");
         console.error("Error uploading file:", err);
-        // Return a structured error response
         return false;
     }
 };

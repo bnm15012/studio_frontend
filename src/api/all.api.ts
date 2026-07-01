@@ -2,7 +2,13 @@ import { createCrudModule } from "../core/api/createCrudModule";
 import api from "../core/utils/api";
 import { getApiMessage, withLoading } from "../core/api/helper";
 
-const crudConfigs = [
+interface CrudConfig {
+    key: string;
+    route: string;
+    idKey?: string;
+}
+
+const crudConfigs: CrudConfig[] = [
     { key: "users", route: "users", idKey: "userId" },
     { key: "instructors", route: "instructors", idKey: "instructorId" },
     { key: "instructorsAssignments", route: "instructorActivities", idKey: "assignmentId" },
@@ -17,7 +23,7 @@ const crudConfigs = [
     { key: "activity", route: "activities", idKey: "activityId" },
 ];
 
-const modules = {};
+const modules: Record<string, any> = {};
 crudConfigs.forEach(({ key, route, idKey }) => {
     modules[`${key}Cruds`] = createCrudModule({ route, idKey });
 });
@@ -35,29 +41,56 @@ export const {
     paymentCruds,
     genericTemplateCruds,
     activityCruds,
-} = modules;
+} = modules as {
+    usersCruds: any;
+    instructorsCruds: any;
+    instructorsAssignmentsCruds: any;
+    studentsCruds: any;
+    clientCruds: any;
+    bookingCruds: any;
+    expenseCruds: any;
+    membershipPackageCruds: any;
+    enquiryCruds: any;
+    paymentCruds: any;
+    genericTemplateCruds: any;
+    activityCruds: any;
+};
 
 export const studentsAssignmentsCruds = createCrudModule({
     route: "studentActivities",
     idKey: "assignmentId",
     extraCruds: ({ actions, getHeader, route }) => ({
-        markAttendanceBulk: (payload, token, showAlert, setLoading) => async (dispatch) => {
-            await withLoading(setLoading, async () => {
-                try {
-                    const { data } = await api.put(
-                        `/${route}/mark_attendance/bulk`,
-                        payload,
-                        getHeader(token),
-                    );
-                    dispatch(actions.updateItems(data.data));
-                } catch (err) {
-                    console.error(err);
-                    showAlert(getApiMessage(err, "Failed to mark attendance"), "error");
-                }
-            });
-        },
+        markAttendanceBulk:
+            (
+                payload: any,
+                token: string | null | undefined,
+                showAlert: (msg: string, type: string) => void,
+                setLoading: (loading: boolean) => void,
+            ) =>
+            async (dispatch: any) => {
+                await withLoading(setLoading, async () => {
+                    try {
+                        const { data } = await api.put(
+                            `/${route}/mark_attendance/bulk`,
+                            payload,
+                            getHeader(token),
+                        );
+                        dispatch(actions.updateItems(data.data));
+                    } catch (err) {
+                        console.error(err);
+                        showAlert(getApiMessage(err, "Failed to mark attendance"), "error");
+                    }
+                });
+            },
         markAttendanceQR:
-            (assignmentId, token, showAlert, setLoading, throwErro) => async (dispatch) => {
+            (
+                assignmentId: any,
+                token: string | null | undefined,
+                showAlert: (msg: string, type: string) => void,
+                setLoading: (loading: boolean) => void,
+                throwErro?: boolean,
+            ) =>
+            async (dispatch: any) => {
                 await withLoading(setLoading, async () => {
                     try {
                         const { data } = await api.put(
@@ -73,7 +106,11 @@ export const studentsAssignmentsCruds = createCrudModule({
                     }
                 });
             },
-        fetchInvoiceApi: async (invoiceToken, showAlert, setLoading) =>
+        fetchInvoiceApi: async (
+            invoiceToken: string,
+            showAlert: (msg: string, type: string) => void,
+            setLoading: (loading: boolean) => void,
+        ) =>
             withLoading(setLoading, async () => {
                 try {
                     const { data } = await api.get(`/${route}/invoice?token=${invoiceToken}`);
@@ -91,10 +128,10 @@ export const branchCruds = createCrudModule({
     idKey: "branchId",
     extraState: { currentBranch: null, selectedBranch: null },
     extraReducers: {
-        setCurrentBranch(state, action) {
+        setCurrentBranch(state: any, action: any) {
             state.currentBranch = action.payload;
         },
-        setSelectedBranch(state, action) {
+        setSelectedBranch(state: any, action: any) {
             state.selectedBranch = action.payload;
         },
     },

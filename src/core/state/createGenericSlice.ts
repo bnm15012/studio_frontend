@@ -1,18 +1,35 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface GenericState {
+    rootId: string | number;
+    items: any[];
+    recordById: Record<string | number, any>;
+    searchTerm: string;
+    filterKeys: Record<string, any>;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+    [key: string]: any;
+}
+
+export interface CreateGenericSliceOptions {
+    name: string;
+    idKey?: string;
+    extraState?: Record<string, any>;
+    extraReducers?: Record<string, any>;
+}
 
 /**
  * Creates a generic Redux slice with standard CRUD reducers for list views.
- *
- * @param {object}  options
- * @param {string}  options.name          - Slice name (matches the Redux state key)
- * @param {string}  [options.idKey="id"]  - Field used as the primary key
- * @param {object}  [options.extraState]  - Additional fields merged into initialState
- * @param {object}  [options.extraReducers] - Additional reducers merged into the slice
- *
- * @returns {{ actions, reducer, name, getInitialState }}
  */
-export function createGenericSlice({ name, idKey = "id", extraState = {}, extraReducers = {} }) {
-    const initialState = {
+export function createGenericSlice({
+    name,
+    idKey = "id",
+    extraState = {},
+    extraReducers = {},
+}: CreateGenericSliceOptions) {
+    const initialState: GenericState = {
         rootId: 0,
         items: [],
         recordById: {},
@@ -30,13 +47,24 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
         initialState,
         reducers: {
             /** Replace the full item list and update rootId. */
-            setItems(state, { payload: { data, rootId } }) {
+            setItems(state, { payload: { data, rootId } }: PayloadAction<{ data: any[]; rootId: string | number }>) {
                 state.rootId = rootId;
                 state.items = data;
             },
 
             /** Update pagination / search metadata without replacing items. */
-            setInfo(state, { payload }) {
+            setInfo(
+                state,
+                {
+                    payload,
+                }: PayloadAction<{
+                    totalCount: number;
+                    currentPage: number;
+                    searchTerm?: string;
+                    filterKeys?: Record<string, any>;
+                    pageSize: number;
+                }>,
+            ) {
                 state.totalCount = payload.totalCount;
                 state.currentPage = payload.currentPage;
                 state.searchTerm = payload.searchTerm ?? "";
@@ -46,12 +74,12 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
             },
 
             /** Append a single item to the end of the list. */
-            addItem(state, { payload }) {
+            addItem(state, { payload }: PayloadAction<any>) {
                 state.items.push(payload);
             },
 
             /** Insert a single item at the beginning of the list. */
-            prependItem(state, { payload }) {
+            prependItem(state, { payload }: PayloadAction<any>) {
                 state.items = [payload, ...state.items];
             },
 
@@ -60,7 +88,7 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
              * Resets the list first when rootId changes.
              * De-duplicates by idKey before inserting.
              */
-            appendItems(state, { payload: { data, rootId } }) {
+            appendItems(state, { payload: { data, rootId } }: PayloadAction<{ data: any[]; rootId: string | number }>) {
                 if (state.rootId !== rootId) {
                     state.rootId = rootId;
                     state.items = [];
@@ -77,8 +105,8 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
              *   - `{ predicate: (item) => bool, data: partialItem }` — update all matching items
              *   - `updatedItem` — match by idKey and merge
              */
-            updateItem(state, { payload }) {
-                if ("predicate" in payload) {
+            updateItem(state, { payload }: PayloadAction<any>) {
+                if (payload && typeof payload === "object" && "predicate" in payload) {
                     state.items = state.items.map((item) =>
                         payload.predicate(item) ? { ...item, ...payload.data } : item,
                     );
@@ -96,18 +124,20 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
              *   - `{ predicate, data }` — update all matching items
              *   - `updatedItems[]` — matched by idKey via a Map for O(n) performance
              */
-            updateItems(state, { payload }) {
-                if ("predicate" in payload) {
+            updateItems(state, { payload }: PayloadAction<any>) {
+                if (payload && typeof payload === "object" && "predicate" in payload) {
                     state.items = state.items.map((item) =>
                         payload.predicate(item) ? { ...item, ...payload.data } : item,
                     );
                     return;
                 }
-                const byId = new Map(payload.map((item) => [item[idKey], item]));
-                state.items = state.items.map((item) => {
-                    const updated = byId.get(item[idKey]);
-                    return updated ? { ...item, ...updated } : item;
-                });
+                if (Array.isArray(payload)) {
+                    const byId = new Map(payload.map((item) => [item[idKey], item]));
+                    state.items = state.items.map((item) => {
+                        const updated = byId.get(item[idKey]);
+                        return updated ? { ...item, ...updated } : item;
+                    });
+                }
             },
 
             /**
@@ -117,7 +147,7 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
              *   - a predicate `(item) => bool` — remove all matching
              *   - a raw id value — remove by idKey
              */
-            removeItem(state, { payload }) {
+            removeItem(state, { payload }: PayloadAction<any>) {
                 if (typeof payload === "function") {
                     state.items = state.items.filter((item) => !payload(item));
                 } else {
@@ -126,7 +156,7 @@ export function createGenericSlice({ name, idKey = "id", extraState = {}, extraR
             },
 
             /** Store a single record in the recordById cache. */
-            setRecord(state, { payload }) {
+            setRecord(state, { payload }: PayloadAction<any>) {
                 state.recordById[payload[idKey]] = payload;
             },
 

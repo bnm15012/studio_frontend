@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     checker({
-      // typescript: true,
+      typescript: true,
       eslint: false, // { lintCommand: 'eslint "./src/**/*.{ts,tsx,js,jsx}"' },
     }),
   ],

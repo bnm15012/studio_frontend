@@ -1,6 +1,52 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, ThemeOptions } from "@mui/material/styles";
 
-const generateShadows = (rgbColor) => {
+declare module "@mui/material/styles" {
+    interface TypeBackground {
+        odd?: string;
+        alt?: string;
+    }
+
+    interface Palette {
+        neutral: {
+            dark: string;
+            main: string;
+            mediumMain?: string;
+            medium?: string;
+            light: string;
+        };
+        gradients: {
+            primary: string;
+            secondary: string;
+            greenToPurple: string;
+            darkOverlay: string;
+        };
+        activityCardGradient: string[];
+    }
+    interface PaletteOptions {
+        neutral?: {
+            dark?: string;
+            main?: string;
+            mediumMain?: string;
+            medium?: string;
+            light?: string;
+        };
+        gradients?: {
+            primary?: string;
+            secondary?: string;
+            greenToPurple?: string;
+            darkOverlay?: string;
+        };
+        activityCardGradient?: string[];
+    }
+}
+
+declare module "@mui/material/Button" {
+    interface ButtonPropsVariantOverrides {
+        save: true;
+    }
+}
+
+const generateShadows = (rgbColor: string): string[] => {
     const shadows = [
         "none",
         ...Array(24)
@@ -22,6 +68,7 @@ const generateShadows = (rgbColor) => {
 
     return shadows;
 };
+
 export const colorTokens = {
     grey: {
         0: "#FFFFFF",
@@ -104,8 +151,8 @@ export const colorTokens = {
     },
 };
 
-export const themeSettings = (mode) => ({
-    shadows: colorTokens.shadows[mode],
+export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
+    shadows: colorTokens.shadows[mode] as any,
     palette: {
         mode: mode,
         ...(mode === "dark"
@@ -343,9 +390,9 @@ export const themeSettings = (mode) => ({
                 },
             },
         },
-        MuiDialogPaper: {
+        MuiDialog: {
             styleOverrides: {
-                roots: {
+                paper: {
                     boxShadow: "none !important",
                 },
             },

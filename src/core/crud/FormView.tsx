@@ -1,4 +1,4 @@
-import { useTheme } from "@emotion/react";
+import { useTheme } from "@mui/material/styles";
 import { FlexBetween, FlexBetweenColumn, FlexEvenly } from "../components/layout/FlexBox";
 import {
     IconButton,
@@ -17,20 +17,23 @@ import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import { CloudUpload } from "@mui/icons-material";
 import SegmentIcon from "@mui/icons-material/Segment";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import Field from "../components/fields/Field";
 import { getNestedValue } from "../../utils/objectHelpers";
 import { FieldLabel } from "../components/fields/StyledField";
 import { resolveFieldValue, bindGetOptions, isFieldEditable } from "../utils/fieldHelpers";
 import { useUI } from "../context/UIContext";
 import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
-import { memo } from "react";
+import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions from "./helper/Actions";
 import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
-const FormSkeleton = ({ isMobile }) => (
+interface FormSkeletonProps {
+    isMobile?: boolean;
+}
+
+const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row", mt: 2, gap: 2 }}>
         <Box sx={{ width: isMobile ? "100%" : 180 }}>
             <Skeleton variant="rectangular" height={170} />
@@ -60,9 +63,32 @@ const FormSkeleton = ({ isMobile }) => (
     </Box>
 );
 
-FormSkeleton.propTypes = { isMobile: PropTypes.bool };
+export interface FieldInfo {
+    name: string;
+    label: string;
+    type: string;
+    section?: string;
+    extraProp?: any;
+    validation?: any;
+    CustomComponent?: React.ComponentType<any>;
+    [key: string]: any;
+}
 
-const FormView = (props) => {
+export interface FormViewProps {
+    fields: FieldInfo[];
+    formKey: string | number | null | undefined;
+    data: any;
+    loading?: boolean;
+    tableName: string;
+    editingId?: any;
+    handleChange: (value: any, formKey: any, fieldName: string) => void;
+    handleSave: (formKey: any) => void;
+    handleCancel: () => void;
+    currentView?: string;
+    actions?: any[];
+}
+
+const FormView: React.FC<FormViewProps> = (props) => {
     const {
         fields,
         formKey,
@@ -86,7 +112,7 @@ const FormView = (props) => {
     const viewFields = fields.filter((f) => f.type === "VIEW");
     const component = fields.find((f) => f.type === "COMPONENT");
 
-    const groupedFields = normalFields.reduce((acc, field) => {
+    const groupedFields = normalFields.reduce((acc: Record<string, FieldInfo[]>, field) => {
         const section = field.section || "General";
         if (!acc[section]) acc[section] = [];
         acc[section].push(field);
@@ -96,13 +122,13 @@ const FormView = (props) => {
     return (
         <>
             <FlexBetween
-                backgroundColor={theme.palette.background.paper}
                 sx={{
                     position: "sticky",
                     top: 0,
                     zIndex: 100,
                     px: 0.75,
                     borderRadius: 1.5,
+                    backgroundColor: theme.palette.background.paper,
                     boxShadow: theme.shadows[1],
                     flexWrap: "wrap",
                     gap: 1,
@@ -115,7 +141,7 @@ const FormView = (props) => {
                             onClick={() => {
                                 if (editingId) handleCancel();
                                 navigate(`/management/${tableName}`);
-                            }}
+                             }}
                         >
                             <ArrowBackIcon fontSize="small" />
                         </IconButton>
@@ -161,7 +187,7 @@ const FormView = (props) => {
                                 {loading ? (
                                     <CircularProgress size={18} />
                                 ) : (
-                                    <CloudDoneIcon sx={{ color: "green" }} size={18} />
+                                    <CloudDoneIcon sx={{ color: "green" }} />
                                 )}
                             </IconButton>
                         </>
@@ -196,7 +222,7 @@ const FormView = (props) => {
                                         label={imageField.label}
                                         isEdit={!!editingId}
                                         value={getNestedValue(data, imageField.name)}
-                                        setValue={(v) => handleChange(v, formKey, imageField.name)}
+                                        setValue={(v: any) => handleChange(v, formKey, imageField.name)}
                                         type={imageField.type}
                                         extraProp={{
                                             ...imageField.extraProp,
@@ -239,7 +265,7 @@ const FormView = (props) => {
                                                         data,
                                                         !!editingId,
                                                     )}
-                                                    setValue={(v) =>
+                                                    setValue={(v: any) =>
                                                         handleChange(v, formKey, field.name)
                                                     }
                                                     type={field.type}
@@ -255,7 +281,7 @@ const FormView = (props) => {
                                 </Box>
                             ))}
 
-                            {component && (
+                            {component && component.CustomComponent && (
                                 <component.CustomComponent data={data} field={component} />
                             )}
                         </FlexBetweenColumn>
@@ -272,20 +298,6 @@ const FormView = (props) => {
             />
         </>
     );
-};
-
-FormView.propTypes = {
-    formKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    data: PropTypes.object,
-    fields: PropTypes.array,
-    editingId: PropTypes.any,
-    tableName: PropTypes.string,
-    currentView: PropTypes.string,
-    handleChange: PropTypes.func,
-    handleSave: PropTypes.func,
-    handleCancel: PropTypes.func,
-    loading: PropTypes.bool,
-    actions: PropTypes.array,
 };
 
 export default memo(FormView);

@@ -1,7 +1,12 @@
-import axios from "axios";
-import { store } from "../../state";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { store, RootState } from "../../state";
 import { setToken } from "../../state/authSlice";
 import { logoutUser } from "../../state/thunks";
+
+interface CustomRequestConfig extends InternalAxiosRequestConfig {
+    _retry?: boolean;
+    _retryCount?: number;
+}
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_APP_REST_API,
@@ -13,24 +18,24 @@ const api = axios.create({
 
 api.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
+    async (error: AxiosError) => {
+        const originalRequest = error.config as CustomRequestConfig;
         const status = error.response ? error.response.status : null;
 
         console.info("Token expired and Trying to refresh it");
 
         // Check if the error is a 401 (Unauthorized) and if retry count is less than 5
-        if (status === 401 && !originalRequest._retry) {
+        if (originalRequest && status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             originalRequest._retryCount = 0; // Initialize retry count
 
-            const state = store.getState();
+            const state = store.getState() as RootState;
             const refreshToken = state.auth?.token;
             const email = state.auth?.user?.email;
             if (refreshToken && email) {
                 try {
                     // Attempt to refresh the token with a maximum of 5 retries
-                    while (originalRequest._retryCount < 5) {
+                    while (originalRequest._retryCount !== undefined && originalRequest._retryCount < 5) {
                         originalRequest._retryCount++;
 
                         try {
@@ -46,7 +51,9 @@ api.interceptors.response.use(
                             console.info("Token updated successfully...");
 
                             // Retry the original request with the new token
-                            originalRequest.headers["Authorization"] = newToken;
+                            if (originalRequest.headers) {
+                                originalRequest.headers["Authorization"] = newToken;
+                            }
 
                             return axios(originalRequest); // Retry the request
                         } catch (refreshError) {
@@ -57,7 +64,7 @@ api.interceptors.response.use(
                                 console.error("Token refresh failed after 5 attempts.");
 
                                 // Remove data from localStorage
-                                store.dispatch(logoutUser());
+                                store.dispatch(logoutUser() as any);
 
                                 // Redirect to home page
                                 window.location.href = "/"; // Redirect to the home page

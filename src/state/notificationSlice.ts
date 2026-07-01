@@ -1,17 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+export interface NotificationItem {
+    id: string | number;
+    read: boolean;
+    title?: string;
+    message?: string;
+    [key: string]: any;
+}
+
+export interface NotificationsState {
+    items: NotificationItem[];
+    unreadCount: number;
+}
+
+const initialState: NotificationsState = {
+    items: [],
+    unreadCount: 0,
+};
 
 const notificationsSlice = createSlice({
     name: "notifications",
-    initialState: {
-        items: [],
-        unreadCount: 0,
-    },
+    initialState,
     reducers: {
-        setNotifications: (state, action) => {
+        setNotifications: (state, action: PayloadAction<NotificationItem[]>) => {
             state.items = action.payload;
             state.unreadCount = action.payload.filter((n) => !n.read).length;
         },
-        markAsRead: (state, action) => {
+        markAsRead: (state, action: PayloadAction<string | number>) => {
             const id = action.payload;
             const notif = state.items.find((n) => n.id === id);
             if (notif && !notif.read) {

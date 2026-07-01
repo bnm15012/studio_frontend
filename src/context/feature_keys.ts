@@ -26,4 +26,6 @@ export const FEATURE_KEYS = {
 
     // temp
     ENROLMENT: "ENROLMENT",
-};
+} as const;
+
+export type FeatureKey = typeof FEATURE_KEYS[keyof typeof FEATURE_KEYS];
