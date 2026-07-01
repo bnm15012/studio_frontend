@@ -92,7 +92,7 @@ const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) =
                                 placeholder="Enter 16 char passcode without space"
                                 value={editedValues["passcode"]}
                                 setValue={(value) =>
-                                    setEditedValues((prev) => ({ ...prev, passcode: value }))
+                                    setEditedValues((prev) => ({ ...prev, passcode: String(value ?? "") }))
                                 }
                                 isEdit={editProf}
                                 validation={{

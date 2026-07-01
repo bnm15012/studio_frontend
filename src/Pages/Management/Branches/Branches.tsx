@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
+import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
@@ -35,7 +35,7 @@ const Branches = () => {
     const { isMobile } = useUI();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const api = useRef({});
+    const api = useRef<any>({});
     const studio = useAppSelector((state) => state.auth.studio);
 
     return (
@@ -61,7 +61,7 @@ const Branches = () => {
                     size={LIMIT}
                     key={"branch"}
                     fields={FIELDS}
-                    rootId={studio.studioId}
+                    rootId={studio?.studioId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

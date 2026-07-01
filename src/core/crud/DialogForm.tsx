@@ -30,7 +30,7 @@ interface DialogFormProps {
 export const DialogForm: React.FC<DialogFormProps> = (props) => {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
     const { isMobile } = useUI();
-    const id = data?.[fieldsMeta.primary];
+    const id = data?.[fieldsMeta.primary] as string | number | null | undefined;
     const visibleFields = getVisibleFields(fields);
 
     return (
@@ -62,11 +62,11 @@ export const DialogForm: React.FC<DialogFormProps> = (props) => {
                                 isEdit={isFieldEditable(field, data, true)}
                                 value={resolveFieldValue(field, data, true)}
                                 setValue={(v) =>
-                                    handleChange(v, data[fieldsMeta.primary], field.name)
+                                    handleChange(v, data[fieldsMeta.primary] as string | number | null | undefined, field.name)
                                 }
                                 type={field.type}
-                                extraProp={bindGetOptions(field.extraProp, data)}
-                                validation={field.validation}
+                                extraProp={bindGetOptions(field.extraProp ?? {}, data)}
+                                validation={field.validation as Record<string, unknown>}
                             />
                         </Box>
                     </Box>

@@ -24,7 +24,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
                         disabled={!isEnabled}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onClick(row);
+                            onClick?.(row);
                         }}
                         sx={{
                             display: "flex",

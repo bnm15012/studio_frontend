@@ -6,12 +6,7 @@ import { Subject } from "@mui/icons-material";
 import { Box } from "@mui/material";
 
 interface TemplateCardProps {
-    row: {
-        templateType?: string;
-        templateName: string;
-        templateSubject?: string;
-        templateContent?: string;
-    };
+    row: Record<string, any>;
 }
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ row }) => {

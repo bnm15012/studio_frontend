@@ -191,7 +191,11 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // Validation
     // ==============================
 
-    const validateField = (label: string, value: unknown, validation: Record<string, unknown> | undefined) => {
+    const validateField = (
+        label: string,
+        value: unknown,
+        validation: { required?: boolean; regex?: string; message?: string; [key: string]: any } | undefined
+    ) => {
         if (validation?.required && (value === undefined || value === null || value === "")) {
             throw Error(`${label} is required`);
         }
@@ -199,7 +203,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
         if (validation?.regex) {
             const regex = new RegExp(validation.regex);
 
-            if (!regex.test(value)) {
+            if (!regex.test(String(value ?? ""))) {
                 throw Error(validation.message || `Invalid ${label}`);
             }
         }
@@ -336,7 +340,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
 
             {/* Form */}
             <Box component="form" noValidate onSubmit={handleSubmit}>
-                <input type="hidden" name="_form_sig" value={formState._form_sig} />
+                <input type="hidden" name="_form_sig" value={String(formState._form_sig ?? "")} />
 
                 {/* Sections */}
                 {Object.entries(sectionMap).map(([sectionName, fields]) => (
@@ -380,7 +384,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                                     field.extraProp,
                                                     formState,
                                                 )}
-                                                validation={field.validation}
+                                                validation={field.validation as Record<string, unknown> | undefined}
                                             />
                                         </FieldContainer>
                                     </FieldWrapper>

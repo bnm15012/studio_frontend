@@ -117,16 +117,7 @@ const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
 };
 
 interface StudentCardProps {
-    row: {
-        name: string;
-        imageUrl?: string | null;
-        email?: string | null;
-        phone?: string | number | null;
-        dob?: string | null;
-        membershipStatus?: string | null;
-        address?: string | null;
-        emergencyContactNumber?: string | number | null;
-    };
+    row: Record<string, any>;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({ row }) => {

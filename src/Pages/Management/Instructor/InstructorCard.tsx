@@ -5,16 +5,7 @@ import CardLocation from "@/core/components/cards/CardLocation";
 import { Box } from "@mui/material";
 
 interface InstructorCardProps {
-    row: {
-        name: string;
-        imageUrl?: string | null;
-        email?: string | null;
-        phone?: string | number | null;
-        dob?: string | null;
-        instructorStatus?: string | null;
-        address?: string | null;
-        emergencyContactNumber?: string | number | null;
-    };
+    row: Record<string, any>;
 }
 
 const InstructorCard: React.FC<InstructorCardProps> = ({ row }) => {

@@ -113,12 +113,16 @@ const VIEWS = ["LIST", "CARD", "FORM"];
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
-const Instructors = ({ ID }) => {
+interface InstructorsProps {
+    ID?: string | number;
+}
+
+const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const { isMobile } = useUI();
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const api = useRef({});
-    const apiInstructor = useRef({});
-    const [generateContractDoc, setGenerateContractDoc] = useState(false);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const api = useRef<any>({});
+    const apiInstructor = useRef<any>({});
+    const [generateContractDoc, setGenerateContractDoc] = useState<any>(null);
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(

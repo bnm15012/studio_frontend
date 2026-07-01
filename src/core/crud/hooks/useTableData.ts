@@ -46,9 +46,9 @@ export const useTableData = ({
                 setLoading,
                 token,
                 { page, searchTerm, size, ...defaultParams, ...filterKeys },
-                rootId,
+                rootId ?? 0,
                 currentView === "CARD",
-            ),
+            ) as any,
         );
     }, [
         defaultParams,
@@ -67,7 +67,7 @@ export const useTableData = ({
 
     const fetchOne = useCallback(
         async (formKey: string | number) => {
-            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading));
+            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading) as any);
         },
         [dispatch, tableCruds, token, showAlert, setLoading],
     );

@@ -25,7 +25,7 @@ const ExpenseCard: React.FC<ExpenseCardProps> = ({ row }) => (
         <Box display="flex" alignItems="center" gap={1.5}>
             <CardChip
                 ChipIcon={CalendarMonth}
-                value={row.expenseDate || ""}
+                value={row.expenseDate ? String(row.expenseDate) : ""}
                 type="DATE"
             />
             {row.description && (

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
-import { StyledTableCell, StyledTableRow } from "@/core/components / tables / StyledTableComponents";
+import { StyledTableCell, StyledTableRow } from "@/core/components/tables/StyledTableComponents";
 import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useSelector } from "react-redux";
@@ -29,10 +29,10 @@ const UploadJobHistory = () => {
 
     const [totalPage, setTotalPage] = useState(0);
     const fetchUploadJobs = useCallback(
-        async (page) => {
+        async (page: number) => {
             setLoading(true);
             const { success, data, message, totalCount } = await getBulkUploadJobsAPI({
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 token,
                 page,
                 size,
@@ -51,7 +51,7 @@ const UploadJobHistory = () => {
     useEffect(() => {
         if (!data) fetchUploadJobs(page);
     }, [fetchUploadJobs, data, page]);
-    const handleChangePage = (_, newPage) => {
+    const handleChangePage = (_: React.ChangeEvent<unknown>, newPage: number) => {
         setPage(newPage);
         fetchUploadJobs(newPage);
     };

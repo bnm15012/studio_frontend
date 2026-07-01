@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Button, Box, Theme } from "@mui/material";
-import styled from "@emotion/styled";
+import { TextField, Button, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { FlexBetween } from "./FlexBox";
 import { SearchIcon } from "lucide-react";
 import Filter from "../fields/Filter";
 
-const StyledSearchField = styled(Box)(({ theme }: { theme: Theme }) => ({
+const StyledSearchField = styled(Box)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",

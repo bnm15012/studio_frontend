@@ -7,13 +7,13 @@ const EditIcon = <Edit />;
 const DeleteIcon = <Delete />;
 const FormIcon = <OpenInNew />;
 
-interface DefaultActionsProps {
+export interface DefaultActionsProps {
     loading: boolean;
     editMode?: "FORM" | "INLINE" | string;
     formKey?: unknown;
-    handleEdit: (row: unknown) => void;
-    handleDeleteClick: (row: unknown) => void;
-    openFormView: (row: unknown) => void;
+    handleEdit: (row: any) => void;
+    handleDeleteClick: (row: any) => void;
+    openFormView: (row: any) => void;
 }
 
 export const defaultActions = ({

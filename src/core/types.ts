@@ -1,4 +1,7 @@
 import React from "react";
+import type { AlertColor } from "@mui/material/Alert";
+import type { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
+export type AppDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 export interface SelectOption {
     key: string | number;
@@ -16,8 +19,11 @@ export interface ApiResponse<T = unknown> {
     };
 }
 
-export type ShowAlertFn = (msg: string, type?: string) => void;
+export type ShowAlertFn = (msg: string, type?: AlertColor) => void;
 export type SetLoadingFn = (loading: boolean) => void;
+
+/** Redux thunk action type — a function that receives dispatch and getState */
+export type ThunkAction = (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
 
 export interface ExtraProp {
     getOptions?: (
@@ -49,6 +55,7 @@ export interface FieldDef {
     setValue?: (value: unknown, row?: Record<string, unknown>) => void;
     editable?: (row: Record<string, unknown>) => boolean;
     extraProp?: ExtraProp;
+    validation?: { required?: boolean; regex?: string | RegExp; message?: string; [key: string]: any };
     CustomComponent?: React.ComponentType<{
         data: Record<string, unknown>;
         field: FieldDef;
@@ -58,14 +65,14 @@ export interface FieldDef {
 
 export interface ActionItem {
     name: string;
-    onClick?: (row: unknown) => void;
+    onClick?: (row: any) => void;
     icon?: React.ReactNode;
     sx?: {
         color?: string;
         [key: string]: unknown;
     };
     hide?: boolean;
-    enabled?: boolean | ((row: unknown) => boolean);
+    enabled?: boolean | ((row: any) => boolean);
     multi?: boolean;
     help?: string;
 }
@@ -95,41 +102,41 @@ export interface CrudThunks<T extends Record<string, unknown> = Record<string, u
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         prepend?: boolean,
-    ) => (dispatch: unknown, getState: unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
     update: (
-        id: string | number,
+        id: string | number | null,
         updatedData: Partial<T> | Record<string, unknown>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
-    ) => (dispatch: unknown, getState: unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
     remove: (
-        id: string | number,
+        id: string | number | null,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
-    ) => (dispatch: unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch) => Promise<void>;
     getAll: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         token: string | null | undefined,
         params: Record<string, unknown>,
-        rootId: string | number,
+        rootId: string | number | null | undefined,
         infinite?: boolean,
-    ) => (dispatch: unknown, getState: unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
     getById: (
         id: string | number,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         options?: { forceRefresh?: boolean },
-    ) => (dispatch: unknown, getState: unknown) => Promise<T | null>;
+    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<T | null>;
     refresh: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         token: string | null | undefined,
         infinite?: boolean,
-    ) => (dispatch: unknown, getState: unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
     [key: string]: unknown;
 }
 

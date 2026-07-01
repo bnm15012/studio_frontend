@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
+import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
 import ActionBar from "@/core/components/layout/ActionBar";

@@ -18,9 +18,17 @@ const ACCESS_BUTTONS = {
 
 const ACCESS_RIGHTS = ["NONE", "FULL"];
 
-const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = false }) => {
+interface UserAccessDialogProps {
+    open: boolean;
+    onClose: () => void;
+    userAccessEntry: any;
+    onSave: (access: any) => void;
+    isEdit?: boolean;
+}
+
+const UserAccessDialog: React.FC<UserAccessDialogProps> = ({ open, onClose, userAccessEntry, onSave, isEdit = false }) => {
     const settings = useAppSelector((state) => state.auth.settings);
-    const [accessState, setAccessState] = useState({});
+    const [accessState, setAccessState] = useState<Record<string, unknown>>({});
 
     const studioLevelAccess = Object.keys(settings)
         .filter((k) => settings[k])
@@ -54,7 +62,7 @@ const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = fal
             title="User Access Settings"
             cancelText={isEdit ? "Cancel" : "Close"}
             confirmText="Save"
-            onConfirm={isEdit ? handleSave : null}
+            onConfirm={isEdit ? handleSave : undefined}
             open={open}
             onClose={onClose}
             maxWidth="sm"

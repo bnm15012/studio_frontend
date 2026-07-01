@@ -16,14 +16,14 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<any>(null);
-    const [templates, setTemplates] = useState([]);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const [templates, setTemplates] = useState<any[]>([]);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const token = useAppSelector((state) => state.auth.token);
+    const token = useAppSelector((state: any) => state.auth.token);
     const [instructorData, setInstructorData] = useState<any>({});
 
-    const tableState = useAppSelector((state) => state["instructors"]);
+    const tableState = useAppSelector((state: any) => state["instructors"]);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 

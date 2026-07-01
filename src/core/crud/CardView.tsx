@@ -68,7 +68,7 @@ const CardView: React.FC<CardViewProps> = (props) => {
         multi = false,
     } = props;
     const theme = useTheme();
-    const hasMore = data.length < (tableState.totalCount ?? 0);
+    const hasMore = data.length < Number(tableState.totalCount ?? 0);
     const visibleFields = fields.filter((f) => f.show);
 
     const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
@@ -83,12 +83,12 @@ const CardView: React.FC<CardViewProps> = (props) => {
     }, [tableState?.currentPage, data]);
 
     const visibleRowIds = useMemo(
-        () => data?.map((row) => row[fieldsMeta.primary]) || [],
+        () => (data?.map((row) => row[fieldsMeta.primary]) || []) as (string | number)[],
         [data, fieldsMeta.primary],
     );
 
     const selectedRowsData = useMemo(
-        () => data?.filter((row) => selectedRows.includes(row[fieldsMeta.primary])) || [],
+        () => data?.filter((row) => selectedRows.includes(row[fieldsMeta.primary] as string | number)) || [],
         [data, selectedRows, fieldsMeta.primary],
     );
 
@@ -167,12 +167,12 @@ const CardView: React.FC<CardViewProps> = (props) => {
                 <FadeIn animKey={tableState?.currentPage ?? 0} y={0} duration={0.18}>
                     <StyledCardContainer>
                         {data.map((row, index) => {
-                            const rowId = row[fieldsMeta.primary];
+                            const rowId = row[fieldsMeta.primary] as string | number;
                             const isItemSelected = selectedRows.includes(rowId);
 
                             return (
                                 <StyledMotionCard
-                                    key={rowId || index}
+                                    key={String(rowId) || String(index)}
                                     onClick={() => {
                                         if (multi) {
                                             handleSelectRow(rowId, !isItemSelected);
@@ -253,15 +253,20 @@ const CardView: React.FC<CardViewProps> = (props) => {
                                                         <FieldContainer key={field.name}>
                                                             <FieldLabel>{field.label}</FieldLabel>
                                                             {field?.getValue
-                                                                ? field.getValue(
-                                                                      getNestedValue(
+                                                                ? (() => {
+                                                                      const resolved = field.getValue(
+                                                                          getNestedValue(
+                                                                              row,
+                                                                              field.name,
+                                                                          ),
                                                                           row,
-                                                                          field.name,
-                                                                      ),
-                                                                      row,
-                                                                      false,
-                                                                  )?.value
-                                                                : getNestedValue(row, field.name)}
+                                                                          false,
+                                                                      );
+                                                                      return (resolved && typeof resolved === "object" && "value" in resolved
+                                                                          ? (resolved as { value: unknown }).value
+                                                                          : resolved) as React.ReactNode;
+                                                                  })()
+                                                                : (getNestedValue(row, field.name) as React.ReactNode)}
                                                         </FieldContainer>
                                                     ))}
                                                 </>

@@ -36,7 +36,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ row }) => {
                     value={paymentType || ""}
                     ChipIcon={paymentType === "CASH" ? CurrencyRupee : QrCodeIcon}
                 />
-                <CardChip type="DATETIME" value={paymentDate || ""} />
+                <CardChip type="DATETIME" value={paymentDate ? String(paymentDate) : ""} />
             </Box>
         </Box>
     );

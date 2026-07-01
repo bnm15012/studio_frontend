@@ -7,14 +7,7 @@ import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import { Box } from "@mui/material";
 
 interface ClientCardProps {
-    row: {
-        groupName: string;
-        pocName: string;
-        pocPhone: string;
-        pocEmail: string;
-        clientType: string;
-        notes?: string;
-    };
+    row: Record<string, any>;
 }
 
 const ClientCardComponent: React.FC<ClientCardProps> = ({ row }) => {

@@ -41,7 +41,7 @@ export const uploadToS3 = async (
     file: File,
     uploadUrl: string,
     token: string | null | undefined,
-    showAlert: (msg: string, type: string) => void,
+    showAlert: (msg: string, type: any) => void,
 ): Promise<boolean> => {
     if (!file || !uploadUrl) {
         showAlert("Missing file or upload URL", "error");

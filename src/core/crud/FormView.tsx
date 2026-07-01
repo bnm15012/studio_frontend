@@ -26,9 +26,8 @@ import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions from "./helper/Actions";
-import { ActionItem } from "../types";
+import { ActionItem, ExtraProp, FieldDef } from "../types";
 import { FadeIn } from "./components/shared";
-import { ExtraProp } from "../types";
 
 /* ───────── Skeleton (slightly denser) ───────── */
 interface FormSkeletonProps {
@@ -65,19 +64,8 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     </Box>
 );
 
-export interface FieldInfo {
-    name: string;
-    label?: string;
-    type?: string;
-    section?: string;
-    extraProp?: ExtraProp;
-    validation?: Record<string, unknown>;
-    CustomComponent?: React.ComponentType<Record<string, unknown>>;
-    [key: string]: unknown;
-}
-
 export interface FormViewProps {
-    fields: FieldInfo[];
+    fields: FieldDef[];
     formKey: string | number | null | undefined;
     data: Record<string, unknown> | null | undefined;
     loading?: boolean;
@@ -114,7 +102,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
     const viewFields = fields.filter((f) => f.type === "VIEW");
     const component = fields.find((f) => f.type === "COMPONENT");
 
-    const groupedFields = normalFields.reduce((acc: Record<string, FieldInfo[]>, field) => {
+    const groupedFields = normalFields.reduce((acc: Record<string, FieldDef[]>, field) => {
         const section = field.section || "General";
         if (!acc[section]) acc[section] = [];
         acc[section].push(field);
@@ -272,10 +260,10 @@ const FormView: React.FC<FormViewProps> = (props) => {
                                                     }
                                                     type={field.type}
                                                     extraProp={bindGetOptions(
-                                                        field.extraProp,
+                                                        field.extraProp ?? {},
                                                         data,
                                                     )}
-                                                    validation={field.validation}
+                                                    validation={field.validation as Record<string, unknown>}
                                                 />
                                             </StyledFieldItem>
                                         ))}

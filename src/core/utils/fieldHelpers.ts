@@ -43,7 +43,7 @@ export const isFieldEditable = (field: FieldDef, row: Record<string, unknown>, i
  * @param row       - current data row
  * @returns patched extraProp object
  */
-export const bindGetOptions = (extraProp: ExtraProp, row: Record<string, unknown>): ExtraProp => {
+export const bindGetOptions = (extraProp: ExtraProp | undefined, row: Record<string, unknown>): ExtraProp => {
     if (!extraProp?.getOptions) return extraProp ?? {};
     return {
         ...extraProp,

@@ -9,9 +9,9 @@ import { CalendarMonth } from "@mui/icons-material";
  */
 interface CardChipProps {
     label?: string;
-    value?: string | number | null;
+    value?: React.ReactNode;
     type?: "DATE" | "DATETIME" | "STR";
-    ChipIcon?: React.ComponentType<{ sx?: SxProps<Theme> }>;
+    ChipIcon?: React.ComponentType<any>;
 }
 
 const CardChip: React.FC<CardChipProps> = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {

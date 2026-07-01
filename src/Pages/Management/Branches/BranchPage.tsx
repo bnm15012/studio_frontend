@@ -7,7 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { usersCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
+import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
@@ -48,14 +48,14 @@ const BranchPage = () => {
     const studio = useAppSelector((s: any) => s.auth.studio);
     const selectedBranch = useAppSelector((state) => state.branch.selectedBranch);
 
-    const beforeAdd = async (row) => {
+    const beforeAdd = async (row: Record<string, unknown>) => {
         const updatedRow = { ...row };
         delete updatedRow["branchId"];
         updatedRow["studioEntry"] = {
-            studioId: studio.studioId,
+            studioId: studio?.studioId,
             branchList: [
                 {
-                    branchId: selectedBranch.branchId,
+                    branchId: selectedBranch?.branchId,
                 },
             ],
         };
@@ -92,7 +92,7 @@ const BranchPage = () => {
                     key={"users"}
                     fields={FIELDS}
                     actions={[{ name: "delete", hide: true, onClick: () => { } }]}
-                    rootId={selectedBranch.branchId}
+                    rootId={selectedBranch?.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

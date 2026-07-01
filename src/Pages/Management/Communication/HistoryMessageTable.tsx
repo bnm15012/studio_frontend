@@ -3,7 +3,7 @@ import {
     StyledTableCell,
     StyledTableContainer,
     StyledTableRow,
-} from "@/core/components / tables / StyledTableComponents";
+} from "@/core/components/tables/StyledTableComponents";
 import { Avatar, IconButton, TableBody, TableHead } from "@mui/material";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 
@@ -11,7 +11,12 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import { Email, WhatsApp } from "@mui/icons-material";
 import PropTypes from "prop-types";
 
-const HistoryMessageTable = ({ onViewRecipients, history }) => (
+interface HistoryMessageTableProps {
+    onViewRecipients: (id: string | number) => void;
+    history: any[] | null | undefined;
+}
+
+const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipients, history }) => (
     <StyledTableContainer>
         <StyledTable>
             <TableHead>
@@ -71,7 +76,7 @@ const HistoryMessageTable = ({ onViewRecipients, history }) => (
 
 HistoryMessageTable.propTypes = {
     history: PropTypes.arrayOf(PropTypes.object),
-    onViewRecipients: PropTypes.func,
+    onViewRecipients: PropTypes.func.isRequired,
 };
 
 export default HistoryMessageTable;

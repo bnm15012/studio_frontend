@@ -46,21 +46,26 @@ const validationSchema = {
 
 // State for pagination
 
-const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
+interface UploadDataProps {
+    handleUploadFile: (file: File | null, entityType: string) => void | Promise<void>;
+    sampleFIlePath: string;
+}
+
+const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePath }) => {
     const [openDialog, setOpenDialog] = useState(false);
-    const [file, setFile] = useState(null);
-    const [parsedData, setParsedData] = useState([]);
-    const [validationErrors, setValidationErrors] = useState([]);
+    const [file, setFile] = useState<File | null>(null);
+    const [parsedData, setParsedData] = useState<any[]>([]);
+    const [validationErrors, setValidationErrors] = useState<any[]>([]);
     const [entityType, setEntityType] = useState("STUDENT");
 
     const [page, setPage] = useState(0);
     const rowsPerPage = 5;
     const startIndex = page * rowsPerPage;
-    const handleChangePage = (_, newPage) => {
+    const handleChangePage = (_: any, newPage: number) => {
         setPage(newPage);
     };
 
-    const parseCsv = (file) => {
+    const parseCsv = (file: File) => {
         Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
@@ -238,8 +243,8 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
 };
 
 UploadData.propTypes = {
-    sampleFIlePath: PropTypes.string,
-    handleUploadFile: PropTypes.func,
+    sampleFIlePath: PropTypes.string.isRequired,
+    handleUploadFile: PropTypes.func.isRequired,
 };
 
 export default UploadData;

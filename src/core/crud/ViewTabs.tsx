@@ -4,15 +4,16 @@ import { FlexBetween } from "../components/layout/FlexBox";
 import Views from "./Views";
 import { Add } from "@mui/icons-material";
 
+interface ViewFieldApi {
+    current?: {
+        addNewRow?: (...args: unknown[]) => void;
+        [key: string]: unknown;
+    } | null;
+}
+
 interface ViewFieldItem {
     label?: string;
-    api?: React.RefObject<{
-        addNewRow?: (editingId: string | number | null) => void;
-    } | null> | {
-        current?: {
-            addNewRow?: (editingId: string | number | null) => void;
-        } | null;
-    };
+    api?: ViewFieldApi;
     viewProps?: Record<string, unknown>;
 }
 
@@ -31,7 +32,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
     };
 
     const currentViewField = viewFields[tabIndex];
-    const hasAddNewRow = typeof (currentViewField?.api as Record<string, unknown>)?.current?.addNewRow === "function";
+    const hasAddNewRow = typeof currentViewField?.api?.current?.addNewRow === "function";
 
     return (
         <Box>
@@ -51,7 +52,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                 {editingId !== "NEW" && hasAddNewRow && (
                     <Button
                         variant="contained"
-                        onClick={() => (currentViewField?.api as Record<string, unknown>)?.current?.addNewRow(editingId)}
+                        onClick={() => currentViewField?.api?.current?.addNewRow?.(editingId)}
                         sx={{ ml: 1 }}
                     >
                         <Add style={{ color: "whitesmoke" }} />
@@ -64,7 +65,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     key={view.label}
                     sx={{ mt: 2, display: tabIndex === index ? "block" : "none" }}
                 >
-                    <Views {...view.viewProps} rootId={formKey} currentView={currentView} />
+                    <Views {...(view.viewProps as any)} rootId={formKey} currentView={currentView} />
                 </Box>
             ))}
         </Box>

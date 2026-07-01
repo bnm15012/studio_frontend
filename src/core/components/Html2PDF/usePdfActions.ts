@@ -131,16 +131,16 @@ export const usePdfActions = ({
         }
     };
 
-    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: { phone: string; name: string; studioName: string; invoiceToken: string }) => {
+    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: { phone: string; name?: string; studioName?: string; invoiceToken?: string }) => {
         sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
-        const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken}`;
-        const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName}`;
+        const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken ?? ""}`;
+        const message = `Hello ${name ?? ""},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName ?? ""}`;
         const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, "_blank");
     };
 
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = (payload: { phone: string; name: string; studioName: string; invoiceToken: string }) => redirectToWhatsApp(payload);
+    const sendWhatsApp = (payload: { phone: string; name?: string; studioName?: string; invoiceToken?: string }) => redirectToWhatsApp(payload);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

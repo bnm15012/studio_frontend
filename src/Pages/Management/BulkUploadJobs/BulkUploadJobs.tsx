@@ -18,11 +18,11 @@ const BulkUploadJobs = () => {
     const [loading, setLoading] = useState(false);
 
     const handleUploadFile = useCallback(
-        async (file, entityType) => {
+        async (file: File | null, entityType: string) => {
             setLoading(true);
             try {
                 const { data: s3Bucket, success } = await generatePresignUrl(
-                    `BulkUpload-${currentBranch.name}.csv`,
+                    `BulkUpload-${currentBranch?.name ?? "default"}.csv`,
                     token,
                     "text/csv",
                 );
@@ -31,6 +31,10 @@ const BulkUploadJobs = () => {
                     throw new Error("Failed to get upload URL");
                 } else {
                     showAlert("Preparing to upload file...", "info");
+                }
+
+                if (!file) {
+                    throw new Error("No file selected for upload");
                 }
 
                 const uploadResponse = await uploadToS3(file, s3Bucket.uploadUrl, token, showAlert);

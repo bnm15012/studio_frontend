@@ -92,10 +92,10 @@ export function createGenericSlice<T extends Entity>({
 
             updateItem(state, action: PayloadAction<T | { predicate: (item: T) => boolean; data: Partial<T> }>) {
                 if ("predicate" in action.payload) {
-                    const { predicate, data } = action.payload;
+                    const payload = action.payload as { predicate: (item: T) => boolean; data: Partial<T> };
                     state.items = state.items.map((item) =>
-                        predicate(item) ? { ...item, ...data } : item,
-                    );
+                        payload.predicate(item as T) ? Object.assign({}, item, payload.data) : item,
+                    ) as Draft<T[]>;
                 } else {
                     state.items = state.items.map((item) =>
                         (item as T)[idKey] === action.payload[idKey] ? { ...item, ...action.payload } : item,

@@ -14,23 +14,29 @@ import {
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 
-const SelectTemplateDialog = ({ open, onClose, data }) => {
+interface SelectTemplateDialogProps {
+    open: boolean;
+    onClose: (arg?: any) => void;
+    data: any;
+}
+
+const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
 
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
     const [editableMessage, setEditableMessage] = useState("");
 
-    const allTemplates = useAppSelector((state) =>
-        state.genericTemplate.items.filter(
-            (template) => template.templateType === "COMMUNICATION" && template.id
+    const allTemplates = useAppSelector((state: any) =>
+        (state.genericTemplate?.items || []).filter(
+            (template: any) => template.templateType === "COMMUNICATION" && template.id
         )
     );
 
@@ -45,9 +51,9 @@ const SelectTemplateDialog = ({ open, onClose, data }) => {
                     setLoading,
                     token,
                     { searchTerm: "COMMUNICATION" },
-                    studio.studioId,
+                    studio?.studioId ?? 0,
                     false
-                )
+                ) as any
             );
         }
     }, [open]);
@@ -92,7 +98,7 @@ const SelectTemplateDialog = ({ open, onClose, data }) => {
                 phone: phoneNumber,
                 message: editableMessage,
                 payload: {
-                    branchId: currentBranch.branchId,
+                    branchId: currentBranch?.branchId,
                     notificationType,
                     title: selectedTemplate?.templateName ?? "CUSTOM",
                     content: editableMessage,

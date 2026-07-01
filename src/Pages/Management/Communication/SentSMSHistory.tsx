@@ -13,14 +13,18 @@ import HistoryMessageTable from "./HistoryMessageTable";
 import MessageHistoryCard from "./MessageHistoryCard";
 import ReceipentsListDialog from "./ReceipentsListDialog";
 
-const SentSMSHistory = ({ newHistory }) => {
+interface SentSMSHistoryProps {
+    newHistory?: any;
+}
+
+const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
     const showAlert = useAlert();
     const { isMobile } = useUI();
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const token = useAppSelector((state) => state.auth.token);
+    const token = useAppSelector((state: any) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [openDialog, setOpenDialog] = useState<any>(false);
@@ -32,12 +36,12 @@ const SentSMSHistory = ({ newHistory }) => {
     }, [newHistory]);
 
     const getMessageHistory = useCallback(
-        async (page = 1) => {
+        async (page: number = 1) => {
             try {
                 setLoading(true);
                 const { data, totalCount, success, message } = await getMessageHistoryAPI({
                     token,
-                    branchId: currentBranch.branchId,
+                    branchId: currentBranch?.branchId,
                     page,
                     size,
                 });
@@ -55,9 +59,9 @@ const SentSMSHistory = ({ newHistory }) => {
                 setLoading(false);
             }
         },
-        [token, currentBranch.branchId, size, showAlert],
+        [token, currentBranch?.branchId, size, showAlert],
     );
-    const handlePageChange = async (e, p) => {
+    const handlePageChange = async (e: React.ChangeEvent<unknown>, p: number) => {
         setLoading(true);
         setPage(p);
         await getMessageHistory(p);
@@ -66,7 +70,7 @@ const SentSMSHistory = ({ newHistory }) => {
 
     useEffect(() => {
         !history && getMessageHistory();
-    }, [page, currentBranch.branchId, history, getMessageHistory]);
+    }, [page, currentBranch?.branchId, history, getMessageHistory]);
 
     return (
         <FlexBetween flexDirection={"column"} mt={2}>

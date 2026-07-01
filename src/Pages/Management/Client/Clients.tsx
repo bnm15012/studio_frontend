@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
+import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";

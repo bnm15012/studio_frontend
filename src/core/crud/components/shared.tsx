@@ -26,7 +26,7 @@ interface FadeInProps {
 
 export const FadeIn: React.FC<FadeInProps> = ({ children, animKey, y = 6, duration = 0.22 }) => (
     <motion.div
-        key={animKey}
+        key={String(animKey ?? "")}
         initial={{ opacity: 0, y }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
@@ -57,7 +57,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
     if (isEditing) {
         return (
             <Box sx={{ display: "flex", gap: 1 }}>
-                <IconButton size="small" color="primary" onClick={() => handleSave?.(rowId)}>
+                <IconButton size="small" color="primary" onClick={() => rowId != null && handleSave?.(rowId)}>
                     <SaveIcon fontSize="small" />
                 </IconButton>
                 <IconButton size="small" color="error" onClick={handleCancel}>

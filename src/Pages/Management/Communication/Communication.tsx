@@ -57,10 +57,10 @@ const Communication = () => {
 
     const [open, setOpen] = useState(false);
     const [selectedTemplateId, setSelectedTemplateId] = useState<number | string>(0);
-    const [selectedStudents, setSelectedStudents] = useState([]);
-    const [selectedInstructors, setSelectedInstructors] = useState([]);
+    const [selectedStudents, setSelectedStudents] = useState<any[]>([]);
+    const [selectedInstructors, setSelectedInstructors] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [templates, setTemplates] = useState([]);
+    const [templates, setTemplates] = useState<any[]>([]);
     const [audienceType, setAudienceType] = useState("all");
     const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
     const [newHistory, setNewHistory] = useState();
@@ -68,7 +68,7 @@ const Communication = () => {
     const fetchTemplates = useCallback(async () => {
         try {
             const res = await getAllTemplatesAPI({
-                studioId: studio.studioId,
+                studioId: studio?.studioId,
                 token,
                 templateType: "COMMUNICATION",
             });
@@ -93,11 +93,11 @@ const Communication = () => {
         } catch {
             showAlert("Error loading templates", "error");
         }
-    }, [studio.studioId, token, showAlert]);
+    }, [studio?.studioId, token, showAlert]);
 
     useEffect(() => {
         fetchTemplates();
-    }, [studio.studioId, fetchTemplates, showAlert, token]);
+    }, [studio?.studioId, fetchTemplates, showAlert, token]);
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
@@ -105,11 +105,11 @@ const Communication = () => {
         }
     }, [templates, selectedTemplateId]);
 
-    const getAllStudentNames = async (page, size) => {
+    const getAllStudentNames = async (page: number, size: number) => {
         try {
             const { data, totalCount } = await getStudentNamesAPI({
                 token,
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 page,
                 size,
             });
@@ -120,11 +120,11 @@ const Communication = () => {
             return { data: [], totalCount: 0 };
         }
     };
-    const getAllInstructorNames = async (page, size) => {
+    const getAllInstructorNames = async (page: number, size: number) => {
         try {
             const { data, totalCount } = await getInstructorNamesAPI({
                 token,
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 page,
                 size,
             });
@@ -158,7 +158,7 @@ const Communication = () => {
             setLoading(true);
 
             const payload = {
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 notificationType: selectedTemplate.notificationType,
                 title: selectedTemplate.title,
                 content: selectedTemplate.content,

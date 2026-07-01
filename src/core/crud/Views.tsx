@@ -6,7 +6,6 @@ import StyledDialog from "../components/dialogs/StyledDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import { useAlert } from "../components/feedback/Alert";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
@@ -16,12 +15,12 @@ import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useUI } from "@/context/UIContext";
 import { FieldDef, ActionItem, CrudThunks } from "../types";
-import { useAppSelector } from "../../state";
+import { useAppSelector, useAppDispatch } from "../../state";
 
 interface ViewsProps {
     formKey?: string | number | null;
     tableName: string;
-    overRideOnChange?: (...args: unknown[]) => unknown;
+    overRideOnChange?: (value: unknown, obj: Record<string, unknown>, field: string) => Record<string, unknown>;
     size?: number;
     rootId?: string | number | null;
     tableCruds?: CrudThunks;
@@ -33,8 +32,8 @@ interface ViewsProps {
     apiRef?: React.MutableRefObject<Record<string, unknown>>;
     dialogProps?: Record<string, unknown>;
     defaultParams?: Record<string, unknown>;
-    beforeAdd?: (...args: unknown[]) => unknown;
-    beforeUpdate?: (...args: unknown[]) => unknown;
+    beforeAdd?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
+    beforeUpdate?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
     cardLayout?: "vertical" | "horizontal";
     fieldToDisplayOnDelete?: string;
     currentView?: string;
@@ -75,7 +74,7 @@ const Views: React.FC<ViewsProps> = (props) => {
         fields,
     });
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const navigate = useNavigate();
     const { isMobile } = useUI();
@@ -86,8 +85,11 @@ const Views: React.FC<ViewsProps> = (props) => {
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [viewRow, setViewRow] = useState<Record<string, unknown> | null>(null);
 
+    // Guard: tableCruds must be defined for CRUD operations
+    const safeCruds = tableCruds as CrudThunks;
+
     const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
-        tableCruds,
+        tableCruds: safeCruds,
         tableName,
         token,
         showAlert,
@@ -112,7 +114,7 @@ const Views: React.FC<ViewsProps> = (props) => {
         data,
         setData,
         dispatch,
-        tableCruds,
+        tableCruds: safeCruds,
         token,
         showAlert,
         setLoading,
@@ -143,7 +145,7 @@ const Views: React.FC<ViewsProps> = (props) => {
         closeDeleteDialog,
         handleDeleteConfirm,
     } = useDeleteHandler({
-        tableCruds,
+        tableCruds: safeCruds,
         token,
         showAlert,
         setLoading,
@@ -155,8 +157,8 @@ const Views: React.FC<ViewsProps> = (props) => {
     });
 
     const refreshData = useCallback(() => {
-        dispatch(tableCruds.refresh(showAlert, setLoading, token));
-    }, [dispatch, showAlert, tableCruds, token]);
+        dispatch(safeCruds.refresh(showAlert, setLoading, token) as any);
+    }, [dispatch, showAlert, safeCruds, token]);
 
     const openFormView = useCallback(
         (row: Record<string, unknown>) => {
@@ -242,7 +244,7 @@ const Views: React.FC<ViewsProps> = (props) => {
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
-            setRecord(tableState.recordById[formKey]);
+            setRecord((tableState.recordById as Record<string | number, Record<string, unknown>>)?.[formKey] ?? {});
         }
     }, [formKey, setRecord, tableState.recordById]);
 
@@ -251,7 +253,9 @@ const Views: React.FC<ViewsProps> = (props) => {
             {formKey ? (
                 <FormView
                     {...commonStableProps}
-                    {...commonProps}
+                    loading={loading}
+                    editingId={editingId}
+                    actions={mergedActions}
                     formKey={formKey}
                     data={record}
                     currentView={currentView}
@@ -267,7 +271,7 @@ const Views: React.FC<ViewsProps> = (props) => {
                 <ListView
                     {...commonStableProps}
                     {...commonProps}
-                    editingId={editMode === "INLINE" ? editingId : false}
+                    editingId={editMode === "INLINE" ? editingId : null}
                 />
             )}
             {editMode !== "FORM" &&
@@ -275,10 +279,13 @@ const Views: React.FC<ViewsProps> = (props) => {
                 editingId && (
                     <DialogForm
                         setClose={handleCancel}
-                        {...commonProps}
+                        tableState={tableState}
+                        loading={loading}
+                        editingId={editingId}
+                        actions={mergedActions}
                         {...commonStableProps}
                         {...dialogProps}
-                        data={data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === editingId)}
+                        data={data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === editingId) ?? {}}
                     />
                 )}
             {viewDialogOpen && (
@@ -305,7 +312,7 @@ const Views: React.FC<ViewsProps> = (props) => {
                                             background: "#fafafa",
                                         }}
                                     >
-                                        {viewRow[field.name]}
+                                        {viewRow[field.name] as React.ReactNode}
                                     </Paper>
                                 </Typography>
                             ))}

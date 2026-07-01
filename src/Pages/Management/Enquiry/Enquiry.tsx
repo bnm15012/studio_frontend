@@ -3,7 +3,7 @@ import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
+import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";

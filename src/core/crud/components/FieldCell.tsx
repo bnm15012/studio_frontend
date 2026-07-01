@@ -54,16 +54,16 @@ const FieldCell: React.FC<FieldCellProps> = ({
         );
     }
 
-    const rowId = row?.[Object.keys(row)[0]]; // fallback; callers provide explicit id via handleChange closure
+    const rowId = row?.[Object.keys(row)[0]] as string | number | undefined; // fallback; callers provide explicit id via handleChange closure
 
     return (
         <Field
             isEdit={isEdit}
             value={resolveFieldValue(field, row, isEdit)}
-            setValue={(v) => handleChange?.(v, rowId, field.name)}
+            setValue={(v) => handleChange?.(v, rowId ?? null, field.name)}
             type={field.type}
-            extraProp={bindGetOptions(field.extraProp, row)}
-            validation={field.validation}
+            extraProp={bindGetOptions(field.extraProp ?? {}, row)}
+            validation={field.validation as Record<string, unknown>}
         />
     );
 };

@@ -9,10 +9,15 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { User } from "lucide-react";
 import { Close, Done } from "@mui/icons-material";
 
-const ReceipentsListDialog = ({ onClose, messageId }) => {
+interface ReceipentsListDialogProps {
+    onClose: () => void;
+    messageId: number | string;
+}
+
+const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, messageId }) => {
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const [history, setHistory] = useState([]);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const [history, setHistory] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 
     const getMessageHistory = useCallback(async () => {
@@ -108,9 +113,8 @@ const ReceipentsListDialog = ({ onClose, messageId }) => {
 };
 
 ReceipentsListDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    messageId: PropTypes.number.isRequired,
+    messageId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default ReceipentsListDialog;

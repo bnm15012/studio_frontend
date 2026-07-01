@@ -11,7 +11,12 @@ import PropTypes from "prop-types";
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 
-const MessageHistoryCard = ({ history, onViewRecipients }) => {
+interface MessageHistoryCardProps {
+    history: any[] | null | undefined;
+    onViewRecipients: (id: string | number) => void;
+}
+
+const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onViewRecipients }) => {
     const theme = useTheme();
     return (
         <StyledCardContainer>
@@ -68,7 +73,7 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => {
 
 MessageHistoryCard.propTypes = {
     history: PropTypes.arrayOf(PropTypes.object),
-    onViewRecipients: PropTypes.func,
+    onViewRecipients: PropTypes.func.isRequired,
 };
 
 export default MessageHistoryCard;

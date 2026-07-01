@@ -10,7 +10,7 @@ import {
     Chip,
     Box,
 } from "@mui/material";
-import { alpha, useTheme } from "@mui/material/styles";
+import { alpha, useTheme, type Theme } from "@mui/material/styles";
 
 import {
     StyledTable,
@@ -59,7 +59,7 @@ interface MobileRowCardProps {
     handleViewOpen?: (row: Record<string, unknown>) => void;
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
     selectedRows: (string | number)[];
-    theme: Record<string, unknown>;
+    theme: Theme;
     actions: ActionItem[];
 }
 
@@ -81,7 +81,7 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
     theme,
     actions,
 }) => {
-    const rowId = row[fieldsMeta.primary];
+    const rowId = row[fieldsMeta.primary] as string | number;
     const isItemSelected = selectedRows.includes(rowId);
     const isRowEditing = editingId === rowId;
     const visibleFields = getVisibleFields(fields);
@@ -124,7 +124,7 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
                         />
                     )}
                     <Typography variant="subtitle2" sx={{ color: "text.primary", fontWeight: 700 }}>
-                        Record #{getRowNumber(tableState, rowIndex)}
+                        Record #{getRowNumber(tableState as { currentPage: string | number; pageSize: number }, rowIndex)}
                     </Typography>
                 </Box>
                 <Box
@@ -270,11 +270,11 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
                 <TableBody>
                     <AnimatePresence mode="popLayout">
                         {data.map((row, rowIndex) => {
-                            const rowId = row[fieldsMeta.primary];
+                            const rowId = row[fieldsMeta.primary] as string | number;
                             const isItemSelected = selectedRows.includes(rowId);
                             return (
                                 <MotionTableRow
-                                    key={rowId}
+                                    key={String(rowId)}
                                     custom={rowIndex}
                                     variants={rowVariants}
                                     initial="hidden"
@@ -296,7 +296,7 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
                                         </StyledTableCell>
                                     )}
                                     <StyledTableCell>
-                                        {getRowNumber(tableState, rowIndex)}
+                                        {getRowNumber(tableState as { currentPage: string | number; pageSize: number }, rowIndex)}
                                     </StyledTableCell>
 
                                     {visibleFields.map((field) => (
@@ -398,12 +398,12 @@ const ListView: React.FC<ListViewProps> = ({
     }, [tableState?.currentPage, data]);
 
     const visibleRowIds = useMemo(
-        () => data?.map((row) => row[fieldsMeta.primary]) || [],
+        () => (data?.map((row) => row[fieldsMeta.primary]) || []) as (string | number)[],
         [data, fieldsMeta.primary],
     );
 
     const selectedRowsData = useMemo(
-        () => data?.filter((row) => selectedRows.includes(row[fieldsMeta.primary])) || [],
+        () => data?.filter((row) => selectedRows.includes(row[fieldsMeta.primary] as string | number)) || [],
         [data, selectedRows, fieldsMeta.primary],
     );
 
@@ -443,7 +443,9 @@ const ListView: React.FC<ListViewProps> = ({
         actions,
     };
 
-    const pageCount = Math.ceil((tableState.totalCount ?? 0) / (tableState.pageSize ?? 10)) ?? 0;
+    const totalCount = Number(tableState.totalCount ?? 0);
+    const pageSize = Number(tableState.pageSize ?? 10);
+    const pageCount = Math.ceil(totalCount / pageSize) || 0;
 
     return (
         <>
@@ -482,7 +484,7 @@ const ListView: React.FC<ListViewProps> = ({
                     <AnimatePresence mode="popLayout">
                         {data.map((row, rowIndex) => (
                             <motion.div
-                                key={row[fieldsMeta.primary] || rowIndex}
+                                key={String(row[fieldsMeta.primary] ?? rowIndex)}
                                 custom={rowIndex}
                                 variants={rowVariants}
                                 initial="hidden"
@@ -521,7 +523,7 @@ const ListView: React.FC<ListViewProps> = ({
             {/* ── Pagination ── */}
             <FlexBetween m={1} flexDirection={"row-reverse"} sx={{ flexWrap: "wrap", gap: 1 }}>
                 <Pagination
-                    page={tableState.currentPage ?? 0}
+                    page={Number(tableState.currentPage ?? 0)}
                     count={pageCount}
                     onChange={(e, p) => handlePageChange(p)}
                     color="primary"

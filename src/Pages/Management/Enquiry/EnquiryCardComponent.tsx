@@ -15,7 +15,7 @@ interface EnquiryRow {
 }
 
 interface EnquiryCardProps {
-    row: EnquiryRow;
+    row: Record<string, any>;
 }
 
 const EnquiryCard: React.FC<EnquiryCardProps> = ({ row }) => {

@@ -1,12 +1,13 @@
 import { useCallback, useState } from "react";
 import { ShowAlertFn, SetLoadingFn, CrudThunks } from "../../types";
+import type { AppDispatch } from "../../../state";
 
 interface UseDeleteHandlerProps {
     tableCruds: CrudThunks;
     token: string | null | undefined;
     showAlert: ShowAlertFn;
     setLoading: SetLoadingFn;
-    dispatch: unknown;
+    dispatch: AppDispatch;
     navigate: (path: string) => void;
     tableName: string;
     consts: React.MutableRefObject<{
@@ -38,7 +39,7 @@ export const useDeleteHandler = ({
 
     const handleDeleteClick = useCallback(
         (row: Record<string, unknown>) => {
-            setDeleteId(row[consts.current.primaryKey]);
+            setDeleteId(row[consts.current.primaryKey] as string | number | null);
             setDeleteDialogOpen(true);
         },
         [consts],
@@ -51,7 +52,7 @@ export const useDeleteHandler = ({
 
     const handleDeleteConfirm = useCallback(async () => {
         try {
-            await dispatch(tableCruds.remove(deleteId, token, showAlert, setLoading));
+            await dispatch(tableCruds.remove(deleteId, token, showAlert, setLoading) as any);
             if (formKey) navigate(`/management/${tableName}`);
         } catch (error: unknown) {
             console.error(error);

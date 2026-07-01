@@ -30,7 +30,7 @@ export const reportsAPi = async ({
     paymentMethod,
 }: ReportsApiParams) => {
     try {
-        let response = null;
+        let response: any = null;
         if (type === "payment") {
             response = await api.get(
                 `/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}&paymentType=${paymentMethod}`,
