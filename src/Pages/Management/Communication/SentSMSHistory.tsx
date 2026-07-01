@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/state";
 import { Pagination } from "@mui/material";
 
 import { useAlert } from "@/core/components/feedback/Alert";

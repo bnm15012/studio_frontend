@@ -52,7 +52,7 @@ const persistConfig = {
     storage,
     version: 10,
     whitelist: ["auth", "branch"],
-    migrate: (state) => {
+    migrate: (state: any) => {
         const currentVersion = state?._persist?.version;
         if (currentVersion !== 10) {
             return Promise.resolve(undefined);

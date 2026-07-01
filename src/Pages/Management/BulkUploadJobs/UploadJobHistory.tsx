@@ -7,6 +7,7 @@ import {
     TableContainer,
     Typography,
 } from "@mui/material";
+import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "@/core/components / tables / StyledTableComponents";
 import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";

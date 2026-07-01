@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/state";
 import React, { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
