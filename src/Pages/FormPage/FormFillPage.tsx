@@ -77,10 +77,10 @@ const FormFillPage = () => {
                     label: "Gender",
                     type: "SELECT",
                     validation: { required: true },
-                    getValue: (value) => value && { key: value, value },
+                    getValue: (value: any) => value && { key: value, value },
                     defaultValue: "MALE",
                     extraProp: {
-                        getOptions: async (search, page, limit) =>
+                        getOptions: async (search: string, page: number, limit: number) =>
                             ["MALE", "FEMALE", "NOT_TO_SAY"]
                                 .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                                 .slice(page * limit, (page + 1) * limit)
@@ -138,8 +138,8 @@ const FormFillPage = () => {
     const form = formData.filter((fd) => fd.id === formId)[0];
     return (
         <>
-            {form?.length !== 0 ? (
-                <FormBuilder form={form} branchId={branchId} />
+            {form ? (
+                <FormBuilder form={form as any} branchId={branchId} />
             ) : (
                 <div>Form not found</div>
             )}

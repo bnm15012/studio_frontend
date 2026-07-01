@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Loading from "../../core/components/loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
@@ -18,13 +18,14 @@ const dialogNames = [
     "settingsDialog",
     "configurationDialog",
 ];
-const ProfilePage = () => {
+
+const ProfilePage: React.FC = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
-    const admin = useSelector((state) => state.auth.user);
-    const studio = useSelector((state) => state.auth.studio);
+    const admin = useSelector((state: any) => state.auth.user);
+    const studio = useSelector((state: any) => state.auth.studio);
     const [tabValue, setTabValue] = useState(0);
-    const dialog = useSelector(dialogOnTop());
+    const dialog = useSelector(dialogOnTop() as any) as string;
     const { DEBUG, isMobile } = useUI();
 
     const handleClose = () => {
@@ -44,7 +45,7 @@ const ProfilePage = () => {
         }
     }, [admin, dialog, DEBUG]);
 
-    const handleTabChange = (event, newValue) => {
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
@@ -113,11 +114,11 @@ const ProfilePage = () => {
                 ) : tabValue === 1 && admin ? (
                     <ChangePassword user={admin} />
                 ) : tabValue === 2 ? (
-                    <SubscriptionTab user={admin} />
+                    <SubscriptionTab />
                 ) : tabValue === 3 ? (
-                    <SettingsTab studio={studio} user={admin} />
+                    <SettingsTab />
                 ) : tabValue === 4 ? (
-                    <CommunicationConfigs studio={studio} user={admin} />
+                    <CommunicationConfigs studio={studio} />
                 ) : (
                     <Loading />
                 )}

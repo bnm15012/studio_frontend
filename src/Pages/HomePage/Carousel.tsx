@@ -39,7 +39,7 @@ const Carousel = () => {
 
     const handlePrev = () => setCurrentIndex((currentIndex - 1 + images.length) % images.length);
 
-    const handleIndicatorClick = (index) => setCurrentIndex(index);
+    const handleIndicatorClick = (index: number) => setCurrentIndex(index);
 
     useEffect(() => {
         const interval = setInterval(handleNext, 5000);

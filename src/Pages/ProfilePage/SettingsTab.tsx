@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,19 +6,19 @@ import { useAlert } from "../../core/components/feedback/Alert";
 import { setSettings } from "../../state/authSlice";
 import { FlexBetween } from "../../core/components/layout/FlexBox";
 
-const SettingsTab = () => {
+const SettingsTab: React.FC = () => {
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
-    const studio = useSelector((state) => state.auth.studio);
+    const token = useSelector((state: any) => state.auth.token);
+    const studio = useSelector((state: any) => state.auth.studio);
     const showAlert = useAlert();
 
-    const initialConfigurations = useSelector((state) => state.auth.settings);
+    const initialConfigurations = useSelector((state: any) => state.auth.settings) || {};
 
-    const [configurations, setConfigurations] = useState(initialConfigurations);
+    const [configurations, setConfigurations] = useState<Record<string, boolean>>(initialConfigurations);
     const [isChanged, setIsChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleToggle = (key) => {
+    const handleToggle = (key: string) => {
         setConfigurations((prev) => ({
             ...prev,
             [key]: !prev[key],
@@ -36,7 +36,7 @@ const SettingsTab = () => {
             const { success, data, message } = await updateStudio({
                 values: {
                     studioId: studio.studioId,
-                    configuration: { configrationEntryList: configurations }, // now send map directly
+                    configuration: { configrationEntryList: configurations },
                 },
                 dispatch,
                 token,
@@ -69,7 +69,7 @@ const SettingsTab = () => {
                     >
                         <Box my={"auto"}>{key}</Box>
                         <Switch
-                            checked={configurations[key]}
+                            checked={!!configurations[key]}
                             onChange={() => handleToggle(key)}
                             color="primary"
                         />

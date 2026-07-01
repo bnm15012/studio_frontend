@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
@@ -32,22 +32,22 @@ const floatAnim = keyframes`
   100% { transform: translateY(0px); }
 `;
 
-const DashBoard = () => {
+const DashBoard: React.FC = () => {
     const navigate = useNavigate();
     const { isAdmin, isMobile } = useUI();
     const showAlert = useAlert();
 
-    const user = useSelector((state) => state.auth.user);
-    const studio = useSelector((state) => state.auth.studio);
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
-    const token = useSelector((state) => state.auth.token);
+    const user = useSelector((state: any) => state.auth.user);
+    const studio = useSelector((state: any) => state.auth.studio);
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan);
+    const token = useSelector((state: any) => state.auth.token);
     const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
-    const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-    const allActivities = useSelector((state) => state.activities.items);
+    const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const allActivities = useSelector((state: any) => state.activities.items);
     const [loading, setLoading] = useState(false);
-    const [data, setDashboardData] = useState(null);
+    const [data, setDashboardData] = useState<any[] | null>(null);
 
     const [currentMonthIncome, setCurrentMonthIncome] = useState(0);
     const [lastMonthIncome, setLastMonthIncome] = useState(0);
@@ -87,7 +87,7 @@ const DashBoard = () => {
                     },
                     {
                         color: "#E91E63",
-                        value: allActivities?.length,
+                        value: allActivities?.length || 0,
                         label: "Total Activities",
                         navigateTo: "/management/activity",
                         icon: <LocalActivityRounded sx={{ fontSize: 45 }} />,
@@ -130,7 +130,7 @@ const DashBoard = () => {
         } finally {
             setLoading(false);
         }
-    }, [token, currentBranch.branchId, allActivities?.length, showAlert]);
+    }, [token, currentBranch?.branchId, allActivities?.length, showAlert]);
 
     useEffect(() => {
         if (user) loadDashboardData();
@@ -249,7 +249,7 @@ const DashBoard = () => {
                             },
                         }}
                     >
-                        {data?.map((item, index) => {
+                        {data?.map((item: any, index: number) => {
                             const delay = 0.06 * index; // stagger
                             return (
                                 <Box
@@ -257,7 +257,6 @@ const DashBoard = () => {
                                     sx={{
                                         animation: `${fadeInUp} .6s cubic-bezier(.2,.9,.2,1) ${delay}s both`,
                                         transformOrigin: "center",
-                                        // hover / active micro-interaction
                                         transition: "transform .18s ease, box-shadow .18s ease",
                                         borderRadius: 2,
                                         "&:hover": {
@@ -265,7 +264,6 @@ const DashBoard = () => {
                                             boxShadow:
                                                 "0 10px 30px rgba(16,24,40,0.12), 0 2px 8px rgba(16,24,40,0.06)",
                                         },
-                                        // touch devices: slightly scale when active (tap)
                                         "&:active": { transform: "translateY(-2px) scale(1.01)" },
                                     }}
                                 >
@@ -277,7 +275,6 @@ const DashBoard = () => {
                                         value={item.value}
                                         label={item.label}
                                         icon={item.icon}
-                                        // pass delay to SummaryCard if it animates internally too
                                         delay={delay}
                                         blurValue={item.blur}
                                     />

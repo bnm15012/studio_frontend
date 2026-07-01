@@ -1,6 +1,6 @@
 import api from "../../core/utils/api";
 
-export const fetchDashBoardData = async ({ token, branchId }) => {
+export const fetchDashBoardData = async ({ token, branchId }: { token: string; branchId: number }) => {
     const today = new Date();
     try {
         const response = await api.get(
@@ -20,7 +20,7 @@ export const fetchDashBoardData = async ({ token, branchId }) => {
             data,
             message: data.message || "Dashboard data retrieved successfully!",
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Dashboard data fetch error:", error);
 
         const message =

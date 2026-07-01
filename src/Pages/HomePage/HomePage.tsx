@@ -13,7 +13,7 @@ import DemoVideoSection from "./DemoVideoSection";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const user = useSelector((state) => state.auth.user);
+    const user = useSelector((state: any) => state.auth.user);
     useEffect(() => {
         if (user) {
             navigate("/dashboard");

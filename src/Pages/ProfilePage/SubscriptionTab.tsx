@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Typography, CardContent, Box, Divider, useTheme, Button } from "@mui/material";
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -10,12 +11,10 @@ import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { FlexBetween } from "../../core/components/layout/FlexBox";
-import { useEffect, useState } from "react";
 import SubscriptionPopup from "../Auth/SubscriptionPopup";
-import PropTypes from "prop-types";
 
-const SubscriptionTab = () => {
-    const subscriptionPlan = useSelector((state) => state.auth.subscriptionPlan);
+const SubscriptionTab: React.FC = () => {
+    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan);
     const [openplansPopUp, setopenplansPopUp] = useState(false);
 
     useEffect(() => { }, [openplansPopUp]);
@@ -32,7 +31,7 @@ const SubscriptionTab = () => {
 
     const endDate = new Date(subscriptionPlan.endDate);
     const today = new Date();
-    const timeDiff = endDate - today;
+    const timeDiff = endDate.getTime() - today.getTime();
     const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
     return (
@@ -74,7 +73,7 @@ const SubscriptionTab = () => {
                     <InfoRow
                         icon={PriceCheckIcon}
                         label="Price"
-                        value={`Rs ${subscriptionPlan.price.toFixed(2)}`}
+                        value={`Rs ${subscriptionPlan.price?.toFixed(2) || "0.00"}`}
                     />
                     <Divider />
 
@@ -115,7 +114,15 @@ const SubscriptionTab = () => {
 
 export default SubscriptionTab;
 
-const InfoRow = ({ icon: Icon, label, value, color, valueIcon: ValueIcon }) => {
+interface InfoRowProps {
+    icon: React.ElementType;
+    label: string;
+    value: string | number;
+    color?: string;
+    valueIcon?: React.ElementType;
+}
+
+const InfoRow: React.FC<InfoRowProps> = ({ icon: Icon, label, value, color, valueIcon: ValueIcon }) => {
     const theme = useTheme();
     return (
         <FlexBetween sx={{ py: 1 }}>
@@ -133,12 +140,4 @@ const InfoRow = ({ icon: Icon, label, value, color, valueIcon: ValueIcon }) => {
             </Box>
         </FlexBetween>
     );
-};
-
-InfoRow.propTypes = {
-    icon: PropTypes.elementType.isRequired,
-    label: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    color: PropTypes.string,
-    valueIcon: PropTypes.elementType,
 };

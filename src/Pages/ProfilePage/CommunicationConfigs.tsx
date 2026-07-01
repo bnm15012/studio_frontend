@@ -1,22 +1,31 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
 import { FlexBetween } from "../../core/components/layout/FlexBox";
-import PropTypes from "prop-types";
 import Field from "../../core/components/fields/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "../../core/components/feedback/Alert";
 import Loading from "../../core/components/loading/Loading";
-import WhatsAppConfiguration from "./WhatsAppConfiguration";
 import { useUI } from "../../context/UIContext";
 
-const CommunicationConfigs = ({ studio }) => {
+interface StudioInfo {
+    studioId: number;
+    whatsAppStatus?: string;
+    passcode?: string;
+    email?: string;
+}
+
+interface CommunicationConfigsProps {
+    studio: StudioInfo;
+}
+
+const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) => {
     const showAlert = useAlert();
     const { isAdmin } = useUI();
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const [editProf, setEditProf] = useState(false);
 
@@ -95,19 +104,9 @@ const CommunicationConfigs = ({ studio }) => {
                         </FlexBetween>
                     </Box>
                 )}
-                {/* <WhatsAppConfiguration studio={studio} /> */}
             </FlexBetween>
         </Box>
     );
-};
-
-CommunicationConfigs.propTypes = {
-    studio: PropTypes.shape({
-        studioId: PropTypes.number.isRequired,
-        whatsAppStatus: PropTypes.string,
-        passcode: PropTypes.string,
-        email: PropTypes.string,
-    }).isRequired,
 };
 
 export default CommunicationConfigs;

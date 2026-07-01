@@ -1,9 +1,14 @@
+import React, { useEffect, useRef } from "react";
 import { Box } from "@mui/material";
-import { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 
-const ScrollAnimation = ({ children, className = "", delay = 0 }) => {
-    const ref = useRef();
+interface ScrollAnimationProps {
+    children?: React.ReactNode;
+    className?: string;
+    delay?: number;
+}
+
+const ScrollAnimation: React.FC<ScrollAnimationProps> = ({ children, className = "", delay = 0 }) => {
+    const ref = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -34,11 +39,6 @@ const ScrollAnimation = ({ children, className = "", delay = 0 }) => {
             {children}
         </Box>
     );
-};
-ScrollAnimation.propTypes = {
-    children: PropTypes.node,
-    className: PropTypes.string,
-    delay: PropTypes.number,
 };
 
 export default ScrollAnimation;

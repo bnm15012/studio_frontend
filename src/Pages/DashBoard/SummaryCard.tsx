@@ -1,5 +1,5 @@
+import React from "react";
 import { Box, Button, Card, CardContent, Typography, useTheme, keyframes } from "@mui/material";
-import PropTypes from "prop-types";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 
 // Define animations
@@ -26,7 +26,25 @@ const pulse = keyframes`
   }
 `;
 
-const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0, blurValue = false }) => {
+interface SummaryCardProps {
+    color: string;
+    value: string | number;
+    label: string;
+    icon?: React.ReactNode;
+    onShowMore: () => void;
+    delay?: number;
+    blurValue?: boolean;
+}
+
+const SummaryCard: React.FC<SummaryCardProps> = ({
+    color,
+    value,
+    label,
+    icon,
+    onShowMore,
+    delay = 0,
+    blurValue = false,
+}) => {
     const theme = useTheme();
 
     return (
@@ -164,16 +182,6 @@ const SummaryCard = ({ color, value, label, icon, onShowMore, delay = 0, blurVal
             </Button>
         </Card>
     );
-};
-
-SummaryCard.propTypes = {
-    color: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    label: PropTypes.string.isRequired,
-    icon: PropTypes.object,
-    onShowMore: PropTypes.func.isRequired,
-    delay: PropTypes.number,
-    blurValue: PropTypes.bool,
 };
 
 export default SummaryCard;

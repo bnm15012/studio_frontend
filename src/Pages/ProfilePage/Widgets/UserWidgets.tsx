@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Paper, IconButton, Tooltip, Divider, Box, useTheme } from "@mui/material";
 import {
     Class as ClassIcon,
@@ -9,7 +9,6 @@ import {
     Save as SaveIcon,
 } from "@mui/icons-material";
 import { Percent } from "lucide-react";
-import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
 import { useAlert } from "../../../core/components/feedback/Alert";
@@ -17,24 +16,29 @@ import { useUI } from "../../../context/UIContext";
 import ImageComponent from "../../../core/components/fields/ImageComponent";
 import Field from "../../../core/components/fields/Field";
 
-const UserWidgets = ({ admin, studio }) => {
+interface UserWidgetsProps {
+    admin: any;
+    studio: any;
+}
+
+const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
     const theme = useTheme();
     const { isMobile } = useUI();
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
 
-    const [imageUrl, setImageUrl] = useState(null);
-    const [studioLogo, setStudioLogo] = useState(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [studioLogo, setStudioLogo] = useState<string | null>(null);
     const [editMode, setEditMode] = useState(false);
-    const [editedValues, setEditedValues] = useState({
+    const [editedValues, setEditedValues] = useState<any>({
         phone: "",
         studioName: "",
         location: "",
         gstNumber: "",
     });
 
-    const verifyChanges = (values) => {
+    const verifyChanges = (values: any) => {
         const userData = {
             phone: values.phone,
             imageUrl: imageUrl,
@@ -176,7 +180,7 @@ const UserWidgets = ({ admin, studio }) => {
                         <Field
                             value={admin.email}
                             setValue={(value) =>
-                                setEditedValues((prev) => ({ ...prev, email: value }))
+                                setEditedValues((prev: any) => ({ ...prev, email: value }))
                             }
                             extraProp={{ readOnly: true }}
                         />
@@ -188,7 +192,7 @@ const UserWidgets = ({ admin, studio }) => {
                             label="Phone"
                             value={editedValues.phone}
                             setValue={(value) =>
-                                setEditedValues((prev) => ({ ...prev, phone: value }))
+                                setEditedValues((prev: any) => ({ ...prev, phone: value }))
                             }
                             isEdit={editMode}
                             validation={{
@@ -213,7 +217,7 @@ const UserWidgets = ({ admin, studio }) => {
                             label="Studio Name"
                             value={editedValues.studioName}
                             setValue={(value) =>
-                                setEditedValues((prev) => ({ ...prev, studioName: value }))
+                                setEditedValues((prev: any) => ({ ...prev, studioName: value }))
                             }
                             isEdit={editMode}
                             validation={{ required: true }}
@@ -226,7 +230,7 @@ const UserWidgets = ({ admin, studio }) => {
                             label="Location"
                             value={editedValues.location}
                             setValue={(value) =>
-                                setEditedValues((prev) => ({ ...prev, location: value }))
+                                setEditedValues((prev: any) => ({ ...prev, location: value }))
                             }
                             isEdit={editMode}
                             validation={{ required: true }}
@@ -240,7 +244,7 @@ const UserWidgets = ({ admin, studio }) => {
                             placeholder="Enter GST Number"
                             value={editedValues.gstNumber}
                             setValue={(value) =>
-                                setEditedValues((prev) => ({ ...prev, gstNumber: value }))
+                                setEditedValues((prev: any) => ({ ...prev, gstNumber: value }))
                             }
                             isEdit={editMode}
                             validation={{
@@ -271,11 +275,6 @@ const UserWidgets = ({ admin, studio }) => {
             </Box>
         </Paper>
     );
-};
-
-UserWidgets.propTypes = {
-    admin: PropTypes.object.isRequired,
-    studio: PropTypes.object.isRequired,
 };
 
 export default UserWidgets;

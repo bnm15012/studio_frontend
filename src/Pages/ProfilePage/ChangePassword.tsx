@@ -1,18 +1,26 @@
+import React, { useState } from "react";
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
-import { useState } from "react";
 import Loading from "../../core/components/loading/Loading";
 import { useAlert } from "../../core/components/feedback/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../Auth/auth.api";
 import { validatePassword } from "../../utils/validationConstraints";
-import PropTypes from "prop-types";
 import { closeLastDialog } from "../../state/dialogSlice";
 
-const ChangePassword = ({ user }) => {
+interface UserInfo {
+    userId: string | number;
+    email: string;
+}
+
+interface ChangePasswordProps {
+    user: UserInfo;
+}
+
+const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
     const showAlert = useAlert();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
 
     const [password, setPassword] = useState("");
     const [repass, setRepass] = useState("");
@@ -33,7 +41,7 @@ const ChangePassword = ({ user }) => {
 
         try {
             setLoading(true);
-            const { success, message } = await updateProfile({
+            const { success, message: responseMessage } = await updateProfile({
                 dispatch,
                 values: { userId: user.userId, email: user.email, password },
                 token,
@@ -42,9 +50,9 @@ const ChangePassword = ({ user }) => {
                 showAlert("Password changed successfully!", "success");
                 dispatch(closeLastDialog());
             } else {
-                showAlert(message || "Failed to change password", "error");
+                showAlert(responseMessage || "Failed to change password", "error");
             }
-        } catch (error) {
+        } catch (error: any) {
             showAlert(error.message || "Error changing password", "error");
         } finally {
             setLoading(false);
@@ -108,13 +116,6 @@ const ChangePassword = ({ user }) => {
             {loading && <Loading />}
         </Box>
     );
-};
-
-ChangePassword.propTypes = {
-    user: PropTypes.shape({
-        userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        email: PropTypes.string.isRequired,
-    }).isRequired,
 };
 
 export default ChangePassword;

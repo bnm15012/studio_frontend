@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Typography, Divider, Chip, Button, Stack, CircularProgress } from "@mui/material";
 import { Error as ErrorIcon, QrCode, WhatsApp } from "@mui/icons-material";
 import {
@@ -6,19 +7,18 @@ import {
     logoutWhatsAppConnectionAPI,
 } from "./whatsapp.api";
 import Loading from "../../core/components/loading/Loading";
-import { useCallback, useEffect, useState } from "react";
 import { useAlert } from "../../core/components/feedback/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../api/all.api";
 import { FlexBetween } from "../../core/components/layout/FlexBox";
 
-const WhatsAppConfiguration = () => {
+const WhatsAppConfiguration: React.FC = () => {
     const showAlert = useAlert();
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state: any) => state.auth.token);
     const dispatch = useDispatch();
-    const [webWhastAppQrCode, setWebWhastAppQrCode] = useState();
-    const currentBranch = useSelector((state) => state.branch.currentBranch);
-    const [whatsAppStatus, setWhatsAppStatus] = useState(currentBranch.whatsAppStatus);
+    const [webWhastAppQrCode, setWebWhastAppQrCode] = useState<string | false | undefined>();
+    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const [whatsAppStatus, setWhatsAppStatus] = useState<string>(currentBranch.whatsAppStatus);
     const [polling, setPolling] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ const WhatsAppConfiguration = () => {
             newCurrentBranch.whatsAppStatus = status;
             dispatch(branchCruds.actions.setCurrentBranch(newCurrentBranch));
             dispatch(branchCruds.actions.updateItem(newCurrentBranch));
-            setWebWhastAppQrCode();
+            setWebWhastAppQrCode(undefined);
         },
         [currentBranch, dispatch],
     );
@@ -52,7 +52,7 @@ const WhatsAppConfiguration = () => {
             } else {
                 showAlert(message || "Something wrong!", "warning");
             }
-        } catch (error) {
+        } catch (error: any) {
             showAlert(error.message, "error");
         } finally {
             setLoading(false);
@@ -60,7 +60,7 @@ const WhatsAppConfiguration = () => {
     };
 
     useEffect(() => {
-        let interval;
+        let interval: any;
         let attempts = 0;
 
         const pollWhatsAppStatus = async () => {
@@ -200,7 +200,7 @@ const WhatsAppConfiguration = () => {
                                 height: 220,
                                 borderRadius: "12px",
                                 overflow: "hidden",
-                                border: "2px solidrgb(20, 103, 12)",
+                                border: "2px solid rgb(20, 103, 12)",
                                 boxShadow: "0 0 20px rgba(0, 230, 230, 0.5)",
                                 animation: "pulse 2s infinite ease-in-out",
                                 "@keyframes pulse": {
