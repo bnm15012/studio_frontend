@@ -3,11 +3,11 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
-import Loading from "../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import FormFields from "./FormFields";
 import { loginApiCall, registerApiCall } from "./auth.api";
-import { useAlert } from "../../core/components/feedback/Alert";
-import { FlexBetween, FlexEvenly } from "../../core/components/layout/FlexBox";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
 
 interface FormProps {
     pageType: "Login" | "Register";

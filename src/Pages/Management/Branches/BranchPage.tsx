@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { usersCruds } from "../../../api/all.api";
-import Views from "../../../core/crud/Views";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
+import Views from "@/core/crud/Views";
+import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
@@ -44,8 +44,8 @@ const BranchPage = () => {
     const { isMobile } = useUI();
     const navigate = useNavigate();
     const api = useRef<any>({});
-    const studio = useSelector((s: any) => s.auth.studio);
-    const selectedBranch = useSelector((state: any) => state.branch.selectedBranch);
+    const studio = useAppSelector((s: any) => s.auth.studio);
+    const selectedBranch = useAppSelector((state) => state.branch.selectedBranch);
 
     const beforeAdd = async (row) => {
         const updatedRow = { ...row };
@@ -90,7 +90,7 @@ const BranchPage = () => {
                     size={LIMIT}
                     key={"users"}
                     fields={FIELDS}
-                    actions={[{ name: "delete", hide: true, onClick: () => {} }]}
+                    actions={[{ name: "delete", hide: true, onClick: () => { } }]}
                     rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

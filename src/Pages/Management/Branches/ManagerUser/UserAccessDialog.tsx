@@ -2,8 +2,8 @@ import { Box, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import StyledDialog from "../../../../core/components/dialogs/StyledDialog";
-import Field from "../../../../core/components/fields/Field";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import Field from "@/core/components/fields/Field";
 
 const ACCESS_BUTTONS = {
     activity: "Activity",
@@ -18,7 +18,7 @@ const ACCESS_BUTTONS = {
 const ACCESS_RIGHTS = ["NONE", "FULL"];
 
 const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = false }) => {
-    const settings = useSelector((state: any) => state.auth.settings);
+    const settings = useAppSelector((state) => state.auth.settings);
     const [accessState, setAccessState] = useState({});
 
     const studioLevelAccess = Object.keys(settings)

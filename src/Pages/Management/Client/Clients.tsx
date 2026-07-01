@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
-import Views from "../../../core/crud/Views";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
+import Views from "@/core/crud/Views";
+import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 
@@ -42,7 +42,7 @@ const FIELDS = [
 const Clients: React.FC = () => {
     const { isMobile } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>

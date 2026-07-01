@@ -1,8 +1,8 @@
 import React from "react";
 import { Activity, Calendar, FileText, TimerReset } from "lucide-react";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
-import ImageDialog from "../../../core/crud/ImageDialog";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
+import ImageDialog from "@/core/crud/ImageDialog";
 import { Box } from "@mui/material";
 
 interface InstructorAssignedActivityCardProps {
@@ -36,7 +36,7 @@ const InstructorAssignedActivityCard: React.FC<InstructorAssignedActivityCardPro
                 <CardChip value={endDate || ""} type="DATE" ChipIcon={TimerReset} />
                 {contractDocument && (
                     <CardChip
-                        value={<ImageDialog image={contractDocument} setImage={() => {}} />}
+                        value={<ImageDialog image={contractDocument} setImage={() => { }} />}
                         ChipIcon={FileText}
                     />
                 )}

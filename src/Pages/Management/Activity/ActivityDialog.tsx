@@ -18,27 +18,27 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useDispatch, useSelector } from "react-redux";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
 import PropTypes from "prop-types";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";
-import Loading from "../../../core/components/loading/Loading";
-import { useAlert } from "../../../core/components/feedback/Alert";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
-import Field from "../../../core/components/fields/Field";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import Field from "@/core/components/fields/Field";
 import { membershipPackageCruds } from "../../../api/all.api";
 
 const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
 
     const [formData, setFormData] = useState<any>({});
 
     const [loading, setLoading] = useState(false);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const token = useSelector((state: any) => state.auth.token);
-    const cachedMembershipTypes = useSelector((state: any) => state.membershipPackages.items);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const membershipTypes = isMembershipTableEnabled
         ? [...cachedMembershipTypes.map(({ membershipPackage }) => membershipPackage)]
         : [];

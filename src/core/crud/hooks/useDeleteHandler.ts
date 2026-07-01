@@ -1,16 +1,17 @@
 import { useCallback, useState } from "react";
+import { ShowAlertFn, SetLoadingFn, CrudThunks } from "../../types";
 
 interface UseDeleteHandlerProps {
-    tableCruds: any;
+    tableCruds: CrudThunks;
     token: string | null | undefined;
-    showAlert: (msg: string, type?: any) => void;
-    setLoading: (loading: boolean) => void;
-    dispatch: any;
+    showAlert: ShowAlertFn;
+    setLoading: SetLoadingFn;
+    dispatch: unknown;
     navigate: (path: string) => void;
     tableName: string;
     consts: React.MutableRefObject<{
         primaryKey: string;
-        [key: string]: any;
+        [key: string]: unknown;
     }>;
     formKey?: string | number | null;
 }
@@ -25,12 +26,18 @@ export const useDeleteHandler = ({
     tableName,
     consts,
     formKey,
-}: UseDeleteHandlerProps) => {
+}: UseDeleteHandlerProps): {
+    handleDeleteClick: (row: Record<string, unknown>) => void;
+    deleteDialogOpen: boolean;
+    deleteId: string | number | null;
+    closeDeleteDialog: () => void;
+    handleDeleteConfirm: () => Promise<void>;
+} => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteId, setDeleteId] = useState<any>(null);
+    const [deleteId, setDeleteId] = useState<string | number | null>(null);
 
     const handleDeleteClick = useCallback(
-        (row: any) => {
+        (row: Record<string, unknown>) => {
             setDeleteId(row[consts.current.primaryKey]);
             setDeleteDialogOpen(true);
         },
@@ -46,7 +53,7 @@ export const useDeleteHandler = ({
         try {
             await dispatch(tableCruds.remove(deleteId, token, showAlert, setLoading));
             if (formKey) navigate(`/management/${tableName}`);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             showAlert(`Failed to delete ${tableName}!`, "error");
         } finally {

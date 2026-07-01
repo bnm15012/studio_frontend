@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { activityCruds } from "../../../api/all.api";
 import ActivityCard from "./ActivityCard";
 import ActivityDialog from "./ActivityDialog";
@@ -14,9 +14,9 @@ const Activities = () => {
     const showAlert = useAlert();
     const { isBatchEnabled } = useUI();
 
-    const allActivities = useSelector((state: any) => state.activities.items);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const token = useSelector((state: any) => state.auth.token);
+    const allActivities = useAppSelector((state) => state.activities.items);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const token = useAppSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(false);

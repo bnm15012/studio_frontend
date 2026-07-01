@@ -6,7 +6,7 @@ import { useUI } from "../../../context/UIContext";
 
 const ActivityMembershipSelector = ({ onSelect, selectedData, isMemberSHipToo = true }) => {
     const { isBatchEnabled } = useUI();
-    const activities = useSelector((state: any) => state.activities.items);
+    const activities = useAppSelector((state) => state.activities.items);
 
     const [selectedActivity, setSelectedActivity] = useState(
         activities.find((f) => f.activityId === selectedData?.activity?.activityId) || null,

@@ -1,5 +1,5 @@
 import React from "react";
-import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
+import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import { useParams } from "react-router-dom";
 import Clients from "./Client/Clients";
 import Bookings from "./Booking/Bookings";

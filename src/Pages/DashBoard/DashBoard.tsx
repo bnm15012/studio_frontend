@@ -3,12 +3,12 @@ import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useNavigate } from "react-router-dom";
-import { useAlert } from "../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
-import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
-import Loading from "../../core/components/loading/Loading";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
+import Loading from "@/core/components/loading/Loading";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import Group from "@mui/icons-material/Group";
 import CardMembershipRounded from "@mui/icons-material/CardMembershipRounded";
@@ -16,7 +16,7 @@ import LocalActivityRounded from "@mui/icons-material/LocalActivityRounded";
 import Payment from "@mui/icons-material/Payment";
 import TrendingUp from "@mui/icons-material/TrendingUp";
 import SummaryCard from "./SummaryCard";
-import ImageComponent from "../../core/components/fields/ImageComponent";
+import ImageComponent from "@/core/components/fields/ImageComponent";
 import { useUI } from "../../context/UIContext";
 
 // Entrance animation (fade + up + subtle scale)
@@ -37,15 +37,15 @@ const DashBoard: React.FC = () => {
     const { isAdmin, isMobile } = useUI();
     const showAlert = useAlert();
 
-    const user = useSelector((state: any) => state.auth.user);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan);
-    const token = useSelector((state: any) => state.auth.token);
+    const user = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
+    const token = useAppSelector((state) => state.auth.token);
     const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    const allActivities = useSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
     const [loading, setLoading] = useState(false);
     const [data, setDashboardData] = useState<any[] | null>(null);
 

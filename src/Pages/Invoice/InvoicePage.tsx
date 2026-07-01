@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAlert } from "../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { studentsAssignmentsCruds } from "../../api/all.api";
 import StudentInvoice from "../Management/Student/StudentInvoice";
-import Loading from "../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import BookingInvoice from "../Management/Booking/BookingInvoice";
 
 const InvoicePage: React.FC = () => {
@@ -28,7 +28,7 @@ const InvoicePage: React.FC = () => {
             {!loading && invoice?.assignment ? (
                 <StudentInvoice
                     open={true}
-                    onClose={() => {}}
+                    onClose={() => { }}
                     studentData={invoice?.student}
                     activityData={invoice.assignment}
                     studio={invoice?.studio}
@@ -37,7 +37,7 @@ const InvoicePage: React.FC = () => {
             ) : invoice?.booking ? (
                 <BookingInvoice
                     open={true}
-                    onClose={() => {}}
+                    onClose={() => { }}
                     bookingData={invoice?.booking}
                     studio={invoice?.studio}
                     currentBranch={invoice?.branch}

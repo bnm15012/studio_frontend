@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Loading from "../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
 import ChangePassword from "./ChangePassword";
@@ -9,7 +9,7 @@ import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";
-import StyledDialog from "../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 const dialogNames = [
     "profileDialog",
@@ -22,10 +22,10 @@ const dialogNames = [
 const ProfilePage: React.FC = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
-    const admin = useSelector((state: any) => state.auth.user);
-    const studio = useSelector((state: any) => state.auth.studio);
+    const admin = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
     const [tabValue, setTabValue] = useState(0);
-    const dialog = useSelector(dialogOnTop() as any) as string;
+    const dialog = useAppSelector(dialogOnTop() as any) as string;
     const { DEBUG, isMobile } = useUI();
 
     const handleClose = () => {

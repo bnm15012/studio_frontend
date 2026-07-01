@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import DialogContent from "@mui/material/DialogContent";
-import { getLocalDateTime } from "../../../core/utils/DateUtil";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { useUI } from "../../../context/UIContext";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 interface StudentInvoiceProps {
     open: boolean;

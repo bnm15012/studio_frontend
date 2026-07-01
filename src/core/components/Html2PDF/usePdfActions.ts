@@ -32,13 +32,13 @@ export const usePdfActions = ({
         return html2pdf.set(pdfOptions).from(contentRef.current);
     };
 
-interface Html2PdfInstance {
-    set: (opts: Record<string, unknown>) => Html2PdfInstance;
-    from: (el: HTMLElement) => Html2PdfInstance;
-    outputPdf: (type: string) => Promise<Blob>;
-    toPdf: () => { save: () => Promise<void>; get: (key: string) => { then: (cb: (pdf: { output: (type: string) => string; autoPrint: () => void }) => void) => void } };
-    save: () => Promise<void>;
-}
+    interface Html2PdfInstance {
+        set: (opts: Record<string, unknown>) => Html2PdfInstance;
+        from: (el: HTMLElement) => Html2PdfInstance;
+        outputPdf: (type: string) => Promise<Blob>;
+        toPdf: () => { save: () => Promise<void>; get: (key: string) => { then: (cb: (pdf: { output: (type: string) => string; autoPrint: () => void }) => void) => void } };
+        save: () => Promise<void>;
+    }
 
     // New helper to temporarily reset scale before PDF generation
     const withTemporaryScaleReset = async <T>(pdfAction: () => Promise<T> | T): Promise<T | undefined> => {
@@ -94,7 +94,7 @@ interface Html2PdfInstance {
                         pdf.autoPrint();
                         window.open(pdf.output("bloburl"), "_blank");
                     });
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err);
                 showAlert("Failed to print PDF", "error");
             } finally {
@@ -123,7 +123,7 @@ interface Html2PdfInstance {
             });
 
             showAlert(message || `${type} sent`, success ? "success" : "error");
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
             showAlert(`Failed to send ${type}`, "error");
         } finally {

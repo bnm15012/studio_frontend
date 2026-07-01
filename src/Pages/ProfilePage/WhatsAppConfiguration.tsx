@@ -6,18 +6,19 @@ import {
     createWhatsAppCredentialsAPI,
     logoutWhatsAppConnectionAPI,
 } from "./whatsapp.api";
-import Loading from "../../core/components/loading/Loading";
-import { useAlert } from "../../core/components/feedback/Alert";
-import { useDispatch, useSelector } from "react-redux";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { useDispatch } from "react-redux";
 import { branchCruds } from "../../api/all.api";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { useAppSelector } from "@/state";
 
 const WhatsAppConfiguration: React.FC = () => {
     const showAlert = useAlert();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const dispatch = useDispatch();
     const [webWhastAppQrCode, setWebWhastAppQrCode] = useState<string | false | undefined>();
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const [whatsAppStatus, setWhatsAppStatus] = useState<string>(currentBranch.whatsAppStatus);
     const [polling, setPolling] = useState(false);
     const [loading, setLoading] = useState(false);

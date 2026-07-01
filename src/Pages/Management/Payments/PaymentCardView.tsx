@@ -1,8 +1,8 @@
 import React from "react";
 import { CurrencyRupee } from "@mui/icons-material";
 import { IndianRupeeIcon, QrCodeIcon, User2 } from "lucide-react";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 import { Box } from "@mui/material";
 
 interface PaymentCardProps {

@@ -34,10 +34,10 @@ const dialogSlice = createSlice({
             const dialog = action.payload;
             state.dialogStack = state.dialogStack.filter((d) => d !== dialog);
         },
-        closeLastDialog: (state: any) => {
+        closeLastDialog: (state) => {
             state.dialogStack.pop();
         },
-        clearAllDialogs: (state: any) => {
+        clearAllDialogs: (state) => {
             state.dialogStack = [];
         },
     },

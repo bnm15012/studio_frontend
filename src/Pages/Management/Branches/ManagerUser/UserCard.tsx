@@ -1,8 +1,8 @@
-import Field from "../../../../core/components/fields/Field";
-import ContactSection from "../../../../core/components/cards/ContactSection";
+import Field from "@/core/components/fields/Field";
+import ContactSection from "@/core/components/cards/ContactSection";
 import UserAccessButton from "./UserAccessButton";
 import PropTypes from "prop-types";
-import CardHeader from "../../../../core/components/cards/CardHeader";
+import CardHeader from "@/core/components/cards/CardHeader";
 import { Box } from "@mui/material";
 
 const UserCard = ({ row }) => {

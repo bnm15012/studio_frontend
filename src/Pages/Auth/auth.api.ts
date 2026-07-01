@@ -1,5 +1,5 @@
 import { setLogin, setStudio, setSubscriptionPlan } from "../../state/authSlice";
-import api from "../../core/utils/api";
+import api from "@/core/utils/api";
 import axios from "axios";
 import { transformRegisterData } from "./auth.util";
 import { branchCruds } from "../../api/all.api";

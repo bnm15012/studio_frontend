@@ -39,17 +39,17 @@ const LoadMoreButton = styled(Button)(({ theme }) => ({
 
 interface CardViewProps {
     fields: FieldDef[];
-    data: any[];
+    data: Record<string, unknown>[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
     loading?: boolean;
     actions: ActionItem[];
-    handleViewOpen?: (row: any) => void;
-    tableState: any;
+    handleViewOpen?: (row: Record<string, unknown>) => void;
+    tableState: Record<string, unknown>;
     handleLoadMore: () => void | Promise<void>;
-    CardContentComponent?: React.ComponentType<any>;
+    CardContentComponent?: React.ComponentType<{ row: Record<string, unknown>; handleViewOpen?: (row: Record<string, unknown>) => void }>;
     multi?: boolean;
 }
 
@@ -70,10 +70,10 @@ const CardView: React.FC<CardViewProps> = (props) => {
     const hasMore = data.length < (tableState.totalCount ?? 0);
     const visibleFields = fields.filter((f) => f.show);
 
-    const [selectedRows, setSelectedRows] = useState<any[]>([]);
+    const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
     const hasClickRow = actions?.some((a) => a.name === "form" && !a.hide);
     const onClickRow = useCallback(
-        (row: any) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
+        (row: Record<string, unknown>) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 
@@ -103,7 +103,7 @@ const CardView: React.FC<CardViewProps> = (props) => {
         [visibleRowIds],
     );
 
-    const handleSelectRow = useCallback((id: any, checked: boolean) => {
+    const handleSelectRow = useCallback((id: string | number, checked: boolean) => {
         setSelectedRows((prev) => (checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)));
     }, []);
 

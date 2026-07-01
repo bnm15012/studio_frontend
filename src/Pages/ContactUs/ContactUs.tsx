@@ -21,7 +21,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
+import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
 import Footer from "../../Components/Footer";
 
 // Define animations

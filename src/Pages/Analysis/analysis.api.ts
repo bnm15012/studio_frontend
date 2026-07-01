@@ -1,4 +1,4 @@
-import api from "../../core/utils/api";
+import api from "@/core/utils/api";
 
 interface FetchReportDataParams {
     token: string | null | undefined;

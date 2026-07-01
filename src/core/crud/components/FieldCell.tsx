@@ -16,10 +16,10 @@ import { resolveFieldValue, bindGetOptions, FieldDef } from "../../utils/fieldHe
  */
 interface FieldCellProps {
     field: FieldDef;
-    row: any;
+    row: Record<string, unknown>;
     isEdit: boolean;
-    handleChange?: (value: any, rowId: any, fieldName: string) => void;
-    handleViewOpen?: (row: any) => void;
+    handleChange?: (value: unknown, rowId: string | number | null | undefined, fieldName: string) => void;
+    handleViewOpen?: (row: Record<string, unknown>) => void;
 }
 
 const FieldCell: React.FC<FieldCellProps> = ({

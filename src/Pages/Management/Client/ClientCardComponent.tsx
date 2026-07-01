@@ -1,8 +1,8 @@
 import React from "react";
 import { User2, FileText } from "lucide-react";
-import ContactSection from "../../../core/components/cards/ContactSection";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import ContactSection from "@/core/components/cards/ContactSection";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import { Box } from "@mui/material";
 

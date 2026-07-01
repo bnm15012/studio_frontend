@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { branchCruds } from "../../api/all.api";
 import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import { useUI } from "../../context/UIContext";
 
@@ -18,8 +18,8 @@ export interface Branch {
 
 const BranchesDropdown: React.FC = () => {
     const { isMobile } = useUI();
-    const branches = useAppSelector((state: any) => state.branch.items) || [];
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch) || {};
+    const branches = useAppSelector((state) => state.branch.items) || [];
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch) || {};
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 

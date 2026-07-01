@@ -15,16 +15,16 @@ import {
 } from "../utils/fieldHelpers";
 
 interface DialogFormProps {
-    data: any;
+    data: Record<string, unknown>;
     fields: FieldDef[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
-    handleChange: (value: any, rowId: any, fieldName: string) => void;
-    handleSave: (rowId: any) => void | Promise<void>;
+    handleChange: (value: unknown, rowId: string | number | null | undefined, fieldName: string) => void;
+    handleSave: (rowId: string | number | null | undefined) => void | Promise<void>;
     setClose: () => void;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export const DialogForm: React.FC<DialogFormProps> = (props) => {

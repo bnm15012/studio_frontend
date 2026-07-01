@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
+import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
 import { enquiryCruds } from "../../../api/all.api";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
-import Views from "../../../core/crud/Views";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
+import Views from "@/core/crud/Views";
 import { useUI } from "../../../context/UIContext";
 import EnquiryCardComponent from "./EnquiryCardComponent";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 7;
 
@@ -35,7 +35,7 @@ const FIELDS = [
 const Enquiry: React.FC = () => {
     const { isMobile } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>

@@ -1,7 +1,7 @@
 import React from "react";
 import { CalendarMonth, Description } from "@mui/icons-material";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 import { IndianRupee } from "lucide-react";
 import { Box } from "@mui/material";
 

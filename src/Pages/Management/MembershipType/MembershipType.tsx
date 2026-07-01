@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import Views from "../../../core/crud/Views";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import Views from "@/core/crud/Views";
+import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 
 const LIMIT = 7;
@@ -22,7 +22,7 @@ const FIELDS = [
 
 const MembershipType: React.FC = () => {
     const api = useRef<any>({});
-    const studio = useSelector((s: any) => s.auth.studio);
+    const studio = useAppSelector((s: any) => s.auth.studio);
 
     return (
         <FlexBetweenColumn>

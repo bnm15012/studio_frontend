@@ -10,10 +10,10 @@ import {
     useTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { FlexBetween, FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
-import Loading from "../../core/components/loading/Loading";
+import { FlexBetween, FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
+import Loading from "@/core/components/loading/Loading";
 import { changePasswordApiCall, sendOTPRequest } from "./auth.api";
-import { useAlert } from "../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { validatePassword } from "../../utils/validationConstraints.js";
@@ -97,7 +97,7 @@ const ForgotPassword = () => {
 
     return (
         <Dialog
-            open={useSelector(isDialogOnTop("forgotPassDialog"))}
+            open={useAppSelector(isDialogOnTop("forgotPassDialog"))}
             onClose={() => {
                 dispatch(closeLastDialog());
             }}

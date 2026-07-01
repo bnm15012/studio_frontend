@@ -18,7 +18,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import XIcon from "@mui/icons-material/X";
-import ImageComponent from "../core/components/fields/ImageComponent";
+import ImageComponent from "@/core/components/fields/ImageComponent";
 import { useNavigate } from "react-router-dom";
 
 const Footer: React.FC = () => {

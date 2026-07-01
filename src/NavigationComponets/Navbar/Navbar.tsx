@@ -11,11 +11,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItems from "./MenuItems";
-import ImageComponent from "../../core/components/fields/ImageComponent";
+import ImageComponent from "@/core/components/fields/ImageComponent";
 import UserProfileDropdown from "./UserProfileDropDown";
 import BranchesDropdown from "./BranchesDropdown";
 import Notification from "./Notification";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AuthButtons from "./AuthButtons";
 import { logoutUser } from "../../state/thunks";
 import { useAppDispatch, useAppSelector } from "../../state";
@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
     const { isMobile } = useUI();
 
     const navigate = useNavigate();
-    const user = useAppSelector((state: any) => state.auth.user);
+    const user = useAppSelector((state) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
                             <IconButton
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 sx={{ mx: 1, color: "white" }}
-                             >
+                            >
                                 <MenuIcon />
                             </IconButton>
                         )}

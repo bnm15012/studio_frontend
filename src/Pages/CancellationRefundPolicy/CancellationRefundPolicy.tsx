@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Typography, Box, Stack, Divider, useTheme } from "@mui/material";
 import Footer from "../../Components/Footer";
-import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
+import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
 
 const CancellationRefundPolicy: React.FC = () => {
     useEffect(() => {

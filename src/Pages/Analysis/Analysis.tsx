@@ -24,11 +24,12 @@ import {
     Legend,
     Filler,
 } from "chart.js";
-import WidgetsOnPage from "../../core/components/layout/WidgetsOnPage";
+import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import { fetchReportData } from "./analysis.api";
-import Loading from "../../core/components/loading/Loading";
-import { useDispatch, useSelector } from "react-redux";
-import { setAnalysisData } from "../../state/analysisSlice";
+import Loading from "@/core/components/loading/Loading";
+import { useDispatch } from "react-redux";
+import { setAnalysisData } from "@/state/analysisSlice";
+import { useAppSelector } from "@/state";
 
 // Registering required chart components
 ChartJS.register(
@@ -86,15 +87,15 @@ const Analysis: React.FC = () => {
         [],
     );
     const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const token = useSelector((state: any) => state.auth.token);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const token = useAppSelector((state) => state.auth.token);
     const [expenseData, setExpenseData] = useState<any>();
     const [incomeLineData, setIncomeLineData] = useState<any>({});
     const [incomeBarData, setIncomeBarData] = useState<any>({});
     const [paymentData, setPaymentData] = useState<any>({});
     const [activityData, setActivityData] = useState<any>({});
     const [loading, setLoading] = useState(false);
-    const analysisData = useSelector((state: any) => state.analysis.data) || {};
+    const analysisData = useAppSelector((state) => state.analysis.data) || {};
 
     const loadDashboardData = useCallback(
         async (year: number) => {

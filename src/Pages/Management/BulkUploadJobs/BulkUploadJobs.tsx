@@ -1,9 +1,9 @@
 import { useState, useCallback } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { useSelector } from "react-redux";
-import Loading from "../../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import UploadData from "./UploadData";
 import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
 import { createBulkUploadJobAPI } from "./BulkUploadJobs.api";
@@ -11,8 +11,8 @@ import UploadJobHistory from "./UploadJobHistory";
 
 const BulkUploadJobs = () => {
     const showAlert = useAlert();
-    const token = useSelector((state: any) => state.auth.token);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const token = useAppSelector((state) => state.auth.token);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
 

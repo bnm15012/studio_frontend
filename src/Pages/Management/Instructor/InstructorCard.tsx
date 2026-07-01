@@ -1,7 +1,7 @@
 import React from "react";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import ContactSection from "../../../core/components/cards/ContactSection";
-import CardLocation from "../../../core/components/cards/CardLocation";
+import CardHeader from "@/core/components/cards/CardHeader";
+import ContactSection from "@/core/components/cards/ContactSection";
+import CardLocation from "@/core/components/cards/CardLocation";
 import { Box } from "@mui/material";
 
 interface InstructorCardProps {

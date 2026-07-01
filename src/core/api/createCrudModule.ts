@@ -5,9 +5,9 @@ import { createCrudThunks } from "./thunk";
 export interface CreateCrudModuleOptions {
     route: string;
     idKey?: string;
-    extraCruds?: (opts: { actions: any; getHeader: any; route: string }) => any;
-    extraState?: Record<string, any>;
-    extraReducers?: Record<string, any>;
+    extraCruds?: (opts: { actions: Record<string, any>; getHeader: typeof getHeader; route: string }) => Record<string, any>;
+    extraState?: Record<string, unknown>;
+    extraReducers?: Record<string, unknown>;
 }
 
 /**

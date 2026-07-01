@@ -130,6 +130,7 @@ export interface CrudThunks {
         token: string | null | undefined,
         infinite?: boolean,
     ) => (dispatch: unknown, getState: unknown) => Promise<void>;
+    [key: string]: unknown;
 }
 
 export interface PaginationParams {

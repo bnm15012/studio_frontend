@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
-import Field from "../../../core/components/fields/Field";
-import { FieldLabel } from "../../../core/components/fields/StyledField";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import Field from "@/core/components/fields/Field";
+import { FieldLabel } from "@/core/components / fields / StyledField";
 import { useUI } from "../../../context/UIContext";
 
 const FORM_SECTIONS = [

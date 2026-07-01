@@ -1,20 +1,20 @@
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box, Chip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useUI } from "../../../context/UIContext";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 import { useMemo, useRef, useState } from "react";
-import Views from "../../../core/crud/Views";
+import Views from "@/core/crud/Views";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "../Student/StudentAttendence";
 import BulkAttendanceDialog from "./BulkAttendanceDialog";
-import Loading from "../../../core/components/loading/Loading";
-import { useAlert } from "../../../core/components/feedback/Alert";
-import { getCurrentDateLocal } from "../../../core/utils/DateUtil";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { getCurrentDateLocal } from "@/core/utils/DateUtil";
 import MarkPresentDialog from "../Student/MarkPresent";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
 
 const LIMIT = 50;
@@ -29,9 +29,9 @@ const Attendance = () => {
     const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const allActivities = useSelector((state: any) => state.activities.items);
+    const token = useAppSelector((state) => state.auth.token);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const allActivities = useAppSelector((state) => state.activities.items);
     const api = useRef({});
     const [showAttendence, setShowAttendence] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -199,8 +199,8 @@ const Attendance = () => {
                     multi={true}
                     apiRef={api}
                     actions={[
-                        { name: "delete", hide: true, onClick: () => {} },
-                        { name: "edit", hide: true, onClick: () => {} },
+                        { name: "delete", hide: true, onClick: () => { } },
+                        { name: "edit", hide: true, onClick: () => { } },
                         {
                             multi: true,
                             name: "Attendance",

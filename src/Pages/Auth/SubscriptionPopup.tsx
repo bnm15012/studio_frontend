@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { DialogContent, Box } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
 import { useSelector } from "react-redux";
-import StyledDialog from "../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface SubscriptionPopupProps {
     popupOn?: boolean;
@@ -13,8 +13,8 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
     const [open, setOpen] = useState(popupOn);
     const [isExpired, setIsExpired] = useState(false);
 
-    const studio = useSelector((state: any) => state.auth.studio) as any;
-    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan) as any;
+    const studio = useAppSelector((state) => state.auth.studio) as any;
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan) as any;
 
     useEffect(() => {
         setOpen(popupOn);

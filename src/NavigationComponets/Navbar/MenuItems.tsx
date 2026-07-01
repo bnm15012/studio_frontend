@@ -11,7 +11,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ isNonMobileScreens }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const isHomePage = location.pathname === "/";
-    const user = useAppSelector((state: any) => state.auth.user);
+    const user = useAppSelector((state) => state.auth.user);
 
     const scrollTo = (target: string) => {
         const el = document.querySelector(target);

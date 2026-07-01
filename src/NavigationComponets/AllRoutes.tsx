@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAppSelector } from "../state";
 import HomePage from "../Pages/HomePage/HomePage";
-import Loading from "../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 
 const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
 const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));
@@ -25,7 +25,7 @@ import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import HashRedirect from "./HashRedirect";
 
 export const AllRoutes: React.FC = () => {
-    const user = useAppSelector((state: any) => state.auth.user);
+    const user = useAppSelector((state) => state.auth.user);
 
     return (
         <Suspense fallback={<Loading />}>

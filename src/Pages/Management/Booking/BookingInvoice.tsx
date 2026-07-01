@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
-import { getLocalDateTime } from "../../../core/utils/DateUtil";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 import { Typography } from "@mui/material";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 const sectionTitle = {
     marginTop: "10mm",

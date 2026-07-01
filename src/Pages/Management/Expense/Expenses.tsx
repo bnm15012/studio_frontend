@@ -1,14 +1,14 @@
 import React, { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
-import Views from "../../../core/crud/Views";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
+import Views from "@/core/crud/Views";
+import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const categories = [
     "ELECTRICITY",
@@ -80,7 +80,7 @@ const FIELDS = [
 const Expenses: React.FC = () => {
     const { isMobile } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>

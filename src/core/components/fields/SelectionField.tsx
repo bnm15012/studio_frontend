@@ -17,7 +17,7 @@ interface SelectionFieldProps {
     getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption[]>;
     addValue?: boolean;
     variant?: "standard" | "outlined" | "filled";
-    validation?: { required?: boolean; [key: string]: unknown };
+    validation?: { required?: boolean;[key: string]: unknown };
     saveType?: "string" | "object";
 }
 
@@ -44,7 +44,7 @@ export default function SelectionField({
                 setLoading(true);
                 const result = await getOptions(search, 0, limit);
                 setOptions(result);
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Error fetching options", err);
                 setOptions([]);
             } finally {

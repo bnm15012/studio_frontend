@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, useTheme } from "@mui/material";
-import { Navbar } from "../../../NavigationComponets/Navbar/Navbar";
-import Sidebar from "../../../NavigationComponets/Sidebar/Sidebar";
+import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
+import Sidebar from "@/NavigationComponets/Sidebar/Sidebar";
 import { FlexBetween, FlexBetweenColumn } from "./FlexBox";
 import { useUI } from "../../context/UIContext";
 

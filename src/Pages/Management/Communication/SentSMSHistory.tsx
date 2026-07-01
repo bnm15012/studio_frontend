@@ -1,11 +1,11 @@
 import { Pagination } from "@mui/material";
 
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
 import { useSelector } from "react-redux";
-import Loading from "../../../core/components/loading/Loading";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import Loading from "@/core/components/loading/Loading";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";
 import PropTypes from "prop-types";
 import HistoryMessageTable from "./HistoryMessageTable";
@@ -17,9 +17,9 @@ const SentSMSHistory = ({ newHistory }) => {
     const { isMobile } = useUI();
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [openDialog, setOpenDialog] = useState<any>(false);

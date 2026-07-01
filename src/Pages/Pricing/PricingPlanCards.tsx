@@ -19,7 +19,7 @@ import { Check as CheckIcon, Close } from "@mui/icons-material";
 import { getAllPlans } from "./plans.api";
 import { useDispatch, useSelector } from "react-redux";
 import PaymentDialog from "../RazorPay/Payment";
-import Loading from "../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import { openDialog } from "../../state/dialogSlice";
 import { alpha } from "@mui/material/styles";
 
@@ -35,7 +35,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
     const [dialogPlanOpen, setPanDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [allPlans, setAllPlans] = useState<any[] | null>(null);
-    const user = useSelector((state: any) => state.auth.user);
+    const user = useAppSelector((state) => state.auth.user);
 
     const getFeatureIcon = (featureName: string) => {
         const lowerName = featureName.toLowerCase();

@@ -18,7 +18,7 @@ import Actions, { ActionItem } from "../helper/Actions";
 // ── FadeIn ─────────────────────────────────────────────────────────────────
 interface FadeInProps {
     children: React.ReactNode;
-    animKey?: any;
+    animKey?: unknown;
     y?: number;
     duration?: number;
 }
@@ -38,11 +38,11 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, animKey, y = 6, durati
 // ── RowActions ──────────────────────────────────────────────────────────────
 interface RowActionsProps {
     isEditing: boolean;
-    rowId?: any;
-    handleSave?: (rowId: any) => void | Promise<void>;
+    rowId?: string | number;
+    handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
     actions: ActionItem[];
-    row: any;
+    row: Record<string, unknown>;
 }
 
 export const RowActions: React.FC<RowActionsProps> = ({

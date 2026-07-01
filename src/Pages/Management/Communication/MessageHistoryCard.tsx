@@ -6,10 +6,10 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledMotionCard,
-} from "../../../core/components/cards/StyledCard";
+} from "@/core/components/cards/StyledCard";
 import PropTypes from "prop-types";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 
 const MessageHistoryCard = ({ history, onViewRecipients }) => {
     const theme = useTheme();
@@ -45,24 +45,24 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => {
                                     </Avatar>
                                 }
                             />
-                        <CardChip label={"Sent Date"} value={row?.sentDate} type="DATETIME" />
-                    </StyledCardContent>
-                    <StyledCardActions>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            onClick={() => onViewRecipients(row.id)}
-                            disabled={row.memberType}
-                            startIcon={<Group />}
-                            sx={{ mt: 1 }}
-                        >
-                            Recipients
-                        </Button>
-                    </StyledCardActions>
-                </StyledMotionCard>
-            ))}
-    </StyledCardContainer>
+                            <CardChip label={"Sent Date"} value={row?.sentDate} type="DATETIME" />
+                        </StyledCardContent>
+                        <StyledCardActions>
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                onClick={() => onViewRecipients(row.id)}
+                                disabled={row.memberType}
+                                startIcon={<Group />}
+                                sx={{ mt: 1 }}
+                            >
+                                Recipients
+                            </Button>
+                        </StyledCardActions>
+                    </StyledMotionCard>
+                ))}
+        </StyledCardContainer>
     );
 };
 

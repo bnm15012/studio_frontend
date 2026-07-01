@@ -1,9 +1,9 @@
 import React from "react";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import { getTimePassed, isToday } from "../../../core/utils/DateUtil";
-import ContactSection from "../../../core/components/cards/ContactSection";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
+import { getTimePassed, isToday } from "@/core/utils/DateUtil";
+import ContactSection from "@/core/components/cards/ContactSection";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
 import { FileText } from "lucide-react";
 import { Box } from "@mui/material";
 

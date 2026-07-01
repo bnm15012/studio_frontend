@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import { isPast } from "../../../core/utils/DateUtil";
+import CardHeader from "@/core/components/cards/CardHeader";
+import { isPast } from "@/core/utils/DateUtil";
 import { CreditCard, Hourglass, Target } from "lucide-react";
-import CardChip from "../../../core/components/cards/CardChip";
+import CardChip from "@/core/components/cards/CardChip";
 import { Person } from "@mui/icons-material";
 import { Box } from "@mui/material";
 

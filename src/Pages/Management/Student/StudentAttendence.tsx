@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import {
     formatDate,
     getDateRangeLocal,
     getLocalDateTime,
     parseDateTime,
-} from "../../../core/utils/DateUtil";
-import QrForm from "../../../core/components/forms/QrForm";
+} from "@/core/utils/DateUtil";
+import QrForm from "@/core/components/forms/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
@@ -23,7 +23,7 @@ interface StudentAttendenceProps {
 const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, activityData }) => {
     const [attendanceMap, setAttendanceMap] = useState<Record<string, boolean>>({});
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const showAlert = useAlert();
 
     const allDates = useMemo(() => {
@@ -71,7 +71,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                 },
                 token,
                 showAlert,
-                () => {},
+                () => { },
             ),
         );
         onClose();
@@ -314,29 +314,29 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                                         borderColor: isDisabled
                                             ? "grey.300"
                                             : present
-                                              ? "success.main"
-                                              : "divider",
+                                                ? "success.main"
+                                                : "divider",
                                         bgcolor: isDisabled
                                             ? "grey.50"
                                             : today
-                                              ? present
-                                                  ? "primary.dark"
-                                                  : "primary.light"
-                                              : present
-                                                ? "primary.main"
-                                                : "background.paper",
+                                                ? present
+                                                    ? "primary.dark"
+                                                    : "primary.light"
+                                                : present
+                                                    ? "primary.main"
+                                                    : "background.paper",
                                         color: isDisabled
                                             ? "text.disabled"
                                             : present || today
-                                              ? "white"
-                                              : "text.primary",
+                                                ? "white"
+                                                : "text.primary",
                                         opacity: isDisabled ? 0.45 : 1,
                                         "&:hover": isDisabled
                                             ? {}
                                             : {
-                                                  transform: "translateY(-1px)",
-                                                  boxShadow: 2,
-                                              },
+                                                transform: "translateY(-1px)",
+                                                boxShadow: 2,
+                                            },
                                     }}
                                 >
                                     <Typography variant="body2" fontWeight={700}>

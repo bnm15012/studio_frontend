@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { DialogContent, Typography, Box, Divider } from "@mui/material";
-import { useAlert } from "../../core/components/feedback/Alert";
-import { useSelector, useDispatch } from "react-redux";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { useDispatch } from "react-redux";
 import { createOrder, verifyPayment } from "./RazorPay.api";
 import { setSubscriptionPlan } from "../../state/authSlice";
 import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
-import { getCurrentDateTimeLocal, getLocalDateTime } from "../../core/utils/DateUtil";
-import StyledDialog from "../../core/components/dialogs/StyledDialog";
+import { getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { useAppSelector } from "@/state";
 
 interface PlanItem {
     id: string;
@@ -26,11 +27,11 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const token = useSelector((state: any) => state.auth.token);
-    const user = useSelector((state: any) => state.auth.user);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan);
+    const token = useAppSelector((state) => state.auth.token);
+    const user = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
 
     useEffect(() => {
         if (!(window as any).Razorpay) {

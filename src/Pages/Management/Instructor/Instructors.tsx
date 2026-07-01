@@ -1,7 +1,7 @@
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import Views from "../../../core/crud/Views";
+import Views from "@/core/crud/Views";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
@@ -9,9 +9,9 @@ import PropTypes from "prop-types";
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const size = 7;
 
@@ -114,11 +114,11 @@ const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTI
 
 const Instructors = ({ ID }) => {
     const { isMobile } = useUI();
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const api = useRef({});
     const apiInstructor = useRef({});
     const [generateContractDoc, setGenerateContractDoc] = useState(false);
-    const allActivities = useSelector((state: any) => state.activities.items);
+    const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
         () => ({

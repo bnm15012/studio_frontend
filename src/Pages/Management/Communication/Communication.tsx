@@ -15,11 +15,11 @@ import {
     Divider,
     useTheme,
 } from "@mui/material";
-import MultiSelectDialog from "../../../core/components/dialogs/MultiSelectDialog";
+import MultiSelectDialog from "@/core/components/dialogs/MultiSelectDialog";
 import { getStudentNamesAPI } from "../Student/Student.api";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
-import Loading from "../../../core/components/loading/Loading";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
 import SentSMSHistory from "./SentSMSHistory";
@@ -49,9 +49,9 @@ const initialTemplate = {
 const Communication = () => {
     const theme = useTheme();
     const { isMobile } = useUI();
-    const token = useSelector((state: any) => state.auth.token);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const showAlert = useAlert();
 
     const [open, setOpen] = useState(false);

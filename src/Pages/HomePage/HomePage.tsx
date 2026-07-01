@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Navbar } from "../../NavigationComponets/Navbar/Navbar";
+import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
 import { HeroSection } from "./HeroSection";
 import { TestimonialsSection } from "./TestimonialsSection";
 import { FeaturesSection } from "./FeaturesSection";
@@ -13,7 +13,7 @@ import DemoVideoSection from "./DemoVideoSection";
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const user = useSelector((state: any) => state.auth.user);
+    const user = useAppSelector((state) => state.auth.user);
     useEffect(() => {
         if (user) {
             navigate("/dashboard");

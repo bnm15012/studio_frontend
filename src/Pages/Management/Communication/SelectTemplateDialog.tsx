@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { genericTemplateCruds } from "../../../api/all.api";
-import Loading from "../../../core/components/loading/Loading";
+import Loading from "@/core/components/loading/Loading";
 import { sendWhatsAppMessage } from "./communication.api";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import {
     Box,
     TextField,
     Typography,
 } from "@mui/material";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
 
 const SelectTemplateDialog = ({ open, onClose, data }) => {
@@ -19,15 +19,15 @@ const SelectTemplateDialog = ({ open, onClose, data }) => {
 
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
-    const token = useSelector((state: any) => state.auth.token);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [editableMessage, setEditableMessage] = useState("");
 
-    const allTemplates = useSelector((state: any) =>
+    const allTemplates = useAppSelector((state) =>
         state.genericTemplate.items.filter(
             (template) => template.templateType === "COMMUNICATION" && template.id
         )

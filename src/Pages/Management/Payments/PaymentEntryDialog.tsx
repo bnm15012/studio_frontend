@@ -8,7 +8,7 @@ import {
     Box,
     Typography,
 } from "@mui/material";
-import StyledDialog from "../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface PaymentEntryDialogProps {
     open: boolean;

@@ -1,4 +1,4 @@
-import { addDays } from "../core/utils/DateUtil";
+import { addDays } from "@/core/utils/DateUtil";
 
 const subscriptionPlans: Record<string, number> = {
     REGISTRATION: 0,

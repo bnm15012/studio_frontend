@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
-import Field from "../../core/components/fields/Field";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import Field from "@/core/components/fields/Field";
 import { useDispatch, useSelector } from "react-redux";
 import { updateStudio } from "../Auth/auth.api";
-import { useAlert } from "../../core/components/feedback/Alert";
-import Loading from "../../core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
+import Loading from "@/core/components/loading/Loading";
 import { useUI } from "../../context/UIContext";
 
 interface StudioInfo {
@@ -25,7 +25,7 @@ const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) =
     const showAlert = useAlert();
     const { isAdmin } = useUI();
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const [editProf, setEditProf] = useState(false);
 

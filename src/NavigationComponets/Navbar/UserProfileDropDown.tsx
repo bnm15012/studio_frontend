@@ -3,7 +3,7 @@ import { Menu, MenuItem, Button, Typography } from "@mui/material";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import Logout from "@mui/icons-material/Logout";
 import { useAppDispatch } from "../../state";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";
 import { openDialog } from "../../state/dialogSlice";
 import { useUI } from "../../context/UIContext";

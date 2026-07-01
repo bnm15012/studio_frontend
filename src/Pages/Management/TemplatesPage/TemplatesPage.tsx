@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
 import { useSelector } from "react-redux";
-import Views from "../../../core/crud/Views";
+import Views from "@/core/crud/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const templateTypes = new Set<string>(["COMMUNICATION", "BOOKING"]);
 
@@ -57,10 +57,10 @@ const VIEWS = ["LIST", "CARD"];
 const TemplatesPage: React.FC = () => {
     const { isMobile } = useUI();
 
-    useSelector((state: any) => state.activities.items)?.forEach((x: any) =>
+    useAppSelector((state) => state.activities.items)?.forEach((x: any) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
     );
-    const studio = useSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
 
     const api = useRef<any>({});
 

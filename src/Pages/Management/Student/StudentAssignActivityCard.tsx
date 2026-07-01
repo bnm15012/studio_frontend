@@ -1,11 +1,11 @@
 import React from "react";
 import { Activity, Calendar, Wallet, TimerReset, Clock1 } from "lucide-react";
 import { useTheme, Box } from "@mui/material";
-import CardHeader from "../../../core/components/cards/CardHeader";
-import CardChip from "../../../core/components/cards/CardChip";
-import { getLocalDateTime } from "../../../core/utils/DateUtil";
+import CardHeader from "@/core/components/cards/CardHeader";
+import CardChip from "@/core/components/cards/CardChip";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { Class, Task } from "@mui/icons-material";
-import ShowMoreDialog from "../../../core/crud/ShowMoreDialog";
+import ShowMoreDialog from "@/core/crud/ShowMoreDialog";
 
 interface StudentAssignActivityCardProps {
     row: {

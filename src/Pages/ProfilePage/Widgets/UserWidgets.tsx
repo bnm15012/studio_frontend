@@ -9,12 +9,13 @@ import {
     Save as SaveIcon,
 } from "@mui/icons-material";
 import { Percent } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateProfile, updateStudio } from "../../Auth/auth.api";
-import { useAlert } from "../../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { useUI } from "../../../context/UIContext";
-import ImageComponent from "../../../core/components/fields/ImageComponent";
-import Field from "../../../core/components/fields/Field";
+import ImageComponent from "@/core/components/fields/ImageComponent";
+import Field from "@/core/components/fields/Field";
+import { useAppSelector } from "@/state";
 
 interface UserWidgetsProps {
     admin: any;
@@ -26,7 +27,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
     const { isMobile } = useUI();
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
 
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [studioLogo, setStudioLogo] = useState<string | null>(null);

@@ -16,7 +16,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ contact }) => {
             navigator.clipboard.writeText(contact);
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to copy:", err);
         }
     };

@@ -5,17 +5,17 @@ import {
     StyledCardContainer,
     StyledCardContent,
     StyledMotionCard,
-} from "../../../core/components/cards/StyledCard";
+} from "@/core/components/cards/StyledCard";
 import PaymentCard from "../Payments/PaymentCardView";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "../../../api/all.api";
 import { useState } from "react";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "../../../core/components/loading/Loading";
-import { useAlert } from "../../../core/components/feedback/Alert";
-import DialogForm from "../../../core/crud/DialogForm";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
+import DialogForm from "@/core/crud/DialogForm";
 
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];
@@ -26,7 +26,7 @@ const PaymentList = ({ data, field }) => {
     const paidAmount = value.reduce((acc, curr) => acc + curr.amount, 0);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const showAlert = useAlert();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [paymentFormData, setPaymentFormData] = useState<any>();

@@ -32,7 +32,7 @@ const rowVariants = {
     visible: (i: number) => ({
         opacity: 1,
         y: 0,
-        transition: { duration: 0.22, ease: "easeOut" as any, delay: i * 0.04 },
+        transition: { duration: 0.22, ease: "easeOut" as const, delay: i * 0.04 },
     }),
     exit: { opacity: 0, transition: { duration: 0.15 } },
 };
@@ -41,23 +41,23 @@ const rowVariants = {
 const MotionTableRow = motion.create(StyledTableRow);
 
 interface MobileRowCardProps {
-    row: any;
+    row: Record<string, unknown>;
     rowIndex: number;
     fields: FieldDef[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
-    editingId?: any;
+    editingId?: string | number | null;
     multi?: boolean;
-    tableState: any;
-    handleSave?: (rowId: any) => void | Promise<void>;
+    tableState: Record<string, unknown>;
+    handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
-    handleChange: (value: any, rowId: any, fieldName: string) => void;
-    handleViewOpen?: (row: any) => void;
-    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: any) => void;
-    selectedRows: any[];
-    theme: any;
+    handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
+    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
+    selectedRows: (string | number)[];
+    theme: Record<string, unknown>;
     actions: ActionItem[];
 }
 
@@ -196,25 +196,25 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
 
 interface DesktopTableProps {
     fields: FieldDef[];
-    data: any[];
+    data: Record<string, unknown>[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
-    editingId?: any;
+    editingId?: string | number | null;
     multi?: boolean;
-    tableState: any;
+    tableState: Record<string, unknown>;
     loading?: boolean;
-    handleSave?: (rowId: any) => void | Promise<void>;
+    handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
-    handleChange: (value: any, rowId: any, fieldName: string) => void;
-    handleViewOpen?: (row: any) => void;
-    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: any) => void;
+    handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
+    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    selectedRows: any[];
-    visibleRowIds: any[];
+    selectedRows: (string | number)[];
+    visibleRowIds: (string | number)[];
     actions: ActionItem[];
-    onClickRow?: (row: any) => void;
+    onClickRow?: (row: Record<string, unknown>) => void;
 }
 
 // ── Desktop table ──────────────────────────────────────────────────────────
@@ -241,7 +241,7 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
     const isIndeterminate = selectedRows.length > 0 && selectedRows.length < visibleRowIds.length;
 
-    const TableContainerCo = StyledTableContainer as any;
+    const TableContainerCo = StyledTableContainer as React.ComponentType<Record<string, unknown>>;
 
     return (
         <TableContainerCo component={Paper}>
@@ -348,20 +348,20 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
 
 interface ListViewProps {
     fields: FieldDef[];
-    data: any[];
-    editingId?: any;
+    data: Record<string, unknown>[];
+    editingId?: string | number | null;
     fieldsMeta: {
         primary: string;
         root?: string;
     };
     actions: ActionItem[];
-    handleChange: (value: any, rowId: any, fieldName: string) => void;
-    handleSave?: (rowId: any) => void | Promise<void>;
+    handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
+    handleSave?: (rowId: string | number) => void | Promise<void>;
     loading?: boolean;
     handleCancel?: () => void;
-    tableState: any;
+    tableState: Record<string, unknown>;
     handlePageChange: (page: number) => void;
-    handleViewOpen?: (row: any) => void;
+    handleViewOpen?: (row: Record<string, unknown>) => void;
     multi?: boolean;
 }
 
@@ -385,11 +385,11 @@ const ListView: React.FC<ListViewProps> = ({
     const theme = useTheme();
 
     const onClickRow = useCallback(
-        (row: any) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick(row),
+        (row: Record<string, unknown>) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 
-    const [selectedRows, setSelectedRows] = useState<any[]>([]);
+    const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
 
     useEffect(() => {
         setSelectedRows([]);
@@ -417,7 +417,7 @@ const ListView: React.FC<ListViewProps> = ({
         [visibleRowIds],
     );
 
-    const handleSelectRow = useCallback((event: React.ChangeEvent<HTMLInputElement>, id: any) => {
+    const handleSelectRow = useCallback((event: React.ChangeEvent<HTMLInputElement>, id: string | number) => {
         event.stopPropagation();
         setSelectedRows((prev) =>
             event.target.checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),

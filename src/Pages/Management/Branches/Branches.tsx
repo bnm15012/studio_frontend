@@ -3,13 +3,13 @@ import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { branchCruds } from "../../../api/all.api";
-import Views from "../../../core/crud/Views";
-import { FIELD_TYPES } from "../../../core/components/fields/FieldTypes";
+import Views from "@/core/crud/Views";
+import { FIELD_TYPES } from "@/core/components / fields / FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 7;
 
@@ -35,7 +35,7 @@ const Branches = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const api = useRef({});
-    const studio = useSelector((state: any) => state.auth.studio);
+    const studio = useAppSelector((state) => state.auth.studio);
 
     return (
         <FlexBetweenColumn>
@@ -45,7 +45,7 @@ const Branches = () => {
                     tableName={"branch"}
                     tableCruds={branchCruds}
                     actions={[
-                        { name: "delete", hide: true, enabled: false, onClick: () => {} },
+                        { name: "delete", hide: true, enabled: false, onClick: () => { } },
                         {
                             name: "users",
                             icon: <GroupIcon />,

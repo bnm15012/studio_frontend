@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField } from "@mui/material";
-import { FlexEvenlyColumn } from "../../core/components/layout/FlexBox";
+import { FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
 
 interface FormFieldsValues {
     studioName?: string;

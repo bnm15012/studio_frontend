@@ -3,9 +3,9 @@ import {
     StyledTableCell,
     StyledTableContainer,
     StyledTableRow,
-} from "../../../core/components/tables/StyledTableComponents";
+} from "@/core/components / tables / StyledTableComponents";
 import { Avatar, IconButton, TableBody, TableHead } from "@mui/material";
-import { getLocalDateTime } from "../../../core/utils/DateUtil";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
 
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Email, WhatsApp } from "@mui/icons-material";

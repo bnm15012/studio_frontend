@@ -10,11 +10,11 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import SubscriptionPopup from "../Auth/SubscriptionPopup";
 
 const SubscriptionTab: React.FC = () => {
-    const subscriptionPlan = useSelector((state: any) => state.auth.subscriptionPlan);
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
     const [openplansPopUp, setopenplansPopUp] = useState(false);
 
     useEffect(() => { }, [openplansPopUp]);

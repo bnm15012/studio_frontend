@@ -13,22 +13,22 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useSelector } from "react-redux";
-import { FlexBetween } from "../../../core/components/layout/FlexBox";
-import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "../../../core/utils/DateUtil";
-import { useAlert } from "../../../core/components/feedback/Alert";
-import Loading from "../../../core/components/loading/Loading";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
+import { useAlert } from "@/core/components/feedback/Alert";
+import Loading from "@/core/components/loading/Loading";
 import { reportsAPi } from "./reports.api";
 import { useUI } from "../../../context/UIContext";
-import HtmlToPdfViewer from "../../../core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 const Reports: React.FC = () => {
     const pdfViewerRef = useRef<any>(null);
     const theme = useTheme();
     const { isMobile } = useUI();
     const showAlert = useAlert();
-    const token = useSelector((state: any) => state.auth.token);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const studio = useSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const studio = useAppSelector((state) => state.auth.studio);
 
     const today = new Date();
 
@@ -156,7 +156,7 @@ const Reports: React.FC = () => {
                     }
                 }
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
             showAlert("Failed to fetch report data.", "error");
         } finally {

@@ -2,27 +2,27 @@ import PropTypes from "prop-types";
 import DialogContent from "@mui/material/DialogContent";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { getLocalDateTime } from "../../../../core/utils/DateUtil";
-import Loading from "../../../../core/components/loading/Loading";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
+import Loading from "@/core/components/loading/Loading";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
-import { useAlert } from "../../../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
-import StyledDialog from "../../../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
-import HtmlToPdfViewer from "../../../../core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: any }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<any>(null);
     const [templates, setTemplates] = useState([]);
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [instructorData, setInstructorData] = useState<any>({});
 
-    const tableState = useSelector((state: any) => state["instructors"]);
+    const tableState = useAppSelector((state) => state["instructors"]);
 
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 

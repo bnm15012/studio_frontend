@@ -6,7 +6,7 @@ import StyledDialog from "../components/dialogs/StyledDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import { useAlert } from "../components/feedback/Alert";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "./hooks/useMergedActions";
@@ -17,29 +17,31 @@ import { FlexEvenly } from "../components/layout/FlexBox";
 import { useUI } from "../../context/UIContext";
 import { FieldDef } from "../utils/fieldHelpers";
 import { ActionItem } from "./helper/Actions";
+import { CrudThunks } from "../types";
+import { useAppSelector } from "../../state";
 
 interface ViewsProps {
     formKey?: string | number | null;
     tableName: string;
-    overRideOnChange?: (...args: any[]) => any;
+    overRideOnChange?: (...args: unknown[]) => unknown;
     size?: number;
     rootId?: string | number | null;
-    tableCruds?: any;
+    tableCruds?: CrudThunks;
     fields: FieldDef[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
-    apiRef?: any;
-    dialogProps?: any;
-    defaultParams?: any;
-    beforeAdd?: (...args: any[]) => any;
-    beforeUpdate?: (...args: any[]) => any;
+    apiRef?: React.MutableRefObject<Record<string, unknown>>;
+    dialogProps?: Record<string, unknown>;
+    defaultParams?: Record<string, unknown>;
+    beforeAdd?: (...args: unknown[]) => unknown;
+    beforeUpdate?: (...args: unknown[]) => unknown;
     cardLayout?: "vertical" | "horizontal";
     fieldToDisplayOnDelete?: string;
     currentView?: string;
     showAddButton?: boolean;
-    CardContentComponent?: React.ComponentType<any>;
+    CardContentComponent?: React.ComponentType<{ row: Record<string, unknown>; handleViewOpen?: (row: Record<string, unknown>) => void }>;
     actions?: ActionItem[];
     multi?: boolean;
     editMode?: "FORM" | "DIALOG" | "INLINE";
@@ -80,11 +82,11 @@ const Views: React.FC<ViewsProps> = (props) => {
     const navigate = useNavigate();
     const { isMobile } = useUI();
 
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
-    const [viewRow, setViewRow] = useState<any>(null);
+    const [viewRow, setViewRow] = useState<Record<string, unknown> | null>(null);
 
     const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
         tableCruds,
@@ -124,9 +126,9 @@ const Views: React.FC<ViewsProps> = (props) => {
         beforeAdd,
         beforeUpdate,
         overRideOnChange,
-    }) as any;
+    });
 
-    const handleViewOpen = (row: any) => {
+    const handleViewOpen = (row: Record<string, unknown>) => {
         setViewRow(row);
         setViewDialogOpen(true);
     };
@@ -152,14 +154,14 @@ const Views: React.FC<ViewsProps> = (props) => {
         formKey,
         tableName,
         consts,
-    }) as any;
+    });
 
     const refreshData = useCallback(() => {
         dispatch(tableCruds.refresh(showAlert, setLoading, token));
     }, [dispatch, showAlert, tableCruds, token]);
 
     const openFormView = useCallback(
-        (row: any) => {
+        (row: Record<string, unknown>) => {
             navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
         },
         [navigate, tableName],
@@ -278,7 +280,7 @@ const Views: React.FC<ViewsProps> = (props) => {
                         {...commonProps}
                         {...commonStableProps}
                         {...dialogProps}
-                        data={data.find((d: any) => d[consts.current.primaryKey] === editingId)}
+                        data={data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === editingId)}
                     />
                 )}
             {viewDialogOpen && (
@@ -325,11 +327,10 @@ const Views: React.FC<ViewsProps> = (props) => {
                     onClose={closeDeleteDialog}
                     onConfirm={handleDeleteConfirm}
                     id={deleteId}
-                    displayData={`${tableName} for ${
-                        data.find((d: any) => d[consts.current.primaryKey] === deleteId)?.[
-                            fieldToDisplayOnDelete
+                    displayData={`${tableName} for ${data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === deleteId)?.[
+                        fieldToDisplayOnDelete
                         ]
-                    }`}
+                        }`}
                 />
             )}
         </>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
-import Loading from "../../core/components/loading/Loading";
-import { useAlert } from "../../core/components/feedback/Alert";
+import Loading from "@/core/components/loading/Loading";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../Auth/auth.api";
 import { validatePassword } from "../../utils/validationConstraints";
@@ -20,7 +20,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
     const showAlert = useAlert();
     const theme = useTheme();
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
+    const token = useAppSelector((state) => state.auth.token);
 
     const [password, setPassword] = useState("");
     const [repass, setRepass] = useState("");

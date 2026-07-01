@@ -2,7 +2,7 @@ import api from "../utils/api";
 
 export interface UploadImageResponse {
     success: boolean;
-    data?: any;
+    data?: unknown;
     message: string;
 }
 
@@ -23,7 +23,7 @@ export const uploadImageApiCall = async (
         });
         const data = response.data;
         return { success: true, data, message: "Image uploaded successfully!" };
-    } catch (error: any) {
+    } catch (error: unknown) {
         const message = error?.response?.data?.status?.statusMessage || "Failed to upload image.";
         return { success: false, message };
     }

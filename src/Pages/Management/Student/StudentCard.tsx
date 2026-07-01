@@ -3,7 +3,7 @@ import { Box, Typography, IconButton, Tooltip, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { Mail, Phone, Copy } from "lucide-react";
 import { LocationOn } from "@mui/icons-material";
-import CardHeader from "../../../core/components/cards/CardHeader";
+import CardHeader from "@/core/components/cards/CardHeader";
 
 interface InfoItemProps {
     icon: React.ReactNode;
@@ -65,7 +65,7 @@ const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
             navigator.clipboard.writeText(email);
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to copy:", err);
         }
     };

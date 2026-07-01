@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
 import { useDispatch, useSelector } from "react-redux";
-import { useAlert } from "../../core/components/feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { setSettings } from "../../state/authSlice";
-import { FlexBetween } from "../../core/components/layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 const SettingsTab: React.FC = () => {
     const dispatch = useDispatch();
-    const token = useSelector((state: any) => state.auth.token);
-    const studio = useSelector((state: any) => state.auth.studio);
+    const token = useAppSelector((state) => state.auth.token);
+    const studio = useAppSelector((state) => state.auth.studio);
     const showAlert = useAlert();
 
-    const initialConfigurations = useSelector((state: any) => state.auth.settings) || {};
+    const initialConfigurations = useAppSelector((state) => state.auth.settings) || {};
 
     const [configurations, setConfigurations] = useState<Record<string, boolean>>(initialConfigurations);
     const [isChanged, setIsChanged] = useState(false);

@@ -27,6 +27,7 @@ import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions, { ActionItem } from "./helper/Actions";
 import { FadeIn } from "./components/shared";
+import { ExtraProp } from "../types";
 
 /* ───────── Skeleton (slightly denser) ───────── */
 interface FormSkeletonProps {
@@ -68,21 +69,21 @@ export interface FieldInfo {
     label?: string;
     type?: string;
     section?: string;
-    extraProp?: any;
-    validation?: any;
-    CustomComponent?: React.ComponentType<any>;
-    [key: string]: any;
+    extraProp?: ExtraProp;
+    validation?: Record<string, unknown>;
+    CustomComponent?: React.ComponentType<Record<string, unknown>>;
+    [key: string]: unknown;
 }
 
 export interface FormViewProps {
     fields: FieldInfo[];
     formKey: string | number | null | undefined;
-    data: any;
+    data: Record<string, unknown> | null | undefined;
     loading?: boolean;
     tableName: string;
-    editingId?: any;
-    handleChange: (value: any, formKey: any, fieldName: string) => void;
-    handleSave: (formKey: any) => void;
+    editingId?: string | number | null;
+    handleChange: (value: unknown, formKey: string | number | null | undefined, fieldName: string) => void;
+    handleSave: (formKey: string | number | null | undefined) => void;
     handleCancel: () => void;
     currentView?: string;
     actions?: ActionItem[];
@@ -222,7 +223,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
                                         label={imageField.label}
                                         isEdit={!!editingId}
                                         value={getNestedValue(data, imageField.name)}
-                                        setValue={(v: any) => handleChange(v, formKey, imageField.name)}
+                                        setValue={(v: unknown) => handleChange(v, formKey, imageField.name)}
                                         type={imageField.type}
                                         extraProp={{
                                             ...imageField.extraProp,
@@ -265,7 +266,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
                                                         data,
                                                         !!editingId,
                                                     )}
-                                                    setValue={(v: any) =>
+                                                    setValue={(v: unknown) =>
                                                         handleChange(v, formKey, field.name)
                                                     }
                                                     type={field.type}

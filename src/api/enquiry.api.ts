@@ -1,4 +1,4 @@
-import api from "../core/utils/api";
+import api from "@/core/utils/api";
 
 export interface EnquiryAPIParams {
     newData: any;

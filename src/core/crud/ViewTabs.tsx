@@ -7,13 +7,13 @@ import { Add } from "@mui/icons-material";
 interface ViewFieldItem {
     label?: string;
     api?: React.RefObject<{
-        addNewRow?: (editingId: any) => void;
+        addNewRow?: (editingId: string | number | null) => void;
     } | null> | {
         current?: {
-            addNewRow?: (editingId: any) => void;
+            addNewRow?: (editingId: string | number | null) => void;
         } | null;
     };
-    viewProps?: any;
+    viewProps?: Record<string, unknown>;
 }
 
 interface ViewTabsProps {
@@ -31,7 +31,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
     };
 
     const currentViewField = viewFields[tabIndex];
-    const hasAddNewRow = typeof (currentViewField?.api as any)?.current?.addNewRow === "function";
+    const hasAddNewRow = typeof (currentViewField?.api as Record<string, unknown>)?.current?.addNewRow === "function";
 
     return (
         <Box>
@@ -51,7 +51,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                 {editingId !== "NEW" && hasAddNewRow && (
                     <Button
                         variant="contained"
-                        onClick={() => (currentViewField?.api as any)?.current?.addNewRow(editingId)}
+                        onClick={() => (currentViewField?.api as Record<string, unknown>)?.current?.addNewRow(editingId)}
                         sx={{ ml: 1 }}
                     >
                         <Add style={{ color: "whitesmoke" }} />

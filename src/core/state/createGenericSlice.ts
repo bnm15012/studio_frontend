@@ -17,7 +17,7 @@ export interface CreateGenericSliceOptions {
     name: string;
     idKey?: string;
     extraState?: Record<string, unknown>;
-    extraReducers?: Record<string, unknown>;
+    extraReducers?: Record<string, any>;
 }
 
 /**

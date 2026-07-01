@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import Views from "../../../core/crud/Views";
+import Views from "@/core/crud/Views";
 import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
 import StudentCard from "./StudentCard";
 import { useUI } from "../../../context/UIContext";
-import { useAlert } from "../../../core/components/feedback/Alert";
-import { getCurrentDateTimeLocal } from "../../../core/utils/DateUtil";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import StudentInvoice from "./StudentInvoice";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
 import StudentAssignActivityCard from "./StudentAssignActivityCard";
 import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil";
-import ActionBar from "../../../core/components/layout/ActionBar";
+import ActionBar from "@/core/components/layout/ActionBar";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
@@ -134,15 +134,15 @@ interface StudentsProps {
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
-    const studio = useSelector((state: any) => state.auth.studio);
-    const currentBranch = useSelector((state: any) => state.branch.currentBranch);
-    const allActivities = useSelector((state: any) => state.activities.items) || [];
-    const cachedMembershipTypes = useSelector((state: any) => state.membershipPackages.items);
+    const studio = useAppSelector((state) => state.auth.studio);
+    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const allActivities = useAppSelector((state) => state.activities.items) || [];
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
 
     const [showInvoice, setShowInvoice] = useState<any>(false);
     const [showAttendence, setShowAttendence] = useState<any>(false);
-    const tableState = useSelector((state: any) => state["students"]) || { recordById: {} };
+    const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
     const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
     const api = useRef<any>({});

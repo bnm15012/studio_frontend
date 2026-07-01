@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, useTheme } from "@mui/material";
 import ContactForm from "./ContactForm";
-import StyledDialog from "../../core/components/dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface ContactUsDialogProps {
     open: boolean;

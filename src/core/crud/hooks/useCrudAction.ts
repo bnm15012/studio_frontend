@@ -1,34 +1,35 @@
 import { useState, useCallback, useEffect } from "react";
 import { validate } from "../utils/validate";
+import { ShowAlertFn, SetLoadingFn, CrudThunks } from "../../types";
 
-const defaultBeforeAdd = async (row: any) => row;
-const defaultBeforeUpdate = async (row: any) => row;
-const defaultOverRideOnChange = (_value: any, obj: any, _field?: string) => obj;
+const defaultBeforeAdd = async (row: Record<string, unknown>): Promise<Record<string, unknown>> => row;
+const defaultBeforeUpdate = async (row: Record<string, unknown>): Promise<Record<string, unknown>> => row;
+const defaultOverRideOnChange = (value: unknown, obj: Record<string, unknown>, _field?: string): Record<string, unknown> => obj;
 
 interface UseCrudActionProps {
     formKey?: string | number | null;
-    data: any[];
-    setData: React.Dispatch<React.SetStateAction<any[]>>;
-    dispatch: any;
-    tableCruds: any;
+    data: Record<string, unknown>[];
+    setData: React.Dispatch<React.SetStateAction<Record<string, unknown>[]>>;
+    dispatch: unknown;
+    tableCruds: CrudThunks;
     token: string | null | undefined;
-    showAlert: (msg: string, type?: any) => void;
-    setLoading: (loading: boolean) => void;
+    showAlert: ShowAlertFn;
+    setLoading: SetLoadingFn;
     rootId?: string | number | null;
     navigate: (path: string) => void;
     tableName: string;
     tableState: {
         currentPage: string | number;
-        [key: string]: any;
+        [key: string]: unknown;
     };
     consts: React.MutableRefObject<{
         primaryKey: string;
         rootKey?: string;
-        fields: any[];
+        fields: Record<string, unknown>[];
     }>;
-    beforeAdd?: (row: any) => Promise<any> | any;
-    beforeUpdate?: (row: any) => Promise<any> | any;
-    overRideOnChange?: (value: any, obj: any, field: string) => any;
+    beforeAdd?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
+    beforeUpdate?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
+    overRideOnChange?: (value: unknown, obj: Record<string, unknown>, field: string) => Record<string, unknown>;
 }
 
 export const useCrudAction = ({
@@ -48,12 +49,21 @@ export const useCrudAction = ({
     beforeAdd = defaultBeforeAdd,
     beforeUpdate = defaultBeforeUpdate,
     overRideOnChange = defaultOverRideOnChange,
-}: UseCrudActionProps) => {
-    const [editingId, setEditingId] = useState<any>(null);
-    const [originalRow, setOriginalRow] = useState<any>(null);
-    const [record, setRecord] = useState<any>({});
+}: UseCrudActionProps): {
+    editingId: string | number | null;
+    record: Record<string, unknown>;
+    setRecord: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
+    handleEdit: (row: Record<string, unknown>) => void;
+    handleCancel: () => void;
+    handleSave: (id: string | number | null) => Promise<void>;
+    addNewRow: () => void;
+    handleChange: (value: unknown, id: string | number | null, fieldPath: string) => void;
+} => {
+    const [editingId, setEditingId] = useState<string | number | null>(null);
+    const [originalRow, setOriginalRow] = useState<Record<string, unknown> | null>(null);
+    const [record, setRecord] = useState<Record<string, unknown>>({});
 
-    const updateEditId = (id: any) => {
+    const updateEditId = (id: string | number | null) => {
         setEditingId(id);
     };
 
@@ -62,7 +72,7 @@ export const useCrudAction = ({
     }, [tableState.currentPage]);
 
     const handleEdit = useCallback(
-        (row: any) => {
+        (row: Record<string, unknown>) => {
             if (editingId) {
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
@@ -98,7 +108,7 @@ export const useCrudAction = ({
     }, [formKey, navigate, tableName, editingId, originalRow, setData, consts]);
 
     const handleSave = useCallback(
-        async (id: any) => {
+        async (id: string | number | null) => {
             try {
                 const newRow = formKey
                     ? record
@@ -122,7 +132,7 @@ export const useCrudAction = ({
                 }
                 updateEditId(null);
                 if (formKey === "NEW") navigate(`/management/${tableName}/`);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(error);
                 showAlert(error.message ?? "Operation failed. Please try again!", "error");
             }
@@ -146,7 +156,7 @@ export const useCrudAction = ({
     );
 
     const updateField = useCallback(
-        (value: any, obj: any, field: string) => {
+        (value: unknown, obj: Record<string, unknown>, field: string): Record<string, unknown> => {
             const updatedItem = overRideOnChange(value, { ...obj }, field);
 
             const parts = field.split(".");
@@ -164,9 +174,9 @@ export const useCrudAction = ({
     );
 
     const handleChange = useCallback(
-        (value: any, id: any, fieldPath: string) => {
+        (value: unknown, id: string | number | null, fieldPath: string) => {
             if (formKey) {
-                setRecord((prev: any) => updateField(value, prev, fieldPath));
+                setRecord((prev) => updateField(value, prev, fieldPath));
             } else {
                 setData((prev) =>
                     prev.map((item) =>
@@ -185,7 +195,7 @@ export const useCrudAction = ({
             showAlert("Can't Add New while edit", "warning");
             return;
         }
-        let newRow: any = {
+        let newRow: Record<string, unknown> = {
             [consts.current.primaryKey]: "NEW",
         };
         if (consts.current.rootKey) {
