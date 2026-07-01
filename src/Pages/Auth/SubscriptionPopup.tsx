@@ -45,16 +45,9 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
             <StyledDialog
                 cancelText="Close"
                 title={
-                    isExpired ? (
-                        <>
-                            Your{" "}
-                            {studio?.amcEnabled
-                                ? "AMC Service has expired. Please renew it !"
-                                : "Subscription has expired. Please renew to continue enjoying all the great features and benefits. Don’t miss out!"}
-                        </>
-                    ) : (
-                        ""
-                    )
+                    isExpired
+                        ? `Your ${studio?.amcEnabled ? "AMC Service has expired. Please renew it !" : "Subscription has expired. Please renew to continue enjoying all the great features and benefits. Don\u2019t miss out!"}`
+                        : ""
                 }
                 titleBgColor={isExpired ? "error" : "success"}
                 fullWidth
@@ -73,13 +66,15 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
 
             {isExpired && (
                 <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    zIndex={100}
-                    backgroundColor="rgba(255,255,255,0.5)"
-                    width="100%"
-                    height="100%"
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 100,
+                        bgcolor: "rgba(255,255,255,0.5)",
+                        width: "100%",
+                        height: "100%",
+                    }}
                 />
             )}
         </>

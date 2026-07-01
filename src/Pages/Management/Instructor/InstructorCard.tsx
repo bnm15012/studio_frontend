@@ -30,7 +30,7 @@ const InstructorCard: React.FC<InstructorCardProps> = ({ row }) => {
             />
             {email && <ContactSection contact={email} />}
             <Box display="flex" alignItems="center" gap={1.5}>
-                {phone && <ContactSection contact={phone} />}
+                {phone && <ContactSection contact={phone.toLocaleString()} />}
                 {address && <CardLocation address={address} />}
             </Box>
         </Box>

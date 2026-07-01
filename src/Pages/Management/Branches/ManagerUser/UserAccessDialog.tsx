@@ -23,7 +23,7 @@ const UserAccessDialog = ({ open, onClose, userAccessEntry, onSave, isEdit = fal
 
     const studioLevelAccess = Object.keys(settings)
         .filter((k) => settings[k])
-        .map((key) => key.replaceAll("_", ""));
+        .map((key) => key.replace(/_/g, ""));
 
     useEffect(() => {
         if (userAccessEntry) {

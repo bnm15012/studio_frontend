@@ -55,7 +55,7 @@ const Management: React.FC = () => {
             case "attendance":
                 return <Attendance />;
             case "branch":
-                if (ID) return <BranchPage ID={ID} />;
+                if (ID) return <BranchPage />;
                 return <Branches />;
             default:
                 return <h1>Not implemented yet !</h1>;

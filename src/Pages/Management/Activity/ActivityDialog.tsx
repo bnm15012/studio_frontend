@@ -33,7 +33,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
 
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState<any>({});
 
     const [loading, setLoading] = useState(false);
     const studio = useSelector((state: any) => state.auth.studio);

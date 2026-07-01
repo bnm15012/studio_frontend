@@ -36,7 +36,7 @@ const Attendance = () => {
     const [showAttendence, setShowAttendence] = useState(false);
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(getCurrentDateLocal());
-    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState(false);
+    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState(null);
 
     const filterOptions = useMemo(
         () => [
@@ -199,8 +199,8 @@ const Attendance = () => {
                     multi={true}
                     apiRef={api}
                     actions={[
-                        { name: "delete", hide: true },
-                        { name: "edit", hide: true },
+                        { name: "delete", hide: true, onClick: () => {} },
+                        { name: "edit", hide: true, onClick: () => {} },
                         {
                             multi: true,
                             name: "Attendance",
@@ -234,7 +234,7 @@ const Attendance = () => {
             {showBulkAttendanceDialog && (
                 <BulkAttendanceDialog
                     open={true}
-                    onClose={() => setShowBulkAttendanceDialog(false)}
+                    onClose={() => setShowBulkAttendanceDialog(null)}
                     studentsList={showBulkAttendanceDialog}
                     date={date}
                     onConfirm={markBulkAttendance}

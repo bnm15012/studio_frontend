@@ -55,7 +55,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
 
     const [page, setPage] = useState(0);
     const rowsPerPage = 5;
-    const startIndex = parseInt(page) * rowsPerPage;
+    const startIndex = page * rowsPerPage;
     const handleChangePage = (_, newPage) => {
         setPage(newPage);
     };
@@ -98,6 +98,7 @@ const UploadData = ({ handleUploadFile, sampleFIlePath }) => {
                 title={"Upload File"}
                 closeIcon={true}
                 open={openDialog}
+                onClose={() => setOpenDialog(false)}
                 maxWidth="md"
                 fullWidth
             >

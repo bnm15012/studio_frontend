@@ -21,7 +21,7 @@ const UploadJobHistory = () => {
     const showAlert = useAlert();
     const token = useSelector((state: any) => state.auth.token);
 
-    const [data, setData] = useState();
+    const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(false);
 
     const currentBranch = useSelector((state: any) => state.branch.currentBranch);
@@ -48,7 +48,7 @@ const UploadJobHistory = () => {
     );
 
     useEffect(() => {
-        !data && fetchUploadJobs();
+        if (!data) fetchUploadJobs(page);
     }, [fetchUploadJobs, data, page]);
     const handleChangePage = (_, newPage) => {
         setPage(newPage);

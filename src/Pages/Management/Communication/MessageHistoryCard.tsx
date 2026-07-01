@@ -33,7 +33,6 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => {
                                 badgeSx={{ backgroundColor: "" }}
                                 badge={
                                     <Avatar
-                                        size="small"
                                         sx={{
                                             p: 2,
                                             backgroundColor:
@@ -55,7 +54,7 @@ const MessageHistoryCard = ({ history, onViewRecipients }) => {
                             fullWidth
                             onClick={() => onViewRecipients(row.id)}
                             disabled={row.memberType}
-                            startIcon={<Group size={16} />}
+                            startIcon={<Group />}
                             sx={{ mt: 1 }}
                         >
                             Recipients

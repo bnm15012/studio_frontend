@@ -36,7 +36,6 @@ const HistoryMessageTable = ({ onViewRecipients, history }) => (
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 <Avatar
-                                    size="small"
                                     sx={{
                                         p: 2,
                                         backgroundColor:

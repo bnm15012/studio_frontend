@@ -150,10 +150,6 @@ const Activities = () => {
                     {allActivities.map((activity, index) => (
                         <Box key={activity.activityId}>
                             <ActivityCard
-                                index={index}
-                                cancelEdit={() => {
-                                    setDialogOpen(false);
-                                }}
                                 activity={activity}
                                 onEdit={handleEditActivity}
                                 onDelete={handleDeleteActivity}

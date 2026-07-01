@@ -43,8 +43,8 @@ const FIELDS = [
 const BranchPage = () => {
     const { isMobile } = useUI();
     const navigate = useNavigate();
-    const api = useRef({});
-    const studio = useSelector((s) => s.auth.studio);
+    const api = useRef<any>({});
+    const studio = useSelector((s: any) => s.auth.studio);
     const selectedBranch = useSelector((state: any) => state.branch.selectedBranch);
 
     const beforeAdd = async (row) => {
@@ -90,7 +90,7 @@ const BranchPage = () => {
                     size={LIMIT}
                     key={"users"}
                     fields={FIELDS}
-                    actions={[{ name: "delete", hide: true }]}
+                    actions={[{ name: "delete", hide: true, onClick: () => {} }]}
                     rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

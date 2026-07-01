@@ -17,11 +17,11 @@ const sectionTitle = {
     fontSize: "14px",
 };
 
-const tableHeaderStyle = { textAlign: "left", padding: "6px" };
-const tableCellStyle = { padding: "6px", textAlign: "left" };
+const tableHeaderStyle: React.CSSProperties = { textAlign: "left", padding: "6px" };
+const tableCellStyle: React.CSSProperties = { padding: "6px", textAlign: "left" };
 
 const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isUser = false, template }) => {
-    const pdfViewerRef = useRef();
+    const pdfViewerRef = useRef<any>(null);
 
     const preparedDescription = template
         ? replacePlaceholders(template.templateContent, {

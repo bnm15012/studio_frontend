@@ -58,6 +58,7 @@ const Bookings = ({ ID }) => {
     }, [dispatch, showAlert, studio.studioId, token]);
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+    const pendingPaymentRef = useRef<any>(null);
     const getClientsByName = useCallback(
         async (params) => {
             const { success, data, message } = await getCLientByNamesAPI({
@@ -76,8 +77,8 @@ const Bookings = ({ ID }) => {
     );
 
     const awaitForDialog = useCallback(
-        (paymentInit) =>
-            new Promise((resolve) => {
+        (paymentInit: any) =>
+            new Promise<any>((resolve) => {
                 const handleSave = (data) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
@@ -88,11 +89,8 @@ const Bookings = ({ ID }) => {
                     resolve(null);
                 };
 
-                setOpenPaymentDialog({
-                    onSave: handleSave,
-                    onClose: handleClose,
-                    paymentInit,
-                });
+                setOpenPaymentDialog(true);
+                pendingPaymentRef.current = { onSave: handleSave, onClose: handleClose, paymentInit };
             }),
         [],
     );
@@ -107,7 +105,7 @@ const Bookings = ({ ID }) => {
     }, []);
 
     const beforeAdd = useCallback(
-        async (row) => {
+        async (row: any) => {
             const modifiedData = { ...row };
             delete modifiedData.dueAmount;
             delete modifiedData.paidAmount;
@@ -130,7 +128,7 @@ const Bookings = ({ ID }) => {
             const paymentData = await awaitForDialog(paymentInit);
 
             if (paymentData) {
-                modifiedData.paymentEntries = [{ ...row.paymentEntry, ...paymentData }];
+                modifiedData.paymentEntries = [{ ...(row.paymentEntry || {}), ...(paymentData || {}) }];
             } else {
                 throw new Error("Payment cancelled");
             }
@@ -317,9 +315,9 @@ const Bookings = ({ ID }) => {
             {openPaymentDialog && (
                 <PaymentEntryDialog
                     open={true}
-                    onSave={(data) => openPaymentDialog?.onSave?.(data)}
-                    onClose={() => openPaymentDialog?.onClose?.()}
-                    initialData={openPaymentDialog.paymentInit}
+                    onSave={(data) => pendingPaymentRef.current?.onSave?.(data)}
+                    onClose={() => pendingPaymentRef.current?.onClose?.()}
+                    initialData={pendingPaymentRef.current?.paymentInit}
                     paymentStatus={paymentStatusTypes.map((ps) => ({ label: ps, value: ps }))}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
                 />

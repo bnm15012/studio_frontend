@@ -4,7 +4,7 @@ import React from "react";
 
 export interface ActionItem {
     name: string;
-    onClick: (row: any) => void;
+    onClick?: (row: any) => void;
     icon?: React.ReactNode;
     sx?: {
         color?: string;

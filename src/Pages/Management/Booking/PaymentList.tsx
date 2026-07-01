@@ -29,9 +29,9 @@ const PaymentList = ({ data, field }) => {
     const token = useSelector((state: any) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const [paymentFormData, setPaymentFormData] = useState();
+    const [paymentFormData, setPaymentFormData] = useState<any>();
 
-    if (!value.length) {
+    if (!value?.length) {
         return (
             <Box sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -45,6 +45,7 @@ const PaymentList = ({ data, field }) => {
     }
 
     const handleSave = async () => {
+        if (!paymentFormData) return;
         if (paymentFormData.id !== "NEW") {
             dispatch(paymentCruds.update(paymentFormData.id, paymentFormData, token, showAlert, setLoading, true));
         } else {
@@ -76,7 +77,7 @@ const PaymentList = ({ data, field }) => {
                 <Button startIcon={<AddCircleOutline />} onClick={() => {
                     setOpenPaymentDialog(true);
                     setPaymentFormData({
-                        id: "NEW",
+                        id: "NEW" as any,
                         amount: data.totalAmount - paidAmount,
                         paymentDate: getCurrentDateTimeLocal(),
                         status: paymentStatusTypes[0],

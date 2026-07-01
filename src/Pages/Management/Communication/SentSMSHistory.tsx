@@ -22,7 +22,7 @@ const SentSMSHistory = ({ newHistory }) => {
     const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = useState<any>(false);
 
     useEffect(() => {
         if (newHistory) {

@@ -35,9 +35,9 @@ export const sendMessageApi = async ({ token, payload, file = null, page = 1, si
 
     Object.entries(payload).forEach(([key, value]) => {
         if (Array.isArray(value)) {
-            value.forEach((item) => formData.append(`${key}[]`, item));
+            value.forEach((item) => formData.append(`${key}[]`, String(item)));
         } else if (value !== undefined && value !== null) {
-            formData.append(key, value);
+            formData.append(key, String(value));
         }
     });
 

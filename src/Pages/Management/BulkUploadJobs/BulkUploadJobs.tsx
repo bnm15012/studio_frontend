@@ -27,14 +27,14 @@ const BulkUploadJobs = () => {
                 );
 
                 if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
-                    throw Error("Failed to get upload URL", "error");
+                    throw new Error("Failed to get upload URL");
                 } else {
                     showAlert("Preparing to upload file...", "info");
                 }
 
                 const uploadResponse = await uploadToS3(file, s3Bucket.uploadUrl, token, showAlert);
                 if (!uploadResponse) {
-                    throw Error("Failed to upload file to S3", "error");
+                    throw new Error("Failed to upload file to S3");
                 }
 
                 showAlert("File uploaded to S3 successfully!", "success");
@@ -51,7 +51,7 @@ const BulkUploadJobs = () => {
                 );
 
                 if (!successFileUpload) {
-                    throw Error(message || "Failed to create bulk upload job", "error");
+                    throw new Error(message || "Failed to create bulk upload job");
                 }
                 showAlert("File uploaded successfully!", "success");
             } catch (error: any) {

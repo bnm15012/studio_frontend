@@ -55,7 +55,7 @@ const Communication = () => {
     const showAlert = useAlert();
 
     const [open, setOpen] = useState(false);
-    const [selectedTemplateId, setSelectedTemplateId] = useState(0);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<number | string>(0);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [selectedInstructors, setSelectedInstructors] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -182,7 +182,7 @@ const Communication = () => {
             if (response.success) {
                 showAlert(response.message, "success");
                 setSelectedTemplate(initialTemplate);
-                setSelectedTemplateId("");
+                setSelectedTemplateId(0);
                 setSelectedStudents([]);
                 setSelectedInstructors([]);
                 setAudienceType("all");
@@ -347,8 +347,8 @@ const Communication = () => {
                                 }}
                             >
                                 <Grid container>
-                                    {audienceTypes.map((type) => (
-                                        <Grid item xs={6} key={type}>
+                                    {audienceTypes.map((type, idx) => (
+                                        <Grid item xs={6} key={idx}>
                                             {type.value && (
                                                 <FormControlLabel
                                                     key={type.value}

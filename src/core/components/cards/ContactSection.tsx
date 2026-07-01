@@ -2,22 +2,14 @@ import React, { useState } from "react";
 import { Box, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { Phone, Copy, Mail } from "lucide-react";
 
-/**
- * ContactSection — Compact inline email/phone display.
- * Icon + value + optional copy button. No label.
- */
 interface ContactSectionProps {
-    contact?: string;
+    contact: string;
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({ contact }) => {
     const [copied, setCopied] = useState(false);
     const theme = useTheme();
-
-    if (!contact) return null;
-
     const isEmail = contact.includes("@");
-
     const handleCopy = (e: React.MouseEvent) => {
         e.stopPropagation();
         try {

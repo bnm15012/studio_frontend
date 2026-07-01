@@ -11,16 +11,16 @@ import StyledDialog from "../../../../core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer from "../../../../core/components/Html2PDF/HtmlToPdfViewer";
 
-const InstructorContract = ({ open, onClose, activityData }) => {
+const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: any }) => {
     const dispatch = useDispatch();
     const showAlert = useAlert();
-    const pdfViewerRef = useRef();
+    const pdfViewerRef = useRef<any>(null);
     const [templates, setTemplates] = useState([]);
     const studio = useSelector((state: any) => state.auth.studio);
     const currentBranch = useSelector((state: any) => state.branch.currentBranch);
     const [loading, setLoading] = useState(false);
     const token = useSelector((state: any) => state.auth.token);
-    const [instructorData, setInstructorData] = useState({});
+    const [instructorData, setInstructorData] = useState<any>({});
 
     const tableState = useSelector((state: any) => state["instructors"]);
 
@@ -137,7 +137,7 @@ const InstructorContract = ({ open, onClose, activityData }) => {
                                 ))}
                             </table>
                             {/* Terms and Conditions */}
-                            <p fontWeight={"bolder"}>Terms and Conditions</p>
+                            <p style={{ fontWeight: "bolder" }}>Terms and Conditions</p>
                             <p style={{ marginTop: "5mm" }}>
                                 {preparedDescription ? (
                                     <p>
