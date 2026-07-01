@@ -36,7 +36,7 @@ const FIELDS = [
 const Enquiry: React.FC = () => {
     const { isMobile } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
@@ -48,7 +48,7 @@ const Enquiry: React.FC = () => {
                     size={LIMIT}
                     key={"enquiries"}
                     fields={FIELDS as any}
-                    rootId={currentBranch.branchId}
+                    rootId={currentBranch?.branchId}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

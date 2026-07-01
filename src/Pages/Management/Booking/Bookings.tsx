@@ -36,14 +36,14 @@ const Bookings = ({ ID }) => {
     const { isMobile } = useUI();
     const dispatch = useDispatch();
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const [calendarAnchor, setCalendarAnchor] = useState(null);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
-    const [showInvoice, setShowInvoice] = useState(false);
+    const [showInvoice, setShowInvoice] = useState<any>(null);
     const api = useRef({});
-    const templates = useAppSelector((state) => state.genericTemplate.items);
+    const templates = useAppSelector((state: any) => state.genericTemplate.items);
 
     useEffect(() => {
         dispatch(
@@ -63,7 +63,7 @@ const Bookings = ({ ID }) => {
     const getClientsByName = useCallback(
         async (params) => {
             const { success, data, message } = await getCLientByNamesAPI({
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 token,
                 params,
             });
@@ -74,7 +74,7 @@ const Bookings = ({ ID }) => {
                 return [];
             }
         },
-        [currentBranch.branchId, showAlert, token],
+        [currentBranch?.branchId, showAlert, token],
     );
 
     const awaitForDialog = useCallback(
@@ -122,7 +122,7 @@ const Bookings = ({ ID }) => {
                 amount: row.totalAmount,
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
-                branchId: currentBranch.branchId,
+                branchId: currentBranch?.branchId,
                 paymentDate: getCurrentDateTimeLocal(),
             };
 
@@ -136,7 +136,7 @@ const Bookings = ({ ID }) => {
             modifiedData.paymentStatus = paymentStatusTypes[0];
             return modifiedData;
         },
-        [awaitForDialog, currentBranch.branchId],
+        [awaitForDialog, currentBranch?.branchId],
     );
 
     const FIELDS = useMemo(
@@ -279,7 +279,7 @@ const Bookings = ({ ID }) => {
                 beforeAdd={beforeAdd}
                 beforeUpdate={beforeUpdate}
                 key={"booking"}
-                fields={FIELDS}
+                fields={FIELDS as any}
                 actions={[
                     {
                         name: "Document",
@@ -291,7 +291,7 @@ const Bookings = ({ ID }) => {
                         },
                     },
                 ]}
-                rootId={currentBranch.branchId}
+                rootId={currentBranch?.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="purpose"

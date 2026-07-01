@@ -15,11 +15,11 @@ import { useAppSelector } from "@/state";
 
 const WhatsAppConfiguration: React.FC = () => {
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
+    const token = useAppSelector((state: any) => state.auth.token);
     const dispatch = useDispatch();
     const [webWhastAppQrCode, setWebWhastAppQrCode] = useState<string | false | undefined>();
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const [whatsAppStatus, setWhatsAppStatus] = useState<string>(currentBranch.whatsAppStatus);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const [whatsAppStatus, setWhatsAppStatus] = useState<string>(currentBranch?.whatsAppStatus ?? "");
     const [polling, setPolling] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -28,8 +28,8 @@ const WhatsAppConfiguration: React.FC = () => {
             setWhatsAppStatus(status);
             const newCurrentBranch = JSON.parse(JSON.stringify(currentBranch));
             newCurrentBranch.whatsAppStatus = status;
-            dispatch(branchCruds.actions.setCurrentBranch(newCurrentBranch));
-            dispatch(branchCruds.actions.updateItem(newCurrentBranch));
+            dispatch((branchCruds.actions as any).setCurrentBranch(newCurrentBranch));
+            dispatch((branchCruds.actions as any).updateItem(newCurrentBranch));
             setWebWhastAppQrCode(undefined);
         },
         [currentBranch, dispatch],

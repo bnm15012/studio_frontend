@@ -1,6 +1,7 @@
 import { createCrudModule } from "@/core/api/createCrudModule";
 import api from "@/core/utils/api";
 import { getApiMessage, withLoading } from "@/core/api/helper";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 interface CrudConfig {
     key: string;
@@ -123,15 +124,15 @@ export const studentsAssignmentsCruds = createCrudModule({
     }),
 });
 
-export const branchCruds = createCrudModule({
+export const branchCruds = createCrudModule<any>({
     route: "branch",
     idKey: "branchId",
     extraState: { currentBranch: null, selectedBranch: null },
     extraReducers: {
-        setCurrentBranch(state, action: any) {
+        setCurrentBranch(state, action: PayloadAction<{ data: any[]; rootId: string | number }>) {
             state.currentBranch = action.payload;
         },
-        setSelectedBranch(state, action: any) {
+        setSelectedBranch(state, action: PayloadAction<{ data: any[]; rootId: string | number }>) {
             state.selectedBranch = action.payload;
         },
     },

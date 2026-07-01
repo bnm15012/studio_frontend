@@ -24,12 +24,12 @@ const Notification: React.FC = () => {
     const showAlert = useAlert();
     const dispatch = useAppDispatch();
 
-    const currentBranch = useAppSelector((state) => state.branch?.currentBranch);
-    const token = useAppSelector((state) => state.auth.token);
+    const currentBranch = useAppSelector((state: any) => state.branch?.currentBranch);
+    const token = useAppSelector((state: any) => state.auth.token);
     const notifications = useAppSelector(
-        (state) => state.notifications.items as NotificationItem[]
+        (state: any) => state.notifications.items as NotificationItem[]
     );
-    const unreadCount = useAppSelector((state) => state.notifications.unreadCount as number);
+    const unreadCount = useAppSelector((state: any) => state.notifications.unreadCount as number);
 
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const open = Boolean(anchorEl);

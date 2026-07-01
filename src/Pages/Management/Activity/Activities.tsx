@@ -15,14 +15,14 @@ const Activities = () => {
     const showAlert = useAlert();
     const { isBatchEnabled } = useUI();
 
-    const allActivities = useAppSelector((state) => state.activities.items);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const token = useAppSelector((state) => state.auth.token);
+    const allActivities = useAppSelector((state: any) => state.activities.items);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const token = useAppSelector((state: any) => state.auth.token);
     const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingActivity, setEditingActivity] = useState();
+    const [editingActivity, setEditingActivity] = useState<any>();
 
     const fetchActivities = useCallback(() => {
         dispatch(

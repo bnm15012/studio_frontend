@@ -36,7 +36,7 @@ const QrForm: React.FC<QrFormProps> = ({
     const { isMobile } = useUI();
     const [open, setOpen] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch) || {};
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch) || {};
     const qrLink = typeof qrValue === "string"
         ? qrValue
         : `${window.location.origin}/#/form/${link}/${currentBranch.branchId}`;

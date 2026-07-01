@@ -27,11 +27,11 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
     const showAlert = useAlert();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const token = useAppSelector((state) => state.auth.token);
-    const user = useAppSelector((state) => state.auth.user);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const user = useAppSelector((state: any) => state.auth.user);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const subscriptionPlan = useAppSelector((state: any) => state.auth.subscriptionPlan);
 
     useEffect(() => {
         if (!(window as any).Razorpay) {
@@ -48,8 +48,8 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
             const { data, success } = await createOrder({
                 token,
                 plan: plan.planType,
-                branchId: currentBranch.branchId,
-                studioId: studio.studioId,
+                branchId: currentBranch?.branchId,
+                studioId: studio?.studioId,
             });
 
             if (success) {
@@ -88,8 +88,8 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                         }
                     },
                     prefill: {
-                        name: user.userName,
-                        email: user.email,
+                        name: user?.userName || "",
+                        email: user?.email || "",
                     },
                     notes: {
                         plan: "Book & Manage",

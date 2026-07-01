@@ -32,8 +32,8 @@ const App: React.FC = () => {
                     <CssBaseline />
                     <UIProvider>
                         <AllRoutes />
+                        <ServerErrorDialog />
                     </UIProvider>
-                    <ServerErrorDialog />
                 </ThemeProvider>
             </Router>
         </AlertProvider>

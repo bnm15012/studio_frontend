@@ -73,7 +73,7 @@ const FIELDS = [
 
 const Expenses: React.FC = () => {
     const { isMobile } = useUI();
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const api = useRef<any>({});
 
     return (

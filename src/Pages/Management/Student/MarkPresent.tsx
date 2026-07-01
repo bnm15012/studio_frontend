@@ -133,7 +133,7 @@ const MarkPresentDialog: React.FC = () => {
 
     const markPresent = async (assignmentId: string) => {
         try {
-            await (dispatch as any)(studentsAssignmentsCruds.markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
+            await (dispatch as any)((studentsAssignmentsCruds as any).markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
             setScanStatus("success");
             setMessage("Attendance Marked");
         } catch (error: any) {

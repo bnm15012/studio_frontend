@@ -9,11 +9,11 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 const SettingsTab: React.FC = () => {
     const dispatch = useDispatch();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const studio = useAppSelector((state: any) => state.auth.studio);
     const showAlert = useAlert();
 
-    const initialConfigurations = useAppSelector((state) => state.auth.settings) || {};
+    const initialConfigurations = useAppSelector((state: any) => state.auth.settings) || {};
 
     const [configurations, setConfigurations] = useState<Record<string, boolean>>(initialConfigurations);
     const [isChanged, setIsChanged] = useState(false);
@@ -36,7 +36,7 @@ const SettingsTab: React.FC = () => {
         try {
             const { success, data, message } = await updateStudio({
                 values: {
-                    studioId: studio.studioId,
+                    studioId: studio?.studioId,
                     configuration: { configrationEntryList: configurations },
                 },
                 dispatch,

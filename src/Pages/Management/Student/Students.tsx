@@ -135,15 +135,15 @@ interface StudentsProps {
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const allActivities = useAppSelector((state) => state.activities.items) || [];
-    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const allActivities = useAppSelector((state: any) => state.activities.items) || [];
+    const cachedMembershipTypes = useAppSelector((state: any) => state.membershipPackages.items);
     const showAlert = useAlert();
 
     const [showInvoice, setShowInvoice] = useState<any>(false);
     const [showAttendence, setShowAttendence] = useState<any>(false);
-    const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
+    const tableState = useAppSelector((state: any) => state["students"]) || { recordById: {} };
     const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
     const api = useRef<any>({});

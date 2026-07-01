@@ -27,9 +27,9 @@ const Reports: React.FC = () => {
     const theme = useTheme();
     const { isMobile } = useUI();
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const studio = useAppSelector((state) => state.auth.studio);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const studio = useAppSelector((state: any) => state.auth.studio);
 
     const today = new Date();
 
@@ -368,7 +368,7 @@ const Reports: React.FC = () => {
                 {loading && <Loading />}
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
-                    studio={studio}
+                    studio={studio as any}
                     fileName="Report.pdf"
                     header={
                         <>

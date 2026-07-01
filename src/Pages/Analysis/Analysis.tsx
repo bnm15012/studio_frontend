@@ -87,15 +87,15 @@ const Analysis: React.FC = () => {
         [],
     );
     const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const token = useAppSelector((state) => state.auth.token);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const token = useAppSelector((state: any) => state.auth.token);
     const [expenseData, setExpenseData] = useState<any>();
     const [incomeLineData, setIncomeLineData] = useState<any>({});
     const [incomeBarData, setIncomeBarData] = useState<any>({});
     const [paymentData, setPaymentData] = useState<any>({});
     const [activityData, setActivityData] = useState<any>({});
     const [loading, setLoading] = useState(false);
-    const analysisData = useAppSelector((state) => state.analysis.data) || {};
+    const analysisData = useAppSelector((state: any) => state.analysis.data) || {};
 
     const loadDashboardData = useCallback(
         async (year: number) => {

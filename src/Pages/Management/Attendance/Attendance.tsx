@@ -30,14 +30,14 @@ const Attendance = () => {
     const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
     const showAlert = useAlert();
     const dispatch = useDispatch();
-    const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-    const allActivities = useAppSelector((state) => state.activities.items);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const allActivities = useAppSelector((state: any) => state.activities.items);
     const api = useRef({});
-    const [showAttendence, setShowAttendence] = useState(false);
+    const [showAttendence, setShowAttendence] = useState<any>(false);
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(getCurrentDateLocal());
-    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState(null);
+    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState<any>(null);
 
     const filterOptions = useMemo(
         () => [
@@ -121,8 +121,8 @@ const Attendance = () => {
         [isEnabled, FEATURE_KEYS, date],
     );
 
-    const markBulkAttendance = async (data) => {
-        dispatch(studentsAssignmentsCruds.markAttendanceBulk(data, token, showAlert, setLoading));
+    const markBulkAttendance = async (data: any) => {
+        dispatch((studentsAssignmentsCruds as any).markAttendanceBulk(data, token, showAlert, setLoading));
     };
 
     const AttendanceCard = useMemo(() => {
@@ -219,7 +219,7 @@ const Attendance = () => {
                     ]}
                     key={"studentActivities"}
                     fields={FIELDS}
-                    rootId={currentBranch.branchId}
+                    rootId={currentBranch?.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     CardContentComponent={AttendanceCard}

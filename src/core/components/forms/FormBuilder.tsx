@@ -194,7 +194,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     const validateField = (
         label: string,
         value: unknown,
-        validation: { required?: boolean; regex?: string; message?: string; [key: string]: any } | undefined
+        validation: { required?: boolean; regex?: string | RegExp; message?: string; [key: string]: any } | undefined
     ) => {
         if (validation?.required && (value === undefined || value === null || value === "")) {
             throw Error(`${label} is required`);

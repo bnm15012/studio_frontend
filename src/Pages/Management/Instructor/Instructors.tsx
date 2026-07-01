@@ -123,7 +123,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const api = useRef<any>({});
     const apiInstructor = useRef<any>({});
     const [generateContractDoc, setGenerateContractDoc] = useState<any>(null);
-    const allActivities = useAppSelector((state) => state.activities.items);
+    const allActivities = useAppSelector((state: any) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
         () => ({

@@ -20,12 +20,12 @@ const size = 7;
 const UploadJobHistory = () => {
     const [page, setPage] = useState(1);
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
+    const token = useAppSelector((state: any) => state.auth.token);
 
     const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(false);
 
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     const [totalPage, setTotalPage] = useState(0);
     const fetchUploadJobs = useCallback(

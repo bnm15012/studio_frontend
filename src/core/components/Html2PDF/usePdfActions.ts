@@ -17,9 +17,9 @@ export const usePdfActions = ({
     fileName,
     remainingPayload = {},
 }: UsePdfActionsProps) => {
-    const token = useAppSelector((s) => s.auth.token);
-    const studio = useAppSelector((s) => s.auth.studio);
-    const currentBranch = useAppSelector((s) => s.branch.currentBranch);
+    const token = useAppSelector((s: any) => s.auth.token);
+    const studio = useAppSelector((s: any) => s.auth.studio);
+    const currentBranch = useAppSelector((s: any) => s.branch.currentBranch);
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 

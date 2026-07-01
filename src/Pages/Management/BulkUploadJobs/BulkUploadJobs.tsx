@@ -13,7 +13,7 @@ import UploadJobHistory from "./UploadJobHistory";
 const BulkUploadJobs = () => {
     const showAlert = useAlert();
     const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
 

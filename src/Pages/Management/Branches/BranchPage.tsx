@@ -46,7 +46,7 @@ const BranchPage = () => {
     const navigate = useNavigate();
     const api = useRef<any>({});
     const studio = useAppSelector((s: any) => s.auth.studio);
-    const selectedBranch = useAppSelector((state) => state.branch.selectedBranch);
+    const selectedBranch = useAppSelector((state: any) => state.branch.selectedBranch);
 
     const beforeAdd = async (row: Record<string, unknown>) => {
         const updatedRow = { ...row };
@@ -68,7 +68,7 @@ const BranchPage = () => {
                     <ArrowBackIcon />
                 </IconButton>
                 <Typography variant="h5" fontWeight={"bold"} my={"auto"}>
-                    Branch: {selectedBranch.name}
+                    Branch: {selectedBranch?.name}
                 </Typography>
                 <Box ml={"auto"}></Box>
                 <Button

@@ -18,8 +18,8 @@ export interface Branch {
 
 const BranchesDropdown: React.FC = () => {
     const { isMobile } = useUI();
-    const branches = useAppSelector((state) => state.branch.items) || [];
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch) || {};
+    const branches = useAppSelector((state: any) => state.branch.items) || [];
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch) || {};
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ const BranchesDropdown: React.FC = () => {
 
     const handleBranchSelect = (branch: Branch) => {
         if (!branch.isActive) return;
-        dispatch(branchCruds.actions.setCurrentBranch(branch));
+        dispatch((branchCruds.actions as any).setCurrentBranch(branch));
         dispatch(clearAllstate() as any);
         dispatch(loadInitialDataAPI() as any);
         navigate("/dashboard");

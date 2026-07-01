@@ -43,7 +43,7 @@ const FIELDS = [
 const Clients: React.FC = () => {
     const { isMobile } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>

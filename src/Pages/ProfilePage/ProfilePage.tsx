@@ -23,8 +23,8 @@ const dialogNames = [
 const ProfilePage: React.FC = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
-    const admin = useAppSelector((state) => state.auth.user);
-    const studio = useAppSelector((state) => state.auth.studio);
+    const admin = useAppSelector((state: any) => state.auth.user);
+    const studio = useAppSelector((state: any) => state.auth.studio);
     const [tabValue, setTabValue] = useState(0);
     const dialog = useAppSelector(dialogOnTop() as any) as string;
     const { DEBUG, isMobile } = useUI();
@@ -113,13 +113,13 @@ const ProfilePage: React.FC = () => {
                         <UserWidgets admin={admin} studio={studio} />
                     </Box>
                 ) : tabValue === 1 && admin ? (
-                    <ChangePassword user={admin} />
+                    <ChangePassword user={admin as any} />
                 ) : tabValue === 2 ? (
                     <SubscriptionTab />
                 ) : tabValue === 3 ? (
                     <SettingsTab />
                 ) : tabValue === 4 ? (
-                    <CommunicationConfigs studio={studio} />
+                    <CommunicationConfigs studio={studio as any} />
                 ) : (
                     <Loading />
                 )}

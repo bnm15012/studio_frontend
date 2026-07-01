@@ -44,7 +44,7 @@ const Branches = () => {
             <Box>
                 <Views
                     tableName={"branch"}
-                    tableCruds={branchCruds}
+                    tableCruds={branchCruds as any}
                     actions={[
                         { name: "delete", hide: true, enabled: false, onClick: () => { } },
                         {
@@ -53,7 +53,7 @@ const Branches = () => {
                             enabled: (row) => row.isActive,
                             sx: { color: "blue" },
                             onClick: (row) => {
-                                dispatch(branchCruds.actions.setSelectedBranch(row));
+                                dispatch((branchCruds.actions as any).setSelectedBranch(row));
                                 navigate(`/management/branch/${row.branchId}`);
                             },
                         },

@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
     const { isMobile } = useUI();
 
     const navigate = useNavigate();
-    const user = useAppSelector((state) => state.auth.user);
+    const user = useAppSelector((state: any) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
                                     <BranchesDropdown />
                                 )}
                                 <UserProfileDropdown
-                                    user={user}
+                                    user={user as any}
                                     handleLogout={handleLogout}
                                 />
                             </FlexBetween>

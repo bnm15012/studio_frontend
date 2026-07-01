@@ -5,23 +5,29 @@ import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useUI } from "../../../context/UIContext";
 
-const ActivityMembershipSelector = ({ onSelect, selectedData, isMemberSHipToo = true }) => {
-    const { isBatchEnabled } = useUI();
-    const activities = useAppSelector((state) => state.activities.items);
+interface ActivityMembershipSelectorProps {
+    onSelect: (...args: any[]) => void;
+    selectedData?: any;
+    isMemberSHipToo?: boolean;
+}
 
-    const [selectedActivity, setSelectedActivity] = useState(
-        activities.find((f) => f.activityId === selectedData?.activity?.activityId) || null,
+const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({ onSelect, selectedData, isMemberSHipToo = true }) => {
+    const { isBatchEnabled } = useUI();
+    const activities = useAppSelector((state: any) => state.activities.items);
+
+    const [selectedActivity, setSelectedActivity] = useState<any>(
+        activities.find((f: any) => f.activityId === selectedData?.activity?.activityId) || null,
     );
     const [selectedMembership, setSelectedMembership] = useState(
         selectedData?.membershipType || "",
     );
-    const [daysPerWeek, setDaysPerWeek] = useState(null);
+    const [daysPerWeek, setDaysPerWeek] = useState<any>(null);
     const [batchName, setBatchName] = useState(selectedData?.batchName || "");
     const [batchTime, setBatchTime] = useState("");
 
-    const [availableMemberships, setAvailableMemberships] = useState([]); // planTypes
-    const [availableDaysOptions, setAvailableDaysOptions] = useState([]); // filter by membership
-    const [availableBatches, setAvailableBatches] = useState([]); // filter by days
+    const [availableMemberships, setAvailableMemberships] = useState<any[]>([]); // planTypes
+    const [availableDaysOptions, setAvailableDaysOptions] = useState<any[]>([]); // filter by membership
+    const [availableBatches, setAvailableBatches] = useState<any[]>([]); // filter by days
 
     // when activity changes
     const handleActivityChange = (_event, activity) => {

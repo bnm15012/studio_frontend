@@ -50,9 +50,9 @@ const initialTemplate = {
 const Communication = () => {
     const theme = useTheme();
     const { isMobile } = useUI();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state) => state.branch.currentBranch);
+    const token = useAppSelector((state: any) => state.auth.token);
+    const studio = useAppSelector((state: any) => state.auth.studio);
+    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const showAlert = useAlert();
 
     const [open, setOpen] = useState(false);
