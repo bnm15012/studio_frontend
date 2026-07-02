@@ -1,4 +1,3 @@
-import React from "react";
 import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 import { ActionItem } from "../../types";
 

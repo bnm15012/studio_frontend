@@ -26,7 +26,7 @@ import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions from "./helper/Actions";
-import { ActionItem, ExtraProp, FieldDef } from "../types";
+import { ActionItem, FieldDef } from "../types";
 import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */

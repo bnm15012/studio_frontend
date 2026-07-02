@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from "react";
 import { HashRouter as Router } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "@/core/utils/theme";
@@ -8,7 +7,7 @@ import { AllRoutes } from "@/NavigationComponets/AllRoutes";
 import { AlertProvider } from "@/core/components/feedback/Alert";
 import { clearCacheIfNewDay } from "./utils/cacheManager";
 import { loadInitialDataAPI } from "./utils/loadInitialData";
-import { UIProvider } from "./context/UIContext";
+import { AppUIProvider } from "./context/UIContext";
 import ServerErrorDialog from '@/core/components/dialogs/ServerErrorDialog';
 import { useAppDispatch, useAppSelector } from "@/state";
 
@@ -30,10 +29,10 @@ const App: React.FC = () => {
             <Router>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
-                    <UIProvider>
+                    <AppUIProvider>
                         <AllRoutes />
                         <ServerErrorDialog />
-                    </UIProvider>
+                    </AppUIProvider>
                 </ThemeProvider>
             </Router>
         </AlertProvider>

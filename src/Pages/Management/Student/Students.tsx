@@ -2,7 +2,6 @@ import { useAppSelector } from "@/state";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
 import Views from "@/core/crud/Views";
 import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
 import StudentCard from "./StudentCard";

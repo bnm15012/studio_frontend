@@ -20,13 +20,12 @@
     "noImplicitAny": false,
     "noImplicitThis": true,
     "alwaysStrict": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    /* JavaScript Support for Incremental Migration */
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {

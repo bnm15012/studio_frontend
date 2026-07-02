@@ -1,5 +1,4 @@
-import React from "react";
-import { Box, Typography, useTheme, SxProps, Theme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { getLocalDateTime } from "../../utils/DateUtil";
 import { CalendarMonth } from "@mui/icons-material";
 

@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/state";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
 import Views from "@/core/crud/Views";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";

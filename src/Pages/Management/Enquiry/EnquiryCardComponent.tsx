@@ -7,12 +7,12 @@ import CardChip from "@/core/components/cards/CardChip";
 import { FileText } from "lucide-react";
 import { Box } from "@mui/material";
 
-interface EnquiryRow {
-    enquiryDate: string | Date;
-    name: string;
-    contact: string;
-    enquiryPurpose: string;
-}
+// interface EnquiryRow {
+//     enquiryDate: string | Date;
+//     name: string;
+//     contact: string;
+//     enquiryPurpose: string;
+// }
 
 interface EnquiryCardProps {
     row: Record<string, any>;

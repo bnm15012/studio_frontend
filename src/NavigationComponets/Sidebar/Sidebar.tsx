@@ -19,7 +19,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import DescriptionIcon from "@mui/icons-material/Description";
 import SidebarItem, { SidebarRoute } from "./SidebarItem";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Close, GridView } from "@mui/icons-material";
 

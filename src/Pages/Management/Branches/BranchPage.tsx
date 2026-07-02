@@ -4,7 +4,6 @@ import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AddIcon from "@mui/icons-material/Add";
-import { useSelector } from "react-redux";
 import { usersCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";

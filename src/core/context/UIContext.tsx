@@ -5,21 +5,23 @@ export interface UIContextType {
     isMobile: boolean;
 }
 
-export function createUIContext<T extends UIContextType>() {
-    const Context = createContext<T | undefined>(undefined);
+export function createUIContext<T extends object>() {
+    type ContextType = UIContextType & T;
+
+    const Context = createContext<ContextType | undefined>(undefined);
 
     interface UIProviderProps {
         children: React.ReactNode;
-        value?: Omit<T, "isMobile">;
+        value: T;
     }
 
     const UIProvider: React.FC<UIProviderProps> = ({ children, value }) => {
         const isMobile = useMediaQuery("(max-width: 1000px)");
 
-        const contextValue = {
+        const contextValue: ContextType = {
             isMobile,
-            ...(value ?? {}),
-        } as T;
+            ...value,
+        };
 
         return (
             <Context.Provider value={contextValue}>

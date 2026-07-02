@@ -2,7 +2,6 @@ import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";

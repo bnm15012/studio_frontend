@@ -1,5 +1,4 @@
 import { useAppSelector } from "@/state";
-import { useSelector } from "react-redux";
 import { useEffect, useState, useCallback } from "react";
 import {
     Box,

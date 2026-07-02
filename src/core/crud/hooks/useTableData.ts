@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../state";
 import { usePageSearch } from "../../hooks/useSearch";
-import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState, GenericItem } from "../../types";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "../../types";
 
 export interface UseTableDataParams {
     tableCruds: CrudThunks;

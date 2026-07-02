@@ -31,7 +31,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="Studio Name"
                         onChange={(e) => onChangehandle(e.target.value, "studioName")}
-                        value={values.studioName || ""}
+                        value={values.studioName}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -39,7 +39,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="User Name"
                         onChange={(e) => onChangehandle(e.target.value, "userName")}
-                        value={values.userName || ""}
+                        value={values.userName}
                         sx={{ width: "100%" }}
                     />
                 </>
@@ -54,7 +54,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         ? onChangehandle(e.target.value, "userName")
                         : onChangehandle(e.target.value, "email")
                 }
-                value={values.email || ""}
+                value={values.email || values.userName}
                 sx={{ width: "100%" }}
             />
             {isLogin && (
@@ -64,7 +64,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                     type={"password"}
                     label={"password"}
                     onChange={(e) => onChangehandle(e.target.value, "password")}
-                    value={values.password || ""}
+                    value={values.password}
                     sx={{ width: "100%" }}
                 />
             )}
@@ -79,7 +79,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                             target.value = target.value.replace(/[^0-9]/g, "").slice(0, 10);
                         }}
                         onChange={(e) => onChangehandle(e.target.value, "contactDetails")}
-                        value={values.contactDetails || ""}
+                        value={values.contactDetails}
                         sx={{ width: "100%" }}
                         slotProps={{
                             htmlInput: {
@@ -96,7 +96,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="City"
                         onChange={(e) => onChangehandle(e.target.value, "location")}
-                        value={values.location || ""}
+                        value={values.location}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -104,7 +104,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="Address"
                         onChange={(e) => onChangehandle(e.target.value, "address")}
-                        value={values.address || ""}
+                        value={values.address}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -112,7 +112,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="State"
                         onChange={(e) => onChangehandle(e.target.value, "state")}
-                        value={values.state || ""}
+                        value={values.state}
                         sx={{ width: "100%" }}
                     />
                     <TextField
@@ -120,7 +120,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         required
                         label="Pincode"
                         onChange={(e) => onChangehandle(e.target.value, "pincode")}
-                        value={values.pincode || ""}
+                        value={values.pincode}
                         sx={{ width: "100%" }}
                         slotProps={{
                             htmlInput: {

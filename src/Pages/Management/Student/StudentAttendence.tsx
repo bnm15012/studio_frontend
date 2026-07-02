@@ -6,7 +6,6 @@ import { studentsAssignmentsCruds } from "../../../api/all.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import {
     formatDate,
-    getDateRangeLocal,
     getLocalDateTime,
     parseDateTime,
 } from "@/core/utils/DateUtil";
@@ -26,11 +25,11 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
     const token = useAppSelector((state) => state.auth.token);
     const showAlert = useAlert();
 
-    const allDates = useMemo(() => {
-        if (!activityData) return [];
+    // const allDates = useMemo(() => {
+    //     if (!activityData) return [];
 
-        return getDateRangeLocal(activityData.membershipStartDate, activityData.membershipEndDate);
-    }, [activityData]);
+    //     return getDateRangeLocal(activityData.membershipStartDate, activityData.membershipEndDate);
+    // }, [activityData]);
 
     useEffect(() => {
         if (!activityData) return;

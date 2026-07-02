@@ -4,7 +4,6 @@ import { Pagination } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
-import { useSelector } from "react-redux";
 import Loading from "@/core/components/loading/Loading";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";

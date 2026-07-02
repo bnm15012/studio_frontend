@@ -7,7 +7,7 @@ import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import type { Branch } from "@/api/types";
 
 const BranchesDropdown: React.FC = () => {

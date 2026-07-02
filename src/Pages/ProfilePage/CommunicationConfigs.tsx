@@ -8,7 +8,7 @@ import Field from "@/core/components/fields/Field";
 import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 
 interface StudioInfo {
     studioId: number;

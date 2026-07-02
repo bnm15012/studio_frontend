@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/state";
 import { useState, useEffect } from "react";
 import { Select, MenuItem, FormControl, TableCell } from "@mui/material";
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useUI } from "../../../context/UIContext";
 

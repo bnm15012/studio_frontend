@@ -17,7 +17,6 @@ import {
     Payment,
     Activity,
     GenericTemplate,
-    BulkUploadJob,
 } from "@/api/types";
 import { GenericState } from "@/core/state/stateTypes";
 

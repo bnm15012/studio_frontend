@@ -2,7 +2,6 @@ import { useAppSelector } from "@/state";
 import React, { useState, useEffect } from "react";
 import { DialogContent, Box } from "@mui/material";
 import PricingPlanCards from "../Pricing/PricingPlanCards";
-import { useSelector } from "react-redux";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface SubscriptionPopupProps {

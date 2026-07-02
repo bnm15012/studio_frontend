@@ -2,7 +2,6 @@ import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useSelector } from "react-redux";
 import { getMessageRecipientsAPI } from "./communication.api";
 import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";

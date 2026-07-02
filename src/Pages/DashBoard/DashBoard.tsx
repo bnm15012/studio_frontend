@@ -5,7 +5,6 @@ import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useSelector } from "react-redux";
 import { fetchDashBoardData } from "./Dashboard.api";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import Loading from "@/core/components/loading/Loading";
@@ -18,7 +17,7 @@ import Payment from "@mui/icons-material/Payment";
 import TrendingUp from "@mui/icons-material/TrendingUp";
 import SummaryCard from "./SummaryCard";
 import ImageComponent from "@/core/components/fields/ImageComponent";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 
 // Entrance animation (fade + up + subtle scale)
 const fadeInUp = keyframes`

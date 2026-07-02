@@ -19,7 +19,7 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AuthButtons from "./AuthButtons";
 import { logoutUser } from "../../state/thunks";
 import { useAppDispatch, useAppSelector } from "../../state";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import { useNavigate } from "react-router-dom";
 
 export interface NavbarProps {

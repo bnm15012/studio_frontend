@@ -1,6 +1,5 @@
 import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
-import { useSelector } from "react-redux";
 import Views from "@/core/crud/Views";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";

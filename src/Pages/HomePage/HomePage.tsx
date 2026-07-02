@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/state";
 import { useEffect } from "react";
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
 import { HeroSection } from "./HeroSection";

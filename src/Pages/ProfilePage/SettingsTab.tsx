@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
-import { useSelector } from "react-redux";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { setSettings } from "../../state/authSlice";
 import { FlexBetween } from "@/core/components/layout/FlexBox";

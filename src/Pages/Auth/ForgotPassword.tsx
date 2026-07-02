@@ -16,7 +16,6 @@ import Loading from "@/core/components/loading/Loading";
 import { changePasswordApiCall, sendOTPRequest } from "./auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import CloseIcon from "@mui/icons-material/Close";
-import { useSelector } from "react-redux";
 import { validatePassword } from "../../utils/validationConstraints.js";
 import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
 

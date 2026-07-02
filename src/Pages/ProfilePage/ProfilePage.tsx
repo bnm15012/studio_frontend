@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import Loading from "@/core/components/loading/Loading";
 import UserWidgets from "./Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
@@ -9,7 +8,7 @@ import SubscriptionTab from "./SubscriptionTab";
 import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
-import { useUI } from "../../context/UIContext";
+import { useUI } from "@/context/UIContext";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 const dialogNames = [

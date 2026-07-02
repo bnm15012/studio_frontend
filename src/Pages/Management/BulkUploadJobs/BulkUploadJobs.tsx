@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useSelector } from "react-redux";
 import Loading from "@/core/components/loading/Loading";
 import UploadData from "./UploadData";
 import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
