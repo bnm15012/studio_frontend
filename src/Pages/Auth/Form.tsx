@@ -8,11 +8,12 @@ import FormFields from "./FormFields";
 import { loginApiCall, registerApiCall } from "./auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
+import { User } from "@/api/types.js";
 
 interface FormProps {
     pageType: "Login" | "Register";
     editProfile?: boolean;
-    user?: any;
+    user?: User;
 }
 
 const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {

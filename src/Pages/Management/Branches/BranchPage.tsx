@@ -51,7 +51,7 @@ const BranchPage = () => {
         const updatedRow = { ...row };
         delete updatedRow["branchId"];
         updatedRow["studioEntry"] = {
-            studioId: studio?.studioId,
+            studioId: studio.studioId,
             branchList: [
                 {
                     branchId: selectedBranch?.branchId,

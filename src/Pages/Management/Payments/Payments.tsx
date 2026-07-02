@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
@@ -71,8 +70,7 @@ const FIELDS = [
 ];
 
 const Expenses: React.FC = () => {
-    const { isMobile } = useUI();
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const { isMobile, currentBranch } = useUI()
     const api = useRef<any>({});
 
     return (
@@ -90,7 +88,7 @@ const Expenses: React.FC = () => {
                     size={LIMIT}
                     key={"payments"}
                     fields={FIELDS as any}
-                    rootId={currentBranch?.branchId}
+                    rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldToDisplayOnDelete="name"

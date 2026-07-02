@@ -10,20 +10,19 @@ import { replacePlaceholders } from "../../../../utils/globalFuns";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import { useUI } from "@/context/UIContext";
 
 const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: any }) => {
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<any>(null);
     const [templates, setTemplates] = useState<any[]>([]);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const { token, studio, currentBranch } = useUI()
+
     const [loading, setLoading] = useState(false);
-    const token = useAppSelector((state) => state.auth.token);
     const [instructorData, setInstructorData] = useState<any>({});
 
     const tableState = useAppSelector((state) => state["instructors"]);
-
     const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
     useEffect(() => {
@@ -102,13 +101,13 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                     studio={studio as { logo: string; studioName: string }}
                     header={
                         <p>
-                            <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch?.address}</p>
+                            <p style={{ margin: 0, textWrap: "wrap" }}>{currentBranch.address}</p>
                             <p style={{ margin: 0 }}>
-                                {currentBranch?.city}, {currentBranch?.state}{" "}
-                                {currentBranch?.pincode}
+                                {currentBranch.city}, {currentBranch.state}{" "}
+                                {currentBranch.pincode}
                             </p>
-                            <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                            <p style={{ margin: 0 }}>{studio?.email}</p>
+                            <p style={{ margin: 0 }}>{currentBranch.phone}</p>
+                            <p style={{ margin: 0 }}>{studio.email}</p>
                         </p>
                     }
                     content={
@@ -174,8 +173,8 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                                 <p style={{ textAlign: "right" }}>
                                     <p>_________________________</p>
                                     <p>Authorized Studio Representative</p>
-                                    <p>{studio?.studioName}</p>
-                                    <p>{currentBranch?.name}</p>
+                                    <p>{studio.studioName}</p>
+                                    <p>{currentBranch.name}</p>
                                 </p>
                             </p>
                         </>

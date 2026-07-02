@@ -13,14 +13,14 @@ import { useAppDispatch, useAppSelector } from "@/state";
 
 const App: React.FC = () => {
     const mode = useAppSelector((state) => state.auth.mode);
-    const theme = useMemo(() => createTheme(themeSettings(mode) as any), [mode]);
+    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
     const dispatch = useAppDispatch();
     const token = useAppSelector((state) => state.auth.token);
 
     useEffect(() => {
         clearCacheIfNewDay();
         if (token) {
-            dispatch(loadInitialDataAPI() as any);
+            dispatch(loadInitialDataAPI());
         }
     }, [dispatch, token]);
 

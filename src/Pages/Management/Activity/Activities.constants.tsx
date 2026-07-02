@@ -28,7 +28,7 @@ export const validActivityTypes = [
     "MARTIAL_ARTS",
 ];
 
-export const getIcon = (activityType) => {
+export const getIcon = (activityType: string) => {
     switch (activityType) {
         case "YOGA":
             return <SelfImprovementIcon sx={{ paddingBottom: 0 }} color="primary" />;
@@ -69,10 +69,4 @@ export const getIcon = (activityType) => {
 
 export const membershipTypeColors = ["#7c3aed", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
 
-export const validMembershipTypes = [
-    "REGISTRATION",
-    "MONTHLY",
-    "QUARTERLY",
-    "HALF_YEARLY",
-    "YEARLY",
-];
+export const validMembershipTypes = ["REGISTRATION", "MONTHLY", "QUARTERLY", "HALF_YEARLY", "YEARLY"];

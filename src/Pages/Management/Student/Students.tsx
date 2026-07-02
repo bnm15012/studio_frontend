@@ -87,21 +87,21 @@ const FIELDS = [
         name: "membershipStatus",
         label: "Status",
         getValue: (value: any) => (
-                <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                    {value as string}
-                </Box>
-            ),
-            defaultValue: "ACTIVE",
-            extraProp: { readOnly: true },
-        },
-        {
-            show: false,
-            section: "Personal Details",
-            name: "gender",
-            label: "Gender",
-            type: "SELECT",
-            validation: { required: true },
-            getValue: (value: any) => value && { key: value, value },
+            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
+                {value as string}
+            </Box>
+        ),
+        defaultValue: "ACTIVE",
+        extraProp: { readOnly: true },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "gender",
+        label: "Gender",
+        type: "SELECT",
+        validation: { required: true },
+        getValue: (value: any) => value && { key: value, value },
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -133,9 +133,7 @@ interface StudentsProps {
 }
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
-    const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const { studio, currentBranch, isMobile, isEnabled, FEATURE_KEYS } = useUI();
     const allActivities = useAppSelector((state) => state.activities.items) || [];
     const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
@@ -516,7 +514,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: false,
                         name: "paymentEntry.branchId",
                         label: "Payee",
-                        defaultValue: currentBranch?.branchId,
+                        defaultValue: currentBranch.branchId,
                     },
                     {
                         show: true,
@@ -551,7 +549,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             FEATURE_KEYS.PAYMENT_DATE,
             allActivities,
             beforeAdd,
-            currentBranch?.branchId,
+            currentBranch.branchId,
             isEnabled,
             overRideOnChange,
         ],
@@ -600,7 +598,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 size={size}
                 key={"students"}
                 fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD] as any}
-                rootId={currentBranch?.branchId}
+                rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="name"

@@ -69,7 +69,7 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                     fileName={`booking-invoice-${bookingData?.clientEntry?.clientId}`}
                     whatsAppPayload={{
                         name: bookingData?.clientEntry?.pocName,
-                        studioName: studio?.studioName,
+                        studioName: studio.studioName,
                         invoiceToken: bookingData?.invoiceToken,
                     }}
                     remainingPayload={{
@@ -77,12 +77,12 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                         templateName: "BOOKING_INVOICE",
                         clientIds: [bookingData?.clientEntry?.clientId],
                     }}
-                    footer={<p>Thank you for choosing {studio?.studioName}!</p>}
+                    footer={<p>Thank you for choosing {studio.studioName}!</p>}
                     header={
                         <>
                             <div>
                                 <FlexBetween flexDirection="row-reverse">
-                                    {studio?.gstNumber && (
+                                    {studio.gstNumber && (
                                         <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
                                     )}
                                 </FlexBetween>
@@ -103,14 +103,14 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                             {/* Invoice Info */}
                             <p>
                                 <p style={{ margin: 0, textWrap: "wrap" }}>
-                                    {currentBranch?.address}
+                                    {currentBranch.address}
                                 </p>
                                 <p style={{ margin: 0 }}>
-                                    {currentBranch?.city}, {currentBranch?.state}{" "}
-                                    {currentBranch?.pincode}
+                                    {currentBranch.city}, {currentBranch.state}{" "}
+                                    {currentBranch.pincode}
                                 </p>
-                                <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                                <p style={{ margin: 0 }}>{studio?.email}</p>
+                                <p style={{ margin: 0 }}>{currentBranch.phone}</p>
+                                <p style={{ margin: 0 }}>{studio.email}</p>
                             </p>
                             <p style={{ textAlign: "right" }}>
                                 <strong>Bill To</strong>:

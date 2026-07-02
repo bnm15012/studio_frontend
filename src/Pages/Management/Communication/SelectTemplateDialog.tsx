@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "../../../utils/globalFuns";
+import { useUI } from "@/context/UIContext";
 
 interface SelectTemplateDialogProps {
     open: boolean;
@@ -20,14 +21,12 @@ interface SelectTemplateDialogProps {
 }
 
 const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
+    const { studio, token, currentBranch } = useUI()
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
 
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     const [loading, setLoading] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
@@ -50,7 +49,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                     setLoading,
                     token,
                     { searchTerm: "COMMUNICATION" },
-                    studio?.studioId ?? 0,
+                    studio.studioId ?? 0,
                     false
                 ) as any
             );
@@ -97,7 +96,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                 phone: phoneNumber,
                 message: editableMessage,
                 payload: {
-                    branchId: currentBranch?.branchId,
+                    branchId: currentBranch.branchId,
                     notificationType,
                     title: selectedTemplate?.templateName ?? "CUSTOM",
                     content: editableMessage,

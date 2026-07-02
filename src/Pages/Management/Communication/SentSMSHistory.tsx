@@ -1,6 +1,4 @@
-import { useAppSelector } from "@/state";
 import { Pagination } from "@mui/material";
-
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "./communication.api";
@@ -18,12 +16,11 @@ interface SentSMSHistoryProps {
 
 const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
     const showAlert = useAlert();
-    const { isMobile } = useUI();
+    const { isMobile, token, currentBranch } = useUI()
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const token = useAppSelector((state) => state.auth.token);
     const [history, setHistory] = useState(newHistory);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [openDialog, setOpenDialog] = useState<any>(false);
@@ -40,7 +37,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
                 setLoading(true);
                 const { data, totalCount, success, message } = await getMessageHistoryAPI({
                     token,
-                    branchId: currentBranch?.branchId,
+                    branchId: currentBranch.branchId,
                     page,
                     size,
                 });
@@ -58,7 +55,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
                 setLoading(false);
             }
         },
-        [token, currentBranch?.branchId, size, showAlert],
+        [token, currentBranch.branchId, size, showAlert],
     );
     const handlePageChange = async (e: React.ChangeEvent<unknown>, p: number) => {
         setLoading(true);
@@ -69,7 +66,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
 
     useEffect(() => {
         !history && getMessageHistory();
-    }, [page, currentBranch?.branchId, history, getMessageHistory]);
+    }, [page, currentBranch.branchId, history, getMessageHistory]);
 
     return (
         <FlexBetween flexDirection={"column"} mt={2}>

@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
@@ -40,9 +39,8 @@ const FIELDS = [
 ];
 
 const Clients: React.FC = () => {
-    const { isMobile } = useUI();
+    const { isMobile, currentBranch } = useUI();
     const api = useRef<any>({});
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
 
     return (
         <FlexBetweenColumn>
@@ -54,7 +52,7 @@ const Clients: React.FC = () => {
                     size={LIMIT}
                     key={"clients"}
                     fields={FIELDS as any}
-                    rootId={currentBranch?.branchId}
+                    rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

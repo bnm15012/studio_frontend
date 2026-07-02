@@ -57,7 +57,7 @@ const BranchesDropdown: React.FC = () => {
                         <MenuItem
                             key={branch.branchId}
                             disabled={isDisabled}
-                            selected={branch.branchId === currentBranch?.branchId}
+                            selected={branch.branchId === currentBranch.branchId}
                             onClick={() => handleBranchSelect(branch)}
                         >
                             {branch.name}

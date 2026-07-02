@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/state";
+import { useAppDispatch } from "@/state";
 import { useRef } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
@@ -31,11 +31,10 @@ const FIELDS = [
 ];
 
 const Branches = () => {
-    const { isMobile } = useUI();
+    const { isMobile, studio } = useUI();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const api = useRef<any>({});
-    const studio = useAppSelector((state) => state.auth.studio);
 
     return (
         <FlexBetweenColumn>
@@ -60,7 +59,7 @@ const Branches = () => {
                     size={LIMIT}
                     key={"branch"}
                     fields={FIELDS}
-                    rootId={studio?.studioId}
+                    rootId={studio.studioId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/state";
 import React, { useEffect, useRef, useState } from "react";
 import {
     Box,
@@ -23,11 +22,8 @@ import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/
 const Reports: React.FC = () => {
     const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
     const theme = useTheme();
-    const { isMobile } = useUI();
+    const { isMobile, token, studio, currentBranch } = useUI()
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const studio = useAppSelector((state) => state.auth.studio);
 
     const today = new Date();
 
@@ -61,9 +57,9 @@ const Reports: React.FC = () => {
             endYear: endDateValue.getFullYear(),
             startMonth: startDateValue.getMonth() + 1,
             startYear: startDateValue.getFullYear(),
-            studioId: studio?.studioId!,
+            studioId: studio.studioId!,
             paymentMethod,
-            branchId: currentBranch?.branchId,
+            branchId: currentBranch.branchId,
         };
         try {
             if (reportType === "incomeExpense") {

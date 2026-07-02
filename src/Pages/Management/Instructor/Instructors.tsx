@@ -117,8 +117,7 @@ interface InstructorsProps {
 }
 
 const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
-    const { isMobile } = useUI();
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const { isMobile, currentBranch } = useUI()
     const api = useRef<any>({});
     const apiInstructor = useRef<any>({});
     const [generateContractDoc, setGenerateContractDoc] = useState<any>(null);

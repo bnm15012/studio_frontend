@@ -12,10 +12,9 @@ import { sortMembershipPlans } from "./Activity.util";
 
 const Activities = () => {
     const showAlert = useAlert();
-    const { isBatchEnabled } = useUI();
+    const { isBatchEnabled, currentBranch } = useUI();
 
     const allActivities = useAppSelector((state) => state.activities.items);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const token = useAppSelector((state) => state.auth.token);
     const dispatch = useAppDispatch();
 

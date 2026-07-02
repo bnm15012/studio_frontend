@@ -55,8 +55,8 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
         const isUserChanged = values.phone !== admin.phone || imageUrl !== admin.imageUrl;
         const isStudioChanged =
             values.gstNumber !== studio.gstNumber ||
-            values.studioName !== studio?.studioName ||
-            values.location !== studio?.location ||
+            values.studioName !== studio.studioName ||
+            values.location !== studio.location ||
             studioLogo !== studio.logo;
 
         return {
@@ -88,11 +88,11 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
         setEditedValues({
             userName: admin.userName || "",
             phone: admin.phone || "",
-            studioName: studio?.studioName || "",
-            location: studio?.location || "",
-            gstNumber: studio?.gstNumber || "",
+            studioName: studio.studioName || "",
+            location: studio.location || "",
+            gstNumber: studio.gstNumber || "",
         });
-        setStudioLogo(studio?.logo || null);
+        setStudioLogo(studio.logo || null);
     }, [admin, studio]);
 
     if (!admin) return null;
@@ -267,7 +267,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                         dirName="studio"
                         size={isMobile ? "150px" : "200px"}
                         setValue={setStudioLogo}
-                        value={studio?.logo || "/assets/default_logo.png"}
+                        value={studio.logo || "/assets/default_logo.png"}
                         isCircular
                         allowEdit={editMode}
                     />

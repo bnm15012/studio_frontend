@@ -30,6 +30,7 @@ import Loading from "@/core/components/loading/Loading";
 import { useAppDispatch } from "@/state";
 import { setAnalysisData } from "@/state/analysisSlice";
 import { useAppSelector } from "@/state";
+import { useUI } from "@/context/UIContext";
 
 // Registering required chart components
 ChartJS.register(
@@ -87,8 +88,8 @@ const Analysis: React.FC = () => {
         [],
     );
     const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-    const token = useAppSelector((state) => state.auth.token);
+    const { token, currentBranch } = useUI()
+
     const [expenseData, setExpenseData] = useState<any>();
     const [incomeLineData, setIncomeLineData] = useState<any>({});
     const [incomeBarData, setIncomeBarData] = useState<any>({});
@@ -127,14 +128,14 @@ const Analysis: React.FC = () => {
                 setLoading(false);
             }
         },
-        [analysisData, years, token, currentBranch?.branchId, dispatch],
+        [analysisData, years, token, currentBranch.branchId, dispatch],
     );
 
     useEffect(() => {
-        if (currentBranch?.branchId) {
+        if (currentBranch.branchId) {
             loadDashboardData(selectedYear);
         }
-    }, [selectedYear, currentBranch?.branchId, loadDashboardData]);
+    }, [selectedYear, currentBranch.branchId, loadDashboardData]);
 
     return (
         <WidgetsOnPage

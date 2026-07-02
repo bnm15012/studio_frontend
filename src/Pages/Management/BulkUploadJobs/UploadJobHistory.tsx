@@ -7,31 +7,28 @@ import {
     TableContainer,
     Typography,
 } from "@mui/material";
-import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "@/core/components/tables/StyledTableComponents";
 import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
+import { useUI } from "@/context/UIContext";
 
 const size = 7;
 const UploadJobHistory = () => {
-    const [page, setPage] = useState(1);
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-
+    const { token, currentBranch } = useUI()
+    const [page, setPage] = useState(1);
     const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(false);
-
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-
     const [totalPage, setTotalPage] = useState(0);
+
     const fetchUploadJobs = useCallback(
         async (page: number) => {
             setLoading(true);
             const { success, data, message, totalCount } = await getBulkUploadJobsAPI({
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 token,
                 page,
                 size,

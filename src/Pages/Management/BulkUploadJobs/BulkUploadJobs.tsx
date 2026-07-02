@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/state";
 import { useState, useCallback } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { FlexBetween } from "@/core/components/layout/FlexBox";
@@ -8,12 +7,11 @@ import UploadData from "./UploadData";
 import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
 import { createBulkUploadJobAPI } from "./BulkUploadJobs.api";
 import UploadJobHistory from "./UploadJobHistory";
+import { useUI } from "@/context/UIContext";
 
 const BulkUploadJobs = () => {
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
-
+    const { token, currentBranch } = useUI();
     const [loading, setLoading] = useState(false);
 
     const handleUploadFile = useCallback(
@@ -21,7 +19,7 @@ const BulkUploadJobs = () => {
             setLoading(true);
             try {
                 const { data: s3Bucket, success } = await generatePresignUrl(
-                    `BulkUpload-${currentBranch?.name ?? "default"}.csv`,
+                    `BulkUpload-${currentBranch.name ?? "default"}.csv`,
                     token,
                     "text/csv",
                 );

@@ -72,10 +72,10 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                     }}
                     whatsAppPayload={{
                         name: studentData?.name,
-                        studioName: studio?.studioName,
+                        studioName: studio.studioName,
                         invoiceToken: activityData?.invoiceToken
                     }}
-                    footer={<p>Thank you for choosing {studio?.studioName}!</p>}
+                    footer={<p>Thank you for choosing {studio.studioName}!</p>}
                     header={
                         <>
                             <div>
@@ -103,15 +103,15 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                             >
                                 <div>
                                     <p style={{ margin: 0, textWrap: "wrap" }}>
-                                        {currentBranch?.address}
+                                        {currentBranch.address}
                                     </p>
                                     <p style={{ margin: 0 }}>
-                                        {currentBranch?.city}, {currentBranch?.state}{" "}
-                                        {currentBranch?.pincode}
+                                        {currentBranch.city}, {currentBranch.state}{" "}
+                                        {currentBranch.pincode}
                                     </p>
-                                    <p style={{ margin: 0 }}>{currentBranch?.phone}</p>
-                                    <p style={{ margin: 0 }}>{studio?.email}</p>
-                                    {studio?.gstNumber && (
+                                    <p style={{ margin: 0 }}>{currentBranch.phone}</p>
+                                    <p style={{ margin: 0 }}>{studio.email}</p>
+                                    {studio.gstNumber && (
                                         <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
                                     )}
                                 </div>
@@ -234,7 +234,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
 
                                             return (
                                                 <>
-                                                    {studio?.gstNumber && (
+                                                    {studio.gstNumber && (
                                                         <>
                                                             <tr>
                                                                 <td

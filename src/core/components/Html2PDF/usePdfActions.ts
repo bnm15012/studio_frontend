@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useAlert } from "../feedback/Alert";
 import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
-import { useAppSelector } from "../../../state";
+import { useUI } from "@/context/UIContext";
 
 interface UsePdfActionsProps {
     contentRef: React.RefObject<HTMLElement | null>;
@@ -17,9 +17,7 @@ export const usePdfActions = ({
     fileName,
     remainingPayload = {},
 }: UsePdfActionsProps) => {
-    const token = useAppSelector((s: any) => s.auth.token);
-    const studio = useAppSelector((s: any) => s.auth.studio);
-    const currentBranch = useAppSelector((s: any) => s.branch.currentBranch);
+    const { studio, currentBranch, token } = useUI();
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
@@ -108,8 +106,8 @@ export const usePdfActions = ({
         try {
             const pdfBlob = type === "WHATSAPP" ? null : await createPdfBlob();
             const payload = {
-                branchId: currentBranch?.branchId,
-                studioId: studio?.studioId,
+                branchId: currentBranch.branchId,
+                studioId: studio.studioId,
                 content: contentLabel,
                 notificationType: type,
                 ...remainingPayload,

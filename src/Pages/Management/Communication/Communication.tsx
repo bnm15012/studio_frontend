@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/state";
 import { useEffect, useState, useCallback } from "react";
 import {
     Box,
@@ -48,10 +47,8 @@ const initialTemplate = {
 
 const Communication = () => {
     const theme = useTheme();
-    const { isMobile } = useUI();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+    const { token, studio, currentBranch, isMobile } = useUI()
+
     const showAlert = useAlert();
 
     const [open, setOpen] = useState(false);
@@ -67,7 +64,7 @@ const Communication = () => {
     const fetchTemplates = useCallback(async () => {
         try {
             const res = await getAllTemplatesAPI({
-                studioId: studio?.studioId!,
+                studioId: studio.studioId!,
                 token,
                 templateType: "COMMUNICATION",
             });
@@ -92,11 +89,11 @@ const Communication = () => {
         } catch {
             showAlert("Error loading templates", "error");
         }
-    }, [studio?.studioId, token, showAlert]);
+    }, [studio.studioId, token, showAlert]);
 
     useEffect(() => {
         fetchTemplates();
-    }, [studio?.studioId, fetchTemplates, showAlert, token]);
+    }, [studio.studioId, fetchTemplates, showAlert, token]);
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
@@ -108,7 +105,7 @@ const Communication = () => {
         try {
             const { data, totalCount } = await getStudentNamesAPI({
                 token,
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 page,
                 size,
             });
@@ -123,7 +120,7 @@ const Communication = () => {
         try {
             const { data, totalCount } = await getInstructorNamesAPI({
                 token,
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 page,
                 size,
             });
@@ -157,7 +154,7 @@ const Communication = () => {
             setLoading(true);
 
             const payload = {
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 notificationType: selectedTemplate.notificationType,
                 title: selectedTemplate.title,
                 content: selectedTemplate.content,

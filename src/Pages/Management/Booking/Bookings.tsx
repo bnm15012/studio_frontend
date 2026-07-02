@@ -32,12 +32,10 @@ const FIELD_META = {
 const VIEWS = ["LIST", "CARD"];
 
 const Bookings = ({ ID }) => {
-    const { isMobile } = useUI();
+    const { isMobile, token, studio, currentBranch } = useUI()
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+
     const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState<any>(null);
@@ -62,7 +60,7 @@ const Bookings = ({ ID }) => {
     const getClientsByName = useCallback(
         async (params) => {
             const { success, data, message } = await getCLientByNamesAPI({
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 token,
                 params,
             });
@@ -73,7 +71,7 @@ const Bookings = ({ ID }) => {
                 return [];
             }
         },
-        [currentBranch?.branchId, showAlert, token],
+        [currentBranch.branchId, showAlert, token],
     );
 
     const awaitForDialog = useCallback(
@@ -121,7 +119,7 @@ const Bookings = ({ ID }) => {
                 amount: row.totalAmount,
                 status: paymentStatusTypes[0],
                 paymentType: paymentTypes[0],
-                branchId: currentBranch?.branchId,
+                branchId: currentBranch.branchId,
                 paymentDate: getCurrentDateTimeLocal(),
             };
 
@@ -135,7 +133,7 @@ const Bookings = ({ ID }) => {
             modifiedData.paymentStatus = paymentStatusTypes[0];
             return modifiedData;
         },
-        [awaitForDialog, currentBranch?.branchId],
+        [awaitForDialog, currentBranch.branchId],
     );
 
     const FIELDS = useMemo(
@@ -290,7 +288,7 @@ const Bookings = ({ ID }) => {
                         },
                     },
                 ]}
-                rootId={currentBranch?.branchId}
+                rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="purpose"

@@ -48,7 +48,7 @@ const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) =
     useEffect(() => {
         setEditedValues({
             studioId: studio.studioId,
-            passcode: studio?.passcode || "",
+            passcode: studio.passcode || "",
         });
     }, [studio]);
 

@@ -46,19 +46,19 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
                 cancelText="Close"
                 title={
                     isExpired
-                        ? `Your ${studio?.amcEnabled ? "AMC Service has expired. Please renew it !" : "Subscription has expired. Please renew to continue enjoying all the great features and benefits. Don\u2019t miss out!"}`
+                        ? `Your ${studio.amcEnabled ? "AMC Service has expired. Please renew it !" : "Subscription has expired. Please renew to continue enjoying all the great features and benefits. Don\u2019t miss out!"}`
                         : ""
                 }
                 titleBgColor={isExpired ? "error" : "success"}
                 fullWidth
                 open={open}
                 onClose={handleClose}
-                maxWidth={studio?.amcEnabled ? "sm" : "lg"}
+                maxWidth={studio.amcEnabled ? "sm" : "lg"}
             >
                 <Box sx={{ borderRadius: "5px" }}>
                     <DialogContent>
                         <Box mt={5}>
-                            <PricingPlanCards buttonText="Subscribe" AMC={studio?.amcEnabled} />
+                            <PricingPlanCards buttonText="Subscribe" AMC={studio.amcEnabled} />
                         </Box>
                     </DialogContent>
                 </Box>

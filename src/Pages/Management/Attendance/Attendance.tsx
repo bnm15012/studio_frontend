@@ -26,11 +26,10 @@ const FIELD_META = {
 const VIEWS = ["LIST", "CARD"];
 
 const Attendance = () => {
-    const { FEATURE_KEYS, isEnabled, isMobile } = useUI();
+    const { FEATURE_KEYS, isEnabled, isMobile, token, currentBranch } = useUI()
     const showAlert = useAlert();
     const dispatch = useAppDispatch();
-    const token = useAppSelector((state) => state.auth.token);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
+
     const allActivities = useAppSelector((state) => state.activities.items);
     const api = useRef({});
     const [showAttendence, setShowAttendence] = useState<any>(false);
@@ -218,7 +217,7 @@ const Attendance = () => {
                     ]}
                     key={"studentActivities"}
                     fields={FIELDS}
-                    rootId={currentBranch?.branchId}
+                    rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     CardContentComponent={AttendanceCard}

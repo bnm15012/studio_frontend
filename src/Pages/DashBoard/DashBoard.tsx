@@ -34,14 +34,10 @@ const floatAnim = keyframes`
 
 const DashBoard: React.FC = () => {
     const navigate = useNavigate();
-    const { isAdmin, isMobile } = useUI();
+    const { user, isAdmin, isMobile, studio, currentBranch, token } = useUI();
     const showAlert = useAlert();
 
-    const user = useAppSelector((state) => state.auth.user);
-    const studio = useAppSelector((state) => state.auth.studio);
-    const currentBranch = useAppSelector((state: any) => state.branch.currentBranch);
     const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
-    const token = useAppSelector((state) => state.auth.token);
     const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : new Date();
     const today = new Date();
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -56,8 +52,8 @@ const DashBoard: React.FC = () => {
         setLoading(true);
         try {
             const response = await fetchDashBoardData({
-                token: token || "",
-                branchId: currentBranch?.branchId,
+                token,
+                branchId: currentBranch.branchId,
             });
 
             if (response.success) {
@@ -130,7 +126,7 @@ const DashBoard: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [token, currentBranch?.branchId, allActivities?.length, showAlert]);
+    }, [token, currentBranch.branchId, allActivities?.length, showAlert]);
 
     useEffect(() => {
         if (user) loadDashboardData();
@@ -165,7 +161,7 @@ const DashBoard: React.FC = () => {
                             >
                                 <ImageComponent
                                     size="9rem"
-                                    value={studio?.logo || "/assets/default_logo.png"}
+                                    value={studio.logo || "/assets/default_logo.png"}
                                     isCircular
                                 />
                             </Box>
@@ -179,7 +175,7 @@ const DashBoard: React.FC = () => {
                                     textShadow: "0 4px 12px rgba(0,0,0,0.25)",
                                 }}
                             >
-                                {studio?.studioName}
+                                {studio.studioName}
                             </Typography>
                         </FlexBetween>
 
@@ -228,7 +224,7 @@ const DashBoard: React.FC = () => {
                             }}
                         >
                             <Typography sx={{ fontWeight: 700, color: "#bf360c" }}>
-                                Note: Your {studio?.amcEnabled ? "AMC Service" : "Subscription"}{" "}
+                                Note: Your {studio.amcEnabled ? "AMC Service" : "Subscription"}{" "}
                                 {daysRemaining === 0
                                     ? "has ended"
                                     : `will expire in ${daysRemaining} days`}

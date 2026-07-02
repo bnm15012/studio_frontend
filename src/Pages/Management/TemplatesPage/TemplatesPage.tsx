@@ -55,12 +55,11 @@ const FIELDS = [
 const VIEWS = ["LIST", "CARD"];
 
 const TemplatesPage: React.FC = () => {
-    const { isMobile } = useUI();
+    const { isMobile, studio } = useUI();
 
     useAppSelector((state) => state.activities.items)?.forEach((x: any) =>
         templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
     );
-    const studio = useAppSelector((state) => state.auth.studio);
 
     const api = useRef<any>({});
 
@@ -74,7 +73,7 @@ const TemplatesPage: React.FC = () => {
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="templateName"
                 fieldsMeta={FIELD_META}
-                rootId={studio?.studioId}
+                rootId={studio.studioId}
                 apiRef={api}
                 dialogProps={{ fullScreen: isMobile, size: "md" }}
                 fields={FIELDS as any}

@@ -10,11 +10,11 @@ export const loadInitialDataAPI = () => async (dispatch: AppDispatch, getState: 
     const state = getState();
     const { auth } = state;
     const currentBranch = state.branch.currentBranch as any;
-    const branchId = currentBranch?.branchId;
-    const studioId = currentBranch?.studioId;
+    const branchId = currentBranch.branchId;
+    const studioId = currentBranch.studioId;
     const token = auth.token;
 
-    const noop = () => {};
+    const noop = () => { };
     dispatch(activityCruds.getAll(noop, noop, token, { size: 500 }, branchId));
     dispatch(membershipPackageCruds.getAll(noop, noop, token, { size: 100 }, studioId));
 };

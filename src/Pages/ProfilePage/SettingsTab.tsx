@@ -5,11 +5,11 @@ import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { setSettings } from "../../state/authSlice";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { useUI } from "@/context/UIContext";
 
 const SettingsTab: React.FC = () => {
     const dispatch = useAppDispatch();
-    const token = useAppSelector((state) => state.auth.token);
-    const studio = useAppSelector((state) => state.auth.studio);
+    const { token, studio } = useUI()
     const showAlert = useAlert();
 
     const initialConfigurations = useAppSelector((state) => state.auth.settings) || ({} as Record<string, boolean>);
@@ -35,7 +35,7 @@ const SettingsTab: React.FC = () => {
         try {
             const { success, data, message } = await updateStudio({
                 values: {
-                    studioId: studio?.studioId,
+                    studioId: studio.studioId,
                     configuration: { configrationEntryList: configurations },
                 },
                 dispatch,
