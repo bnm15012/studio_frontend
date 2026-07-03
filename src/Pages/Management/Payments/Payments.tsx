@@ -30,7 +30,7 @@ const FIELDS = [
         name: "status",
         label: "Status",
         type: FIELD_TYPES.SELECT,
-        getValue: (value: any) => value && ({ key: value, value }),
+        getValue: (value: unknown) => value && ({ key: value, value }),
         defaultValue: STATUS[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -51,7 +51,7 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value: any) => value && ({ key: value, value }),
+        getValue: (value: unknown) => value && ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -71,7 +71,7 @@ const FIELDS = [
 
 const Expenses: React.FC = () => {
     const { isMobile, currentBranch } = useUI()
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -81,13 +81,13 @@ const Expenses: React.FC = () => {
                     apiRef={api}
                     actions={[
                         { name: "delete", enabled: () => false, hide: true },
-                        { name: "edit", enabled: (row: any) => row.status !== "COMPLETED" },
-                    ] as any}
+                        { name: "edit", enabled: (row: Record<string, unknown>) => row.status !== "COMPLETED" },
+                    ]}
                     tableName={"payments"}
                     tableCruds={paymentCruds}
                     size={LIMIT}
                     key={"payments"}
-                    fields={FIELDS as any}
+                    fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

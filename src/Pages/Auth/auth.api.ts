@@ -55,7 +55,7 @@ export const loginApiCall = async ({ values, dispatch, navigate }: LoginApiParam
             }),
         );
         dispatch(
-            (branchCruds.actions as any).setCurrentBranch(
+            (branchCruds.actions as unknown as { setCurrentBranch: (branch: Record<string, unknown>) => { payload: Record<string, unknown>; type: string } }).setCurrentBranch(
                 authData.studioEntry.branchList.filter((branch: Record<string, unknown>) => branch.isActive)[0],
             ),
         );

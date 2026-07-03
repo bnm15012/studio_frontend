@@ -10,9 +10,9 @@ import { useUI } from "@/context/UIContext";
 
 export interface UserProfileDropdownProps {
     user: {
-        userName: string;
-        role: string;
-        [key: string]: any;
+        userName?: string;
+        role?: string;
+        [key: string]: unknown;
     };
     handleLogout: () => void;
 }

@@ -1,6 +1,6 @@
 import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
-import { CrudThunks, Entity } from "../types";
+import { CrudThunks, Entity, AppDispatch } from "../types";
 import { GenericState } from "@/core/state/stateTypes";
 
 export interface CrudThunksOptions<T extends Entity = Entity> {
@@ -29,7 +29,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             setLoading: (loading: boolean) => void,
             prepend?: boolean,
         ) =>
-            async (dispatch: any, getState: unknown) => {
+            async (dispatch: AppDispatch, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
                         const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
@@ -41,9 +41,9 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                             dispatch(actions.setRecord((data as T[])[0]));
                         }
                         dispatch(prepend ? actions.prependItem((data as T[])[0]) : actions.addItem((data as T[])[0]));
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error(err);
-                        showAlert(getApiMessage(err, `Failed to add ${route}`), "error");
+                        showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to add ${route}`), "error");
                     }
                 });
             };
@@ -56,7 +56,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
         ) =>
-            async (dispatch: any, getState: unknown) => {
+            async (dispatch: AppDispatch, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
                         const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
@@ -70,9 +70,9 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                             dispatch(actions.setRecord(record));
                         }
                         dispatch(actions.updateItem(record as unknown as Record<string, unknown>));
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error(err);
-                        showAlert(getApiMessage(err, `Failed to update ${route}`), "error");
+                        showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to update ${route}`), "error");
                     }
                 });
             };
@@ -84,14 +84,14 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
         ) =>
-            async (dispatch: any) => {
+            async (dispatch: AppDispatch) => {
                 await withLoading(setLoading, async () => {
                     try {
                         await api.delete(`/${route}/delete/${id}`, getHeader(token));
                         dispatch(actions.removeItem(id));
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error(err);
-                        showAlert(getApiMessage(err, `Failed to delete ${route}`), "error");
+                        showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to delete ${route}`), "error");
                     }
                 });
             };
@@ -105,7 +105,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             rootId: string | number,
             infinite?: boolean,
         ) =>
-            async (dispatch: any, getState: unknown) => {
+            async (dispatch: AppDispatch, getState: unknown) => {
                 const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
 
                 if (rootId === "NEW") return;
@@ -136,9 +136,9 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                                 totalCount: (status as Record<string, unknown>).totalCount,
                             }),
                         );
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error(err);
-                        showAlert(getApiMessage(err, `Failed to fetch ${route}`), "error");
+                        showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to fetch ${route}`), "error");
                     }
                 });
             };
@@ -151,7 +151,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             setLoading: (loading: boolean) => void,
             { forceRefresh = false }: { forceRefresh?: boolean } = {},
         ) =>
-            async (dispatch: any, getState: unknown) => {
+            async (dispatch: AppDispatch, getState: unknown) => {
                 if (id === "NEW") return;
 
                 const cached = ((getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>).recordById[id];
@@ -165,9 +165,9 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                         const record = (data as T[])[0];
                         dispatch(actions.setRecord(record));
                         return record;
-                    } catch (err: any) {
+                    } catch (err: unknown) {
                         console.error(err);
-                        showAlert(getApiMessage(err, `Failed to fetch ${route} by ID`), "error");
+                        showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to fetch ${route} by ID`), "error");
                         return null;
                     }
                 });
@@ -180,7 +180,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             token: string | null | undefined,
             infinite = false,
         ) =>
-            async (dispatch: any, getState: unknown) => {
+            async (dispatch: AppDispatch, getState: unknown) => {
                 const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
                 dispatch(actions.clearData());
                 return dispatch(

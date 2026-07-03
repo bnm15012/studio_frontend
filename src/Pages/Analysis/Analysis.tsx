@@ -11,6 +11,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { Bar, Line, Pie } from "react-chartjs-2";
+import type { ChartData } from "chart.js";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -46,14 +47,14 @@ ChartJS.register(
     Filler,
 );
 
-const chartOptions: any = {
+const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
         legend: {
             display: true,
-            position: "right",
-            align: "start",
+            position: "right" as const,
+            align: "start" as const,
             labels: {
                 boxWidth: 15,
                 padding: 15,
@@ -76,7 +77,7 @@ const chartOptions: any = {
     },
     animation: {
         duration: 1500,
-        easing: "easeOutQuart",
+        easing: "easeOutQuart" as const,
     },
 };
 
@@ -90,11 +91,11 @@ const Analysis: React.FC = () => {
     const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
     const { token, currentBranch } = useUI()
 
-    const [expenseData, setExpenseData] = useState<any>();
-    const [incomeLineData, setIncomeLineData] = useState<any>({});
-    const [incomeBarData, setIncomeBarData] = useState<any>({});
-    const [paymentData, setPaymentData] = useState<any>({});
-    const [activityData, setActivityData] = useState<any>({});
+    const [expenseData, setExpenseData] = useState<ChartData<"pie">>();
+    const [incomeLineData, setIncomeLineData] = useState<ChartData<"line">>({} as ChartData<"line">);
+    const [incomeBarData, setIncomeBarData] = useState<ChartData<"bar">>({} as ChartData<"bar">);
+    const [paymentData, setPaymentData] = useState<ChartData<"pie">>({} as ChartData<"pie">);
+    const [activityData, setActivityData] = useState<ChartData<"pie">>({} as ChartData<"pie">);
     const [loading, setLoading] = useState(false);
     const analysisData = useAppSelector((state) => state.analysis.data) || {};
 
@@ -102,8 +103,9 @@ const Analysis: React.FC = () => {
         async (year: number) => {
             try {
                 setLoading(true);
-                let response: any;
-                if ("success" in analysisData && year === years[years.length - 1]) {
+                let response: Record<string, unknown>;
+                const useCached = "success" in analysisData && year === years[years.length - 1];
+                if (useCached) {
                     response = analysisData;
                 } else {
                     response = await fetchReportData({
@@ -116,14 +118,21 @@ const Analysis: React.FC = () => {
                     }
                 }
                 if (response.success) {
-                    setExpenseData(response.data.expenseData);
-                    setPaymentData(response.data.paymentData);
-                    setIncomeLineData(response.data.expenseVsPaymentBarData);
-                    setIncomeBarData(response.data.expenseVsPaymentBarData);
-                    setActivityData(response.data.activityData);
+                    const data = response.data as {
+                        expenseData: ChartData<"pie">;
+                        paymentData: ChartData<"pie">;
+                        expenseVsPaymentBarData: ChartData<"bar">;
+                        expenseVsPaymentLineData: ChartData<"line">;
+                        activityData: ChartData<"pie">;
+                    };
+                    setExpenseData(data.expenseData);
+                    setPaymentData(data.paymentData);
+                    setIncomeLineData(data.expenseVsPaymentLineData);
+                    setIncomeBarData(data.expenseVsPaymentBarData);
+                    setActivityData(data.activityData);
                 }
-            } catch (error: any) {
-                console.error("Error fetching report data:", error);
+            } catch (error: unknown) {
+                console.error("Error fetching report data:", error instanceof Error ? error.message : String(error));
             } finally {
                 setLoading(false);
             }

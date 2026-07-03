@@ -23,6 +23,17 @@ import Loading from "@/core/components/loading/Loading";
 import { openDialog } from "../../state/dialogSlice";
 import { alpha } from "@mui/material/styles";
 
+interface Plan {
+    id: string | number;
+    planType: string;
+    description: string;
+    amount: number;
+    period: string;
+    popular?: boolean;
+    enabledFeatures: string[];
+    disabledFeatures: string[];
+}
+
 interface PricingPlanCardsProps {
     buttonText?: string;
     AMC?: boolean;
@@ -31,10 +42,10 @@ interface PricingPlanCardsProps {
 const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get Started", AMC = false }) => {
     const dispatch = useAppDispatch();
     const theme = useTheme();
-    const [selectedPlan, setSelectedPlan] = useState<any>(null);
+    const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
     const [dialogPlanOpen, setPanDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [allPlans, setAllPlans] = useState<any[] | null>(null);
+    const [allPlans, setAllPlans] = useState<Plan[] | null>(null);
     const user = useAppSelector((state) => state.auth.user);
 
     const getFeatureIcon = (featureName: string) => {
@@ -59,7 +70,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
       ${alpha(theme.palette.primary.main, 0.1)}
     )`;
 
-    const handlePayment = async (plan: any) => {
+    const handlePayment = async (plan: Plan) => {
         if (!user) {
             dispatch(openDialog("loginDialog"));
         } else {
@@ -102,7 +113,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
         >
             {isLoading && <Loading />}
             {allPlans &&
-                allPlans.map((plan: any, index: number) => (
+                allPlans.map((plan: Plan, index: number) => (
                     <Box key={index}>
                         <Card
                             sx={{
@@ -273,7 +284,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
                                                                 fontWeight: 500,
                                                                 color: "rgba(255, 255, 255, 0.9)",
                                                             },
-                                                        } as any,
+                                                        },
                                                     }}
                                                 />
                                             </ListItem>
@@ -316,7 +327,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
                                                                 fontWeight: 500,
                                                                 color: "rgba(255, 255, 255, 0.8)",
                                                             },
-                                                        } as any,
+                                                        },
                                                     }}
                                                 />
                                             </ListItem>
@@ -332,7 +343,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({ buttonText = "Get S
                 <PaymentDialog
                     open={dialogPlanOpen}
                     onClose={closePlansDialog}
-                    plan={selectedPlan}
+                    plan={selectedPlan as unknown as import("../RazorPay/Payment").PlanItem}
                 />
             )}
         </Box>

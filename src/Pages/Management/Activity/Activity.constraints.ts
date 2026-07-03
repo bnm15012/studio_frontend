@@ -1,4 +1,4 @@
-export const validateAmount = (amount) => {
+export const validateAmount = (amount: string) => {
     const parsedAmount = parseFloat(amount);
     return !isNaN(parsedAmount) && parsedAmount > 0;
 };

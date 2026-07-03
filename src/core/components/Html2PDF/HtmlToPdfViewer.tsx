@@ -72,7 +72,7 @@ const HtmlToPdfViewer = forwardRef<HtmlToPdfViewerRef, HtmlToPdfViewerProps>(
 
             setDialogOpen(false);
             if (dialogType === "email") await sendMail();
-            else if (dialogType === "mobile") await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload } as any);
+            else if (dialogType === "mobile") await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload } as unknown as { phone: string; name?: string; studioName?: string; invoiceToken?: string });
         };
 
         useImperativeHandle(ref, () => ({

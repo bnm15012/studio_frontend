@@ -1,6 +1,6 @@
 import api from "@/core/utils/api";
 
-export const createBulkUploadJobAPI = async (jobData, token) => {
+export const createBulkUploadJobAPI = async (jobData: Record<string, unknown>, token: string | null | undefined) => {
     try {
         const response = await api.post("/jobs/bulk-uploads/process", jobData, {
             headers: {
@@ -13,17 +13,18 @@ export const createBulkUploadJobAPI = async (jobData, token) => {
             data: data,
             message: status.statusMessage || "Started uploading data, will be processed shortly.",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { message?: string } } };
         return {
             success: false,
-            message: error.response
-                ? error.response.data.message
+            message: err.response
+                ? err.response.data?.message || ""
                 : "Failed to create bulk upload job",
         };
     }
 };
 
-export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }) => {
+export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }: { token: string | null | undefined; branchId: string | number; size: number; page: number }) => {
     try {
         const response = await api.get(`/jobs/bulk-uploads/getAll/${branchId}`, {
             headers: {
@@ -38,10 +39,11 @@ export const getBulkUploadJobsAPI = async ({ token, branchId, size, page }) => {
             totalCount: status.totalCount,
             message: status?.statusMessage || "Fetched bulk upload jobs successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { message?: string } } };
         return {
             success: false,
-            message: error.response?.data?.message || "Failed to fetch bulk upload jobs",
+            message: err.response?.data?.message || "Failed to fetch bulk upload jobs",
         };
     }
 };

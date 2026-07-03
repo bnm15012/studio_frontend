@@ -16,7 +16,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
         <>
             {visibleActions.map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled =
-                    typeof enabled === "function" ? enabled(row) : (enabled ?? true);
+                    typeof enabled === "function" ? enabled(row as Record<string, unknown>) : (enabled ?? true);
 
                 return (
                     <ButtonBase
@@ -24,7 +24,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
                         disabled={!isEnabled}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onClick?.(row);
+                            onClick?.(row as Record<string, unknown>);
                         }}
                         sx={{
                             display: "flex",

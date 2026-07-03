@@ -220,6 +220,12 @@ export interface Activity extends Entity {
     description?: string;
     branchId?: number;
     batchEntries?: BatchEntry[];
+    membershipPlanRequest: {
+        membershipPlanEntryList?: {
+            membershipType: string;
+            daysPerWeek: number;
+        }[];
+    };
 }
 
 export interface GenericTemplate extends Entity {

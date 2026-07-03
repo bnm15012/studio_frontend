@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/state";
 import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
 import Loading from "@/core/components/loading/Loading";
 import FormFields from "./FormFields";
+import type { FormFieldsValues } from "./FormFields";
 import { loginApiCall, registerApiCall } from "./auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
@@ -38,8 +39,8 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
     const navigate = useNavigate();
     const isLogin = pageType === "Login";
     const isRegister = pageType === "Register";
-    const [values, setValues] = useState<any>(
-        isLogin ? initialValuesLogin : editProfile ? user : initialValuesRegister,
+    const [values, setValues] = useState<Record<string, unknown>>(
+        isLogin ? initialValuesLogin : editProfile ? (user ?? initialValuesRegister) : initialValuesRegister,
     );
 
     const showAlert = useAlert();
@@ -69,8 +70,8 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
                     showAlert(message || "Failed to register!", "error");
                 }
             }
-        } catch (error: any) {
-            const message = error?.message || "An unexpected error occurred.";
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : String(err);
             showAlert(message, "error");
         } finally {
             setLoading(false);
@@ -90,7 +91,7 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
                     </Box>
                     <FormFields
                         onChangehandle={onChangehandle}
-                        values={values}
+                        values={values as FormFieldsValues}
                         isRegister={isRegister}
                         isLogin={isLogin}
                     />

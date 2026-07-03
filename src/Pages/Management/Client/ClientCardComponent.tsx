@@ -7,7 +7,7 @@ import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import { Box } from "@mui/material";
 
 interface ClientCardProps {
-    row: Record<string, any>;
+    row: Record<string, unknown>;
 }
 
 const ClientCardComponent: React.FC<ClientCardProps> = ({ row }) => {
@@ -16,18 +16,18 @@ const ClientCardComponent: React.FC<ClientCardProps> = ({ row }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                badge={clientType}
+                badge={String(clientType)}
                 FieldIcon={PermContactCalendarIcon}
-                fieldValue={groupName}
+                fieldValue={String(groupName)}
                 enabled={true}
             />
-            {pocName && (
-                <CardChip value={pocName} ChipIcon={User2} />
+            {!!pocName && (
+                <CardChip value={String(pocName)} ChipIcon={User2} />
             )}
-            {pocEmail && <ContactSection contact={pocEmail} />}
+            {!!pocEmail && <ContactSection contact={String(pocEmail)} />}
             <Box display="flex" alignItems="center" gap={1.5}>
-                {pocPhone && <ContactSection contact={pocPhone} />}
-                {notes && <CardChip value={notes} ChipIcon={FileText} />}
+                {!!pocPhone && <ContactSection contact={String(pocPhone)} />}
+                {!!notes && <CardChip value={String(notes)} ChipIcon={FileText} />}
             </Box>
         </Box>
     );

@@ -6,14 +6,10 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import { updateProfile } from "../Auth/auth.api";
 import { validatePassword } from "../../utils/validationConstraints";
 import { closeLastDialog } from "../../state/dialogSlice";
-
-interface UserInfo {
-    userId: string | number;
-    email: string;
-}
+import type { User } from "@/api/types";
 
 interface ChangePasswordProps {
-    user: UserInfo;
+    user: User;
 }
 
 const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
@@ -52,8 +48,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
             } else {
                 showAlert(responseMessage || "Failed to change password", "error");
             }
-        } catch (error: any) {
-            showAlert(error.message || "Error changing password", "error");
+        } catch (error: unknown) {
+            showAlert(error instanceof Error ? error.message : "Error changing password", "error");
         } finally {
             setLoading(false);
         }

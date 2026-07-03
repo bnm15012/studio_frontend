@@ -33,7 +33,7 @@ const FIELDS = [
 
 const Enquiry: React.FC = () => {
     const { isMobile, currentBranch } = useUI()
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -44,7 +44,7 @@ const Enquiry: React.FC = () => {
                     tableCruds={enquiryCruds}
                     size={LIMIT}
                     key={"enquiries"}
-                    fields={FIELDS as any}
+                    fields={FIELDS}
                     rootId={currentBranch.branchId}
                     currentView={VIEWS[!isMobile ? 0 : 1]}
                     fieldsMeta={FIELD_META}

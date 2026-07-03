@@ -85,7 +85,7 @@ const EMPTY_DATA: Record<string, string> = {
     medicalInfo: "",
 };
 
-const parseValue = (value: any) => {
+const parseValue = (value: unknown) => {
     try {
         if (!value) return EMPTY_DATA;
 
@@ -112,7 +112,7 @@ const getFilledCount = (data: Record<string, string>) =>
     ).length;
 
 interface OtherInfoProps {
-    value: any;
+    value: unknown;
     setValue: (val: string) => void;
     isEdit?: boolean;
 }
@@ -150,11 +150,11 @@ const OtherInfo: React.FC<OtherInfoProps> = ({
 
     const handleChange = (
         fieldName: string,
-        fieldValue: any
+        fieldValue: unknown
     ) => {
         setFormData((prev) => ({
             ...prev,
-            [fieldName]: fieldValue,
+            [fieldName]: String(fieldValue ?? ""),
         }));
     };
 
@@ -299,7 +299,7 @@ const OtherInfo: React.FC<OtherInfoProps> = ({
                                                 >
                                                     <Field
                                                         type={
-                                                            field.type as any
+                                                            field.type
                                                         }
                                                         value={
                                                             formData[

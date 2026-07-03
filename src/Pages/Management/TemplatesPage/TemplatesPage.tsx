@@ -20,7 +20,7 @@ const FIELDS = [
         name: "templateType",
         label: "Template Type",
         type: "SELECT",
-        getValue: (value: any) => value && { key: value, value },
+        getValue: (value: unknown) => value && { key: value as string, value: value as string },
         extraProp: {
             variant: "outlined",
             getOptions: async () => [...templateTypes].map((type) => ({ key: type, value: type })),
@@ -57,11 +57,11 @@ const VIEWS = ["LIST", "CARD"];
 const TemplatesPage: React.FC = () => {
     const { isMobile, studio } = useUI();
 
-    useAppSelector((state) => state.activities.items)?.forEach((x: any) =>
-        templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType),
-    );
+    useAppSelector((state) => state.activities.items)?.forEach((x) => {
+        if (x.activityType) templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType);
+    });
 
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -76,7 +76,7 @@ const TemplatesPage: React.FC = () => {
                 rootId={studio.studioId}
                 apiRef={api}
                 dialogProps={{ fullScreen: isMobile, size: "md" }}
-                fields={FIELDS as any}
+                fields={FIELDS}
                 CardContentComponent={TemplateCard}
                 editMode={"DIALOG"}
             />

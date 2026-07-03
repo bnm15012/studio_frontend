@@ -10,7 +10,7 @@ interface CardChipProps {
     label?: string;
     value?: React.ReactNode;
     type?: "DATE" | "DATETIME" | "STR";
-    ChipIcon?: React.ComponentType<any>;
+    ChipIcon?: React.ComponentType<Record<string, unknown>>;
 }
 
 const CardChip: React.FC<CardChipProps> = ({ label, value, type = "STR", ChipIcon = CalendarMonth }) => {

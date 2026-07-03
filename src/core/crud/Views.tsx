@@ -17,7 +17,7 @@ import { useUI } from "@/context/UIContext";
 import { FieldDef, ActionItem, CrudThunks } from "../types";
 import { useAppSelector, useAppDispatch } from "../../state";
 
-interface ViewsProps {
+export interface ViewsProps {
     formKey?: string | number | null;
     tableName: string;
     overRideOnChange?: (value: unknown, obj: Record<string, unknown>, field: string) => Record<string, unknown>;
@@ -157,7 +157,7 @@ const Views: React.FC<ViewsProps> = (props) => {
     });
 
     const refreshData = useCallback(() => {
-        dispatch(safeCruds.refresh(showAlert, setLoading, token) as any);
+        safeCruds.refresh(showAlert, setLoading, token)(dispatch, () => ({}));
     }, [dispatch, showAlert, safeCruds, token]);
 
     const openFormView = useCallback(

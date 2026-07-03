@@ -8,6 +8,7 @@ import SubscriptionTab from "./SubscriptionTab";
 import SettingsTab from "./SettingsTab";
 import CommunicationConfigs from "./CommunicationConfigs";
 import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
+import type { StudioInfo } from "./CommunicationConfigs";
 import { useUI } from "@/context/UIContext";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
@@ -25,7 +26,7 @@ const ProfilePage: React.FC = () => {
     const admin = useAppSelector((state) => state.auth.user);
     const studio = useAppSelector((state) => state.auth.studio);
     const [tabValue, setTabValue] = useState(0);
-    const dialog = useAppSelector(dialogOnTop() as any) as string;
+    const dialog = useAppSelector(dialogOnTop());
     const { DEBUG, isMobile } = useUI();
 
     const handleClose = () => {
@@ -107,18 +108,18 @@ const ProfilePage: React.FC = () => {
                     overflowY: "auto",
                 }}
             >
-                {tabValue === 0 && admin ? (
+                {tabValue === 0 && admin && studio ? (
                     <Box>
                         <UserWidgets admin={admin} studio={studio} />
                     </Box>
                 ) : tabValue === 1 && admin ? (
-                    <ChangePassword user={admin as any} />
+                    <ChangePassword user={admin} />
                 ) : tabValue === 2 ? (
                     <SubscriptionTab />
                 ) : tabValue === 3 ? (
                     <SettingsTab />
                 ) : tabValue === 4 ? (
-                    <CommunicationConfigs studio={studio as any} />
+                    <CommunicationConfigs studio={studio as StudioInfo} />
                 ) : (
                     <Loading />
                 )}

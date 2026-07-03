@@ -20,7 +20,7 @@ const UploadJobHistory = () => {
     const showAlert = useAlert();
     const { token, currentBranch } = useUI()
     const [page, setPage] = useState(1);
-    const [data, setData] = useState<any>();
+    const [data, setData] = useState<Record<string, unknown>[] | undefined>();
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
 
@@ -74,25 +74,24 @@ const UploadJobHistory = () => {
                     <TableBody>
                         {data &&
                             data.map((row, index) => (
-                                <StyledTableRow key={row.id}>
-                                    <StyledTableCell>{index + 1}</StyledTableCell>
-                                    <StyledTableCell>{row.entityType}</StyledTableCell>
-                                    <StyledTableCell>{row.status}</StyledTableCell>
-                                    <StyledTableCell>{row.totalRecords}</StyledTableCell>
-                                    <StyledTableCell>{row.processedRecords}</StyledTableCell>
-                                    <StyledTableCell>{row.successfulRecords}</StyledTableCell>
-                                    <StyledTableCell>{row.failedRecords}</StyledTableCell>
-                                    <StyledTableCell>{row.fileName}</StyledTableCell>
+                                <StyledTableRow key={String(row.id)}>
+                                    <StyledTableCell>{String(row.entityType ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.status ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.totalRecords ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.processedRecords ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.successfulRecords ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.failedRecords ?? "")}</StyledTableCell>
+                                    <StyledTableCell>{String(row.fileName ?? "")}</StyledTableCell>
                                     <StyledTableCell>
                                         <Typography sx={{ wordBreak: "break-all" }}>
                                             {row?.completedAt
-                                                ? getLocalDateTime(row.completedAt, "DATETIME")
+                                                ? getLocalDateTime(String(row.completedAt), "DATETIME")
                                                 : "—"}
                                         </Typography>
                                     </StyledTableCell>
                                     <StyledTableCell>
-                                        {row.errorMessages.length > 0
-                                            ? row.errorMessages.join(", ")
+                                        {(row.errorMessages as string[])?.length > 0
+                                            ? (row.errorMessages as string[]).join(", ")
                                             : "—"}
                                     </StyledTableCell>
                                 </StyledTableRow>

@@ -24,10 +24,13 @@ export const getInstructorNamesAPI = async ({ branchId, token, page, size }: Get
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched instructors successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error && typeof error === "object" && "response" in error
+            ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+            : error instanceof Error ? error.message : String(error);
         return {
             success: false,
-            message: error.response?.data?.message || "Failed to fetch instructors",
+            message: message || "Failed to fetch instructors",
         };
     }
 };

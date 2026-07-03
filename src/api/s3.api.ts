@@ -1,8 +1,9 @@
 import api from "@/core/utils/api";
+import { getApiMessage } from "@/core/api/helper";
 
 export interface PresignUrlResponse {
     success: boolean;
-    data?: any;
+    data?: unknown;
     message: string;
 }
 
@@ -30,9 +31,8 @@ export const generatePresignUrl = async (
             data: response.data.data,
             message: response.data.status?.statusMessage || "Success",
         };
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.status?.statusMessage || "Failed to fetch dashboard data";
+    } catch (err: unknown) {
+        const message = getApiMessage(err as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to fetch dashboard data");
         return { success: false, message };
     }
 };
@@ -41,7 +41,7 @@ export const uploadToS3 = async (
     file: File,
     uploadUrl: string,
     token: string | null | undefined,
-    showAlert: (msg: string, type: any) => void,
+    showAlert: (msg: string, type: string) => void,
 ): Promise<boolean> => {
     if (!file || !uploadUrl) {
         showAlert("Missing file or upload URL", "error");
@@ -62,8 +62,9 @@ export const uploadToS3 = async (
         }
         showAlert("File uploaded successfully!", "success");
         return true;
-    } catch (err: any) {
-        showAlert("Error uploading file: " + err.message, "error");
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        showAlert("Error uploading file: " + message, "error");
         console.error("Error uploading file:", err);
         return false;
     }

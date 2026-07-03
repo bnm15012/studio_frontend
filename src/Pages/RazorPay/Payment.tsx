@@ -8,8 +8,23 @@ import { getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useAppDispatch, useAppSelector } from "@/state";
 import { useUI } from "@/context/UIContext";
+import type { PaymentDetails } from "./RazorPay.api";
 
-interface PlanItem {
+interface RazorpayInstance {
+    open: () => void;
+}
+
+interface RazorpayConstructor {
+    new(options: Record<string, unknown>): RazorpayInstance;
+}
+
+interface RazorpayResponse {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+}
+
+export interface PlanItem {
     id: string;
     name: string;
     planType: string;
@@ -31,7 +46,8 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
     const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
 
     useEffect(() => {
-        if (!(window as any).Razorpay) {
+        const RazorpayCtor = (window as unknown as Record<string, unknown>).Razorpay;
+        if (!RazorpayCtor) {
             console.error("Razorpay SDK is not loaded");
             showAlert("Payment system not available. Please try again later.");
         }
@@ -53,15 +69,15 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                 const orderId = data.orderId;
 
                 const options = {
-                    key: (import.meta as any).env.VITE_APP_RAZOR_PAY_KEY || "",
+                    key: (import.meta.env as Record<string, string>).VITE_APP_RAZOR_PAY_KEY || "",
                     amount: plan.amount * 100,
-                    currency: "INR",
+                    currency: "INR" as const,
                     order_id: orderId,
-                    handler: async (response: any) => {
+                    handler: async (response: RazorpayResponse) => {
                         try {
                             const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
                                 response;
-                            const paymentDetails = {
+                            const paymentDetails: PaymentDetails = {
                                 paymentId: razorpay_payment_id,
                                 orderId: razorpay_order_id,
                                 signature: razorpay_signature,
@@ -79,7 +95,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                                 );
                             }
                             onClose();
-                        } catch (error: any) {
+                        } catch (error: unknown) {
                             console.error(error);
                             showAlert("Payment processing failed. Please try again.", "error");
                         }
@@ -93,13 +109,14 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                     },
                 };
 
-                const razorpay = new (window as any).Razorpay(options);
+                const RazorpayCtor = (window as unknown as Record<string, unknown>).Razorpay as unknown as RazorpayConstructor;
+                const razorpay = new RazorpayCtor(options);
                 razorpay.open();
             } else {
                 throw new Error("Failed to create order.");
             }
-        } catch (error: any) {
-            console.error("Error in payment process:", error);
+        } catch (error: unknown) {
+            console.error("Error in payment process:", error instanceof Error ? error.message : String(error));
             showAlert("Payment failed. Please try again.", "error");
         } finally {
             setLoading(false);

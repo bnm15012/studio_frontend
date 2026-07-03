@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
-import PropTypes from "prop-types";
+
 import { useAlert } from "@/core/components/feedback/Alert";
 import { getMessageRecipientsAPI } from "./communication.api";
 import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
@@ -16,7 +16,7 @@ interface ReceipentsListDialogProps {
 const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, messageId }) => {
     const showAlert = useAlert();
     const token = useAppSelector((state) => state.auth.token);
-    const [history, setHistory] = useState<any[]>([]);
+    const [history, setHistory] = useState<Record<string, unknown>[]>([]);
     const [loading, setLoading] = useState(false);
 
     const getMessageHistory = useCallback(async () => {
@@ -32,7 +32,7 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
             } else {
                 showAlert(message, "error");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
             showAlert("Failed to fetch message recipients!", "error");
         } finally {
@@ -63,7 +63,7 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
                     <>
                         {history.map((recipient) => (
                             <Box
-                                key={recipient.id}
+                                key={String(recipient.id)}
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",
@@ -89,10 +89,10 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
 
                                 <Box sx={{ flex: 1, minWidth: 0 }}>
                                     <Typography variant="subtitle2" noWrap>
-                                        {recipient.name}
+                                        {String(recipient.name ?? "")}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" noWrap>
-                                        {recipient?.contact}
+                                        {String(recipient?.contact ?? "")}
                                     </Typography>
                                 </Box>
                                 {recipient.status === "SENT" ? (
@@ -109,11 +109,6 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
             </DialogContent>
         </StyledDialog>
     );
-};
-
-ReceipentsListDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    messageId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default ReceipentsListDialog;

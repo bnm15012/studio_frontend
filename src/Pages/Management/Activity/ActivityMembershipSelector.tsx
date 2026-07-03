@@ -1,12 +1,13 @@
 import { useAppSelector } from "@/state";
 import { useState, useEffect } from "react";
 import { Select, MenuItem, FormControl, TableCell } from "@mui/material";
-import PropTypes from "prop-types";
+
 import { useUI } from "../../../context/UIContext";
+import type { Activity, BatchEntry } from "../../../api/types";
 
 interface ActivityMembershipSelectorProps {
-    onSelect: (...args: any[]) => void;
-    selectedData?: any;
+    onSelect: (...args: unknown[]) => void;
+    selectedData?: Record<string, unknown>;
     isMemberSHipToo?: boolean;
 }
 
@@ -14,28 +15,28 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     const { isBatchEnabled } = useUI();
     const activities = useAppSelector((state) => state.activities.items);
 
-    const [selectedActivity, setSelectedActivity] = useState<any>(
-        activities.find((f: any) => f.activityId === selectedData?.activity?.activityId) || null,
+    const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+        activities.find((f: Activity) => f.activityId === (selectedData?.activity as Record<string, unknown>)?.activityId) || null,
     );
     const [selectedMembership, setSelectedMembership] = useState(
         selectedData?.membershipType || "",
     );
-    const [daysPerWeek, setDaysPerWeek] = useState<any>(null);
-    const [batchName, setBatchName] = useState(selectedData?.batchName || "");
+    const [daysPerWeek, setDaysPerWeek] = useState<number | null>(null);
+    const [batchName, setBatchName] = useState((selectedData?.batchName as string) || "");
     const [batchTime, setBatchTime] = useState("");
 
-    const [availableMemberships, setAvailableMemberships] = useState<any[]>([]); // planTypes
-    const [availableDaysOptions, setAvailableDaysOptions] = useState<any[]>([]); // filter by membership
-    const [availableBatches, setAvailableBatches] = useState<any[]>([]); // filter by days
+    const [availableMemberships, setAvailableMemberships] = useState<string[]>([]); // planTypes
+    const [availableDaysOptions, setAvailableDaysOptions] = useState<BatchEntry[]>([]); // filter by membership
+    const [availableBatches, setAvailableBatches] = useState<BatchEntry[]>([]); // filter by days
 
     // when activity changes
-    const handleActivityChange = (_event, activity) => {
+    const handleActivityChange = (_event: React.SyntheticEvent, activity: Activity) => {
         setSelectedActivity(activity);
         setSelectedMembership("");
         setDaysPerWeek(null);
         setBatchName("");
         setBatchTime("");
-        setAvailableMemberships([...new Set(activity.batchEntries.map((b) => b.planType))]);
+        setAvailableMemberships([...new Set((activity.batchEntries ?? []).map((b: BatchEntry) => String(b.planType)))]);
         setAvailableDaysOptions([]);
         setAvailableBatches([]);
 
@@ -43,10 +44,10 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     };
 
     // when membership(planType) changes
-    const handleMembershipChange = (event) => {
-        const membership = event.target.value;
+    const handleMembershipChange = (event: React.SyntheticEvent<Element>) => {
+        const membership = String((event as React.ChangeEvent<HTMLInputElement>).target.value);
         const filteredPlans =
-            selectedActivity?.batchEntries.filter((b) => b.planType === membership) || [];
+            (selectedActivity?.batchEntries ?? []).filter((b: BatchEntry) => b.planType === membership) || [];
 
         setSelectedMembership(membership);
         setAvailableDaysOptions(filteredPlans);
@@ -59,9 +60,9 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     };
 
     // when days per week changes
-    const handleDaysPerWeekChange = (event) => {
-        const selectedDays = event.target.value;
-        const batches = availableDaysOptions.filter((p) => p.daysPerWeek === selectedDays) || [];
+    const handleDaysPerWeekChange = (event: React.SyntheticEvent<Element>) => {
+        const selectedDays = Number((event as React.ChangeEvent<HTMLInputElement>).target.value);
+        const batches = availableDaysOptions.filter((p: BatchEntry) => p.daysPerWeek === selectedDays) || [];
 
         const firstBatch = batches[0] || {};
         const updatedBatchName = firstBatch.name || "";
@@ -88,8 +89,8 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     useEffect(() => {
         if (selectedActivity) {
             setAvailableMemberships([
-                ...new Set(selectedActivity.batchEntries.map((b) => b.planType)),
-            ]);
+                ...new Set((selectedActivity.batchEntries ?? []).map((b: BatchEntry) => String(b.planType))),
+            ] as string[]);
         }
     }, [selectedActivity]);
 
@@ -101,14 +102,14 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                 <FormControl fullWidth>
                     <Select
                         variant="standard"
-                        value={selectedActivity?.activityId || ""}
+                        value={String(selectedActivity?.activityId ?? "")}
                         onChange={(e) => {
                             const selectedId = e.target.value;
                             const selected = activities.find(
-                                (activity) => activity.activityId === selectedId,
+                                (activity) => String(activity.activityId) === String(selectedId),
                             );
                             if (selected) {
-                                handleActivityChange(e, selected);
+                                handleActivityChange(e as unknown as React.SyntheticEvent, selected);
                             }
                         }}
                         fullWidth
@@ -129,7 +130,7 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                             <Select
                                 variant="standard"
                                 value={selectedMembership || ""}
-                                onChange={handleMembershipChange}
+                                onChange={(e) => handleMembershipChange(e as unknown as React.SyntheticEvent<Element>)}
                                 fullWidth
                                 disabled={!selectedActivity}
                             >
@@ -148,7 +149,7 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                             <Select
                                 variant="standard"
                                 value={daysPerWeek ?? ""}
-                                onChange={handleDaysPerWeekChange}
+                                onChange={(e) => handleDaysPerWeekChange(e as unknown as React.SyntheticEvent<Element>)}
                                 fullWidth
                                 disabled={!selectedMembership}
                             >
@@ -161,9 +162,9 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                                         );
                                     })
                                     .map((plan, index) => (
-                                        <MenuItem key={index} value={plan.daysPerWeek}>
-                                            {plan.daysPerWeek}{" "}
-                                            {plan.daysPerWeek > 1 ? "days/week" : "day/week"}
+                                        <MenuItem key={index} value={plan.daysPerWeek ?? ""}>
+                                            {plan.daysPerWeek ?? ""}{" "}
+                                            {(plan.daysPerWeek ?? 0) > 1 ? "days/week" : "day/week"}
                                             {isBatchEnabled ? "" : `- Rs.${plan.price}/-`}
                                         </MenuItem>
                                     ))}
@@ -219,19 +220,6 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
             )}
         </>
     );
-};
-
-ActivityMembershipSelector.propTypes = {
-    onSelect: PropTypes.func.isRequired,
-    selectedData: PropTypes.shape({
-        activity: PropTypes.shape({
-            activityId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            activityType: PropTypes.string,
-        }),
-        membershipType: PropTypes.string,
-        batchName: PropTypes.string,
-    }),
-    isMemberSHipToo: PropTypes.bool,
 };
 
 export default ActivityMembershipSelector;

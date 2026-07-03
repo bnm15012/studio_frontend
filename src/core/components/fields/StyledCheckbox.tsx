@@ -2,7 +2,7 @@ import React from "react";
 import { Checkbox, Typography } from "@mui/material";
 import { FlexBetween } from "../layout/FlexBox";
 
-interface StyledCheckboxProps {
+export interface StyledCheckboxProps {
     label?: string;
     readOnly?: boolean;
     value?: boolean;

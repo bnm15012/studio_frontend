@@ -28,7 +28,7 @@ const MarkPresentDialog: React.FC = () => {
     const [message, setMessage] = useState("");
 
     const scannerRef = useRef<Html5Qrcode | null>(null);
-    const timeOutRef = useRef<any>(null);
+    const timeOutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isProcessingRef = useRef(false);
 
     useEffect(() => {
@@ -98,16 +98,16 @@ const MarkPresentDialog: React.FC = () => {
                     },
                     () => { }
                 );
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Scanner Error:", err);
                 if (!isMounted) return;
 
                 setScanStatus("fail");
 
-                if (err?.name === "NotAllowedError") {
+                if (err instanceof Error && err.name === "NotAllowedError") {
                     setMessage("Camera permission denied");
                 } else {
-                    setMessage(err?.message || "Unable to open camera");
+                    setMessage(err instanceof Error ? err.message : "Unable to open camera");
                 }
             }
         };
@@ -132,15 +132,16 @@ const MarkPresentDialog: React.FC = () => {
 
     const markPresent = async (assignmentId: string) => {
         try {
-            await (dispatch as any)((studentsAssignmentsCruds as any).markAttendanceQR(assignmentId, token, showAlert, setLoading, true));
+            await (dispatch as unknown as (action: unknown) => Promise<void>)((studentsAssignmentsCruds as unknown as { markAttendanceQR: (assignmentId: string | number, token: string | null | undefined, showAlert: (msg: string, type: string) => void, setLoading: (loading: boolean) => void, throwError?: boolean) => (dispatch: unknown) => Promise<void> }).markAttendanceQR(assignmentId, token, showAlert as (msg: string, type: string) => void, setLoading, true));
             setScanStatus("success");
             setMessage("Attendance Marked");
-        } catch (error: any) {
+        } catch (error: unknown) {
             setScanStatus("fail");
             setMessage(
-                error?.response?.data?.status?.statusMessage ||
-                error.message ||
-                "Failed to mark attendance"
+                error instanceof Error
+                    ? (error as { response?: { data?: { status?: { statusMessage?: string } } } }).response?.data?.status?.statusMessage ||
+                      error.message
+                    : "Failed to mark attendance"
             );
         }
     };
@@ -154,7 +155,7 @@ const MarkPresentDialog: React.FC = () => {
             try {
                 await scannerRef.current.stop();
                 scannerRef.current.clear();
-            } catch (err: any) { }
+            } catch { }
             scannerRef.current = null;
         }
 

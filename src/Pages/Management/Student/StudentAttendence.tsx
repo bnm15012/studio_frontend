@@ -12,11 +12,12 @@ import {
 import QrForm from "@/core/components/forms/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import type { StudentAssignment } from "@/api/types";
 
 interface StudentAttendenceProps {
     open: boolean;
     onClose: () => void;
-    activityData: any;
+    activityData: StudentAssignment;
 }
 
 const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, activityData }) => {
@@ -36,9 +37,9 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
 
         const map: Record<string, boolean> = {};
 
-        activityData.attendanceEntries?.forEach((entry: any) => {
-            const key = entry.date;
-            map[key] = entry.present;
+            activityData.attendanceEntries?.forEach((entry: Record<string, unknown>) => {
+            const key = entry.date as string;
+            map[key] = Boolean(entry.present);
         });
 
         setAttendanceMap(map);
@@ -63,8 +64,8 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
             present,
         }));
         dispatch(
-            (studentsAssignmentsCruds as any).update(
-                activityData.assignmentId,
+            studentsAssignmentsCruds.update(
+                activityData.assignmentId!,
                 {
                     attendanceEntries,
                 },
@@ -80,8 +81,8 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
         (currentMap: Record<string, boolean>) => {
             const originalMap: Record<string, boolean> = {};
 
-            activityData.attendanceEntries?.forEach((entry: any) => {
-                originalMap[entry.date] = entry.present;
+        activityData.attendanceEntries?.forEach((entry: Record<string, unknown>) => {
+                originalMap[entry.date as string] = Boolean(entry.present);
             });
 
             const allKeys = new Set([...Object.keys(originalMap), ...Object.keys(currentMap)]);

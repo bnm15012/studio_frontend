@@ -19,7 +19,7 @@ interface StudentAssignActivityCardProps {
         membershipStatus?: string;
         activityAmount?: number | string;
         daysPerWeek?: number | string;
-        paymentEntry?: any;
+        paymentEntry?: Record<string, unknown>;
     };
 }
 
@@ -41,18 +41,18 @@ const StudentAssignActivityCard: React.FC<StudentAssignActivityCardProps> = ({ r
     const amountDisplay =
         paymentEntry?.amount !== paymentEntry?.actualAmount ? (
             <>
-                Rs. {paymentEntry?.amount}{" "}
+                Rs. {String(paymentEntry?.amount)}{" "}
                 <span
                     style={{
                         textDecoration: "line-through",
                         color: theme.palette.error.main,
                     }}
                 >
-                    Rs. {paymentEntry?.actualAmount}
+                    Rs. {String(paymentEntry?.actualAmount)}
                 </span>
             </>
         ) : (
-            `Rs. ${paymentEntry?.amount || 0}`
+            `Rs. ${String(paymentEntry?.amount ?? 0)}`
         );
 
     return (
@@ -66,7 +66,7 @@ const StudentAssignActivityCard: React.FC<StudentAssignActivityCardProps> = ({ r
             />
             <Box display="flex" alignItems="center" gap={1.5}>
                 <CardChip value={registrationDate || ""} type="DATE" ChipIcon={Calendar} />
-                <CardChip value={amountDisplay as any} ChipIcon={Wallet} />
+                <CardChip value={amountDisplay} ChipIcon={Wallet} />
             </Box>
             <Box display="flex" alignItems="center" gap={1.5}>
                 <CardChip value={`${daysPerWeek || 0} days/week`} ChipIcon={Calendar} />
@@ -80,7 +80,7 @@ const StudentAssignActivityCard: React.FC<StudentAssignActivityCardProps> = ({ r
                         <CardChip
                             value={
                                 paymentEntry?.paymentDate
-                                    ? getLocalDateTime(paymentEntry.paymentDate)
+                                    ? getLocalDateTime(String(paymentEntry.paymentDate))
                                     : "Not Paid"
                             }
                             ChipIcon={Wallet}

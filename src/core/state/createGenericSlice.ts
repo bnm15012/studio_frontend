@@ -5,7 +5,7 @@ export interface CreateGenericSliceOptions<T extends Entity, S extends GenericSt
     name: string;
     idKey?: string;
     extraState?: Partial<S>;
-    extraReducers?: Record<string, any>;
+    extraReducers?: Record<string, unknown>;
 }
 
 export function createGenericSlice<T extends Entity, S extends GenericState<T>>({
@@ -81,17 +81,19 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
                         payload.predicate(item as T) ? Object.assign({}, item, payload.data) : item,
                     ) as Draft<T[]>;
                 } else {
+                    const payload = action.payload as T;
                     state.items = state.items.map((item) =>
-                        (item as T)[idKey] === action.payload[idKey] ? { ...item, ...action.payload } : item,
-                    );
+                        (item as T)[idKey] === (payload as Entity)[idKey] ? { ...item, ...payload } : item,
+                    ) as Draft<T[]>;
                 }
             },
 
             updateItems(state, { payload }: PayloadAction<Entity | Entity[]>) {
-                if (payload && typeof payload === "object" && "predicate" in payload) {
+                if (payload && typeof payload === "object" && !Array.isArray(payload) && "predicate" in payload) {
+                    const { predicate, data } = payload as unknown as { predicate: (item: T) => boolean; data: Partial<T> };
                     state.items = state.items.map((item) =>
-                        (payload as any).predicate(item) ? { ...item, ...(payload as any).data } : item,
-                    ) as any;
+                        predicate(item as T) ? { ...item, ...data } : item,
+                    ) as Draft<T[]>;
                     return;
                 }
                 if (Array.isArray(payload)) {
@@ -99,7 +101,7 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
                     state.items = state.items.map((item) => {
                         const updated = byId.get((item as Entity)[idKey]);
                         return updated ? { ...item, ...updated } as T : item;
-                    }) as any;
+                    }) as Draft<T[]>;
                 }
             },
 

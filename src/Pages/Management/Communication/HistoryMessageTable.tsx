@@ -9,11 +9,11 @@ import { getLocalDateTime } from "@/core/utils/DateUtil";
 
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Email, WhatsApp } from "@mui/icons-material";
-import PropTypes from "prop-types";
+
 
 interface HistoryMessageTableProps {
     onViewRecipients: (id: string | number) => void;
-    history: any[] | null | undefined;
+    history: Record<string, unknown>[] | null | undefined;
 }
 
 const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipients, history }) => (
@@ -32,9 +32,9 @@ const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipie
                 {history &&
                     history.map((row, index) => (
                         <StyledTableRow key={index}>
-                            <StyledTableCell sx={{ py: 1 }}>{row?.title}</StyledTableCell>
+                            <StyledTableCell sx={{ py: 1 }}>{String(row?.title ?? "")}</StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
-                                {getLocalDateTime(row?.sentDate, "DATETIME")}
+                                {getLocalDateTime(row?.sentDate as string | null | undefined, "DATETIME")}
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 {row?.memberType ? "All" : "Few"}
@@ -52,9 +52,9 @@ const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipie
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 <IconButton
-                                    disabled={row?.memberType}
+                                    disabled={!!row?.memberType}
                                     onClick={() => {
-                                        onViewRecipients(row.id);
+                                        onViewRecipients(row.id as string | number);
                                     }}
                                 >
                                     <GroupsIcon color="primary" />
@@ -73,10 +73,5 @@ const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipie
         </StyledTable>
     </StyledTableContainer>
 );
-
-HistoryMessageTable.propTypes = {
-    history: PropTypes.arrayOf(PropTypes.object),
-    onViewRecipients: PropTypes.func.isRequired,
-};
 
 export default HistoryMessageTable;

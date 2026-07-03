@@ -2,7 +2,7 @@ import api from "@/core/utils/api";
 
 interface UpdatePaymentParams {
     paymentId: string | number;
-    paymentData: any;
+    paymentData: Record<string, unknown>;
     token: string | null | undefined;
 }
 
@@ -18,10 +18,13 @@ export const updatePaymentAPI = async ({ paymentId, paymentData, token }: Update
             data: response.data.data[0],
             message: response.data.status.statusMessage,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error && typeof error === "object" && "response" in error
+            ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+            : error instanceof Error ? error.message : String(error);
         return {
             success: false,
-            message: error.response?.data?.message || "Failed to update payment",
+            message: message || "Failed to update payment",
         };
     }
 };

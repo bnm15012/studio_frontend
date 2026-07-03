@@ -7,7 +7,7 @@ import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { parseDateTime, formatDateTime } from "../../utils/DateUtil";
 
-interface DateTimeProps {
+export interface DateTimeProps {
     value?: string | null;
     label?: string;
     setValue: (val: string | null) => void;
@@ -110,7 +110,7 @@ const DateTime: React.FC<DateTimeProps> = ({
                     ".MuiPickersPopper-root .MuiPaper-root": {
                         borderRadius: 12,
                         backgroundColor: theme.palette.background.paper,
-                            boxShadow: theme.shadows![2],
+                            boxShadow: (theme.shadows as string[])[2],
                         padding: "8px",
                     },
                     ".MuiClock-root": {

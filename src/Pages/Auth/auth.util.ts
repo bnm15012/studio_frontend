@@ -1,16 +1,16 @@
-export const transformRegisterData = (data: any) => ({
-    studioName: data.studioName,
-    location: data.location,
-    userName: data.userName,
-    email: data.email,
-    contactDetails: data.contactDetails,
+export const transformRegisterData = (data: Record<string, unknown>) => ({
+    studioName: data.studioName as string,
+    location: data.location as string,
+    userName: data.userName as string,
+    email: data.email as string,
+    contactDetails: data.contactDetails as string,
     branchList: [
         {
-            address: data.address,
-            city: data.location,
-            state: data.state,
-            pincode: data.pincode,
-            phone: data.contactDetails,
+            address: data.address as string,
+            city: data.location as string,
+            state: data.state as string,
+            pincode: data.pincode as string,
+            phone: data.contactDetails as string,
         },
     ],
 });

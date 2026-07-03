@@ -92,7 +92,7 @@ export const usePdfActions = ({
                         pdf.autoPrint();
                         window.open(pdf.output("bloburl"), "_blank");
                     });
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error(err);
                 showAlert("Failed to print PDF", "error");
             } finally {
@@ -121,7 +121,7 @@ export const usePdfActions = ({
             });
 
             showAlert(message || `${type} sent`, success ? "success" : "error");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             showAlert(`Failed to send ${type}`, "error");
         } finally {

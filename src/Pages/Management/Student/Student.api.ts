@@ -25,10 +25,12 @@ export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched students successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: error.response?.data?.message || "Failed to fetch students",
+            message: error instanceof Error
+                ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || error.message
+                : "Failed to fetch students",
         };
     }
 };
@@ -45,7 +47,7 @@ export const getStudentNamesOncePerDay = async ({
 };
 
 interface AddStudentParams {
-    newData: any;
+    newData: Record<string, unknown>;
     token: string | null | undefined;
 }
 
@@ -54,7 +56,7 @@ export const addStudentAPI = async ({ newData, token }: AddStudentParams) => {
         const response = await api.post("/students/add", newData, {
             headers: {
                 Authorization: `${token}`,
-                "Form-Authorization": (import.meta as any).env.VITE_APP_FORM_SIG || "",
+                "Form-Authorization": import.meta.env.VITE_APP_FORM_SIG || "",
             },
         });
         const { data, status } = response.data;
@@ -63,10 +65,12 @@ export const addStudentAPI = async ({ newData, token }: AddStudentParams) => {
             success: true,
             message: status.statusMessage,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: error.response?.data?.status?.statusMessage || "Failed to add student",
+            message: error instanceof Error
+                ? (error as { response?: { data?: { status?: { statusMessage?: string } } } }).response?.data?.status?.statusMessage || error.message
+                : "Failed to add student",
         };
     }
 };

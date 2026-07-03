@@ -9,6 +9,15 @@ import ActivityCard from "./ActivityCard";
 import ActivityDialog from "./ActivityDialog";
 import { useUI } from "../../../context/UIContext";
 import { sortMembershipPlans } from "./Activity.util";
+import type { Activity, BatchEntry } from "../../../api/types";
+
+interface ActivityFormData {
+    activityId: string | number;
+    activityType: string;
+    description: string;
+    branchId: number;
+    batchEntries: BatchEntry[];
+}
 
 const Activities = () => {
     const showAlert = useAlert();
@@ -20,7 +29,7 @@ const Activities = () => {
 
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingActivity, setEditingActivity] = useState<any>();
+    const [editingActivity, setEditingActivity] = useState<Activity | undefined>();
 
     const fetchActivities = useCallback(() => {
         dispatch(
@@ -43,12 +52,12 @@ const Activities = () => {
         setDialogOpen(true);
     };
 
-    const handleEditActivity = (activity) => {
-        setEditingActivity(activity);
+    const handleEditActivity = (activity: { activityId?: string | number; activityType: string; description?: string; batchEntries: { batchId: string | number; name: string; planType: string; startTime: string; endTime: string; price: string | number; daysPerWeek: string | number }[] }) => {
+        setEditingActivity(activity as unknown as Activity);
         setDialogOpen(true);
     };
 
-    const checkUniqueConstraint = (batchEntries) => {
+    const checkUniqueConstraint = (batchEntries: BatchEntry[]) => {
         const seen = new Set();
         for (const batch of batchEntries) {
             const key = `${batch.name}-${batch.planType}-${batch.daysPerWeek}`;
@@ -58,7 +67,7 @@ const Activities = () => {
         return true;
     };
 
-    const handleSaveCard = async (updatedActivity) => {
+    const handleSaveCard = async (updatedActivity: ActivityFormData) => {
         if (!updatedActivity.batchEntries.length) {
             showAlert(
                 `You must add at least one ${isBatchEnabled ? "batch" : "membership"}.`,
@@ -92,20 +101,20 @@ const Activities = () => {
         }
 
         try {
-            if (updatedActivity?.activityId === "NEW") {
-                delete updatedActivity.activityId;
-                updatedActivity.batchEntries.forEach((batch) => delete batch.batchId);
-                dispatch(activityCruds.add(updatedActivity, token, showAlert, setLoading));
+            if (String(updatedActivity.activityId ?? "") === "NEW") {
+                delete (updatedActivity as unknown as Record<string, unknown>).activityId;
+                updatedActivity.batchEntries.forEach((batch: BatchEntry) => delete batch.batchId);
+                dispatch(activityCruds.add(updatedActivity as unknown as Record<string, unknown>, token, showAlert, setLoading));
                 setDialogOpen(false);
             } else {
-                updatedActivity.batchEntries.forEach((batch) => {
+                updatedActivity.batchEntries.forEach((batch: BatchEntry) => {
                     if (typeof batch.batchId === "string") delete batch.batchId;
                 });
 
-                const sortedActivity = sortMembershipPlans(updatedActivity);
+                const sortedActivity = sortMembershipPlans(updatedActivity as unknown as Activity);
                 await dispatch(
                     activityCruds.update(
-                        updatedActivity.activityId,
+                        updatedActivity.activityId!,
                         sortedActivity,
                         token,
                         showAlert,
@@ -114,13 +123,13 @@ const Activities = () => {
                 );
                 setDialogOpen(false);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
-            showAlert("Error saving activity!", "error");
+            showAlert(error instanceof Error ? error.message : "Error saving activity!", "error");
         }
     };
 
-    const handleDeleteActivity = async (activityId) => {
+    const handleDeleteActivity = async (activityId: string | number) => {
         await dispatch(activityCruds.remove(activityId, token, showAlert, setLoading));
         showAlert("Activity deleted successfully!", "success");
     };
@@ -149,7 +158,7 @@ const Activities = () => {
                     {allActivities.map((activity, index) => (
                         <Box key={activity.activityId}>
                             <ActivityCard
-                                activity={activity as any}
+                                activity={activity as unknown as { activityId?: string | number; activityType: string; description?: string; batchEntries: { batchId: string | number; name: string; planType: string; startTime: string; endTime: string; price: string | number; daysPerWeek: string | number }[] }}
                                 onEdit={handleEditActivity}
                                 onDelete={handleDeleteActivity}
                             />
@@ -183,7 +192,7 @@ const Activities = () => {
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 activity={editingActivity}
-                onSave={handleSaveCard}
+                onSave={handleSaveCard as unknown as (data: Record<string, unknown>) => void}
             />
         </Box>
     );

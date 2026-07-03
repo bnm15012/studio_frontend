@@ -17,7 +17,7 @@
 
     /* Linting / Strictness */
     "strict": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
     "noUnusedLocals": true,

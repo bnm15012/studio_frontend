@@ -43,7 +43,7 @@ const FIELDS = [
         label: "Expense Category",
         type: FIELD_TYPES.SELECT,
         validation: { required: true },
-        getValue: (value: any) => value && { key: value, value },
+        getValue: (value: unknown) => value && { key: value, value },
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
                 categories
@@ -57,7 +57,7 @@ const FIELDS = [
         name: "paymentType",
         label: "Payment Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value: any) => value && ({ key: value, value }),
+        getValue: (value: unknown) => value && ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[0],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -78,7 +78,7 @@ const FIELDS = [
 
 const Expenses: React.FC = () => {
     const { isMobile, currentBranch } = useUI();
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -89,7 +89,7 @@ const Expenses: React.FC = () => {
                     tableCruds={expenseCruds}
                     size={LIMIT}
                     key={"expenses"}
-                    fields={FIELDS as any}
+                    fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

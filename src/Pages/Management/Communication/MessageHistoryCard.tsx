@@ -7,12 +7,12 @@ import {
     StyledCardContent,
     StyledMotionCard,
 } from "@/core/components/cards/StyledCard";
-import PropTypes from "prop-types";
+
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 
 interface MessageHistoryCardProps {
-    history: any[] | null | undefined;
+    history: Record<string, unknown>[] | null | undefined;
     onViewRecipients: (id: string | number) => void;
 }
 
@@ -23,7 +23,7 @@ const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onView
             {history &&
                 history.map((row) => (
                     <StyledMotionCard
-                        key={row.id}
+                        key={String(row.id)}
                         sx={{
                             transition: "box-shadow 0.2s ease-in-out",
                             "&:hover": { boxShadow: 4 },
@@ -50,15 +50,15 @@ const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onView
                                     </Avatar>
                                 }
                             />
-                            <CardChip label={"Sent Date"} value={row?.sentDate} type="DATETIME" />
+                            <CardChip label={"Sent Date"} value={String(row?.sentDate ?? "")} type="DATETIME" />
                         </StyledCardContent>
                         <StyledCardActions>
                             <Button
                                 variant="outlined"
                                 size="small"
                                 fullWidth
-                                onClick={() => onViewRecipients(row.id)}
-                                disabled={row.memberType}
+                                onClick={() => onViewRecipients(row.id as string | number)}
+                                disabled={!!row.memberType}
                                 startIcon={<Group />}
                                 sx={{ mt: 1 }}
                             >
@@ -69,11 +69,6 @@ const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onView
                 ))}
         </StyledCardContainer>
     );
-};
-
-MessageHistoryCard.propTypes = {
-    history: PropTypes.arrayOf(PropTypes.object),
-    onViewRecipients: PropTypes.func.isRequired,
 };
 
 export default MessageHistoryCard;

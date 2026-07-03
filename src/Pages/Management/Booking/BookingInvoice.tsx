@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+
 import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
@@ -8,7 +8,8 @@ import { Typography } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import { Branch, GenericTemplate, Studio } from "@/api/types";
 
 const sectionTitle = {
     marginTop: "10mm",
@@ -20,11 +21,13 @@ const sectionTitle = {
 const tableHeaderStyle: React.CSSProperties = { textAlign: "left", padding: "6px" };
 const tableCellStyle: React.CSSProperties = { padding: "6px", textAlign: "left" };
 
-const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isUser = false, template }) => {
-    const pdfViewerRef = useRef<any>(null);
-
+const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isUser = false, template }: { open: boolean; onClose: () => void; bookingData: Record<string, unknown>; studio: Studio; currentBranch: Branch; isUser?: boolean; template?: GenericTemplate }) => {
+    const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
+    const bd = bookingData as any;
+    const ce = (bd.clientEntry || {}) as any;
+    
     const preparedDescription = template
-        ? replacePlaceholders(template.templateContent, {
+        ? replacePlaceholders(String(template.templateContent), {
             studio,
             branch: currentBranch,
             getLocalDateTime,
@@ -36,28 +39,28 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
             onClose={onClose}
             fullScreen={!isUser}
             confirmText="Download"
-            onConfirm={() => pdfViewerRef.current.downloadPDF()}
+            onConfirm={() => pdfViewerRef.current!.downloadPDF()}
             cancelText="Close"
             maxWidth="md"
             actions={isUser ? [
                 {
                     key: "send-mail",
                     tip: "Send Mail",
-                    onClick: () => pdfViewerRef.current.downloadPDF(),
+                    onClick: () => pdfViewerRef.current!.downloadPDF(),
                     component: <MailIcon />,
                 },
                 {
                     key: "print",
                     tip: "Print PDF",
-                    onClick: () => pdfViewerRef.current.printPDF(),
+                    onClick: () => pdfViewerRef.current!.printPDF(),
                     component: <PrinterIcon />,
                 },
                 {
                     key: "whatsapp",
                     tip: "Send WhatsApp",
-                    disabled: !bookingData?.invoiceToken,
+                    disabled: !bd.invoiceToken,
                     onClick: () =>
-                        pdfViewerRef.current.sendWhatsApp(bookingData?.clientEntry?.pocPhone),
+                        pdfViewerRef.current!.sendWhatsApp(ce.pocPhone),
                     component: <WhatsApp />,
                 },
             ] : []}
@@ -65,17 +68,17 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
             <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
-                    studio={studio}
-                    fileName={`booking-invoice-${bookingData?.clientEntry?.clientId}`}
+                    studio={studio as { logo: string; studioName: string }}
+                    fileName={`booking-invoice-${ce.clientId}`}
                     whatsAppPayload={{
-                        name: bookingData?.clientEntry?.pocName,
+                        name: ce.pocName,
                         studioName: studio.studioName,
-                        invoiceToken: bookingData?.invoiceToken,
+                        invoiceToken: bd.invoiceToken,
                     }}
                     remainingPayload={{
                         title: "Booking Invoice",
                         templateName: "BOOKING_INVOICE",
-                        clientIds: [bookingData?.clientEntry?.clientId],
+                        clientIds: [ce.clientId],
                     }}
                     footer={<p>Thank you for choosing {studio.studioName}!</p>}
                     header={
@@ -83,16 +86,16 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                             <div>
                                 <FlexBetween flexDirection="row-reverse">
                                     {studio.gstNumber && (
-                                        <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
+                                        <p style={{ margin: 0 }}>GSTIN: {String(studio.gstNumber)}</p>
                                     )}
                                 </FlexBetween>
                                 <div>
                                     <div>
-                                        <strong>Invoice #</strong>: INV-{bookingData?.id}
+                                        <strong>Invoice #</strong>: INV-{String(bd.id)}
                                     </div>
                                     <div>
                                         <strong>Invoice Date</strong>:{" "}
-                                        {getLocalDateTime(bookingData?.bookingDate)}
+                                        {getLocalDateTime(String(bd.bookingDate))}
                                     </div>
                                 </div>
                             </div>
@@ -103,20 +106,20 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                             {/* Invoice Info */}
                             <p>
                                 <p style={{ margin: 0, textWrap: "wrap" }}>
-                                    {currentBranch.address}
+                                    {String(currentBranch.address)}
                                 </p>
                                 <p style={{ margin: 0 }}>
-                                    {currentBranch.city}, {currentBranch.state}{" "}
-                                    {currentBranch.pincode}
+                                    {String(currentBranch.city)}, {String(currentBranch.state)}{" "}
+                                    {String(currentBranch.pincode)}
                                 </p>
-                                <p style={{ margin: 0 }}>{currentBranch.phone}</p>
-                                <p style={{ margin: 0 }}>{studio.email}</p>
+                                <p style={{ margin: 0 }}>{String(currentBranch.phone)}</p>
+                                <p style={{ margin: 0 }}>{String(studio.email)}</p>
                             </p>
                             <p style={{ textAlign: "right" }}>
                                 <strong>Bill To</strong>:
-                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocName}</p>
-                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocPhone}</p>
-                                <p style={{ margin: 0 }}>{bookingData?.clientEntry?.pocEmail}</p>
+                                <p style={{ margin: 0 }}>{String(ce.pocName)}</p>
+                                <p style={{ margin: 0 }}>{String(ce.pocPhone)}</p>
+                                <p style={{ margin: 0 }}>{String(ce.pocEmail)}</p>
                             </p>
 
                             {/* Booking Table */}
@@ -131,15 +134,15 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td style={tableCellStyle}>{bookingData?.purpose}</td>
+                                        <td style={tableCellStyle}>{String(bd.purpose)}</td>
                                         <td style={tableCellStyle}>
-                                            {getLocalDateTime(bookingData?.startTime, "DATETIME")}
+                                            {getLocalDateTime(String(bd.startTime), "DATETIME")}
                                         </td>
                                         <td style={tableCellStyle}>
-                                            {getLocalDateTime(bookingData?.endTime, "DATETIME")}
+                                            {getLocalDateTime(String(bd.endTime), "DATETIME")}
                                         </td>
                                         <td style={tableCellStyle}>
-                                            {bookingData?.totalAmount?.toFixed(2)}
+                                            {Number(bd.totalAmount).toFixed(2)}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -157,18 +160,18 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {bookingData?.paymentEntries?.map((paymentEntry) => {
-                                        return <tr key={paymentEntry?.id}>
+                                    {(bd.paymentEntries as Record<string, unknown>[])?.map((paymentEntry: Record<string, unknown>) => {
+                                        return <tr key={String(paymentEntry?.id)}>
                                             <td style={tableCellStyle}>
-                                                {paymentEntry?.amount?.toFixed(2)}
+                                                {Number(paymentEntry?.amount).toFixed(2)}
                                             </td>
                                             <td style={tableCellStyle}>
                                                 {getLocalDateTime(
-                                                    paymentEntry?.paymentDate,
+                                                    String(paymentEntry?.paymentDate),
                                                 )}
                                             </td>
                                             <td style={tableCellStyle}>
-                                                {paymentEntry?.paymentType}
+                                                {String(paymentEntry?.paymentType)}
                                             </td>
                                         </tr>
                                     })}
@@ -210,32 +213,5 @@ const BookingInvoice = ({ open, onClose, bookingData, studio, currentBranch, isU
     );
 };
 
-BookingInvoice.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    bookingData: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        branchId: PropTypes.number.isRequired,
-        purpose: PropTypes.string.isRequired,
-        totalAmount: PropTypes.number.isRequired,
-        bookingDate: PropTypes.string,
-        startTime: PropTypes.string,
-        endTime: PropTypes.string,
-        notes: PropTypes.string,
-        clientEntry: PropTypes.shape({
-            clientId: PropTypes.number,
-            pocName: PropTypes.string,
-            pocPhone: PropTypes.string,
-            pocEmail: PropTypes.string,
-            groupName: PropTypes.string,
-            clientType: PropTypes.string,
-        }),
-        paymentEntry: PropTypes.shape({
-            amount: PropTypes.number,
-            paymentDate: PropTypes.string,
-            paymentMode: PropTypes.string,
-        }),
-    }).isRequired,
-};
 
 export default BookingInvoice;

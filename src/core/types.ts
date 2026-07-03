@@ -1,7 +1,7 @@
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
-import type { ThunkDispatch, UnknownAction } from "@reduxjs/toolkit";
-export type AppDispatch = ThunkDispatch<any, any, UnknownAction>;
+
+export type AppDispatch = (action: unknown) => unknown;
 
 export interface Entity {
     [key: string]: unknown;
@@ -10,6 +10,7 @@ export interface Entity {
 export interface SelectOption {
     key: string | number;
     value: string;
+    [key: string]: unknown;
 }
 
 export interface ApiResponse<T = unknown> {
@@ -59,7 +60,7 @@ export interface FieldDef {
     setValue?: (value: unknown, row?: Record<string, unknown>) => void;
     editable?: (row: Record<string, unknown>) => boolean;
     extraProp?: ExtraProp;
-    validation?: { required?: boolean; regex?: string | RegExp; message?: string; [key: string]: any };
+    validation?: { required?: boolean; regex?: string | RegExp; message?: string; [key: string]: unknown };
     CustomComponent?: React.ComponentType<{
         data: Record<string, unknown>;
         field: FieldDef;
@@ -69,14 +70,14 @@ export interface FieldDef {
 
 export interface ActionItem {
     name: string;
-    onClick?: (row: any) => void;
+    onClick?: (row: Record<string, unknown>) => void;
     icon?: React.ReactNode;
     sx?: {
         color?: string;
         [key: string]: unknown;
     };
     hide?: boolean;
-    enabled?: boolean | ((row: any) => boolean);
+    enabled?: boolean | ((row: Record<string, unknown>) => boolean);
     multi?: boolean;
     help?: string;
 }

@@ -34,11 +34,12 @@ export const getAllTemplatesAPI = async ({
             message: status.statusMessage,
             totalCount: status.totalCount,
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
         return {
             success: false,
             message:
-                error.response?.data?.status?.statusMessage || "Failed to get all template data!",
+                err.response?.data?.status?.statusMessage || "Failed to get all template data!",
         };
     }
 };

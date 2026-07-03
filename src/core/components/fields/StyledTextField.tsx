@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
 import { SxProps, Theme } from "@mui/material/styles";
 
-interface ValidationRules {
+export interface ValidationRules {
     required?: boolean;
     regex?: RegExp;
     message?: string;
@@ -10,7 +10,7 @@ interface ValidationRules {
     maxLength?: number;
 }
 
-interface StyledTextFieldProps {
+export interface StyledTextFieldProps {
     value?: string;
     setValue: (val: string) => void;
     rows?: number;

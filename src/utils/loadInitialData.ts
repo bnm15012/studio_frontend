@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "../state";
 export const loadInitialDataAPI = () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const state = getState();
     const { auth } = state;
-    const currentBranch = state.branch.currentBranch as any;
+    const currentBranch = state.branch.currentBranch!;
     const branchId = currentBranch.branchId;
     const studioId = currentBranch.studioId;
     const token = auth.token;

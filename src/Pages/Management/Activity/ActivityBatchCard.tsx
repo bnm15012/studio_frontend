@@ -2,12 +2,24 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { Chip, Stack, Typography, Box, useTheme } from "@mui/material";
-import PropTypes from "prop-types";
+
 import { membershipTypeColors } from "./Activities.constants";
 import { useUI } from "../../../context/UIContext";
 import { alpha } from "@mui/material/styles";
 
-const ActivityBatchCard = ({ batch }) => {
+interface ActivityBatchCardProps {
+    batch: {
+        batchId: string | number;
+        name: string;
+        planType: string;
+        startTime: string;
+        endTime: string;
+        price: string | number;
+        daysPerWeek: string | number;
+    };
+}
+
+const ActivityBatchCard: React.FC<ActivityBatchCardProps> = ({ batch }) => {
     const { isBatchEnabled } = useUI();
     const theme = useTheme();
 
@@ -39,7 +51,7 @@ const ActivityBatchCard = ({ batch }) => {
                         sx={{
                             backgroundColor:
                                 membershipTypeColors[
-                                    (batch.batchId || 1) % membershipTypeColors.length
+                                Number(batch.batchId || 1) % membershipTypeColors.length
                                 ] || "primary.main",
                             color: "white",
                             fontWeight: "bold",
@@ -79,18 +91,6 @@ const ActivityBatchCard = ({ batch }) => {
             </Stack>
         </Box>
     );
-};
-
-ActivityBatchCard.propTypes = {
-    batch: PropTypes.shape({
-        batchId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        name: PropTypes.string.isRequired,
-        planType: PropTypes.string.isRequired,
-        startTime: PropTypes.string.isRequired,
-        endTime: PropTypes.string.isRequired,
-        price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        daysPerWeek: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    }).isRequired,
 };
 
 export default ActivityBatchCard;

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import type { PersistedState } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 
@@ -52,7 +53,7 @@ const persistConfig = {
     storage,
     version: 10,
     whitelist: ["auth", "branch"],
-    migrate: (state: any) => {
+    migrate: (state: PersistedState) => {
         const currentVersion = state?._persist?.version;
         if (currentVersion !== 10) {
             return Promise.resolve(undefined);

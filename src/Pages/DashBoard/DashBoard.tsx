@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/state";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { Typography, Box, Paper, keyframes, alpha } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import MoneyIcon from "@mui/icons-material/Money";
@@ -20,6 +20,15 @@ import ImageComponent from "@/core/components/fields/ImageComponent";
 import { useUI } from "@/context/UIContext";
 
 // Entrance animation (fade + up + subtle scale)
+interface DashboardCardItem {
+    color: string;
+    value: number;
+    label: string;
+    navigateTo?: string;
+    icon: ReactNode;
+    blur?: unknown;
+}
+
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(18px) scale(0.985); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -43,7 +52,7 @@ const DashBoard: React.FC = () => {
     const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     const allActivities = useAppSelector((state) => state.activities.items);
     const [loading, setLoading] = useState(false);
-    const [data, setDashboardData] = useState<any[] | null>(null);
+    const [data, setDashboardData] = useState<DashboardCardItem[] | null>(null);
 
     const [currentMonthIncome, setCurrentMonthIncome] = useState(0);
     const [lastMonthIncome, setLastMonthIncome] = useState(0);
@@ -245,7 +254,7 @@ const DashBoard: React.FC = () => {
                             },
                         }}
                     >
-                        {data?.map((item: any, index: number) => {
+                        {data?.map((item: DashboardCardItem, index: number) => {
                             const delay = 0.06 * index; // stagger
                             return (
                                 <Box
@@ -272,7 +281,7 @@ const DashBoard: React.FC = () => {
                                         label={item.label}
                                         icon={item.icon}
                                         delay={delay}
-                                        blurValue={item.blur}
+                                        blurValue={item.blur as boolean | undefined}
                                     />
                                 </Box>
                             );

@@ -4,15 +4,22 @@ import { addStudentAPI } from "../Management/Student/Student.api";
 import { useEffect, useMemo } from "react";
 import { addEnquiryAPI } from "../../api/enquiry.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
+import type { FieldDef } from "@/core/types";
 
+interface FormDefinition {
+    id: string;
+    name: string;
+    onSubmit: (arg: { newData: Record<string, unknown>; formSignature: string }) => Promise<{ success: boolean; message: string }>;
+    fields: FieldDef[];
+}
 
 const FormFillPage = () => {
     const { formId, branchId } = useParams();
-    const formData = useMemo(() => [
+    const formData: FormDefinition[] = useMemo(() => [
         {
             id: "student-form",
             name: "Student Registration Form",
-            onSubmit: addStudentAPI,
+            onSubmit: addStudentAPI as unknown as (arg: { newData: Record<string, unknown>; formSignature: string }) => Promise<{ success: boolean; message: string }>,
             fields: [
                 { name: "name", section: "Basic Info", label: "Name", validation: { required: true } },
                 {
@@ -75,7 +82,7 @@ const FormFillPage = () => {
                     label: "Gender",
                     type: "SELECT",
                     validation: { required: true },
-                    getValue: (value: any) => value && { key: value, value },
+                    getValue: (value: unknown) => value && { key: value as string, value },
                     defaultValue: "MALE",
                     extraProp: {
                         getOptions: async (search: string, page: number, limit: number) =>
@@ -101,7 +108,7 @@ const FormFillPage = () => {
         {
             id: "enquiry-form",
             name: "Enquiry Form",
-            onSubmit: addEnquiryAPI,
+            onSubmit: addEnquiryAPI as unknown as (arg: { newData: Record<string, unknown>; formSignature: string }) => Promise<{ success: boolean; message: string }>,
             fields: [
                 { name: "enquiryPurpose", label: "Enquiry Purpose", validation: { required: true } },
                 { name: "name", label: "Name", validation: { required: true } },
@@ -133,11 +140,11 @@ const FormFillPage = () => {
 
     useEffect(() => { }, [formId]);
 
-    const form = formData.filter((fd) => fd.id === formId)[0];
+    const form: FormDefinition | undefined = formData.find((fd) => fd.id === formId);
     return (
         <>
             {form ? (
-                <FormBuilder form={form as any} branchId={branchId} />
+                <FormBuilder form={form} branchId={branchId} />
             ) : (
                 <div>Form not found</div>
             )}

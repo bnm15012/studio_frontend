@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import GroupsIcon from "@mui/icons-material/Groups";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PropTypes from "prop-types";
+
 import { getIcon } from "./Activities.constants";
 import { useState } from "react";
 import ShowMoreBatches from "./ShowMoreBatches";
@@ -21,7 +21,26 @@ import ActivityBatchCard from "./ActivityBatchCard";
 import { useUI } from "../../../context/UIContext";
 import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
 
-const ActivityCard = ({ activity, onEdit, onDelete }) => {
+interface ActivityCardProps {
+    activity: {
+        activityId?: string | number;
+        activityType: string;
+        description?: string;
+        batchEntries: {
+            batchId: string | number;
+            name: string;
+            planType: string;
+            startTime: string;
+            endTime: string;
+            price: string | number;
+            daysPerWeek: string | number;
+        }[];
+    };
+    onEdit: (activity: ActivityCardProps["activity"]) => void;
+    onDelete: (activityId: string | number) => void;
+}
+
+const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onEdit, onDelete }) => {
     const theme = useTheme();
     const [showMoreBatches, setShowMoreBatches] = useState(false);
     const { isBatchEnabled } = useUI();
@@ -134,7 +153,7 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
                 </Stack>
 
                 <Stack spacing={1}>
-                    {activity.batchEntries.slice(0, 2).map((batch) => (
+                    {activity.batchEntries.slice(0, 2).map((batch: ActivityCardProps["activity"]["batchEntries"][0]) => (
                         <ActivityBatchCard key={batch.batchId} batch={batch} />
                     ))}
 
@@ -169,35 +188,14 @@ const ActivityCard = ({ activity, onEdit, onDelete }) => {
             )}
             <DeleteDialog
                 displayData={activity.activityType}
-                id={activity.activityId}
+                id={activity.activityId ?? ""}
                 open={openDeleteDialog}
                 key={activity.activityType}
-                onConfirm={() => onDelete(activity.activityId)}
+                onConfirm={() => onDelete(activity.activityId ?? "")}
                 onClose={() => setOpenDeleteDialog(false)}
             />
         </Card>
     );
-};
-
-ActivityCard.propTypes = {
-    activity: PropTypes.shape({
-        activityId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        activityType: PropTypes.string.isRequired,
-        description: PropTypes.string,
-        batchEntries: PropTypes.arrayOf(
-            PropTypes.shape({
-                batchId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-                name: PropTypes.string.isRequired,
-                planType: PropTypes.string.isRequired,
-                startTime: PropTypes.string.isRequired,
-                endTime: PropTypes.string.isRequired,
-                price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-                daysPerWeek: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            }),
-        ).isRequired,
-    }).isRequired,
-    onEdit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
 };
 
 export default ActivityCard;

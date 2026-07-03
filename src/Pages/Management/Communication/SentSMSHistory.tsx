@@ -5,13 +5,13 @@ import { getMessageHistoryAPI } from "./communication.api";
 import Loading from "@/core/components/loading/Loading";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";
-import PropTypes from "prop-types";
+
 import HistoryMessageTable from "./HistoryMessageTable";
 import MessageHistoryCard from "./MessageHistoryCard";
 import ReceipentsListDialog from "./ReceipentsListDialog";
 
 interface SentSMSHistoryProps {
-    newHistory?: any;
+    newHistory?: Record<string, unknown>[] | Record<string, unknown>;
 }
 
 const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
@@ -19,15 +19,17 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
     const { isMobile, token, currentBranch } = useUI()
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const [history, setHistory] = useState(newHistory);
+    const [history, setHistory] = useState<Record<string, unknown>[] | null | undefined>(
+        Array.isArray(newHistory) ? newHistory : null,
+    );
 
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
-    const [openDialog, setOpenDialog] = useState<any>(false);
+    const [openDialog, setOpenDialog] = useState<boolean | number | string>(false);
 
     useEffect(() => {
         if (newHistory) {
-            setHistory(newHistory);
+            setHistory(Array.isArray(newHistory) ? newHistory : null);
         }
     }, [newHistory]);
 
@@ -48,7 +50,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
                 } else {
                     showAlert(message, "error");
                 }
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error(error);
                 showAlert("Failed to fetch expenses!", "error");
             } finally {
@@ -86,13 +88,10 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
                 />
             </FlexBetween>
             {openDialog && (
-                <ReceipentsListDialog messageId={openDialog} onClose={() => setOpenDialog(false)} />
+                <ReceipentsListDialog messageId={openDialog as string | number} onClose={() => setOpenDialog(false)} />
             )}
         </FlexBetween>
     );
-};
-SentSMSHistory.propTypes = {
-    newHistory: PropTypes.array,
 };
 
 export default SentSMSHistory;

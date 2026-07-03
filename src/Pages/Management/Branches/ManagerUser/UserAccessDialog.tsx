@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/state";
 import { Box, Typography } from "@mui/material";
-import PropTypes from "prop-types";
+
 import { useState, useEffect } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
@@ -20,8 +20,8 @@ const ACCESS_RIGHTS = ["NONE", "FULL"];
 interface UserAccessDialogProps {
     open: boolean;
     onClose: () => void;
-    userAccessEntry: any;
-    onSave: (access: any) => void;
+    userAccessEntry: Record<string, "NONE" | "FULL">;
+    onSave: (access: Record<string, "NONE" | "FULL">) => void;
     isEdit?: boolean;
 }
 
@@ -29,28 +29,28 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({ open, onClose, user
     const settings = useAppSelector((state) => state.auth.settings);
     const [accessState, setAccessState] = useState<Record<string, unknown>>({});
 
-    const studioLevelAccess = Object.keys(settings)
-        .filter((k) => settings[k])
+    const studioLevelAccess = Object.keys(settings as unknown as Record<string, unknown>)
+        .filter((k) => (settings as unknown as Record<string, unknown>)[k])
         .map((key) => key.replace(/_/g, ""));
 
     useEffect(() => {
         if (userAccessEntry) {
             setAccessState({ ...userAccessEntry });
         } else {
-            const initialState = {};
-            Object.keys(ACCESS_BUTTONS).forEach((key) => {
+            const initialState: Record<string, string> = {};
+            Object.keys(ACCESS_BUTTONS).forEach((key: string) => {
                 initialState[key] = "NONE";
             });
             setAccessState(initialState);
         }
     }, [userAccessEntry]);
 
-    const handleChange = (key, value) => {
+    const handleChange = (key: string, value: "NONE" | "FULL") => {
         setAccessState((prev) => ({ ...prev, [key]: value }));
     };
 
     const handleSave = () => {
-        onSave(accessState);
+        onSave(accessState as Record<string, "NONE" | "FULL">);
         onClose();
     };
 
@@ -78,27 +78,19 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({ open, onClose, user
                     .map((key) => (
                         <Box key={key} display="contents">
                             <Typography variant="body1" sx={{ textTransform: "capitalize" }}>
-                                {ACCESS_BUTTONS[key]}
+                                {ACCESS_BUTTONS[key as keyof typeof ACCESS_BUTTONS]}
                             </Typography>
                             <Field
                                 isEdit={isEdit}
                                 value={accessState[key] === "FULL"}
                                 type="BOOL"
-                                setValue={(v) => handleChange(key, ACCESS_RIGHTS[Number(v)])}
+                                setValue={(v: unknown) => handleChange(key, ACCESS_RIGHTS[v ? 1 : 0] as "NONE" | "FULL")}
                             />
                         </Box>
                     ))}
             </Box>
         </StyledDialog>
     );
-};
-
-UserAccessDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    userAccessEntry: PropTypes.object,
-    isEdit: PropTypes.bool,
-    onSave: PropTypes.func.isRequired,
 };
 
 export default UserAccessDialog;

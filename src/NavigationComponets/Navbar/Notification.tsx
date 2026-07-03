@@ -47,15 +47,15 @@ const Notification: React.FC = () => {
                 birthday: true,
             });
 
-            const birthdayNotifications: NotificationItem[] = data.map((d: any) => ({
+            const birthdayNotifications: NotificationItem[] = (data as Array<{ studentId: string | number; name: string }>).map((d) => ({
                 id: d.studentId,
                 message: `Todays is ${d.name}'s Birthday!`,
                 read: false,
             }));
 
             dispatch(setNotifications(birthdayNotifications));
-        } catch (error: any) {
-            console.error("Failed to fetch student names:", error);
+        } catch (err: unknown) {
+            console.error("Failed to fetch student names:", err);
             showAlert("Failed to fetch student names", "error");
         } finally {
             setLoading(false);

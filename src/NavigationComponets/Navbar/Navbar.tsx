@@ -38,7 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
 
     const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
     const handleLogout = async () => {
-        dispatch(logoutUser() as any);
+        dispatch(logoutUser());
         navigate("/");
     };
 
@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
                                     <BranchesDropdown />
                                 )}
                                 <UserProfileDropdown
-                                    user={user as any}
+                                    user={user!}
                                     handleLogout={handleLogout}
                                 />
                             </FlexBetween>

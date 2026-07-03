@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+
 import {
     Button,
     DialogContent,
@@ -54,19 +54,19 @@ interface UploadDataProps {
 const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePath }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [file, setFile] = useState<File | null>(null);
-    const [parsedData, setParsedData] = useState<any[]>([]);
-    const [validationErrors, setValidationErrors] = useState<any[]>([]);
+    const [parsedData, setParsedData] = useState<Record<string, string>[]>([]);
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>[]>([]);
     const [entityType, setEntityType] = useState("STUDENT");
 
     const [page, setPage] = useState(0);
     const rowsPerPage = 5;
     const startIndex = page * rowsPerPage;
-    const handleChangePage = (_: any, newPage: number) => {
+    const handleChangePage = (_: unknown, newPage: number) => {
         setPage(newPage);
     };
 
     const parseCsv = (file: File) => {
-        Papa.parse(file, {
+        Papa.parse<Record<string, string>>(file, {
             header: true,
             skipEmptyLines: true,
             complete: function (results) {
@@ -74,8 +74,8 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
                 setParsedData(data);
 
                 const errors = data.map((row) => {
-                    const rowErrors = {};
-                    Object.keys(validationSchema).forEach((key) => {
+                    const rowErrors: Record<string, string> = {};
+                    (Object.keys(validationSchema) as Array<keyof typeof validationSchema>).forEach((key) => {
                         const { regex, required } = validationSchema[key];
                         const rawValue = row[key];
                         const value = rawValue ? rawValue.trim() : "";
@@ -240,11 +240,6 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
             </StyledDialog>
         </>
     );
-};
-
-UploadData.propTypes = {
-    sampleFIlePath: PropTypes.string.isRequired,
-    handleUploadFile: PropTypes.func.isRequired,
 };
 
 export default UploadData;

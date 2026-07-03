@@ -2,7 +2,7 @@ import React from "react";
 import { TextField } from "@mui/material";
 import { FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
 
-interface FormFieldsValues {
+export interface FormFieldsValues {
     studioName?: string;
     userName?: string;
     email?: string;
@@ -84,11 +84,9 @@ const FormFields: React.FC<FormFieldsProps> = ({ onChangehandle, values, isRegis
                         slotProps={{
                             htmlInput: {
                                 maxLength: 10,
-                            },
-                            input: {
                                 pattern: "[0-9]*",
                                 inputMode: "numeric",
-                            } as any,
+                            },
                         }}
                     />
                     <TextField

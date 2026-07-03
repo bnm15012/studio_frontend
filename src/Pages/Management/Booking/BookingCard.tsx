@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+
 import CardHeader from "@/core/components/cards/CardHeader";
 import { isPast } from "@/core/utils/DateUtil";
 import { CreditCard, Hourglass, Target } from "lucide-react";
@@ -6,16 +6,16 @@ import CardChip from "@/core/components/cards/CardChip";
 import { Person } from "@mui/icons-material";
 import { Box } from "@mui/material";
 
-const BookingCard = ({ row }) => {
+const BookingCard = ({ row }: { row: Record<string, unknown> }) => {
     const { purpose, clientEntry, totalAmount, startTime, endTime, paymentEntries } = row;
     const getStatus = () => {
         const dueAmount =
-            (row.totalAmount || 0) -
+            ((row.totalAmount as number) || 0) -
             ((Array.isArray(paymentEntries) &&
-                paymentEntries
-                    .filter((p) => p.status == "COMPLETED")
-                    .map((p) => p.amount)
-                    .reduce((a, b) => a + b, 0)) ||
+                (paymentEntries as Record<string, unknown>[])
+                    .filter((p: Record<string, unknown>) => p.status == "COMPLETED")
+                    .map((p: Record<string, unknown>) => p.amount as number)
+                    .reduce((a: number, b: number) => a + b, 0)) ||
                 0);
         if (dueAmount === 0) {
             return "COMPLETED";
@@ -27,41 +27,20 @@ const BookingCard = ({ row }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                fieldValue={purpose}
+                fieldValue={String(purpose)}
                 FieldIcon={Target}
                 badge={getStatus()}
-                enabled={!isPast(startTime)}
+                enabled={!isPast(startTime as string)}
             />
-            {clientEntry?.pocName && <CardChip ChipIcon={Person} value={clientEntry.pocName} />}
+            {!!(clientEntry as Record<string, unknown>)?.pocName && <CardChip ChipIcon={Person} value={String((clientEntry as Record<string, unknown>).pocName)} />}
             <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip ChipIcon={Hourglass} value={startTime + " - " + endTime} />
+                <CardChip ChipIcon={Hourglass} value={String(startTime) + " - " + String(endTime)} />
             </Box>
             {totalAmount !== undefined && totalAmount !== null && (
-                <CardChip ChipIcon={CreditCard} value={`Rs. ${totalAmount}`} />
+                <CardChip ChipIcon={CreditCard} value={`Rs. ${String(totalAmount)}`} />
             )}
         </Box>
     );
-};
-
-BookingCard.propTypes = {
-    row: PropTypes.shape({
-        purpose: PropTypes.string,
-        clientEntry: PropTypes.shape({
-            pocName: PropTypes.string,
-        }),
-        totalAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        startTime: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.instanceOf(Date),
-            PropTypes.number,
-        ]),
-        endTime: PropTypes.oneOfType([
-            PropTypes.string,
-            PropTypes.instanceOf(Date),
-            PropTypes.number,
-        ]),
-        paymentEntries: PropTypes.array,
-    }).isRequired,
 };
 
 export default BookingCard;

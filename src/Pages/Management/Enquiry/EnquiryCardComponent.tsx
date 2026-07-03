@@ -15,7 +15,7 @@ import { Box } from "@mui/material";
 // }
 
 interface EnquiryCardProps {
-    row: Record<string, any>;
+    row: Record<string, unknown>;
 }
 
 const EnquiryCard: React.FC<EnquiryCardProps> = ({ row }) => {
@@ -25,15 +25,15 @@ const EnquiryCard: React.FC<EnquiryCardProps> = ({ row }) => {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
                 FieldIcon={QuestionAnswerIcon}
-                fieldValue={enquiryPurpose}
-                enabled={isToday(enquiryDate as any)}
-                badge={getTimePassed(enquiryDate as any)}
+                fieldValue={String(enquiryPurpose)}
+                enabled={isToday(enquiryDate as string)}
+                badge={getTimePassed(enquiryDate as string)}
             />
             <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip value={name} ChipIcon={FileText} />
-                <CardChip value={enquiryDate as any} type={"DATETIME"} />
+                <CardChip value={String(name)} ChipIcon={FileText} />
+                <CardChip value={enquiryDate as string} type={"DATETIME"} />
             </Box>
-            {contact && <ContactSection contact={contact} />}
+            {!!contact && <ContactSection contact={String(contact)} />}
         </Box>
     );
 };

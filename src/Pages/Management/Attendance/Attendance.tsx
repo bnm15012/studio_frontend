@@ -16,6 +16,7 @@ import MarkPresentDialog from "../Student/MarkPresent";
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
+import type { StudentAssignment } from "../../../api/types";
 
 const LIMIT = 50;
 
@@ -32,10 +33,10 @@ const Attendance = () => {
 
     const allActivities = useAppSelector((state) => state.activities.items);
     const api = useRef({});
-    const [showAttendence, setShowAttendence] = useState<any>(false);
+    const [showAttendence, setShowAttendence] = useState<boolean | StudentAssignment>(false);
     const [loading, setLoading] = useState(false);
     const [date, setDate] = useState(getCurrentDateLocal());
-    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState<any>(null);
+    const [showBulkAttendanceDialog, setShowBulkAttendanceDialog] = useState<StudentAssignment[] | null>(null);
 
     const filterOptions = useMemo(
         () => [
@@ -93,14 +94,14 @@ const Attendance = () => {
                 name: "membershipStatus",
                 label: "Membership Status",
                 defaultValue: "INACTIVE",
-                getValue: (value: any) => (
+                getValue: (value: unknown) => (
                     <Box
                         sx={{
                             color: value === "ACTIVE" ? "green" : "red",
                             fontWeight: "bolder",
                         }}
                     >
-                        {value}
+                        {value as React.ReactNode}
                     </Box>
                 ),
                 extraProp: { readOnly: true },
@@ -110,31 +111,33 @@ const Attendance = () => {
                 name: "present",
                 label: "Present",
                 type: "CHECK",
-                getValue: (value, row) =>
-                    row?.attendanceEntries?.filter(
-                        (entry) => entry.date.split(" ")[0] === date,
-                    )?.[0]?.present || false,
+                getValue: (value: unknown, row: Record<string, unknown>) =>
+                    (row?.attendanceEntries as Array<Record<string, unknown>>)
+                        ?.filter(
+                            (entry: Record<string, unknown>) => (entry.date as string).split(" ")[0] === date,
+                        )?.[0]?.present || false,
             },
         ],
         [isEnabled, FEATURE_KEYS, date],
     );
 
-    const markBulkAttendance = async (data: any) => {
+    const markBulkAttendance = async (data: { activityAssignmentIds: (string | number)[]; present: boolean; date: string }) => {
         dispatch((studentsAssignmentsCruds as any).markAttendanceBulk(data, token, showAlert, setLoading));
     };
 
     const AttendanceCard = useMemo(() => {
-        const Comp = ({ row }) => {
+        const Comp = ({ row }: { row: Record<string, unknown> }) => {
             const isPresent =
-                row?.attendanceEntries?.filter((entry) => entry.date.split(" ")[0] === date)?.[0]
+                (row?.attendanceEntries as Array<Record<string, unknown>>)
+                    ?.filter((entry: Record<string, unknown>) => (entry.date as string).split(" ")[0] === date)?.[0]
                     ?.present || false;
 
             return (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
                     <CardHeader
-                        fieldValue={row.studentName}
-                        badge={row.membershipStatus}
-                        enabled={row.membershipStatus === "ACTIVE"}
+                        fieldValue={String(row.studentName ?? "")}
+                        badge={row.membershipStatus as string}
+                        enabled={(row.membershipStatus as string) === "ACTIVE"}
                     />
                     <Box
                         display="flex"
@@ -162,9 +165,9 @@ const Attendance = () => {
                     </Box>
                     <Box display="flex" alignItems="center" gap={1.5}>
                         <CardChip value={`${row.daysPerWeek} days/week`} ChipIcon={CalendarMonth} />
-                        {isEnabled(FEATURE_KEYS.BATCH) && row.batchName && (
+                        {!!isEnabled(FEATURE_KEYS.BATCH) && !!row.batchName && (
                             <CardChip
-                                value={`${row.batchName} (${row.batchTime})`}
+                                value={`${String(row.batchName)} (${String(row.batchTime)})`}
                                 ChipIcon={AccessTime}
                             />
                         )}
@@ -227,7 +230,7 @@ const Attendance = () => {
                 <StudentAttendence
                     open={true}
                     onClose={() => setShowAttendence(false)}
-                    activityData={showAttendence}
+                    activityData={showAttendence as StudentAssignment}
                 />
             )}
             {showBulkAttendanceDialog && (

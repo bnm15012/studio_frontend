@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/state";
-import PropTypes from "prop-types";
+
 import DialogContent from "@mui/material/DialogContent";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
@@ -9,21 +9,21 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import { replacePlaceholders } from "../../../../utils/globalFuns";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
-import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 import { useUI } from "@/context/UIContext";
 
-const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: any }) => {
+const InstructorContract = ({ open, onClose, activityData }: { open: boolean, onClose: () => void, activityData: Record<string, unknown> }) => {
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
-    const pdfViewerRef = useRef<any>(null);
-    const [templates, setTemplates] = useState<any[]>([]);
+    const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
+    const [templates, setTemplates] = useState<Record<string, unknown>[]>([]);
     const { token, studio, currentBranch } = useUI()
 
     const [loading, setLoading] = useState(false);
-    const [instructorData, setInstructorData] = useState<any>({});
+    const [instructorData, setInstructorData] = useState<Record<string, unknown>>({});
 
     const tableState = useAppSelector((state) => state["instructors"]);
-    const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchTemplates = async () => {
@@ -50,17 +50,17 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
     }, [dispatch, showAlert, studio!.studioId, token]);
 
     useEffect(() => {
-        instructorData && setInstructorData(tableState.recordById[activityData.instructorId] || {});
+        instructorData && setInstructorData(tableState.recordById[activityData.instructorId as string] || {});
     }, [activityData.instructorId, instructorData, tableState.recordById]);
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
             const matchedTemplate = templates.find((t) =>
-                t.templateType?.toLowerCase().includes(activityData.activityName?.toLowerCase()),
+                String(t.templateType).toLowerCase().includes(String(activityData.activityName).toLowerCase()),
             );
 
             if (matchedTemplate) {
-                setSelectedTemplateId(matchedTemplate.id);
+                setSelectedTemplateId(matchedTemplate.id as string);
             }
         }
     }, [templates, selectedTemplateId, activityData.activityName]);
@@ -68,7 +68,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
     const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
 
     const preparedDescription = selectedTemplate
-        ? replacePlaceholders(selectedTemplate.templateContent, {
+        ? replacePlaceholders(selectedTemplate.templateContent as string, {
             instructor: instructorData,
             instructorActivity: activityData,
             studio,
@@ -79,7 +79,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
 
     return (
         <StyledDialog
-            onConfirm={() => pdfViewerRef.current.downloadPDF()}
+            onConfirm={() => pdfViewerRef.current!.downloadPDF()}
             confirmText="Download"
             open={open}
             onClose={onClose}
@@ -88,7 +88,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                 {
                     key: "print",
                     tip: "Print",
-                    onClick: () => pdfViewerRef.current.printPDF(),
+                    onClick: () => pdfViewerRef.current!.printPDF(),
                     component: <PrinterIcon />,
                 },
             ]}
@@ -96,7 +96,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
             <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
                 {loading && <Loading />}
                 <HtmlToPdfViewer
-                    fileName={`Instructor-Contract-${instructorData.name}.pdf`}
+                    fileName={`Instructor-Contract-${String(instructorData.name)}.pdf`}
                     ref={pdfViewerRef}
                     studio={studio as { logo: string; studioName: string }}
                     header={
@@ -116,12 +116,12 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                             <p>Instructor Personal Details</p>
                             <table>
                                 {[
-                                    ["Name", instructorData?.name],
-                                    ["Date of Birth", getLocalDateTime(instructorData?.dob)],
-                                    ["Email", instructorData?.email],
-                                    ["Mobile", instructorData?.phone],
-                                    ["Emergency Contact", instructorData?.emergencyContactNumber],
-                                    ["Address", instructorData?.address],
+                                    ["Name", String(instructorData?.name ?? "")],
+                                    ["Date of Birth", getLocalDateTime(String(instructorData?.dob))],
+                                    ["Email", String(instructorData?.email ?? "")],
+                                    ["Mobile", String(instructorData?.phone ?? "")],
+                                    ["Emergency Contact", String(instructorData?.emergencyContactNumber ?? "")],
+                                    ["Address", String(instructorData?.address ?? "")],
                                 ].map(([label, value], idx) => (
                                     <tr key={idx}>
                                         <td
@@ -130,7 +130,7 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
                                                 textAlign: "left",
                                             }}
                                         >
-                                            <strong>{label}:</strong> {value || "-"}
+                                            <strong>{label}:</strong> {String(value ?? "-")}
                                         </td>
                                     </tr>
                                 ))}
@@ -183,18 +183,6 @@ const InstructorContract = ({ open, onClose, activityData }: { open: boolean, on
             </DialogContent>
         </StyledDialog>
     );
-};
-
-InstructorContract.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    activityData: PropTypes.shape({
-        activityName: PropTypes.string.isRequired,
-        assignedDate: PropTypes.string.isRequired,
-        startDate: PropTypes.string.isRequired,
-        endDate: PropTypes.string,
-        instructorId: PropTypes.number.isRequired,
-    }).isRequired,
 };
 
 export default InstructorContract;

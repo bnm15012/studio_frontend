@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 export function useFeatureFlags(
-    settings: Record<string, boolean | undefined> | any[] | any,
+    settings: Record<string, unknown>,
     userAccessEntry?: Record<string, string | null | undefined> | null,
 ) {
     const featureFlags = useMemo(() => {

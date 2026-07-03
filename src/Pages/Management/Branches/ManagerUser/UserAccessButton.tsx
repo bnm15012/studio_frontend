@@ -1,10 +1,16 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import UserAccessDialog from "./UserAccessDialog";
-import PropTypes from "prop-types";
+
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
 
-const UserAccessButton = (props) => {
+interface UserAccessButtonProps {
+    value: Record<string, "NONE" | "FULL">;
+    setValue: (access: Record<string, "NONE" | "FULL">) => void;
+    isEdit?: boolean;
+}
+
+const UserAccessButton = (props: UserAccessButtonProps) => {
     const { value, setValue, isEdit = false } = props;
 
     const [accessDialogOpen, setAccessDialogOpen] = useState(false);
@@ -31,12 +37,6 @@ const UserAccessButton = (props) => {
             )}
         </>
     );
-};
-
-UserAccessButton.propTypes = {
-    value: PropTypes.any,
-    setValue: PropTypes.func.isRequired,
-    isEdit: PropTypes.bool,
 };
 
 export default UserAccessButton;

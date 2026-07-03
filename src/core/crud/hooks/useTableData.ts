@@ -27,7 +27,7 @@ export const useTableData = ({
     defaultParams = {},
 }: UseTableDataParams) => {
     const dispatch = useAppDispatch();
-    const tableState = useAppSelector((state: Record<string, unknown>) => (state[tableName] as CrudState) || {});
+    const tableState = useAppSelector((state: Record<string, unknown>) => (state[tableName] as CrudState) || {} as CrudState);
 
     const { subscribe } = usePageSearch();
 
@@ -40,16 +40,14 @@ export const useTableData = ({
     const [filterKeys, setFilterKeys] = useState<Record<string, unknown>>({});
 
     const fetchData = useCallback(async () => {
-        dispatch(
-            tableCruds.getAll(
-                showAlert,
-                setLoading,
-                token,
-                { page, searchTerm, size, ...defaultParams, ...filterKeys },
-                rootId ?? 0,
-                currentView === "CARD",
-            ) as any,
-        );
+        tableCruds.getAll(
+            showAlert,
+            setLoading,
+            token,
+            { page, searchTerm, size, ...defaultParams, ...filterKeys },
+            rootId ?? 0,
+            currentView === "CARD",
+        )(dispatch, () => ({}));
     }, [
         defaultParams,
         currentView,
@@ -67,7 +65,7 @@ export const useTableData = ({
 
     const fetchOne = useCallback(
         async (formKey: string | number) => {
-            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading) as any);
+            tableCruds.getById(formKey, token, showAlert, setLoading)(dispatch, () => ({}));
         },
         [dispatch, tableCruds, token, showAlert, setLoading],
     );

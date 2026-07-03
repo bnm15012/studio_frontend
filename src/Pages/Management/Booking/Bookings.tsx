@@ -1,13 +1,14 @@
 import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
+import type { FieldDef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Button, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import CalendarView from "./Celendar/CalendarView.jsx";
+import CalendarView from "./Calendar/CalendarView.tsx";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes.js";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
-import PropTypes from "prop-types";
+
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useUI } from "../../../context/UIContext.jsx";
 import BookingCard from "./BookingCard.jsx";
@@ -31,15 +32,15 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"];
 
-const Bookings = ({ ID }) => {
+const Bookings = ({ ID }: { ID?: string | number }) => {
     const { isMobile, token, studio, currentBranch } = useUI()
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
 
     const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
-    const [showInvoice, setShowInvoice] = useState<any>(null);
-    const api = useRef({});
+    const [showInvoice, setShowInvoice] = useState<Record<string, unknown> | null>(null);
+    const api = useRef<Record<string, unknown>>({});
     const templates = useAppSelector((state) => state.genericTemplate.items);
 
     useEffect(() => {
@@ -56,16 +57,21 @@ const Bookings = ({ ID }) => {
     }, [dispatch, showAlert, studio!.studioId, token]);
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
-    const pendingPaymentRef = useRef<any>(null);
+    const pendingPaymentRef = useRef<{
+        onSave: (data: Record<string, unknown> | null) => void;
+        onClose: () => void;
+        paymentInit: Record<string, unknown>;
+    } | null>(null);
     const getClientsByName = useCallback(
-        async (params) => {
+        async (params: Record<string, unknown>) => {
             const { success, data, message } = await getCLientByNamesAPI({
                 branchId: currentBranch.branchId,
                 token,
                 params,
             });
             if (success) {
-                return data?.map((c) => ({ value: c.pocName, key: c.clientId })) || [];
+                const items = data as Array<Record<string, unknown>> | undefined;
+                return items?.map((c) => ({ value: c.pocName as string, key: c.clientId as string | number })) || [];
             } else {
                 showAlert(message, "error");
                 return [];
@@ -75,9 +81,9 @@ const Bookings = ({ ID }) => {
     );
 
     const awaitForDialog = useCallback(
-        (paymentInit: any) =>
-            new Promise<any>((resolve) => {
-                const handleSave = (data) => {
+        (paymentInit: Record<string, unknown>) =>
+            new Promise<Record<string, unknown> | null>((resolve) => {
+                const handleSave = (data: Record<string, unknown> | null) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -93,24 +99,24 @@ const Bookings = ({ ID }) => {
         [],
     );
 
-    const beforeUpdate = useCallback(async (row) => {
+    const beforeUpdate = useCallback(async (row: Record<string, unknown>) => {
         const modifiedData = { ...row };
-        const clientEntry = modifiedData.clientEntry;
-        if (Object.keys(clientEntry).includes("key")) {
+        const clientEntry = modifiedData.clientEntry as Record<string, unknown>;
+        if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
             modifiedData.clientEntry = { clientId: clientEntry.key };
         }
         return modifiedData;
     }, []);
 
     const beforeAdd = useCallback(
-        async (row: any) => {
+        async (row: Record<string, unknown>) => {
             const modifiedData = { ...row };
             delete modifiedData.dueAmount;
             delete modifiedData.paidAmount;
-            const clientEntry = modifiedData.clientEntry;
+            const clientEntry = modifiedData.clientEntry as Record<string, unknown>;
 
-            if (Object.keys(clientEntry).includes("key")) {
-                modifiedData.clientEntry = { clientId: clientEntry.key };
+            if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
+                modifiedData.clientEntry = { clientId: clientEntry.key as string | number };
             }
 
             const paymentInit = {
@@ -145,12 +151,12 @@ const Bookings = ({ ID }) => {
                 name: "clientEntry",
                 label: "Poc Name",
                 type: "SELECT",
-                getValue: (obj, row) =>
+                getValue: (obj: Record<string, unknown>, row: Record<string, unknown>) =>
                     obj && { value: obj.value || obj.pocName, key: obj.key || obj.clientId },
                 extraProp: {
                     addValue: false,
                     saveType: "object",
-                    getOptions: (searchTerm = "", page, size) =>
+                    getOptions: (searchTerm = "", page: number, size: number) =>
                         getClientsByName({ clientName: searchTerm, page, size }),
                 },
             },
@@ -166,18 +172,18 @@ const Bookings = ({ ID }) => {
                 name: "paymentStatus",
                 label: "Payment Status",
                 section: "Payment Details",
-                getValue: (value, row) => {
+                getValue: (value: unknown, row: Record<string, unknown>) => {
                     const dueAmount =
-                        (row.totalAmount || 0) -
+                        ((row.totalAmount as number) || 0) -
                         ((Array.isArray(row?.paymentEntries) &&
-                            row.paymentEntries
-                                .filter((p) => p.status == "COMPLETED")
-                                .map((p) => p.amount)
-                                .reduce((a, b) => a + b, 0)) ||
+                            (row.paymentEntries as Record<string, unknown>[])
+                                .filter((p: Record<string, unknown>) => p.status == "COMPLETED")
+                                .map((p: Record<string, unknown>) => p.amount as number)
+                                .reduce((a: number, b: number) => a + b, 0)) ||
                             0);
                     if (dueAmount === 0) {
                         return "COMPLETED";
-                    } else if (dueAmount > 0 && dueAmount != row?.totalAmount) {
+                    } else if (dueAmount > 0 && dueAmount != (row?.totalAmount as number)) {
                         return "PARTIALLY PAID";
                     }
                     return "PENDING";
@@ -199,12 +205,12 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) =>
+                getValue: (obj: unknown, row: Record<string, unknown>) =>
                     (Array.isArray(row?.paymentEntries) &&
-                        row.paymentEntries
-                            .filter((p) => p.status == "COMPLETED")
-                            .map((p) => p.amount)
-                            .reduce((a, b) => a + b, 0)) ||
+                        (row.paymentEntries as Record<string, unknown>[])
+                            .filter((p: Record<string, unknown>) => p.status == "COMPLETED")
+                            .map((p: Record<string, unknown>) => p.amount as number)
+                            .reduce((a: number, b: number) => a + b, 0)) ||
                     0,
             },
             {
@@ -214,13 +220,13 @@ const Bookings = ({ ID }) => {
                 section: "Payment Details",
                 type: FIELD_TYPES.NUMBER,
                 extraProp: { readOnly: true },
-                getValue: (obj, row) =>
-                    (row.totalAmount || 0) -
+                getValue: (obj: unknown, row: Record<string, unknown>) =>
+                    ((row.totalAmount as number) || 0) -
                     ((Array.isArray(row?.paymentEntries) &&
-                        row.paymentEntries
-                            .filter((p) => p.status == "COMPLETED")
-                            .map((p) => p.amount)
-                            .reduce((a, b) => a + b, 0)) ||
+                        (row.paymentEntries as Record<string, unknown>[])
+                            .filter((p: Record<string, unknown>) => p.status == "COMPLETED")
+                            .map((p: Record<string, unknown>) => p.amount as number)
+                            .reduce((a: number, b: number) => a + b, 0)) ||
                         0),
             },
             {
@@ -248,7 +254,7 @@ const Bookings = ({ ID }) => {
                 type: "COMPONENT",
                 CustomComponent: PaymentList,
             },
-        ],
+        ] as FieldDef[],
         [getClientsByName],
     );
 
@@ -276,14 +282,14 @@ const Bookings = ({ ID }) => {
                 beforeAdd={beforeAdd}
                 beforeUpdate={beforeUpdate}
                 key={"booking"}
-                fields={FIELDS as any}
+                fields={FIELDS}
                 actions={[
                     {
                         name: "Document",
                         icon: <ReceiptIcon />,
                         enabled: true,
                         sx: { color: "blue" },
-                        onClick: (row) => {
+                        onClick: (row: Record<string, unknown>) => {
                             setShowInvoice(row);
                         },
                     },
@@ -327,7 +333,7 @@ const Bookings = ({ ID }) => {
                     studio={studio}
                     template={templates?.find((t) => t.templateType === "BOOKING")}
                     currentBranch={currentBranch}
-                    onClose={() => setShowInvoice(false)}
+                    onClose={() => setShowInvoice(null)}
                     bookingData={showInvoice}
                 />
             )}
@@ -335,8 +341,5 @@ const Bookings = ({ ID }) => {
     );
 };
 
-Bookings.propTypes = {
-    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
 
 export default Bookings;

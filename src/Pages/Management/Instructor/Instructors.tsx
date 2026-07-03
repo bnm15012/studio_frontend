@@ -5,7 +5,7 @@ import Views from "@/core/crud/Views";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
-import PropTypes from "prop-types";
+
 import FeedIcon from "@mui/icons-material/Feed";
 import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
@@ -67,9 +67,9 @@ const FIELDS = [
         section: "Personal Details",
         name: "instructorStatus",
         label: "Status",
-        getValue: (value: any) => (
+        getValue: (value: unknown) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                {value}
+                {String(value)}
             </Box>
         ),
         defaultValue: "ACTIVE",
@@ -118,9 +118,9 @@ interface InstructorsProps {
 
 const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const { isMobile, currentBranch } = useUI()
-    const api = useRef<any>({});
-    const apiInstructor = useRef<any>({});
-    const [generateContractDoc, setGenerateContractDoc] = useState<any>(null);
+    const api = useRef<Record<string, unknown>>({});
+    const apiInstructor = useRef<Record<string, unknown>>({});
+    const [generateContractDoc, setGenerateContractDoc] = useState<Record<string, unknown> | null>(null);
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
@@ -142,7 +142,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         icon: <FeedIcon />,
                         enabled: true,
                         sx: { color: "blue" },
-                        onClick: (row) => {
+                        onClick: (row: Record<string, unknown>) => {
                             setGenerateContractDoc(row);
                         },
                     },
@@ -153,10 +153,10 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value: any) => value && { value, key: value },
-                        editable: (row: any) => row.assignmentId === "NEW",
+                        getValue: (value: unknown) => value && { value, key: value },
+                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         extraProp: {
-                            getOptions: async (search, page, limit) =>
+                            getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
                                     .filter((a) =>
                                         a.activityType!.toLowerCase().includes(search.toLowerCase()),
@@ -194,14 +194,14 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Membership Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value: any) => (
+                        getValue: (value: unknown) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",
                                     fontWeight: "bolder",
                                 }}
                             >
-                                {value}
+                                {String(value)}
                             </Box>
                         ),
                         extraProp: { readOnly: true },
@@ -246,7 +246,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
             {generateContractDoc && (
                 <InstructorContract
                     open={true}
-                    onClose={() => setGenerateContractDoc(false)}
+                    onClose={() => setGenerateContractDoc(null)}
                     activityData={generateContractDoc}
                 />
             )}
@@ -254,8 +254,5 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     );
 };
 
-Instructors.propTypes = {
-    ID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
 
 export default Instructors;

@@ -1,9 +1,9 @@
 import api from "@/core/utils/api";
 
-const getErrorMessage = (error, defaultMessage) =>
+const getErrorMessage = (error: { response?: { data?: { status?: { statusMessage?: string } } } }, defaultMessage: string) =>
     error.response?.data?.status?.statusMessage || defaultMessage;
 
-const getHeaders = (token, otherHeader = {}, params = {}) => ({
+const getHeaders = (token: string | null | undefined, otherHeader: Record<string, string> = {}, params: Record<string, unknown> = {}) => ({
     headers: { Authorization: `${token}`, ...otherHeader },
     params: params,
 });
@@ -30,7 +30,7 @@ const getHeaders = (token, otherHeader = {}, params = {}) => ({
 //     }
 // };
 
-export const sendMessageApi = async ({ token, payload, file = null, page = 1, size = 1 }) => {
+export const sendMessageApi = async ({ token, payload, file = null, page = 1, size = 1 }: { token: string | null | undefined; payload: Record<string, unknown>; file?: File | null; page?: number; size?: number }) => {
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
@@ -58,15 +58,15 @@ export const sendMessageApi = async ({ token, payload, file = null, page = 1, si
             success: true,
             message: status.statusMessage || "Message sent successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: getErrorMessage(error, "Failed to send message!"),
+            message: getErrorMessage(error as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to send message!"),
         };
     }
 };
 
-export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
+export const getMessageHistoryAPI = async ({ token, branchId, page, size }: { token: string | null | undefined; branchId: string | number; page: number; size: number }) => {
     try {
         const response = await api.get(`/getMessageHistory/${branchId}`, {
             headers: { Authorization: `${token}` },
@@ -79,15 +79,15 @@ export const getMessageHistoryAPI = async ({ token, branchId, page, size }) => {
             totalCount: status.totalCount,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: getErrorMessage(error, "Failed to fetch Templates!"),
+            message: getErrorMessage(error as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to fetch Templates!"),
         };
     }
 };
 
-export const getMessageRecipientsAPI = async ({ token, messageId }) => {
+export const getMessageRecipientsAPI = async ({ token, messageId }: { token: string | null | undefined; messageId: string | number }) => {
     try {
         const response = await api.get(`/getMessageRecipients/${messageId}`, {
             headers: { Authorization: `${token}` },
@@ -98,21 +98,21 @@ export const getMessageRecipientsAPI = async ({ token, messageId }) => {
             success: true,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: getErrorMessage(error, "Failed to fetch Templates!"),
+            message: getErrorMessage(error as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to fetch Templates!"),
         };
     }
 };
 
-export const sendWhatsAppMessage = async ({ token, phone, message, payload }) => {
+export const sendWhatsAppMessage = async ({ token, phone, message, payload }: { token: string | null | undefined; phone: string; message: string; payload: Record<string, unknown> }) => {
     const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
     try {
         await sendMessageApi({ token, payload });
-    } catch (error: any) {
-
+    } catch (error: unknown) {
+        console.error(error);
     }
     return {
         success: true,

@@ -38,7 +38,7 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     const isAdmin = user.role === "ADMIN";
     const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
-    const { isEnabled } = useFeatureFlags(settings, user.userAccessEntry);
+    const { isEnabled } = useFeatureFlags(settings as unknown as Record<string, unknown>, user.userAccessEntry);
     const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
     return (

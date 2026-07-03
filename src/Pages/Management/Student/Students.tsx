@@ -19,6 +19,7 @@ import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
+import type { Activity, BatchEntry } from "@/api/types";
 
 const size = 7;
 
@@ -65,10 +66,10 @@ const FIELDS = [
         name: "age",
         label: "Age",
         type: "NUMBER",
-        getValue: (_: any, row: any) => {
+        getValue: (_: unknown, row: Record<string, unknown>) => {
             if (!row.dob) return null;
 
-            const dob = new Date(row.dob);
+            const dob = new Date(String(row.dob));
             const today = new Date();
 
             const hasBirthdayPassed =
@@ -86,7 +87,7 @@ const FIELDS = [
         section: "Personal Details",
         name: "membershipStatus",
         label: "Status",
-        getValue: (value: any) => (
+        getValue: (value: unknown) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
                 {value as string}
             </Box>
@@ -101,7 +102,7 @@ const FIELDS = [
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value: any) => value && { key: value, value },
+        getValue: (value: unknown) => value && { key: value, value },
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -138,13 +139,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
 
-    const [showInvoice, setShowInvoice] = useState<any>(false);
-    const [showAttendence, setShowAttendence] = useState<any>(false);
+    const [showInvoice, setShowInvoice] = useState<Record<string, unknown> | boolean>(false);
+    const [showAttendence, setShowAttendence] = useState<Record<string, unknown> | boolean>(false);
     const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
-    const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
-    const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
-    const api = useRef<any>({});
-    const apiStudent = useRef<any>({});
+    const [openPaymentDialog, setOpenPaymentDialog] = useState<false | { onSave: (data: unknown) => void; onClose: () => void; paymentInit: unknown }>(false);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState<{ open: boolean; data?: Record<string, unknown> }>({ open: false });
+    const api = useRef<Record<string, unknown>>({} as Record<string, unknown>);
+    const apiStudent = useRef<Record<string, unknown>>({} as Record<string, unknown>);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let extraField: any[] = [];
     if (isEnabled?.(FEATURE_KEYS.ENROLMENT)) {
         extraField = [
@@ -154,17 +156,18 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 name: "additionalData",
                 label: "",
                 type: "CUSTOM",
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 extraProp: {
-                    CustomComponent: OtherInfo,
+                    CustomComponent: OtherInfo as React.ComponentType<any>,
                 },
             },
         ];
     }
 
     const awaitForDialog = useCallback(
-        (paymentInit: any) =>
+        (paymentInit: unknown) =>
             new Promise((resolve) => {
-                const handleSave = (data: any) => {
+                const handleSave = (data: unknown) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -184,20 +187,20 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const beforeAdd = useCallback(
-        async (row: any) => {
+        async (row: Record<string, unknown>) => {
             const modifiedData = { ...row };
 
-            let paymentInit = {
-                actualAmount: modifiedData.activityAmount || 0,
-                amount: modifiedData.activityAmount || 0,
+            const paymentInit = {
+                actualAmount: Number(modifiedData.activityAmount ?? 0),
+                amount: Number(modifiedData.activityAmount ?? 0),
                 status: PAYMENT_STATUS[0],
                 paymentType: PAYMENT_TYPE[0],
             };
 
-            const paymentData: any | null = await awaitForDialog(paymentInit);
+            const paymentData: Record<string, unknown> | null = await awaitForDialog(paymentInit) as Record<string, unknown> | null;
 
             if (paymentData) {
-                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+                modifiedData.paymentEntry = { ...(row.paymentEntry as Record<string, unknown> || {}), ...paymentData };
             } else {
                 throw new Error("Payment cancelled");
             }
@@ -207,11 +210,11 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const getBatchEntries = useCallback(
-        (activityName: string, membershipType?: string, daysPerWeek?: any, batchName?: string) =>
+        (activityName: string, membershipType?: string, daysPerWeek?: string | number, batchName?: string) =>
             allActivities
-                .find((a: any) => a.activityType === activityName)
+                .find((a: Activity) => a.activityType === activityName)
                 ?.batchEntries?.filter(
-                    (b: any) =>
+                    (b: BatchEntry) =>
                         (!membershipType || b.planType === membershipType) &&
                         (!daysPerWeek || b.daysPerWeek === daysPerWeek) &&
                         (!batchName || b.name === batchName),
@@ -220,13 +223,13 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const overRideOnChange = useCallback(
-        (value: any, obj: any, fieldPath: string) => {
+        (value: unknown, obj: Record<string, unknown>, fieldPath: string) => {
             if (!value) return obj;
 
             const newObj = { ...obj };
 
             if (fieldPath === "activityName") {
-                const entries = getBatchEntries(value);
+                const entries = getBatchEntries(String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
                 newObj.membershipType = entry?.planType;
                 newObj.daysPerWeek = entry?.daysPerWeek;
@@ -235,39 +238,39 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.activityAmount = entry?.price;
                 newObj.membershipEndDate =
                     entry?.planType &&
-                    getEndDateBySubscriptionPlan(newObj.membershipStartDate, entry?.planType, cachedMembershipTypes);
+                    getEndDateBySubscriptionPlan(String(newObj.membershipStartDate ?? ""), entry?.planType, cachedMembershipTypes as { membershipPackage: string; days?: number }[]);
             } else if (fieldPath === "membershipType") {
-                const entries = getBatchEntries(newObj.activityName, value);
+                const entries = getBatchEntries(String(newObj.activityName), String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
                 newObj.daysPerWeek = entry?.daysPerWeek;
                 newObj.batchName = entry?.name;
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
-                    newObj.membershipStartDate,
-                    value,
-                    cachedMembershipTypes,
+                    String(newObj.membershipStartDate ?? ""),
+                    String(value),
+                    cachedMembershipTypes as { membershipPackage: string; days?: number }[],
                 );
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
             } else if (fieldPath === "daysPerWeek") {
-                const entries = getBatchEntries(newObj.activityName, newObj.membershipType, value);
+                const entries = getBatchEntries(String(newObj.activityName), String(newObj.membershipType), String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
                 newObj.batchName = entry?.name;
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
             } else if (fieldPath === "batchName") {
                 const entry = getBatchEntries(
-                    newObj.activityName,
-                    newObj.membershipType,
-                    newObj.daysPerWeek,
-                    value,
+                    String(newObj.activityName),
+                    String(newObj.membershipType),
+                    String(newObj.daysPerWeek ?? ""),
+                    String(value),
                 )?.[0];
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
             } else if (fieldPath === "membershipStartDate") {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
-                    value,
-                    newObj.membershipType,
-                    cachedMembershipTypes,
+                    String(value),
+                    String(newObj.membershipType),
+                    cachedMembershipTypes as { membershipPackage: string; days?: number }[],
                 );
             }
             return newObj;
@@ -293,9 +296,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     {
                         name: "Document",
                         icon: <ReceiptIcon />,
-                        enabled: (row: any) => row.paymentEntry?.status === "COMPLETED",
+                        enabled: (row: Record<string, unknown>) => (row.paymentEntry as Record<string, unknown> | undefined)?.status === "COMPLETED",
                         sx: { color: "blue" },
-                        onClick: (row: any) => {
+                        onClick: (row: Record<string, unknown>) => {
                             setShowInvoice(row);
                         },
                     },
@@ -305,7 +308,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         icon: <HowToRegIcon />,
                         enabled: () => true,
                         sx: { color: "blue" },
-                        onClick: (row: any) => {
+                        onClick: (row: Record<string, unknown>) => {
                             setShowAttendence(row);
                         },
                     },
@@ -317,15 +320,15 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Activity",
                         type: "SELECT",
                         getValue: (value: string) => value && { value, key: value },
-                        editable: (row: any) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
-                                    .filter((a: any) =>
+                                    .filter((a: Activity) =>
                                         (a.activityType as string).toLowerCase().includes(search.toLowerCase()),
                                     )
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a: any) => ({ key: a.activityType, value: a.activityType })),
+                                    .map((a: Activity) => ({ key: a.activityType, value: a.activityType })),
                         },
                         validation: { required: true },
                     },
@@ -334,23 +337,23 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "membershipType",
                         label: "Membership Type",
                         type: "SELECT",
-                        editable: (row: any) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                            getOptions: async (search: string, page: number, limit: number, row: Record<string, unknown>) => {
                                 const batchEntries = allActivities.find(
-                                    (a: any) => a.activityType === row["activityName"],
+                                    (a: Activity) => a.activityType === row["activityName"],
                                 )?.batchEntries;
                                 return [
                                     ...new Set(
-                                        (batchEntries as any[])
-                                            ?.filter((b: any) =>
+                                        (batchEntries as BatchEntry[] | undefined)
+                                            ?.filter((b: BatchEntry) =>
                                                 (b.planType as string)
                                                     .toLowerCase()
                                                     .includes(search.toLowerCase()),
                                             )
-                                            .map((b: any) => b.planType),
+                                            .map((b: BatchEntry) => b.planType),
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
@@ -363,18 +366,18 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "daysPerWeek",
                         label: "Days Per week",
-                        editable: (row: any) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         type: "SELECT",
                         getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                            getOptions: async (search: string, page: number, limit: number, row: Record<string, unknown>) => {
                                 const batchEntries = allActivities
-                                    .find((a: any) => a.activityType === row["activityName"])
+                                    .find((a: Activity) => a.activityType === row["activityName"])
                                     ?.batchEntries?.filter(
-                                        (b: any) => b.planType === row["membershipType"],
+                                        (b: BatchEntry) => b.planType === row["membershipType"],
                                     );
-                                return [...new Set((batchEntries as any[])?.map((b: any) => b.daysPerWeek))].map(
+                                return [...new Set((batchEntries as BatchEntry[] | undefined)?.map((b: BatchEntry) => b.daysPerWeek))].map(
                                     (a: unknown) => ({
                                         key: a,
                                         value: a,
@@ -389,25 +392,25 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
-                        editable: (row: any) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         getValue: (value: unknown) => value && { value, key: value },
                         extraProp: {
                             addValue: false,
-                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                            getOptions: async (search: string, page: number, limit: number, row: Record<string, unknown>) => {
                                 const batchEntries = allActivities
-                                    .find((a: any) => a.activityType === row["activityName"])
+                                    .find((a: Activity) => a.activityType === row["activityName"])
                                     ?.batchEntries?.filter(
-                                        (b: any) =>
+                                        (b: BatchEntry) =>
                                             b.planType === row["membershipType"] &&
                                             b.daysPerWeek === row["daysPerWeek"],
                                     );
                                 return [
                                     ...new Set(
-                                        (batchEntries as any[])
-                                            ?.filter((b: any) =>
+                                        (batchEntries as BatchEntry[] | undefined)
+                                            ?.filter((b: BatchEntry) =>
                                                 (b.name as string).toLowerCase().includes(search.toLowerCase()),
                                             )
-                                            .map((b: any) => b.name),
+                                            .map((b: BatchEntry) => b.name),
                                     ),
                                 ]
                                     .slice(page * limit, (page + 1) * limit)
@@ -420,15 +423,16 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "activityAmount",
                         label: "Amount",
-                        getValue: (v: unknown, row: any, isEdit: boolean) => {
+                        getValue: (v: unknown, row: Record<string, unknown>, isEdit: boolean) => {
                             if (!isEdit) {
-                                if (!row || !row.paymentEntry) return null;
+                                const paymentEntry = row.paymentEntry as Record<string, unknown> | undefined;
+                                if (!row || !paymentEntry) return null;
                                 return (
                                     <>
-                                        Rs. {row.paymentEntry.amount}{" "}
-                                        {row.paymentEntry.actualAmount && row.paymentEntry.actualAmount !== row.paymentEntry.amount && (
+                                        Rs. {String(paymentEntry.amount)}{" "}
+                                        {paymentEntry.actualAmount && paymentEntry.actualAmount !== paymentEntry.amount && (
                                             <span style={{ textDecoration: "line-through", color: "red" }}>
-                                                Rs. {row.paymentEntry.actualAmount}
+                                                Rs. {String(paymentEntry.actualAmount)}
                                             </span>
                                         )}
                                     </>
@@ -477,7 +481,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",
-                        editable: (row: any) => (row?.paymentEntry as any)?.paymentStatus !== "COMPLETED",
+                        editable: (row: Record<string, unknown>) => (row?.paymentEntry as Record<string, unknown> | undefined)?.paymentStatus !== "COMPLETED",
                         defaultValue: getCurrentDateTimeLocal(),
                     },
                     {
@@ -567,12 +571,12 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             )}
             <Views
                 formKey={ID}
-                beforeAdd={(row: any) => {
+                beforeAdd={(row: Record<string, unknown>) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
                 }}
-                beforeUpdate={async (row: any) => {
+                beforeUpdate={async (row: Record<string, unknown>) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
@@ -583,7 +587,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         icon: <WhatsApp />,
                         enabled: () => true,
                         sx: { color: "green" },
-                        onClick: (row: any) => {
+                        onClick: (row: Record<string, unknown>) => {
                             if (row.studentId) {
                                 setOpenTemplateDialog({ open: true, data: row });
                             } else {
@@ -597,7 +601,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 tableCruds={studentsCruds}
                 size={size}
                 key={"students"}
-                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD] as any}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
@@ -612,16 +616,16 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     open={true}
                     isUser={true}
                     onClose={() => setShowInvoice(false)}
-                    studentData={tableState.recordById[showInvoice?.studentId]}
-                    activityData={showInvoice}
+                    studentData={tableState.recordById[(showInvoice as Record<string, unknown>)?.studentId as string]}
+                    activityData={showInvoice as Record<string, unknown>}
                 />
             )}
             {openPaymentDialog && (
                 <PaymentEntryDialog
                     open={true}
-                    onSave={(data: any) => openPaymentDialog?.onSave?.(data)}
-                    onClose={() => openPaymentDialog?.onClose?.()}
-                    initialData={openPaymentDialog?.paymentInit}
+                    onSave={(data: unknown) => { if (openPaymentDialog) openPaymentDialog.onSave(data); }}
+                    onClose={() => { if (openPaymentDialog) openPaymentDialog.onClose(); }}
+                    initialData={openPaymentDialog?.paymentInit as Record<string, unknown>}
                     paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
                     paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
                 />
@@ -630,7 +634,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 <StudentAttendence
                     open={true}
                     onClose={() => setShowAttendence(false)}
-                    activityData={showAttendence}
+                    activityData={showAttendence as Record<string, unknown>}
                 />
             )}
             {openTemplateDialog.open && (
@@ -638,10 +642,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     open={openTemplateDialog.open}
                     onClose={() => setOpenTemplateDialog({ open: false })}
                     data={{
-                        ids: [openTemplateDialog.data.studentId],
-                        raw: openTemplateDialog.data,
-                        phoneNumber: openTemplateDialog.data.phone,
-                        email: openTemplateDialog.data.email,
+                        ids: [openTemplateDialog.data!.studentId],
+                        raw: openTemplateDialog.data!,
+                        phoneNumber: openTemplateDialog.data!.phone,
+                        email: openTemplateDialog.data!.email,
                         notificationType: "WHATSAPP",
                     }}
                 />

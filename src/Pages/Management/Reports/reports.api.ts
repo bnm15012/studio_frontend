@@ -1,12 +1,12 @@
 import api from "@/core/utils/api";
 
 interface ReportsApiParams {
-    startDate: any;
-    startMonth: any;
-    startYear: any;
-    endDate: any;
-    endMonth: any;
-    endYear: any;
+    startDate: number;
+    startMonth: number;
+    startYear: number;
+    endDate: number;
+    endMonth: number;
+    endYear: number;
     studioId: string | number;
     branchId: string | number;
     token: string | null | undefined;
@@ -30,7 +30,7 @@ export const reportsAPi = async ({
     paymentMethod,
 }: ReportsApiParams) => {
     try {
-        let response: any = null;
+        let response: { data: { data: Record<string, unknown>[]; message?: string } } | null = null;
         if (type === "payment") {
             response = await api.get(
                 `/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}&paymentType=${paymentMethod}`,
@@ -54,16 +54,20 @@ export const reportsAPi = async ({
                 },
             );
         }
+        if (!response) {
+            return { success: false, message: "No response from server" };
+        }
         const data = response.data;
         return {
             success: true,
             data: data.data,
             message: data.message || "report data retrieved successfully!",
         };
-    } catch (error: any) {
-        console.error("report data fetch error:", error);
+    } catch (error: unknown) {
+        const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
+        console.error("report data fetch error:", err);
         const message =
-            error?.response?.data?.status?.statusMessage || "Failed to fetch report data";
+            err?.response?.data?.status?.statusMessage || "Failed to fetch report data";
         return { success: false, message };
     }
 };

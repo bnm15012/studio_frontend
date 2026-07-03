@@ -13,8 +13,8 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 interface PaymentEntryDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (data: any) => void;
-    initialData?: any;
+    onSave: (data: Record<string, unknown>) => void;
+    initialData?: Record<string, unknown>;
     paymentStatus: Array<{ value: string; label: string }>;
     paymentType: Array<{ value: string; label: string }>;
 }
@@ -27,7 +27,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     paymentStatus,
     paymentType,
 }) => {
-    const [formData, setFormData] = useState<any>(initialData || {});
+    const [formData, setFormData] = useState<Record<string, unknown>>(initialData || {});
 
     useEffect(() => {
         if (initialData) setFormData({ ...initialData });
@@ -56,7 +56,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                 {!!formData.actualAmount && (
                     <Typography fontWeight="bolder" variant="h6">
                         {formData.type === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
-                        {formData.actualAmount}
+                        {String(formData.actualAmount)}
                     </Typography>
                 )}
 
@@ -66,10 +66,10 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                     value={formData.amount ?? ""}
                     fullWidth
                     onChange={(e) =>
-                        setFormData((prev: any) => ({
-                            ...prev,
-                            amount: Number(e.target.value),
-                        }))
+                setFormData((prev: Record<string, unknown>) => ({
+                    ...prev,
+                    amount: Number(e.target.value),
+                }))
                     }
                     variant="outlined"
                     InputProps={{
@@ -83,7 +83,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                         value={formData.status || ""}
                         label="Payment Status"
                         onChange={(e) =>
-                            setFormData((prev: any) => ({ ...prev, status: e.target.value }))
+                            setFormData((prev: Record<string, unknown>) => ({ ...prev, status: e.target.value }))
                         }
                     >
                         {paymentStatus?.map((status) => (
@@ -100,7 +100,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                         value={formData.paymentType || ""}
                         label="Payment Type"
                         onChange={(e) =>
-                            setFormData((prev: any) => ({ ...prev, paymentType: e.target.value }))
+                            setFormData((prev: Record<string, unknown>) => ({ ...prev, paymentType: e.target.value }))
                         }
                     >
                         {paymentType?.map((type) => (

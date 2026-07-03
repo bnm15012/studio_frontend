@@ -6,6 +6,7 @@ import Views from "@/core/crud/Views";
 import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 
+
 const LIMIT = 7;
 
 const FIELD_META = {
@@ -21,8 +22,8 @@ const FIELDS = [
 ];
 
 const MembershipType: React.FC = () => {
-    const api = useRef<any>({});
-    const studio = useAppSelector((s: any) => s.auth.studio);
+    const api = useRef<Record<string, unknown>>({});
+    const studio = useAppSelector((s) => s.auth.studio!);
 
     return (
         <FlexBetweenColumn>
@@ -33,7 +34,7 @@ const MembershipType: React.FC = () => {
                     tableCruds={membershipPackageCruds}
                     size={LIMIT}
                     key={"membershipPackages"}
-                    fields={FIELDS as any}
+                    fields={FIELDS}
                     rootId={studio.studioId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

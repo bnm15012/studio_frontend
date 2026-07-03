@@ -19,6 +19,17 @@ import { reportsAPi } from "./reports.api";
 import { useUI } from "../../../context/UIContext";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
+interface ReportData {
+    income?: unknown[][];
+    expenses?: unknown[][];
+    totalIncome?: number;
+    totalExpense?: number;
+    pendingPaymentEntries?: unknown[][];
+    totalPendingPayment?: number;
+    completedPaymentEntries?: unknown[][];
+    totalCompletedPayment?: number;
+}
+
 const Reports: React.FC = () => {
     const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
     const theme = useTheme();
@@ -34,7 +45,7 @@ const Reports: React.FC = () => {
         new Date(today.getFullYear(), today.getMonth() + 1, 0),
     );
     const [loading, setLoading] = useState(false);
-    const [eiData, setEiData] = useState<any>(null);
+    const [eiData, setEiData] = useState<ReportData | null>(null);
     const [reportType, setReportType] = useState("incomeExpense");
     const [paymentStatus, setPaymentStatus] = useState("COMPLETED");
     const [paymentMethod, setPaymentMethod] = useState("All");
@@ -63,35 +74,41 @@ const Reports: React.FC = () => {
         };
         try {
             if (reportType === "incomeExpense") {
-                const { data, success, message } = await reportsAPi({
+                const resultIE = await reportsAPi({
                     token,
                     status: "",
                     type: "incomeExpense",
                     ...commonPayload,
                 });
+                const { data, success, message } = resultIE as { data: Record<string, unknown>[]; success: boolean; message: string };
 
                 if (success && data.length > 0) {
-                    const report = data[0].ieMonthlyReportEntry;
-                    const totalIncome = report.income;
-                    const totalExpense = report.expense;
+                    const report = data[0]?.ieMonthlyReportEntry as Record<string, unknown> | undefined;
+                    if (!report) {
+                        setEiData({ income: [], expenses: [], totalIncome: 0, totalExpense: 0 });
+                        showAlert("No data available.", "warning");
+                        return;
+                    }
+                    const totalIncome = Number(report.income ?? 0);
+                    const totalExpense = Number(report.expense ?? 0);
 
-                    const incomeFormatted = report.incomeEntries.map((entry: any, index: number) => [
+                    const incomeFormatted = (report.incomeEntries as Record<string, unknown>[] | undefined)?.map((entry: Record<string, unknown>, index: number) => [
                         index + 1,
-                        entry.studentName,
-                        entry.paymentMode,
-                        `${entry.activityName} ${entry.membershipType ? "(" + entry.membershipType + ")" : ""}`,
-                        getLocalDateTime(entry.paymenDate),
-                        `₹${entry.amount}`,
-                    ]);
+                        String(entry.studentName ?? ""),
+                        String(entry.paymentMode ?? ""),
+                        `${String(entry.activityName ?? "")} ${entry.membershipType ? "(" + String(entry.membershipType) + ")" : ""}`,
+                        getLocalDateTime(String(entry.paymenDate ?? null)),
+                        `₹${String(entry.amount ?? "")}`,
+                    ]) ?? [];
 
-                    const expenseFormatted = report.expenseEntries.map((entry: any, index: number) => [
+                    const expenseFormatted = (report.expenseEntries as Record<string, unknown>[] | undefined)?.map((entry: Record<string, unknown>, index: number) => [
                         index + 1,
-                        entry.description || entry.expenseCategory,
-                        entry.paymentType,
-                        entry.expenseCategory,
-                        getLocalDateTime(entry.expenseDate),
-                        `₹${entry.amount}`,
-                    ]);
+                        String(entry.description || entry.expenseCategory || ""),
+                        String(entry.paymentType ?? ""),
+                        String(entry.expenseCategory ?? ""),
+                        getLocalDateTime(String(entry.expenseDate ?? null)),
+                        `₹${String(entry.amount ?? "")}`,
+                    ]) ?? [];
 
                     setEiData({
                         income: incomeFormatted,
@@ -109,27 +126,28 @@ const Reports: React.FC = () => {
                     showAlert(message || "No data available.", "warning");
                 }
             } else if (reportType === "payment") {
-                const { data, success } = await reportsAPi({
+                const result = await reportsAPi({
                     token,
                     status: paymentStatus,
                     ...commonPayload,
                     type: "payment",
                 });
+                const { data, success } = result as { data: Record<string, unknown>[]; success: boolean; message: string };
 
                 if (success && data.length > 0) {
                     let totalAmount = 0;
 
-                    const formatted = data.map((entry: any, index: number) => {
-                        totalAmount += entry.amount;
+                    const formatted = data.map((entry: Record<string, unknown>, index: number) => {
+                        totalAmount += Number(entry.amount ?? 0);
 
                         return [
                             index + 1,
-                            entry.payeeType,
-                            entry?.payeeName,
-                            `₹${entry.amount}`,
-                            entry.paymentType,
-                            entry.status,
-                            getLocalDateTime(entry.paymentDate),
+                            String(entry.payeeType ?? ""),
+                            String(entry?.payeeName ?? ""),
+                            `₹${String(entry.amount ?? "")}`,
+                            String(entry.paymentType ?? ""),
+                            String(entry.status ?? ""),
+                            getLocalDateTime(String(entry.paymentDate ?? null)),
                         ];
                     });
                     if (paymentStatus === "PENDING") {
@@ -159,7 +177,7 @@ const Reports: React.FC = () => {
         }
     };
 
-    const renderTable = (title: string, data: any[][], headers: string[]) => (
+    const renderTable = (title: string, data: unknown[][], headers: string[]) => (
         <>
             <p style={{ fontSize: 18, marginBottom: 10 }}> {title}</p>
             <div>
@@ -200,7 +218,7 @@ const Reports: React.FC = () => {
                                     pageBreakInside: "avoid",
                                 }}
                             >
-                                {row.map((cell: any, j: number) => (
+                                {row.map((cell: unknown, j: number) => (
                                     <td
                                         key={j}
                                         style={{
@@ -213,7 +231,7 @@ const Reports: React.FC = () => {
                                                         : "left",
                                         }}
                                     >
-                                        {cell}
+                                        {cell as React.ReactNode}
                                     </td>
                                 ))}
                             </tr>
@@ -456,10 +474,9 @@ const Reports: React.FC = () => {
                                                         </td>
                                                         <td style={{ textAlign: "right" }}>
                                                             ₹
-                                                            {(
-                                                                eiData?.totalIncome -
-                                                                eiData?.totalExpense
-                                                            )?.toLocaleString("en-IN")}
+                                                            {(Number(eiData?.totalIncome ?? 0) -
+                                                                Number(eiData?.totalExpense ?? 0)
+                                                            ).toLocaleString("en-IN")}
                                                         </td>
                                                     </tr>
                                                 )}

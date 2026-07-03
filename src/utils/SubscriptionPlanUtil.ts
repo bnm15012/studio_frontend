@@ -10,7 +10,7 @@ const subscriptionPlans: Record<string, number> = {
     AMC: 365,
 };
 
-const parsePlanDays = (planName: string | null | undefined, membershipTypes?: any[]): number => {
+const parsePlanDays = (planName: string | null | undefined, membershipTypes?: { membershipPackage: string; days?: number }[]): number => {
     if (!planName) return 0;
 
     const name = planName.toLowerCase();
@@ -29,7 +29,7 @@ const parsePlanDays = (planName: string | null | undefined, membershipTypes?: an
 const getEndDateBySubscriptionPlan = (
     startDate: string,
     planName: string | null | undefined,
-    membershipTypes?: any[],
+    membershipTypes?: { membershipPackage: string; days?: number }[],
 ): string | null => {
     const days = parsePlanDays(planName, membershipTypes);
     return addDays(startDate, days);

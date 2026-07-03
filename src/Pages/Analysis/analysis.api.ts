@@ -6,6 +6,27 @@ interface FetchReportDataParams {
     year?: number;
 }
 
+interface ExpenseEntry {
+    expenseCategory?: string;
+    amount: number;
+}
+
+interface PaymentEntry {
+    payeeType?: string;
+    amount: number;
+}
+
+interface MonthlyEntry {
+    month: number;
+    revenue: number;
+    expenseEntries: ExpenseEntry[];
+    paymentEntries: PaymentEntry[];
+}
+
+interface ReportRawData {
+    data: MonthlyEntry[];
+}
+
 export const fetchReportData = async ({
     token,
     branchId,
@@ -25,16 +46,18 @@ export const fetchReportData = async ({
             data: processMonthlyStudioData(data),
             message: data.message || "Report data retrieved successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Report data fetch error:", error);
 
         const message =
-            error?.response?.data?.status?.statusMessage || "Failed to fetch dashboard data";
+            error instanceof Error && "response" in error
+                ? (error as { response?: { data?: { status?: { statusMessage?: string } } } }).response?.data?.status?.statusMessage || "Failed to fetch dashboard data"
+                : "Failed to fetch dashboard data";
         return { success: false, message };
     }
 };
 
-function processMonthlyStudioData(rawData: any) {
+function processMonthlyStudioData(rawData: ReportRawData) {
     const monthNames = [
         "January",
         "February",
@@ -59,20 +82,20 @@ function processMonthlyStudioData(rawData: any) {
         CLIENT: 0,
     };
 
-    rawData.data.forEach((entry: any) => {
+    rawData.data.forEach((entry: MonthlyEntry) => {
         const monthIndex = entry.month - 1;
         const monthLabel = monthNames[monthIndex];
         monthlyLabels.push(monthLabel);
         monthlyIncome.push(entry.revenue ?? 0);
 
         // Aggregate expenses by category
-        entry.expenseEntries.forEach((expense: any) => {
+        entry.expenseEntries.forEach((expense: ExpenseEntry) => {
             const category = expense.expenseCategory || "OTHER";
             expenseMap[category] = (expenseMap[category] || 0) + (expense.amount ?? 0);
         });
 
         // Aggregate payment amounts by payee type
-        entry.paymentEntries.forEach((payment: any) => {
+        entry.paymentEntries.forEach((payment: PaymentEntry) => {
             const payeeType = payment.payeeType?.toUpperCase();
             const amount = payment.amount ?? 0;
             if (payeeType) {
@@ -159,7 +182,7 @@ function processMonthlyStudioData(rawData: any) {
     };
 }
 
-function getExpenseVsPaymentData(rawData: any) {
+function getExpenseVsPaymentData(rawData: ReportRawData) {
     const monthNames = [
         "January",
         "February",
@@ -179,13 +202,13 @@ function getExpenseVsPaymentData(rawData: any) {
     const monthlyExpenses: number[] = [];
     const monthlyPayments: number[] = [];
 
-    rawData.data.forEach((entry: any) => {
+    rawData.data.forEach((entry: MonthlyEntry) => {
         const monthIndex = entry.month - 1;
         const monthLabel = monthNames[monthIndex];
         monthlyLabels.push(monthLabel);
 
-        const totalExpenses = entry.expenseEntries.reduce((sum: number, exp: any) => sum + exp.amount, 0);
-        const totalPayments = entry.paymentEntries.reduce((sum: number, pay: any) => sum + pay.amount, 0);
+        const totalExpenses = entry.expenseEntries.reduce((sum: number, exp: ExpenseEntry) => sum + exp.amount, 0);
+        const totalPayments = entry.paymentEntries.reduce((sum: number, pay: PaymentEntry) => sum + pay.amount, 0);
 
         monthlyExpenses.push(totalExpenses);
         monthlyPayments.push(totalPayments);

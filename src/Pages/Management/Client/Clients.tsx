@@ -29,7 +29,7 @@ const FIELDS = [
         name: "clientType",
         label: "Client Type",
         type: FIELD_TYPES.SELECT,
-        getValue: (value: any) => value && { value, key: value },
+        getValue: (value: unknown) => value && { value, key: value },
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
                 clientTypes.map((a) => ({ key: a, value: a })),
@@ -40,7 +40,7 @@ const FIELDS = [
 
 const Clients: React.FC = () => {
     const { isMobile, currentBranch } = useUI();
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -51,7 +51,7 @@ const Clients: React.FC = () => {
                     tableCruds={clientCruds}
                     size={LIMIT}
                     key={"clients"}
-                    fields={FIELDS as any}
+                    fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}

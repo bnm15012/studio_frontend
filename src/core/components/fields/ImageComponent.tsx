@@ -10,7 +10,7 @@ import FileDropZone from "./FileDropZone";
  * A container wrapper around FileDropZone that handles the authentication,
  * image uploading API call, state/alert management, and default image fallback.
  */
-interface ImageComponentProps {
+export interface ImageComponentProps {
     value?: string;
     setValue?: (url: string) => void;
     size?: string;

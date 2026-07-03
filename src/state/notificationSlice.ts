@@ -5,7 +5,7 @@ export interface NotificationItem {
     read: boolean;
     title?: string;
     message?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface NotificationsState {
@@ -35,7 +35,7 @@ const notificationsSlice = createSlice({
             }
         },
         markAllAsRead: (state) => {
-            state.items.forEach((n: any) => (n.read = true));
+            state.items.forEach((n) => (n.read = true));
             state.unreadCount = 0;
         },
     },

@@ -6,7 +6,7 @@ import { Subject } from "@mui/icons-material";
 import { Box } from "@mui/material";
 
 interface TemplateCardProps {
-    row: Record<string, any>;
+    row: Record<string, unknown>;
 }
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ row }) => {
@@ -15,12 +15,12 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ row }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                fieldValue={templateName}
+                fieldValue={String(templateName)}
                 FieldIcon={BookTemplate}
-                badge={templateType || ""}
+                badge={String(templateType ?? "")}
                 enabled={true}
             />
-            {templateSubject && <CardChip ChipIcon={Subject} value={templateSubject} />}
+            {!!templateSubject && <CardChip ChipIcon={Subject} value={String(templateSubject)} />}
         </Box>
     );
 };

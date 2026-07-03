@@ -49,8 +49,8 @@ const ForgotPassword = () => {
             } else {
                 showAlert(message || "Failed to send OTP", "error");
             }
-        } catch (error: any) {
-            console.error(error);
+        } catch (err: unknown) {
+            console.error(err);
             showAlert("Error sending OTP", "error");
         } finally {
             setLoading(false);
@@ -87,8 +87,8 @@ const ForgotPassword = () => {
             } else {
                 showAlert(message || "Failed to change password", "error");
             }
-        } catch (error: any) {
-            showAlert(error.message || "Error changing password", "error");
+        } catch (err: unknown) {
+            showAlert(err instanceof Error ? err.message : String(err), "error");
         } finally {
             setLoading(false);
             setIsOTPSent(false);

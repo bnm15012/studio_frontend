@@ -1,8 +1,9 @@
 import api from "@/core/utils/api";
+import { getApiMessage } from "@/core/api/helper";
 import { Enquiry } from "./types";
 
 export interface EnquiryAPIParams {
-    newData: any;
+    newData: Record<string, unknown>;
     token: string | null | undefined;
 }
 
@@ -32,10 +33,10 @@ export const addEnquiryAPI = async ({
             message: status.statusMessage,
             totalCount: status.totalCount,
         };
-    } catch (error: any) {
+    } catch (err: unknown) {
         return {
             success: false,
-            message: error.response?.data?.status?.statusMessage || "Failed to add Enquiry!",
+            message: getApiMessage(err as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to add Enquiry!"),
         };
     }
 };

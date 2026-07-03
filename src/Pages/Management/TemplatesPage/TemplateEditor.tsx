@@ -52,14 +52,14 @@ const data = {
 };
 
 // flatten nested object keys like instructor.name, student.email
-const flattenVariables = (obj: any, prefix = ""): string[] =>
+const flattenVariables = (obj: Record<string, unknown>, prefix = ""): string[] =>
     Object.entries(obj).flatMap(([key, value]) =>
-        typeof value === "object" ? flattenVariables(value, `${prefix}${key}_`) : `${prefix}${key}`,
+        typeof value === "object" && value !== null ? flattenVariables(value as Record<string, unknown>, `${prefix}${key}_`) : `${prefix}${key}`,
     );
 
 const allVariables = flattenVariables(data);
 
-interface TemplateEditorProps {
+export interface TemplateEditorProps {
     value: string;
     setValue: (val: string) => void;
     rows?: number;

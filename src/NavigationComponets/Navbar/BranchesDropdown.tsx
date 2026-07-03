@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "../../state";
 import { useNavigate } from "react-router-dom";
+import { PayloadAction } from "@reduxjs/toolkit";
 import { branchCruds } from "../../api/all.api";
 import { clearAllstate } from "../../state/thunks";
 import { loadInitialDataAPI } from "../../utils/loadInitialData";
@@ -24,7 +25,7 @@ const BranchesDropdown: React.FC = () => {
 
     const handleBranchSelect = (branch: Branch) => {
         if (!branch.isActive) return;
-        dispatch((branchCruds.actions as any).setCurrentBranch(branch));
+        dispatch((branchCruds.actions as unknown as { setCurrentBranch: (branch: Branch) => PayloadAction<Branch> }).setCurrentBranch(branch));
         dispatch(clearAllstate());
         dispatch(loadInitialDataAPI());
         navigate("/dashboard");

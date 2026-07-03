@@ -9,7 +9,7 @@ interface InfoItemProps {
     icon: React.ReactNode;
     value?: string | number | null;
     onClick?: (e: React.MouseEvent) => void;
-    sx?: any;
+    sx?: Record<string, unknown>;
 }
 
 const InfoItem: React.FC<InfoItemProps> = ({ icon, value, onClick, sx }) => {
@@ -65,8 +65,8 @@ const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
             navigator.clipboard.writeText(email);
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-        } catch (err: any) {
-            console.error("Failed to copy:", err);
+        } catch (err: unknown) {
+            console.error("Failed to copy:", err instanceof Error ? err.message : String(err));
         }
     };
 
@@ -117,7 +117,7 @@ const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
 };
 
 interface StudentCardProps {
-    row: Record<string, any>;
+    row: Record<string, unknown>;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({ row }) => {
@@ -133,37 +133,37 @@ const StudentCard: React.FC<StudentCardProps> = ({ row }) => {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             {/* Row 1: Header */}
             <CardHeader
-                badge={membershipStatus || ""}
+                badge={String(membershipStatus ?? "")}
                 enabled={membershipStatus === "ACTIVE"}
-                fieldValue={name}
-                image={imageUrl || ""}
+                fieldValue={String(name)}
+                image={String(imageUrl ?? "")}
             />
 
             {/* Row 2: Email */}
-            {email && <EmailRow email={email} />}
+            {!!email && <EmailRow email={String(email)} />}
 
             {/* Row 3: Phone + Location (side by side) */}
-            {(phone || address) && (
+            {(!!phone || !!address) && (
                 <Box
                     display="flex"
                     alignItems="center"
                     gap={1.5}
                     sx={{
-                        borderTop: email ? `1px solid ${alpha(theme.palette.divider, 0.25)}` : "none",
-                        pt: email ? 0.5 : 0,
+                        borderTop: !!email ? `1px solid ${alpha(theme.palette.divider, 0.25)}` : "none",
+                        pt: !!email ? 0.5 : 0,
                     }}
                 >
-                    {phone && (
+                    {!!phone && (
                         <InfoItem
                             icon={<Phone size={16} />}
                             value={String(phone)}
                             onClick={handlePhoneClick}
                         />
                     )}
-                    {address && (
+                    {!!address && (
                         <InfoItem
                             icon={<LocationOn sx={{ fontSize: "1.05rem" }} />}
-                            value={address}
+                            value={String(address)}
                             sx={{ justifyContent: "flex-end", flex: "0 1 auto", maxWidth: "45%" }}
                         />
                     )}

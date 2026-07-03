@@ -5,15 +5,15 @@ import { useUI } from "../../../context/UIContext";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
-import HtmlToPdfViewer from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
 interface StudentInvoiceProps {
     open: boolean;
     onClose: () => void;
-    studentData: any;
-    activityData: any;
-    studio: any;
-    currentBranch: any;
+    studentData: Record<string, unknown>;
+    activityData: Record<string, unknown>;
+    studio: Record<string, unknown>;
+    currentBranch: Record<string, unknown>;
     isUser?: boolean;
 }
 
@@ -26,7 +26,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
     currentBranch,
     isUser = false,
 }) => {
-    const pdfViewerRef = useRef<any>(null);
+    const pdfViewerRef = useRef<HtmlToPdfViewerRef | null>(null);
     const { isBatchEnabled } = useUI();
     const discount = (
         Number(activityData?.paymentEntry?.amount || 0) - Number(activityData?.activityAmount || 0)
@@ -44,14 +44,14 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                 {
                     key: "email",
                     tip: "E-mail",
-                    onClick: () => pdfViewerRef.current?.sendMail(studentData?.email),
+                    onClick: () => pdfViewerRef.current?.sendMail(String(studentData?.email ?? "")),
                     component: <MailIcon />,
                 },
                 {
                     key: "whatsapp",
                     disabled: !activityData?.invoiceToken,
                     tip: "WhatsApp",
-                    onClick: () => pdfViewerRef.current?.sendWhatsApp(studentData?.phone),
+                    onClick: () => pdfViewerRef.current?.sendWhatsApp(String(studentData?.phone ?? "")),
                     component: <WhatsApp />,
                 },
                 {
@@ -65,31 +65,31 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
             <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
-                    studio={studio}
-                    fileName={`student-invoice-${studentData?.name?.replaceAll(" ", "-")}-${activityData?.activityName?.replaceAll(" ", "-")}`}
+                    studio={studio as { logo: string; studioName: string }}
+                    fileName={`student-invoice-${String(studentData?.name ?? "").replace(/ /g, "-")}-${String(activityData?.activityName ?? "").replace(/ /g, "-")}`}
                     remainingPayload={{
                         title: "Invoice",
                         templateName: "MEMBERSHIP_INVOICE",
-                        activityType: activityData?.activityName,
-                        memberIds: [studentData?.studentId],
+                        activityType: String(activityData?.activityName ?? ""),
+                        memberIds: [Number(studentData?.studentId)],
                     }}
                     whatsAppPayload={{
-                        name: studentData?.name,
-                        studioName: studio.studioName,
-                        invoiceToken: activityData?.invoiceToken
+                        name: String(studentData?.name ?? ""),
+                        studioName: String(studio.studioName ?? ""),
+                        invoiceToken: String(activityData?.invoiceToken ?? "")
                     }}
-                    footer={<p>Thank you for choosing {studio.studioName}!</p>}
+                    footer={<p>Thank you for choosing {String(studio.studioName)}!</p>}
                     header={
                         <>
                             <div>
                                 <h2>INVOICE</h2>
                                 <div>
                                     <strong>Invoice #</strong>: INV-
-                                    {activityData?.paymentEntry?.id}
+                                    {(activityData?.paymentEntry as Record<string, unknown> | undefined)?.id as React.ReactNode}
                                 </div>
                                 <div>
                                     <strong>Invoice Date</strong>:{" "}
-                                    {getLocalDateTime(activityData?.registrationDate) || "-"}
+                                    {getLocalDateTime(String(activityData?.registrationDate ?? null)) || "-"}
                                 </div>
                             </div>
                         </>
@@ -106,25 +106,25 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                             >
                                 <div>
                                     <p style={{ margin: 0, textWrap: "wrap" }}>
-                                        {currentBranch.address}
+                                        {String(currentBranch.address ?? "")}
                                     </p>
                                     <p style={{ margin: 0 }}>
-                                        {currentBranch.city}, {currentBranch.state}{" "}
-                                        {currentBranch.pincode}
+                                        {String(currentBranch.city ?? "")}, {String(currentBranch.state ?? "")}{" "}
+                                        {String(currentBranch.pincode ?? "")}
                                     </p>
-                                    <p style={{ margin: 0 }}>{currentBranch.phone}</p>
-                                    <p style={{ margin: 0 }}>{studio.email}</p>
-                                    {studio.gstNumber && (
-                                        <p style={{ margin: 0 }}>GSTIN: {studio.gstNumber}</p>
+                                    <p style={{ margin: 0 }}>{String(currentBranch.phone ?? "")}</p>
+                                    <p style={{ margin: 0 }}>{String(studio.email ?? "")}</p>
+                                    {String(studio.gstNumber ?? "") && (
+                                        <p style={{ margin: 0 }}>GSTIN: {String(studio.gstNumber)}</p>
                                     )}
                                 </div>
                                 <div style={{ textAlign: "right" }}>
                                     <div>
                                         <strong>Bill To</strong>:
                                     </div>
-                                    <div>{studentData?.name}</div>
-                                    <div>{studentData?.phone}</div>
-                                    <div>{studentData?.email}</div>
+                                    <div>{String(studentData?.name ?? "")}</div>
+                                    <div>{String(studentData?.phone ?? "")}</div>
+                                    <div>{String(studentData?.email ?? "")}</div>
                                 </div>
                             </div>
                             {/* Table */}
@@ -151,26 +151,26 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                 <tbody>
                                     <tr>
                                         <td style={tableCellStyle}>
-                                            {activityData?.activityName}
+                                            {String(activityData?.activityName ?? "")}
                                         </td>
                                         <td style={tableCellStyle}>
-                                            {activityData?.membershipType}
+                                            {String(activityData?.membershipType ?? "")}
                                         </td>
                                         <td style={tableCellStyle}>
                                             {getLocalDateTime(
-                                                activityData?.membershipStartDate,
+                                                String(activityData?.membershipStartDate ?? null),
                                             )}
                                         </td>
                                         <td style={tableCellStyle}>
-                                            {getLocalDateTime(activityData?.membershipEndDate)}
+                                            {getLocalDateTime(String(activityData?.membershipEndDate ?? null))}
                                         </td>
                                         {!isBatchEnabled && (
                                             <td style={tableCellStyle}>
-                                                {activityData?.daysPerWeek || "-"}
+                                                {String(activityData?.daysPerWeek ?? "") || "-"}
                                             </td>
                                         )}
                                         <td style={tableCellStyle}>
-                                            {activityData?.activityAmount?.toFixed(2) || "0.00"}
+                                            {Number(activityData?.activityAmount ?? 0).toFixed(2) || "0.00"}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -192,13 +192,13 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                         <tbody>
                                             <tr>
                                                 <td style={tableCellStyle}>
-                                                    {activityData?.batchName || "-"}
+                                                    {String(activityData?.batchName ?? "") || "-"}
                                                 </td>
                                                 <td style={tableCellStyle}>
-                                                    {activityData?.daysPerWeek || "-"}
+                                                    {String(activityData?.daysPerWeek ?? "") || "-"}
                                                 </td>
                                                 <td style={tableCellStyle}>
-                                                    {activityData?.batchTime || "-"}
+                                                    {String(activityData?.batchTime ?? "") || "-"}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -313,7 +313,8 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                                             }}
                                                         >
                                                             {Number(
-                                                                activityData?.paymentEntry
+                                                                (activityData
+                                                                    ?.paymentEntry as Record<string, unknown> | undefined)
                                                                     ?.amount || 0,
                                                             ).toFixed(2)}
                                                         </td>

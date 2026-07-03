@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import { branchCruds } from "../../../api/all.api";
+import type { Branch } from "../../../api/types";
 import Views from "@/core/crud/Views";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
@@ -10,6 +11,10 @@ import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
 import ActionBar from "@/core/components/layout/ActionBar";
+
+interface BranchActions {
+    setSelectedBranch: (branch: Branch) => { type: string; payload: Branch };
+}
 
 const LIMIT = 7;
 
@@ -34,7 +39,7 @@ const Branches = () => {
     const { isMobile, studio } = useUI();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const api = useRef<any>({});
+    const api = useRef<Record<string, unknown>>({});
 
     return (
         <FlexBetweenColumn>
@@ -48,10 +53,10 @@ const Branches = () => {
                         {
                             name: "users",
                             icon: <GroupIcon />,
-                            enabled: (row) => row.isActive,
+                            enabled: (row) => !!row.isActive,
                             sx: { color: "blue" },
                             onClick: (row) => {
-                                dispatch((branchCruds.actions as any).setSelectedBranch(row));
+                                dispatch((branchCruds.actions as unknown as BranchActions).setSelectedBranch(row as Branch));
                                 navigate(`/management/branch/${row.branchId}`);
                             },
                         },

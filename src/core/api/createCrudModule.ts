@@ -1,15 +1,15 @@
 import { createGenericSlice } from "../state/createGenericSlice";
 import { getHeader } from "./helper";
-import { createCrudThunks } from "./thunk";
+import { createCrudThunks, CrudThunksOptions } from "./thunk";
 import { Entity } from "../types";
 import { GenericState } from "../state/stateTypes";
 
 export interface CreateCrudModuleOptions<T extends Entity, S extends GenericState<T>> {
     route: string;
     idKey?: string;
-    extraCruds?: (opts: { actions: Record<string, any>; getHeader: typeof getHeader; route: string }) => Record<string, any>;
+    extraCruds?: (opts: { actions: Record<string, (...args: any[]) => { type: string; payload?: unknown }>; getHeader: typeof getHeader; route: string }) => Record<string, unknown>;
     extraState?: Partial<S>;
-    extraReducers?: Record<string, any>;
+    extraReducers?: Record<string, unknown>;
 }
 
 export function createCrudModule<T extends Entity = Entity, S extends GenericState<T> =  GenericState<T>>({
@@ -31,7 +31,7 @@ export function createCrudModule<T extends Entity = Entity, S extends GenericSta
         initialState: getInitialState(),
         reducer,
         removeAll: actions.clearData,
-        ...createCrudThunks<T>({ actions, idKey, route } as any),
+        ...createCrudThunks<T>({ actions: actions as unknown as CrudThunksOptions<T>['actions'], idKey, route }),
     };
 
     return {

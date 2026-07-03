@@ -15,10 +15,20 @@ import { useUI } from "../../../context/UIContext";
 import ImageComponent from "@/core/components/fields/ImageComponent";
 import Field from "@/core/components/fields/Field";
 import { useAppDispatch, useAppSelector } from "@/state";
+import type { User, Studio } from "@/api/types";
+
+interface EditedValues {
+    userName?: string;
+    phone: string;
+    studioName: string;
+    location: string;
+    gstNumber: string;
+    email?: string;
+}
 
 interface UserWidgetsProps {
-    admin: any;
-    studio: any;
+    admin: User;
+    studio: Studio;
 }
 
 const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
@@ -31,14 +41,14 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [studioLogo, setStudioLogo] = useState<string | null>(null);
     const [editMode, setEditMode] = useState(false);
-    const [editedValues, setEditedValues] = useState<any>({
+    const [editedValues, setEditedValues] = useState<EditedValues>({
         phone: "",
         studioName: "",
         location: "",
         gstNumber: "",
     });
 
-    const verifyChanges = (values: any) => {
+    const verifyChanges = (values: EditedValues) => {
         const userData = {
             phone: values.phone,
             imageUrl: imageUrl,
@@ -180,7 +190,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                         <Field
                             value={admin.email}
                             setValue={(value) =>
-                                setEditedValues((prev: any) => ({ ...prev, email: value }))
+                                setEditedValues((prev: EditedValues) => ({ ...prev, email: value as string }))
                             }
                             extraProp={{ readOnly: true }}
                         />
@@ -192,7 +202,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             label="Phone"
                             value={editedValues.phone}
                             setValue={(value) =>
-                                setEditedValues((prev: any) => ({ ...prev, phone: value }))
+                                setEditedValues((prev: EditedValues) => ({ ...prev, phone: value as string }))
                             }
                             isEdit={editMode}
                             validation={{
@@ -217,7 +227,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             label="Studio Name"
                             value={editedValues.studioName}
                             setValue={(value) =>
-                                setEditedValues((prev: any) => ({ ...prev, studioName: value }))
+                                setEditedValues((prev: EditedValues) => ({ ...prev, studioName: value as string }))
                             }
                             isEdit={editMode}
                             validation={{ required: true }}
@@ -230,7 +240,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             label="Location"
                             value={editedValues.location}
                             setValue={(value) =>
-                                setEditedValues((prev: any) => ({ ...prev, location: value }))
+                                setEditedValues((prev: EditedValues) => ({ ...prev, location: value as string }))
                             }
                             isEdit={editMode}
                             validation={{ required: true }}
@@ -244,7 +254,7 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             placeholder="Enter GST Number"
                             value={editedValues.gstNumber}
                             setValue={(value) =>
-                                setEditedValues((prev: any) => ({ ...prev, gstNumber: value }))
+                                setEditedValues((prev: EditedValues) => ({ ...prev, gstNumber: value as string }))
                             }
                             isEdit={editMode}
                             validation={{

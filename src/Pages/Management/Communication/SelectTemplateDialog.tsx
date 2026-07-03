@@ -16,8 +16,8 @@ import { useUI } from "@/context/UIContext";
 
 interface SelectTemplateDialogProps {
     open: boolean;
-    onClose: (arg?: any) => void;
-    data: any;
+    onClose: (arg?: unknown) => void;
+    data: Record<string, unknown>;
 }
 
 const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
@@ -29,12 +29,12 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
 
 
     const [loading, setLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<Record<string, unknown> | null>(null);
     const [editableMessage, setEditableMessage] = useState("");
 
     const allTemplates = useAppSelector((state) =>
         (state.genericTemplate?.items || []).filter(
-            (template: any) => template.templateType === "COMMUNICATION" && template.id
+            (template: Record<string, unknown>) => template.templateType === "COMMUNICATION" && template.id
         )
     );
 
@@ -51,7 +51,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                     { searchTerm: "COMMUNICATION" },
                     studio.studioId ?? 0,
                     false
-                ) as any
+                )
             );
         }
     }, [open]);
@@ -93,7 +93,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
         if (notificationType === "WHATSAPP") {
             sendWhatsAppMessage({
                 token,
-                phone: phoneNumber,
+                phone: phoneNumber as string,
                 message: editableMessage,
                 payload: {
                     branchId: currentBranch.branchId,

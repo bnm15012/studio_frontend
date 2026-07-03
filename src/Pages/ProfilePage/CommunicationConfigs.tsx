@@ -10,7 +10,7 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
 import { useUI } from "@/context/UIContext";
 
-interface StudioInfo {
+export interface StudioInfo {
     studioId: number;
     whatsAppStatus?: string;
     passcode?: string;

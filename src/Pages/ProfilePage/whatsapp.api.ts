@@ -8,10 +8,14 @@ export const createWhatsAppCredentialsAPI = async ({ token, branchId }: { token:
             },
         });
         return response.data.data[0];
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: error.response?.data?.status?.statusMessage || "Failed to create QR code!",
+            message:
+                error && typeof error === "object" && "response" in error
+                    ? (error as { response: { data: { status: { statusMessage: string } } } }).response.data
+                            ?.status?.statusMessage || "Failed to create QR code!"
+                    : "Failed to create QR code!",
         };
     }
 };
@@ -27,10 +31,14 @@ export const checkWhatsAppConnectionAPI = async ({ token, branchId }: { token: s
             success: true,
             message: "Connected !",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: error.response?.data?.status?.statusMessage || "Failed to create QR code!",
+            message:
+                error && typeof error === "object" && "response" in error
+                    ? (error as { response: { data: { status: { statusMessage: string } } } }).response.data
+                            ?.status?.statusMessage || "Failed to create QR code!"
+                    : "Failed to create QR code!",
         };
     }
 };
@@ -46,10 +54,14 @@ export const logoutWhatsAppConnectionAPI = async ({ token, branchId }: { token: 
             success: true,
             message: "diconnected !",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
-            message: error.response?.data?.status?.statusMessage || "Failed to Logout!",
+            message:
+                error && typeof error === "object" && "response" in error
+                    ? (error as { response: { data: { status: { statusMessage: string } } } }).response.data
+                            ?.status?.statusMessage || "Failed to Logout!"
+                    : "Failed to Logout!",
         };
     }
 };

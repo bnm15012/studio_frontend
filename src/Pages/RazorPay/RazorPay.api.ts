@@ -7,6 +7,12 @@ interface CreateOrderProps {
     branchId: string | number;
 }
 
+export interface PaymentDetails {
+    paymentId: string;
+    orderId: string;
+    signature: string;
+}
+
 export const createOrder = async ({ token, plan, studioId, branchId }: CreateOrderProps) => {
     try {
         const response = await api.post(
@@ -24,13 +30,13 @@ export const createOrder = async ({ token, plan, studioId, branchId }: CreateOrd
             message:
                 response.data?.status?.statusMessage || "Order created successfully of amount!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error creating order:", error);
         throw error;
     }
 };
 
-export const verifyPayment = async (token: string | null | undefined, paymentDetails: any) => {
+export const verifyPayment = async (token: string | null | undefined, paymentDetails: PaymentDetails) => {
     try {
         const response = await api.post(`/subscription/verifyPayment`, paymentDetails, {
             headers: {
@@ -42,7 +48,7 @@ export const verifyPayment = async (token: string | null | undefined, paymentDet
             data: response.data.data[0],
             message: response.data?.status?.statusMessage || "Payment done successfully !",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error verifying payment:", error);
         throw error;
     }

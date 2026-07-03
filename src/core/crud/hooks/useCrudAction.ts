@@ -121,18 +121,16 @@ export const useCrudAction = ({
                 if (id === "NEW") {
                     const processedRow = await beforeAdd(newRow);
                     const { [consts.current.primaryKey]: _rowId, ...withoutId } = processedRow;
-                    dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true) as any);
+                    tableCruds.add(withoutId, token, showAlert, setLoading, true)(dispatch, () => ({}));
                     setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== id));
                 } else {
-                    dispatch(
-                        tableCruds.update(
-                            id,
-                            await beforeUpdate(newRow),
-                            token,
-                            showAlert,
-                            setLoading,
-                        ) as any,
-                    );
+                    tableCruds.update(
+                        id,
+                        await beforeUpdate(newRow),
+                        token,
+                        showAlert,
+                        setLoading,
+                    )(dispatch, () => ({}));
                 }
                 updateEditId(null);
                 if (formKey === "NEW") navigate(`/management/${tableName}/`);

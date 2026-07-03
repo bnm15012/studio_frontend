@@ -10,9 +10,9 @@ export interface DefaultActionsProps {
     loading: boolean;
     editMode?: "FORM" | "INLINE" | string;
     formKey?: unknown;
-    handleEdit: (row: any) => void;
-    handleDeleteClick: (row: any) => void;
-    openFormView: (row: any) => void;
+    handleEdit: (row: Record<string, unknown>) => void;
+    handleDeleteClick: (row: Record<string, unknown>) => void;
+    openFormView: (row: Record<string, unknown>) => void;
 }
 
 export const defaultActions = ({

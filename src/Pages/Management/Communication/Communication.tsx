@@ -25,6 +25,7 @@ import SentSMSHistory from "./SentSMSHistory";
 import { sendMessageApi } from "./communication.api";
 import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
 import { useUI } from "../../../context/UIContext";
+import type { GenericTemplate } from "../../../api/types";
 
 const MAIL_TYPE = ["EMAIL"];
 
@@ -53,10 +54,10 @@ const Communication = () => {
 
     const [open, setOpen] = useState(false);
     const [selectedTemplateId, setSelectedTemplateId] = useState<number | string>(0);
-    const [selectedStudents, setSelectedStudents] = useState<any[]>([]);
-    const [selectedInstructors, setSelectedInstructors] = useState<any[]>([]);
+    const [selectedStudents, setSelectedStudents] = useState<Record<string, unknown>[]>([]);
+    const [selectedInstructors, setSelectedInstructors] = useState<Record<string, unknown>[]>([]);
     const [loading, setLoading] = useState(false);
-    const [templates, setTemplates] = useState<any[]>([]);
+    const [templates, setTemplates] = useState<GenericTemplate[]>([]);
     const [audienceType, setAudienceType] = useState("all");
     const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
     const [newHistory, setNewHistory] = useState();
@@ -75,7 +76,7 @@ const Communication = () => {
                         initialTemplate.id || 0,
                     );
                     let nextId = prevMaxId + 1;
-                    const processedData = (res?.data || []).map((template) => {
+                    const processedData = (res?.data || []).map((template: Record<string, unknown>) => {
                         if (!template.id) {
                             return { ...template, id: nextId++ };
                         }
@@ -97,7 +98,7 @@ const Communication = () => {
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
-            setSelectedTemplateId(templates[0].id);
+            setSelectedTemplateId(templates[0].id ?? 0);
         }
     }, [templates, selectedTemplateId]);
 
@@ -110,7 +111,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -125,7 +126,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -187,7 +188,7 @@ const Communication = () => {
             } else {
                 showAlert(response.message, "error");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to send message:", error);
             showAlert("Failed to send message", "error");
         } finally {
@@ -381,8 +382,8 @@ const Communication = () => {
                                                 ? selectedStudents
                                                 : selectedInstructors
                                             ).map((user) => (
-                                                <Box key={user.studentId}>
-                                                    <Typography>{user.name}</Typography>
+                                                <Box key={String(user.studentId)}>
+                                                    <Typography>{String(user.name)}</Typography>
                                                     <Divider />
                                                 </Box>
                                             ))

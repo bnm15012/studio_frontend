@@ -1,6 +1,7 @@
+import { Activity } from "@/api/types";
 import { validMembershipTypes } from "./Activities.constants";
 
-export function sortMembershipPlans(activity) {
+export function sortMembershipPlans(activity: Activity) {
     if (
         !activity ||
         !activity.membershipPlanRequest ||
@@ -11,7 +12,7 @@ export function sortMembershipPlans(activity) {
 
     const clonedActivity = structuredClone(activity);
 
-    clonedActivity.membershipPlanRequest.membershipPlanEntryList.sort((a, b) => {
+    clonedActivity.membershipPlanRequest!.membershipPlanEntryList!.sort((a: { membershipType: string; daysPerWeek: number }, b: { membershipType: string; daysPerWeek: number }) => {
         const typeOrderA = validMembershipTypes.indexOf(a.membershipType);
         const typeOrderB = validMembershipTypes.indexOf(b.membershipType);
 

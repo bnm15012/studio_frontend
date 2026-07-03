@@ -9,7 +9,7 @@ interface SelectOption {
     [key: string]: unknown;
 }
 
-interface SelectionFieldProps {
+export interface SelectionFieldProps {
     label?: string;
     value?: SelectOption | null;
     readOnly?: boolean;
@@ -44,7 +44,7 @@ export default function SelectionField({
                 setLoading(true);
                 const result = await getOptions(search, 0, limit);
                 setOptions(result);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Error fetching options", err);
                 setOptions([]);
             } finally {

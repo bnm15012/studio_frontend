@@ -19,6 +19,7 @@ import {
     GenericTemplate,
 } from "@/api/types";
 import { GenericState } from "@/core/state/stateTypes";
+import type { AppDispatch } from "@/state";
 
 export const usersCruds = createCrudModule<User>({ route: "users", idKey: "userId" });
 export const instructorsCruds = createCrudModule<Instructor>({ route: "instructors", idKey: "instructorId" });
@@ -44,7 +45,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                 showAlert: (msg: string, type: string) => void,
                 setLoading: (loading: boolean) => void,
             ) =>
-                async (dispatch: any) => {
+                async (dispatch: AppDispatch) => {
                     await withLoading(setLoading, async () => {
                         try {
                             const { data } = await api.put(
@@ -53,9 +54,9 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                                 getHeader(token),
                             );
                             dispatch(actions.updateItems(data.data));
-                        } catch (err: any) {
+                        } catch (err: unknown) {
                             console.error(err);
-                            showAlert(getApiMessage(err, "Failed to mark attendance"), "error");
+                            showAlert(getApiMessage(err as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to mark attendance"), "error");
                         }
                     });
                 },
@@ -67,7 +68,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                 setLoading: (loading: boolean) => void,
                 throwErro?: boolean,
             ) =>
-                async (dispatch: any) => {
+                async (dispatch: AppDispatch) => {
                     await withLoading(setLoading, async () => {
                         try {
                             const { data } = await api.put(
@@ -76,9 +77,9 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                                 getHeader(token),
                             );
                             dispatch(actions.updateItem(data.data[0]));
-                        } catch (err: any) {
+                        } catch (err: unknown) {
                             console.error(err);
-                            showAlert(getApiMessage(err, "Failed to mark attendance"), "error");
+                            showAlert(getApiMessage(err as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to mark attendance"), "error");
                             if (throwErro) throw err;
                         }
                     });
@@ -92,9 +93,9 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                 try {
                     const { data } = await api.get(`/${route}/invoice?token=${invoiceToken}`);
                     return data;
-                } catch (err: any) {
+                } catch (err: unknown) {
                     console.error(err);
-                    showAlert(getApiMessage(err, "Failed to fetch invoice"), "error");
+                    showAlert(getApiMessage(err as { response?: { data?: { status?: { statusMessage?: string } } } }, "Failed to fetch invoice"), "error");
                 }
             }),
     }),
@@ -110,10 +111,10 @@ export const branchCruds = createCrudModule<Branch, BranchState>({
     idKey: "branchId",
     extraState: { currentBranch: null, selectedBranch: null },
     extraReducers: {
-        setCurrentBranch(state, action: PayloadAction<Branch>) {
+        setCurrentBranch(state: BranchState, action: PayloadAction<Branch>) {
             state.currentBranch = action.payload;
         },
-        setSelectedBranch(state, action: PayloadAction<Branch>) {
+        setSelectedBranch(state: BranchState, action: PayloadAction<Branch>) {
             state.selectedBranch = action.payload;
         },
     },

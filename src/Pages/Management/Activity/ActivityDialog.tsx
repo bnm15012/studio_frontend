@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
-import PropTypes from "prop-types";
+
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useUI } from "../../../context/UIContext";
 import Loading from "@/core/components/loading/Loading";
@@ -25,8 +25,33 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
 import { membershipPackageCruds } from "../../../api/all.api";
+import type { Activity } from "../../../api/types";
 
-const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
+interface BatchFormData {
+    batchId: string | number;
+    name: string;
+    planType: string;
+    daysPerWeek: number;
+    price: number;
+    startTime: string;
+    endTime: string;
+}
+interface ActivityFormData {
+    activityId: string | number;
+    activityType: string;
+    description: string;
+    branchId: number;
+    batchEntries: BatchFormData[];
+}
+
+interface ActivityDialogProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    activity?: Activity | null;
+    onSave: (data: Record<string, unknown>) => void;
+}
+
+const ActivityDialog: React.FC<ActivityDialogProps> = ({ open, onOpenChange, activity, onSave }) => {
     const showAlert = useAlert();
     const dispatch = useAppDispatch();
     const { token, studio, currentBranch } = useUI()
@@ -34,7 +59,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
     const { isBatchEnabled, isEnabled, FEATURE_KEYS } = useUI();
     const isMembershipTableEnabled = isEnabled(FEATURE_KEYS.PACKAGE);
 
-    const [formData, setFormData] = useState<any>({});
+    const [formData, setFormData] = useState<ActivityFormData>({} as ActivityFormData);
 
     const [loading, setLoading] = useState(false);
     const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
@@ -60,7 +85,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
 
     useEffect(() => {
         if (activity) {
-            setFormData(activity);
+            setFormData(activity as unknown as ActivityFormData);
         } else {
             setFormData({
                 activityId: "NEW",
@@ -84,46 +109,46 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
         };
         setFormData((prev) => ({
             ...prev,
-            batchEntries: [...prev.batchEntries, newBatch],
+            batchEntries: [...(prev.batchEntries ?? []), newBatch],
         }));
     };
 
-    const removeBatch = (batchId) => {
+    const removeBatch = (batchId: string | number) => {
         setFormData((prev) => ({
             ...prev,
-            batchEntries: prev.batchEntries.filter((b) => b.batchId !== batchId),
+            batchEntries: (prev.batchEntries ?? []).filter((b) => b.batchId !== batchId),
         }));
     };
 
-    const updateBatch = (batchId, updates) => {
+    const updateBatch = (batchId: string | number, updates: Record<string, unknown>) => {
         setFormData((prev) => ({
             ...prev,
-            batchEntries: prev.batchEntries.map((b) =>
+            batchEntries: (prev.batchEntries ?? []).map((b) =>
                 b.batchId === batchId ? { ...b, ...updates } : b,
             ),
         }));
     };
 
     const handleSave = () => {
-        onSave(formData);
+        onSave(formData as unknown as Record<string, unknown>);
     };
 
     const isFormValid = () => {
         if (!formData.activityType) return false;
-        if (formData.batchEntries.length === 0) return false;
+        if ((formData.batchEntries ?? []).length === 0) return false;
 
-        const keys = formData.batchEntries.map(
+        const keys = (formData.batchEntries ?? []).map(
             (b) =>
-                `${b.name?.trim().toLowerCase()}|${b.planType}|${formData.activityId}|${b.daysPerWeek}`,
+                `${b.name?.trim().toLowerCase()}|${b.planType}|${String(formData.activityId ?? "")}|${b.daysPerWeek}`,
         );
         const hasDuplicates = new Set(keys).size !== keys.length;
         if (hasDuplicates) return false;
 
-        for (const batch of formData.batchEntries) {
+        for (const batch of formData.batchEntries ?? []) {
             if (!batch.planType) return false;
-            if (isNaN(batch.daysPerWeek) || batch.daysPerWeek < 0 || batch.daysPerWeek > 7)
+            if (isNaN(batch.daysPerWeek ?? 0) || (batch.daysPerWeek ?? 0) < 0 || (batch.daysPerWeek ?? 0) > 7)
                 return false;
-            if (isNaN(batch.price) || batch.price < 0) return false;
+            if (isNaN(batch.price ?? 0) || (batch.price ?? 0) < 0) return false;
 
             if (isBatchEnabled) {
                 if (!batch.name?.trim()) return false;
@@ -166,7 +191,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                         .slice(page * limit, (page + 1) * limit)
                                         .map((a) => ({ key: a, value: a })),
                             }}
-                            setValue={(value) => setFormData({ ...formData, activityType: value })}
+                            setValue={(value: unknown) => setFormData({ ...formData, activityType: String(value) })}
                         />
                     </Grid>
                 </Grid>
@@ -284,7 +309,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                 <TextField
                                                     type="time"
                                                     label="Start Time"
-                                                    value={batch.startTime}
+                                                    value={batch.startTime ?? ""}
                                                     error={!batch.startTime}
                                                     onChange={(e) =>
                                                         updateBatch(batch.batchId, {
@@ -307,7 +332,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                                     value={batch.endTime}
                                                     error={
                                                         !batch.endTime ||
-                                                        batch.endTime < batch.startTime
+                                                        batch.endTime < (batch.startTime ?? "00:00")
                                                     }
                                                     onChange={(e) =>
                                                         updateBatch(batch.batchId, {
@@ -329,7 +354,7 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                         <TextField
                                             type="number"
                                             label="Days/Week"
-                                            value={batch.daysPerWeek}
+                                            value={batch.daysPerWeek ?? ""}
                                             onChange={(e) =>
                                                 updateBatch(batch.batchId, {
                                                     daysPerWeek: parseInt(e.target.value),
@@ -337,9 +362,9 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                             }
                                             fullWidth
                                             error={
-                                                isNaN(batch.daysPerWeek) ||
-                                                batch.daysPerWeek < 0 ||
-                                                batch.daysPerWeek > 7
+                                                isNaN(batch.daysPerWeek ?? 0) ||
+                                                (batch.daysPerWeek ?? 0) < 0 ||
+                                                (batch.daysPerWeek ?? 0) > 7
                                             }
                                             inputProps={{ min: 0, max: 7 }}
                                         />
@@ -348,14 +373,14 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
                                         <TextField
                                             type="number"
                                             label="Price"
-                                            value={batch.price}
+                                            value={batch.price ?? ""}
                                             onChange={(e) =>
                                                 updateBatch(batch.batchId, {
                                                     price: parseFloat(e.target.value),
                                                 })
                                             }
                                             fullWidth
-                                            error={batch.price < 0 || isNaN(batch.price)}
+                                            error={(batch.price ?? 0) < 0 || isNaN(batch.price ?? 0)}
                                             inputProps={{ min: 0, step: 0.01 }}
                                             InputProps={{
                                                 startAdornment: (
@@ -372,12 +397,6 @@ const ActivityDialog = ({ open, onOpenChange, activity, onSave }) => {
             </Box>
         </StyledDialog>
     );
-};
-ActivityDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onOpenChange: PropTypes.func.isRequired,
-    activity: PropTypes.object,
-    onSave: PropTypes.func.isRequired,
 };
 
 export default ActivityDialog;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+
 
 import {
     Box,
@@ -25,8 +25,8 @@ import { getLocalDateTime } from "@/core/utils/DateUtil";
 interface BulkAttendanceDialogProps {
     open: boolean;
     onClose: () => void;
-    onConfirm: (arg: any) => void;
-    studentsList?: any[];
+    onConfirm: (arg: { activityAssignmentIds: (string | number)[]; present: boolean; date: string }) => void;
+    studentsList?: { assignmentId?: string | number; studentName?: string }[];
     date: string;
 }
 
@@ -56,10 +56,12 @@ const BulkAttendanceDialog: React.FC<BulkAttendanceDialogProps> = ({
             onConfirm={() => {
                 onConfirm({
                     activityAssignmentIds:
-                        studentsList.map(
-                            (student) =>
-                                student.assignmentId,
-                        ),
+                        studentsList
+                            .map(
+                                (student) =>
+                                    student.assignmentId,
+                            )
+                            .filter((id): id is string | number => id != null),
                     present: isPresent,
                     date,
                 });
@@ -317,26 +319,6 @@ const BulkAttendanceDialog: React.FC<BulkAttendanceDialogProps> = ({
             </Stack>
         </StyledDialog>
     );
-};
-
-BulkAttendanceDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onConfirm: PropTypes.func.isRequired,
-
-    date: PropTypes.string.isRequired,
-
-    studentsList: PropTypes.arrayOf(
-        PropTypes.shape({
-            studentName:
-                PropTypes.string.isRequired,
-            assignmentId:
-                PropTypes.oneOfType([
-                    PropTypes.string,
-                    PropTypes.number,
-                ]),
-        }),
-    ).isRequired,
 };
 
 export default BulkAttendanceDialog;

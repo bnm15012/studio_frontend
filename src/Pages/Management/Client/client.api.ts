@@ -1,7 +1,12 @@
 import api from "@/core/utils/api";
 
-const getErrorMessage = (error: any, defaultMessage: string) =>
-    error.response?.data?.status?.statusMessage || defaultMessage;
+const getErrorMessage = (error: unknown, defaultMessage: string) => {
+    if (error && typeof error === "object" && "response" in error) {
+        const axiosErr = error as { response?: { data?: { status?: { statusMessage?: string } } } };
+        return axiosErr.response?.data?.status?.statusMessage || defaultMessage;
+    }
+    return defaultMessage;
+};
 
 const getHeaders = (token: string | null | undefined) => ({
     headers: { Authorization: `${token}` },
@@ -10,7 +15,7 @@ const getHeaders = (token: string | null | undefined) => ({
 interface GetClientParams {
     branchId: string | number;
     token: string | null | undefined;
-    params?: any;
+    params?: Record<string, unknown>;
 }
 
 export const getCLientByNamesAPI = async ({ branchId, token, params }: GetClientParams) => {
@@ -25,7 +30,7 @@ export const getCLientByNamesAPI = async ({ branchId, token, params }: GetClient
             success: true,
             message: status.statusMessage || "Client fetched successfully!",
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch client!"),

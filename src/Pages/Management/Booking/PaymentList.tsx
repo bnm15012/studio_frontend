@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from "@/state";
-import PropTypes from "prop-types";
+
 import { Typography, Box, Button, IconButton } from "@mui/material";
 import {
     StyledCardActions,
@@ -20,16 +20,16 @@ import DialogForm from "@/core/crud/DialogForm";
 const paymentTypes = ["CASH", "UPI"];
 const paymentStatusTypes = ["COMPLETED", "PENDING"];
 
-const PaymentList = ({ data, field }) => {
-    const value = Array.isArray(data?.[field?.name]) ? data[field.name] : [];
-    const title = field?.label || "Payments";
-    const paidAmount = value.reduce((acc, curr) => acc + curr.amount, 0);
+const PaymentList = ({ data, field }: { data: Record<string, unknown>; field: Record<string, unknown> }) => {
+    const value = Array.isArray(data?.[field?.name as string]) ? data[field.name as string] as Record<string, unknown>[] : [];
+    const title = String(field?.label || "Payments");
+    const paidAmount = value.reduce((acc: number, curr: Record<string, unknown>) => acc + (curr.amount as number), 0);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const showAlert = useAlert();
     const token = useAppSelector((state) => state.auth.token);
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const [paymentFormData, setPaymentFormData] = useState<any>();
+    const [paymentFormData, setPaymentFormData] = useState<Record<string, unknown> | undefined>();
 
     if (!value?.length) {
         return (
@@ -46,8 +46,8 @@ const PaymentList = ({ data, field }) => {
 
     const handleSave = async () => {
         if (!paymentFormData) return;
-        if (paymentFormData.id !== "NEW") {
-            dispatch(paymentCruds.update(paymentFormData.id, paymentFormData, token, showAlert, setLoading));
+        if ((paymentFormData.id as string) !== "NEW") {
+            dispatch(paymentCruds.update(paymentFormData.id as string | number, paymentFormData, token, showAlert, setLoading));
         } else {
             dispatch(paymentCruds.add({
                 payeeType: "BOOKING",
@@ -55,17 +55,17 @@ const PaymentList = ({ data, field }) => {
                 paymentDate: paymentFormData.paymentDate,
                 status: paymentFormData.status,
                 paymentType: paymentTypes[0],
-                branchId: data.branchId,
-                payeeId: data.id,
+                branchId: data.branchId as number,
+                payeeId: data.id as number,
             }, token, showAlert, setLoading, true));
         }
         if (!loading) {
             setTimeout(() => {
-                dispatch(bookingCruds.getById(data.id, token, showAlert, setLoading, { forceRefresh: true }))
+                dispatch(bookingCruds.getById(data.id as string | number, token, showAlert, setLoading, { forceRefresh: true }))
             }, 1000);
         }
         setOpenPaymentDialog(false);
-        setPaymentFormData(null);
+        setPaymentFormData(undefined);
     }
     return (
         <Box sx={{ mt: 1 }}>
@@ -77,20 +77,20 @@ const PaymentList = ({ data, field }) => {
                 <Button startIcon={<AddCircleOutline />} onClick={() => {
                     setOpenPaymentDialog(true);
                     setPaymentFormData({
-                        id: "NEW" as any,
-                        amount: data.totalAmount - paidAmount,
+                        id: "NEW",
+                        amount: (data.totalAmount as number) - paidAmount,
                         paymentDate: getCurrentDateTimeLocal(),
                         status: paymentStatusTypes[0],
                         paymentType: paymentTypes[0]
                     });
-                }} disabled={data.totalAmount === paidAmount} variant="contained" size="small" >
+                }} disabled={(data.totalAmount as number) === paidAmount} variant="contained" size="small" >
                     Add Payment
                 </Button>
             </FlexBetween>
 
             <StyledCardContainer>
-                {value.map((m) => (
-                    <StyledMotionCard key={m.id}>
+                {value.map((m: Record<string, unknown>) => (
+                    <StyledMotionCard key={String(m.id)}>
                         <StyledCardContent>
                             <PaymentCard row={m} />
                         </StyledCardContent>
@@ -104,7 +104,7 @@ const PaymentList = ({ data, field }) => {
             </StyledCardContainer>
             {openPaymentDialog && (
                 <DialogForm
-                    data={paymentFormData}
+                    data={paymentFormData as Record<string, unknown>}
                     fieldsMeta={{ primary: "id", root: "branchId" }}
                     fields={[
                         {
@@ -121,9 +121,9 @@ const PaymentList = ({ data, field }) => {
                             name: "status",
                             label: "Status",
                             type: "SELECT",
-                            getValue: (value: any) => value && ({ key: value, value }),
+                            getValue: (value: unknown) => value && ({ key: value, value }),
                             extraProp: {
-                                getOptions: async (search, page, limit) =>
+                                getOptions: async (search: string, page: number, limit: number) =>
                                     ["PENDING", "COMPLETED"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                                         .slice(page * limit, (page + 1) * limit)
                                         .map((a) => ({ key: a, value: a })),
@@ -133,9 +133,9 @@ const PaymentList = ({ data, field }) => {
                             name: "paymentType",
                             label: "Payment Category",
                             type: "SELECT",
-                            getValue: (value: any) => value && ({ key: value, value }),
+                            getValue: (value: unknown) => value && ({ key: value, value }),
                             extraProp: {
-                                getOptions: async (search, page, limit) =>
+                                getOptions: async (search: string, page: number, limit: number) =>
                                     ["CASH", "UPI"].filter((a) => a.toLowerCase().includes(search.toLowerCase()))
                                         .slice(page * limit, (page + 1) * limit)
                                         .map((a) => ({ key: a, value: a })),
@@ -154,14 +154,6 @@ const PaymentList = ({ data, field }) => {
             )}
         </Box>
     );
-};
-
-PaymentList.propTypes = {
-    data: PropTypes.object.isRequired,
-    field: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        label: PropTypes.string,
-    }).isRequired,
 };
 
 export default PaymentList;

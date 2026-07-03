@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Typography } from "@mui/material";
 import { FlexBetween } from "../layout/FlexBox";
 
-interface StyledSwitchProps {
+export interface StyledSwitchProps {
     label?: string;
     readOnly?: boolean;
     value: boolean;

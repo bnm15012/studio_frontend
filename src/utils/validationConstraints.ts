@@ -27,7 +27,12 @@ export const validateAndProcessDates = ({
     endDate,
     showAlert,
 }: DateValidationParams): boolean => {
-    const isValidDate = (date: any): boolean => !!date && !isNaN(new Date(date).getTime());
+    const isValidDate = (date: unknown): boolean =>
+        !!date && (
+            date instanceof Date
+                ? !isNaN(date.getTime())
+                : typeof date === 'string' && !isNaN(new Date(date).getTime())
+        );
 
     if (!isValidDate(startDate)) {
         console.error("Invalid start date:", startDate);

@@ -5,7 +5,7 @@ import ImageComponent from "../components/fields/ImageComponent";
 import { Upload } from "lucide-react";
 import { FlexEvenly } from "../components/layout/FlexBox";
 
-interface ImageDialogProps {
+export interface ImageDialogProps {
     image?: string | null;
     isEdit?: boolean;
     defaultImage?: string;

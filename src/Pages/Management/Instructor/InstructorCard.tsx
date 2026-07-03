@@ -5,7 +5,7 @@ import CardLocation from "@/core/components/cards/CardLocation";
 import { Box } from "@mui/material";
 
 interface InstructorCardProps {
-    row: Record<string, any>;
+    row: Record<string, unknown>;
 }
 
 const InstructorCard: React.FC<InstructorCardProps> = ({ row }) => {
@@ -14,15 +14,15 @@ const InstructorCard: React.FC<InstructorCardProps> = ({ row }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                badge={instructorStatus || ""}
+                badge={String(instructorStatus ?? "")}
                 enabled={instructorStatus === "ACTIVE"}
-                fieldValue={name}
-                image={imageUrl || ""}
+                fieldValue={String(name)}
+                image={String(imageUrl ?? "")}
             />
-            {email && <ContactSection contact={email} />}
+            {!!email && <ContactSection contact={String(email)} />}
             <Box display="flex" alignItems="center" gap={1.5}>
-                {phone && <ContactSection contact={phone.toLocaleString()} />}
-                {address && <CardLocation address={address} />}
+                {!!phone && <ContactSection contact={String(phone)} />}
+                {!!address && <CardLocation address={String(address)} />}
             </Box>
         </Box>
     );
