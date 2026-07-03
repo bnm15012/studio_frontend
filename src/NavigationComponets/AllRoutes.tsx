@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAppSelector } from "../state";
+import { AppUIProvider, NonAuthUIProvider } from "../context/UIContext";
 import HomePage from "../Pages/HomePage/HomePage";
 import Loading from "@/core/components/loading/Loading";
 
@@ -23,42 +24,46 @@ import SignupDialog from "../Pages/Auth/SignupDialog";
 import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import HashRedirect from "./HashRedirect";
+import ServerErrorDialog from "@/core/components/dialogs/ServerErrorDialog";
 
 export const AllRoutes: React.FC = () => {
     const user = useAppSelector((state) => state.auth.user);
 
     return (
         <Suspense fallback={<Loading />}>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/aboutus" element={<AboutUsPage />} />
-                <Route path="/contactus" element={<ContactUsPage />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                <Route path="/terms-and-condition" element={<TermsConditionPage />} />
-                <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
-                <Route path="/form/:formId/:branchId" element={<FormFillPage />} />
-                <Route path="/invoice/:invoiceToken" element={<InvoicePage />} />
+            <NonAuthUIProvider>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/aboutus" element={<AboutUsPage />} />
+                    <Route path="/contactus" element={<ContactUsPage />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                    <Route path="/terms-and-condition" element={<TermsConditionPage />} />
+                    <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
+                    <Route path="/form/:formId/:branchId" element={<FormFillPage />} />
+                    <Route path="/invoice/:invoiceToken" element={<InvoicePage />} />
 
-                {user && (
-                    <>
-                        <Route path="/dashboard" element={<DashBoard />} />
-                        <Route path="/analysis" element={<Analysis />} />
-                        <Route path="/management/:page" element={<Management />} />
-                        <Route path="/management/:page/:ID" element={<Management />} />
-                    </>
-                )}
+                    {user && (
+                        <>
+                            <Route path="/dashboard" element={<AppUIProvider><DashBoard /></AppUIProvider>} />
+                            <Route path="/analysis" element={<AppUIProvider><Analysis /></AppUIProvider>} />
+                            <Route path="/management/:page" element={<AppUIProvider><Management /></AppUIProvider>} />
+                            <Route path="/management/:page/:ID" element={<AppUIProvider><Management /></AppUIProvider>} />
+                        </>
+                    )}
 
-                <Route path="*" element={<PageNotFound />} />
-            </Routes>
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
 
-            {/* Dialogs/Popups */}
-            <ForgotPassword />
-            <ProfilePage />
-            <LoginDialog />
-            <HashRedirect />
-            <SignupDialog />
-            {user && <SubscriptionPopup />}
+                {/* Dialogs/Popups */}
+                <ForgotPassword />
+                {user && <AppUIProvider><ProfilePage /></AppUIProvider>}
+                <LoginDialog />
+                <HashRedirect />
+                <SignupDialog />
+                {user && <AppUIProvider><SubscriptionPopup /></AppUIProvider>}
+                <ServerErrorDialog />
+            </NonAuthUIProvider>
         </Suspense>
     );
 };

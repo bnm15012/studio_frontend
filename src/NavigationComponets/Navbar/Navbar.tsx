@@ -19,12 +19,33 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AuthButtons from "./AuthButtons";
 import { logoutUser } from "../../state/thunks";
 import { useAppDispatch, useAppSelector } from "../../state";
-import { useUI } from "@/context/UIContext";
 import { useNavigate } from "react-router-dom";
+import { useUI } from "@/context/UIContext";
 
 export interface NavbarProps {
     position?: "fixed" | "absolute" | "sticky" | "static" | "relative";
 }
+
+const AuthenticatedUserSection: React.FC<{
+    handleLogout: () => Promise<void>;
+}> = ({ handleLogout }) => {
+    const { isAdmin, isEnabled, FEATURE_KEYS, user } = useUI();
+
+    return (
+        <FlexBetween>
+            <Notification />
+            {isAdmin && isEnabled && isEnabled(FEATURE_KEYS.BRANCH) && (
+                <BranchesDropdown />
+            )}
+            {user && (
+                <UserProfileDropdown
+                    user={user}
+                    handleLogout={handleLogout}
+                />
+            )}
+        </FlexBetween>
+    );
+};
 
 export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
     const theme = useTheme();
@@ -35,8 +56,6 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
     const user = useAppSelector((state) => state.auth.user);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const { isEnabled, isAdmin, FEATURE_KEYS } = useUI();
     const handleLogout = async () => {
         dispatch(logoutUser());
         navigate("/");
@@ -93,16 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ position = "fixed" }) => {
                                 <AuthButtons isNonMobileScreens={isNonMobileScreens} />
                             </Box>
                         ) : (
-                            <FlexBetween>
-                                <Notification />
-                                {isAdmin && isEnabled && isEnabled(FEATURE_KEYS.BRANCH) && (
-                                    <BranchesDropdown />
-                                )}
-                                <UserProfileDropdown
-                                    user={user!}
-                                    handleLogout={handleLogout}
-                                />
-                            </FlexBetween>
+                            <AuthenticatedUserSection handleLogout={handleLogout} />
                         )}
                         {!isNonMobileScreens && !isMenuOpen && !user && (
                             <IconButton

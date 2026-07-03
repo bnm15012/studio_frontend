@@ -22,6 +22,10 @@ export interface AppUIContext {
 
 export const { UIProvider, useUI, UIContext } = createUIContext<AppUIContext>();
 
+export const NonAuthUIProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+    return <UIProvider value={{} as AppUIContext}>{children}</UIProvider>;
+};
+
 export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const settings = useAppSelector((state) => state.auth.settings);
     const user = useAppSelector((state) => state.auth.user);
@@ -34,7 +38,7 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
             "AppUIProvider requires an authenticated user and currentBranch."
         );
     }
-
+ 
     const isAdmin = user.role === "ADMIN";
     const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
@@ -42,20 +46,22 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     const isBatchEnabled = isEnabled(FEATURE_KEYS.BATCH);
 
     return (
-        <UIProvider
-            value={{
-                user,
-                currentBranch,
-                isBatchEnabled,
-                isEnabled,
-                isAdmin,
-                FEATURE_KEYS,
-                DEBUG,
-                token,
-                studio,
-            }}
-        >
-            {children}
-        </UIProvider>
+        <NonAuthUIProvider>
+            <UIProvider
+                value={{
+                    user,
+                    currentBranch,
+                    isBatchEnabled,
+                    isEnabled,
+                    isAdmin,
+                    FEATURE_KEYS,
+                    DEBUG,
+                    token,
+                    studio,
+                }}
+            >
+                {children}
+            </UIProvider>
+        </NonAuthUIProvider>
     );
 };

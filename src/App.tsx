@@ -7,8 +7,6 @@ import { AllRoutes } from "@/NavigationComponets/AllRoutes";
 import { AlertProvider } from "@/core/components/feedback/Alert";
 import { clearCacheIfNewDay } from "./utils/cacheManager";
 import { loadInitialDataAPI } from "./utils/loadInitialData";
-import { AppUIProvider } from "./context/UIContext";
-import ServerErrorDialog from '@/core/components/dialogs/ServerErrorDialog';
 import { useAppDispatch, useAppSelector } from "@/state";
 
 const App: React.FC = () => {
@@ -29,10 +27,7 @@ const App: React.FC = () => {
             <Router>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
-                    <AppUIProvider>
-                        <AllRoutes />
-                        <ServerErrorDialog />
-                    </AppUIProvider>
+                    <AllRoutes />
                 </ThemeProvider>
             </Router>
         </AlertProvider>

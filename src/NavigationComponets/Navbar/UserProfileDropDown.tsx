@@ -7,13 +7,10 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import SubscriptionPopup from "../../Pages/Auth/SubscriptionPopup";
 import { openDialog } from "../../state/dialogSlice";
 import { useUI } from "@/context/UIContext";
+import { User } from "@/api/types";
 
 export interface UserProfileDropdownProps {
-    user: {
-        userName?: string;
-        role?: string;
-        [key: string]: unknown;
-    };
+    user: User;
     handleLogout: () => void;
 }
 
