@@ -1,0 +1,653 @@
+import { useAppSelector } from "@/state";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
+import { Box } from "@mui/material";
+import Views from "@/core/crud/Views";
+import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
+import StudentCard from "./StudentCard";
+import { useUI } from "../../../context/UIContext";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
+import StudentInvoice from "./StudentInvoice";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
+import StudentAssignActivityCard from "./StudentAssignActivityCard";
+import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil";
+import ActionBar from "@/core/components/layout/ActionBar";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import StudentAttendence from "./StudentAttendence";
+import OtherInfo from "./OtherInfo";
+import { WhatsApp } from "@mui/icons-material";
+import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
+
+const size = 7;
+
+const FIELD_META = {
+    primary: "studentId",
+    root: "branchId",
+};
+
+const PAYMENT_STATUS = ["COMPLETED", "PENDING"];
+const PAYMENT_TYPE = ["CASH", "UPI"];
+
+const FIELDS = [
+    {
+        show: true,
+        section: "Personal Details",
+        name: "imageUrl",
+        label: "Image",
+        type: "IMAGE",
+        extraProp: { size: "30px" },
+    },
+    { show: true, section: "Personal Details", name: "name", label: "Name" },
+    { show: true, section: "Contact Details", name: "email", label: "Email" },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "phone",
+        label: "Phone",
+        validation: {
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        extraProp: { includeCurrentTime: false },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        getValue: (_: any, row: any) => {
+            if (!row.dob) return null;
+
+            const dob = new Date(row.dob);
+            const today = new Date();
+
+            const hasBirthdayPassed =
+                today.getMonth() > dob.getMonth() ||
+                (today.getMonth() === dob.getMonth() &&
+                    today.getDate() >= dob.getDate());
+
+            const age = today.getFullYear() - dob.getFullYear();
+            return hasBirthdayPassed ? age : age - 1;
+        },
+        extraProp: { readOnly: true },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "membershipStatus",
+        label: "Status",
+        getValue: (value: any) => (
+            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
+                {value as string}
+            </Box>
+        ),
+        defaultValue: "ACTIVE",
+        extraProp: { readOnly: true },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "gender",
+        label: "Gender",
+        type: "SELECT",
+        validation: { required: true },
+        getValue: (value: any) => value && { key: value, value },
+        defaultValue: "MALE",
+        extraProp: {
+            getOptions: async (search: string, page: number, limit: number) =>
+                ["MALE", "FEMALE", "NOT_TO_SAY"]
+                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                    .slice(page * limit, (page + 1) * limit)
+                    .map((a) => ({ key: a, value: a })),
+        },
+    },
+    { show: false, section: "Contact Details", name: "address", label: "Address" },
+    {
+        show: false,
+        section: "Contact Details",
+        name: "emergencyContactNumber",
+        label: "Emergency Contact",
+        validation: {
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
+    },
+];
+
+const VIEWS = ["LIST", "CARD", "FORM"];
+
+const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
+
+interface StudentsProps {
+    ID?: string | number;
+}
+
+const Students: React.FC<StudentsProps> = ({ ID }) => {
+    const { studio, currentBranch, isMobile, isEnabled, FEATURE_KEYS } = useUI();
+    const allActivities = useAppSelector((state) => state.activities.items) || [];
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
+    const showAlert = useAlert();
+
+    const [showInvoice, setShowInvoice] = useState<any>(false);
+    const [showAttendence, setShowAttendence] = useState<any>(false);
+    const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
+    const [openPaymentDialog, setOpenPaymentDialog] = useState<any>(false);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState<any>({ open: false });
+    const api = useRef<any>({});
+    const apiStudent = useRef<any>({});
+    let extraField: any[] = [];
+    if (isEnabled?.(FEATURE_KEYS.ENROLMENT)) {
+        extraField = [
+            {
+                show: false,
+                section: "Additional Info",
+                name: "additionalData",
+                label: "",
+                type: "CUSTOM",
+                extraProp: {
+                    CustomComponent: OtherInfo,
+                },
+            },
+        ];
+    }
+
+    const awaitForDialog = useCallback(
+        (paymentInit: any) =>
+            new Promise((resolve) => {
+                const handleSave = (data: any) => {
+                    setOpenPaymentDialog(false);
+                    resolve(data);
+                };
+
+                const handleClose = () => {
+                    setOpenPaymentDialog(false);
+                    resolve(null);
+                };
+
+                setOpenPaymentDialog({
+                    onSave: handleSave,
+                    onClose: handleClose,
+                    paymentInit,
+                });
+            }),
+        [],
+    );
+
+    const beforeAdd = useCallback(
+        async (row: any) => {
+            const modifiedData = { ...row };
+
+            let paymentInit = {
+                actualAmount: modifiedData.activityAmount || 0,
+                amount: modifiedData.activityAmount || 0,
+                status: PAYMENT_STATUS[0],
+                paymentType: PAYMENT_TYPE[0],
+            };
+
+            const paymentData: any | null = await awaitForDialog(paymentInit);
+
+            if (paymentData) {
+                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+            } else {
+                throw new Error("Payment cancelled");
+            }
+            return modifiedData;
+        },
+        [awaitForDialog],
+    );
+
+    const getBatchEntries = useCallback(
+        (activityName: string, membershipType?: string, daysPerWeek?: any, batchName?: string) =>
+            allActivities
+                .find((a: any) => a.activityType === activityName)
+                ?.batchEntries?.filter(
+                    (b: any) =>
+                        (!membershipType || b.planType === membershipType) &&
+                        (!daysPerWeek || b.daysPerWeek === daysPerWeek) &&
+                        (!batchName || b.name === batchName),
+                ) || null,
+        [allActivities],
+    );
+
+    const overRideOnChange = useCallback(
+        (value: any, obj: any, fieldPath: string) => {
+            if (!value) return obj;
+
+            const newObj = { ...obj };
+
+            if (fieldPath === "activityName") {
+                const entries = getBatchEntries(value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.membershipType = entry?.planType;
+                newObj.daysPerWeek = entry?.daysPerWeek;
+                newObj.batchName = entry?.name;
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
+                newObj.membershipEndDate =
+                    entry?.planType &&
+                    getEndDateBySubscriptionPlan(newObj.membershipStartDate, entry?.planType, cachedMembershipTypes);
+            } else if (fieldPath === "membershipType") {
+                const entries = getBatchEntries(newObj.activityName, value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.daysPerWeek = entry?.daysPerWeek;
+                newObj.batchName = entry?.name;
+                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
+                    newObj.membershipStartDate,
+                    value,
+                    cachedMembershipTypes,
+                );
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
+            } else if (fieldPath === "daysPerWeek") {
+                const entries = getBatchEntries(newObj.activityName, newObj.membershipType, value);
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                newObj.batchName = entry?.name;
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
+            } else if (fieldPath === "batchName") {
+                const entry = getBatchEntries(
+                    newObj.activityName,
+                    newObj.membershipType,
+                    newObj.daysPerWeek,
+                    value,
+                )?.[0];
+                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
+                newObj.activityAmount = entry?.price;
+            } else if (fieldPath === "membershipStartDate") {
+                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
+                    value,
+                    newObj.membershipType,
+                    cachedMembershipTypes,
+                );
+            }
+            return newObj;
+        },
+        [getBatchEntries, cachedMembershipTypes],
+    );
+
+    const ASSIGNMENT_FIELD = useMemo(
+        () => ({
+            show: false,
+            name: "assignments",
+            label: "Assigned Activities",
+            type: "VIEW",
+            api: api,
+            viewProps: {
+                showAddButton: true,
+                tableCruds: studentsAssignmentsCruds,
+                tableName: "studentActivities",
+                beforeAdd,
+                overRideOnChange,
+                size: 4,
+                actions: [
+                    {
+                        name: "Document",
+                        icon: <ReceiptIcon />,
+                        enabled: (row: any) => row.paymentEntry?.status === "COMPLETED",
+                        sx: { color: "blue" },
+                        onClick: (row: any) => {
+                            setShowInvoice(row);
+                        },
+                    },
+                    {
+                        hide: !isEnabled?.(FEATURE_KEYS.ATTENDANCE),
+                        name: "Attendance",
+                        icon: <HowToRegIcon />,
+                        enabled: () => true,
+                        sx: { color: "blue" },
+                        onClick: (row: any) => {
+                            setShowAttendence(row);
+                        },
+                    },
+                ],
+                fields: [
+                    {
+                        show: true,
+                        name: "activityName",
+                        label: "Activity",
+                        type: "SELECT",
+                        getValue: (value: string) => value && { value, key: value },
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        extraProp: {
+                            getOptions: async (search: string, page: number, limit: number) =>
+                                allActivities
+                                    .filter((a: any) =>
+                                        (a.activityType as string).toLowerCase().includes(search.toLowerCase()),
+                                    )
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a: any) => ({ key: a.activityType, value: a.activityType })),
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipType",
+                        label: "Membership Type",
+                        type: "SELECT",
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        getValue: (value: unknown) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                                const batchEntries = allActivities.find(
+                                    (a: any) => a.activityType === row["activityName"],
+                                )?.batchEntries;
+                                return [
+                                    ...new Set(
+                                        (batchEntries as any[])
+                                            ?.filter((b: any) =>
+                                                (b.planType as string)
+                                                    .toLowerCase()
+                                                    .includes(search.toLowerCase()),
+                                            )
+                                            .map((b: any) => b.planType),
+                                    ),
+                                ]
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a: unknown) => ({ key: a, value: a }));
+                            },
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "daysPerWeek",
+                        label: "Days Per week",
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        type: "SELECT",
+                        getValue: (value: unknown) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                                const batchEntries = allActivities
+                                    .find((a: any) => a.activityType === row["activityName"])
+                                    ?.batchEntries?.filter(
+                                        (b: any) => b.planType === row["membershipType"],
+                                    );
+                                return [...new Set((batchEntries as any[])?.map((b: any) => b.daysPerWeek))].map(
+                                    (a: unknown) => ({
+                                        key: a,
+                                        value: a,
+                                    }),
+                                );
+                            },
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: isEnabled?.(FEATURE_KEYS.BATCH),
+                        name: "batchName",
+                        label: "Batch Name",
+                        type: "SELECT",
+                        editable: (row: any) => row.assignmentId === "NEW",
+                        getValue: (value: unknown) => value && { value, key: value },
+                        extraProp: {
+                            addValue: false,
+                            getOptions: async (search: string, page: number, limit: number, row: any) => {
+                                const batchEntries = allActivities
+                                    .find((a: any) => a.activityType === row["activityName"])
+                                    ?.batchEntries?.filter(
+                                        (b: any) =>
+                                            b.planType === row["membershipType"] &&
+                                            b.daysPerWeek === row["daysPerWeek"],
+                                    );
+                                return [
+                                    ...new Set(
+                                        (batchEntries as any[])
+                                            ?.filter((b: any) =>
+                                                (b.name as string).toLowerCase().includes(search.toLowerCase()),
+                                            )
+                                            .map((b: any) => b.name),
+                                    ),
+                                ]
+                                    .slice(page * limit, (page + 1) * limit)
+                                    .map((a: unknown) => ({ key: a, value: a }));
+                            },
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "activityAmount",
+                        label: "Amount",
+                        getValue: (v: unknown, row: any, isEdit: boolean) => {
+                            if (!isEdit) {
+                                if (!row || !row.paymentEntry) return null;
+                                return (
+                                    <>
+                                        Rs. {row.paymentEntry.amount}{" "}
+                                        {row.paymentEntry.actualAmount && row.paymentEntry.actualAmount !== row.paymentEntry.amount && (
+                                            <span style={{ textDecoration: "line-through", color: "red" }}>
+                                                Rs. {row.paymentEntry.actualAmount}
+                                            </span>
+                                        )}
+                                    </>
+                                );
+                            } else {
+                                return v;
+                            }
+                        },
+                        extraProp: { readOnly: true },
+                        validation: { required: true },
+                    },
+                    {
+                        show: isEnabled?.(FEATURE_KEYS.BATCH),
+                        name: "batchTime",
+                        label: "Batch Time",
+                        extraProp: { readOnly: true },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "registrationDate",
+                        label: "Registration Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipStartDate",
+                        label: "Start Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipEndDate",
+                        label: "End Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                        extraProp: { min: getCurrentDateTimeLocal(), readOnly: true },
+                    },
+                    {
+                        show: isEnabled?.(FEATURE_KEYS.PAYMENT_DATE),
+                        name: "paymentEntry.paymentDate",
+                        label: "Payment Date",
+                        type: "DATE",
+                        editable: (row: any) => (row?.paymentEntry as any)?.paymentStatus !== "COMPLETED",
+                        defaultValue: getCurrentDateTimeLocal(),
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.payeeType",
+                        label: "Payee",
+                        defaultValue: "STUDENT",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.status",
+                        label: "Payee",
+                        defaultValue: PAYMENT_STATUS[0],
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.paymentType",
+                        label: "Payee",
+                        defaultValue: PAYMENT_TYPE[0],
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.actualAmount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.amount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.branchId",
+                        label: "Payee",
+                        defaultValue: currentBranch.branchId,
+                    },
+                    {
+                        show: true,
+                        name: "membershipStatus",
+                        label: "Membership Status",
+                        defaultValue: "INACTIVE",
+                        getValue: (value: unknown) => (
+                            <Box
+                                sx={{
+                                    color: value === "ACTIVE" ? "green" : "red",
+                                    fontWeight: "bolder",
+                                }}
+                            >
+                                {value as string}
+                            </Box>
+                        ),
+                        extraProp: { readOnly: true },
+                    },
+                ],
+                fieldsMeta: {
+                    primary: "assignmentId",
+                    root: "studentId",
+                },
+                CardContentComponent: StudentAssignActivityCard,
+                fieldToDisplayOnDelete: "activityName",
+                cardLayout: "horizontal",
+                apiRef: api,
+            },
+        }),
+        [
+            FEATURE_KEYS.BATCH,
+            FEATURE_KEYS.PAYMENT_DATE,
+            allActivities,
+            beforeAdd,
+            currentBranch.branchId,
+            isEnabled,
+            overRideOnChange,
+        ],
+    );
+
+    return (
+        <FlexBetweenColumn>
+            {!ID && (
+                <ActionBar
+                    api={apiStudent}
+                    filterOptions={filterOptions}
+                    qrProps={{ link: "student-form" }}
+                    tableName={"students"}
+                />
+            )}
+            <Views
+                formKey={ID}
+                beforeAdd={(row: any) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                beforeUpdate={async (row: any) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                actions={[
+                    {
+                        name: "WhatsApp",
+                        icon: <WhatsApp />,
+                        enabled: () => true,
+                        sx: { color: "green" },
+                        onClick: (row: any) => {
+                            if (row.studentId) {
+                                setOpenTemplateDialog({ open: true, data: row });
+                            } else {
+                                showAlert("No student data available, please try again", "error");
+                            }
+                        },
+                    },
+                ]}
+                tableName={"students"}
+                apiRef={apiStudent}
+                tableCruds={studentsCruds}
+                size={size}
+                key={"students"}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD] as any}
+                rootId={currentBranch.branchId}
+                fieldsMeta={FIELD_META}
+                currentView={VIEWS[!isMobile ? 0 : 1]}
+                fieldToDisplayOnDelete="name"
+                CardContentComponent={StudentCard}
+                editMode={"FORM"}
+            />
+            {showInvoice && (
+                <StudentInvoice
+                    studio={studio}
+                    currentBranch={currentBranch}
+                    open={true}
+                    isUser={true}
+                    onClose={() => setShowInvoice(false)}
+                    studentData={tableState.recordById[showInvoice?.studentId]}
+                    activityData={showInvoice}
+                />
+            )}
+            {openPaymentDialog && (
+                <PaymentEntryDialog
+                    open={true}
+                    onSave={(data: any) => openPaymentDialog?.onSave?.(data)}
+                    onClose={() => openPaymentDialog?.onClose?.()}
+                    initialData={openPaymentDialog?.paymentInit}
+                    paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
+                    paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
+                />
+            )}
+            {showAttendence && (
+                <StudentAttendence
+                    open={true}
+                    onClose={() => setShowAttendence(false)}
+                    activityData={showAttendence}
+                />
+            )}
+            {openTemplateDialog.open && (
+                <SelectTemplateDialog
+                    open={openTemplateDialog.open}
+                    onClose={() => setOpenTemplateDialog({ open: false })}
+                    data={{
+                        ids: [openTemplateDialog.data.studentId],
+                        raw: openTemplateDialog.data,
+                        phoneNumber: openTemplateDialog.data.phone,
+                        email: openTemplateDialog.data.email,
+                        notificationType: "WHATSAPP",
+                    }}
+                />
+            )}
+        </FlexBetweenColumn>
+    );
+};
+
+export default Students;

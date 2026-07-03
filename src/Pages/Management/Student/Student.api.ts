@@ -1,0 +1,72 @@
+import api from "@/core/utils/api";
+
+interface StudentApiParams {
+    branchId: string | number;
+    token: string | null | undefined;
+    page: number | string;
+    size: number | string;
+    birthday?: boolean;
+}
+
+export const getStudentNamesAPI = async ({ branchId, token, page, size, birthday = false }: StudentApiParams) => {
+    try {
+        const response = await api.get(
+            `/students/getAllStudentsForCommunication/${branchId}?membershipStatus=ACTIVE&page=${page}&size=${size}&birthday=${birthday ? 1 : 0}`,
+            {
+                headers: {
+                    Authorization: `${token}`,
+                },
+            },
+        );
+        const { data, status } = response.data;
+        return {
+            data,
+            success: true,
+            totalCount: status.totalCount,
+            message: status.statusMessage || "Fetched students successfully!",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Failed to fetch students",
+        };
+    }
+};
+
+export const getStudentNamesOncePerDay = async ({
+    branchId,
+    token,
+    page,
+    size,
+    birthday = false,
+}: StudentApiParams) => {
+    const result = await getStudentNamesAPI({ branchId, token, page, size, birthday });
+    return result;
+};
+
+interface AddStudentParams {
+    newData: any;
+    token: string | null | undefined;
+}
+
+export const addStudentAPI = async ({ newData, token }: AddStudentParams) => {
+    try {
+        const response = await api.post("/students/add", newData, {
+            headers: {
+                Authorization: `${token}`,
+                "Form-Authorization": (import.meta as any).env.VITE_APP_FORM_SIG || "",
+            },
+        });
+        const { data, status } = response.data;
+        return {
+            data: data[0],
+            success: true,
+            message: status.statusMessage,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.response?.data?.status?.statusMessage || "Failed to add student",
+        };
+    }
+};
