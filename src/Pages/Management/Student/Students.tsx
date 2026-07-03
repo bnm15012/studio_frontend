@@ -19,7 +19,7 @@ import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
-import type { Activity, BatchEntry } from "@/api/types";
+import type { Activity, BatchEntry, StudentAssignment } from "@/api/types";
 
 const size = 7;
 
@@ -139,8 +139,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
 
-    const [showInvoice, setShowInvoice] = useState<Record<string, unknown> | boolean>(false);
-    const [showAttendence, setShowAttendence] = useState<Record<string, unknown> | boolean>(false);
+    const [showInvoice, setShowInvoice] = useState<StudentAssignment>();
+    const [showAttendence, setShowAttendence] = useState<StudentAssignment>();
     const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
     const [openPaymentDialog, setOpenPaymentDialog] = useState<false | { onSave: (data: unknown) => void; onClose: () => void; paymentInit: unknown }>(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{ open: boolean; data?: Record<string, unknown> }>({ open: false });
@@ -296,9 +296,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     {
                         name: "Document",
                         icon: <ReceiptIcon />,
-                        enabled: (row: Record<string, unknown>) => (row.paymentEntry as Record<string, unknown> | undefined)?.status === "COMPLETED",
+                        enabled: (row: StudentAssignment) => (row?.paymentEntry)?.status === "COMPLETED",
                         sx: { color: "blue" },
-                        onClick: (row: Record<string, unknown>) => {
+                        onClick: (row: StudentAssignment) => {
                             setShowInvoice(row);
                         },
                     },
@@ -308,7 +308,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         icon: <HowToRegIcon />,
                         enabled: () => true,
                         sx: { color: "blue" },
-                        onClick: (row: Record<string, unknown>) => {
+                        onClick: (row: StudentAssignment) => {
                             setShowAttendence(row);
                         },
                     },
@@ -615,9 +615,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     currentBranch={currentBranch}
                     open={true}
                     isUser={true}
-                    onClose={() => setShowInvoice(false)}
-                    studentData={tableState.recordById[(showInvoice as Record<string, unknown>)?.studentId as string]}
-                    activityData={showInvoice as Record<string, unknown>}
+                    onClose={() => setShowInvoice(undefined)}
+                    studentData={tableState.recordById[showInvoice.studentId]}
+                    activityData={showInvoice}
                 />
             )}
             {openPaymentDialog && (
@@ -633,8 +633,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             {showAttendence && (
                 <StudentAttendence
                     open={true}
-                    onClose={() => setShowAttendence(false)}
-                    activityData={showAttendence as Record<string, unknown>}
+                    onClose={() => setShowAttendence(undefined)}
+                    activityData={showAttendence}
                 />
             )}
             {openTemplateDialog.open && (

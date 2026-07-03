@@ -6,14 +6,15 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
+import { Branch, Student, StudentAssignment, Studio } from "@/api/types";
 
 interface StudentInvoiceProps {
     open: boolean;
     onClose: () => void;
-    studentData: Record<string, unknown>;
-    activityData: Record<string, unknown>;
-    studio: Record<string, unknown>;
-    currentBranch: Record<string, unknown>;
+    studentData: Student;
+    activityData: StudentAssignment;
+    studio: Studio;
+    currentBranch: Branch;
     isUser?: boolean;
 }
 
@@ -44,14 +45,14 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                 {
                     key: "email",
                     tip: "E-mail",
-                    onClick: () => pdfViewerRef.current?.sendMail(String(studentData?.email ?? "")),
+                    onClick: () => pdfViewerRef.current?.sendMail(studentData.email),
                     component: <MailIcon />,
                 },
                 {
                     key: "whatsapp",
                     disabled: !activityData?.invoiceToken,
                     tip: "WhatsApp",
-                    onClick: () => pdfViewerRef.current?.sendWhatsApp(String(studentData?.phone ?? "")),
+                    onClick: () => pdfViewerRef.current?.sendWhatsApp(String(studentData.phone ?? "")),
                     component: <WhatsApp />,
                 },
                 {
@@ -66,16 +67,16 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
                     studio={studio as { logo: string; studioName: string }}
-                    fileName={`student-invoice-${String(studentData?.name ?? "").replace(/ /g, "-")}-${String(activityData?.activityName ?? "").replace(/ /g, "-")}`}
+                    fileName={`student-invoice-${studentData.name.replace(/ /g, "-")}-${String(activityData.activityName ?? "").replace(/ /g, "-")}`}
                     remainingPayload={{
                         title: "Invoice",
                         templateName: "MEMBERSHIP_INVOICE",
                         activityType: String(activityData?.activityName ?? ""),
-                        memberIds: [Number(studentData?.studentId)],
+                        memberIds: [Number(studentData.studentId)],
                     }}
                     whatsAppPayload={{
-                        name: String(studentData?.name ?? ""),
-                        studioName: String(studio.studioName ?? ""),
+                        name: studentData.name,
+                        studioName: studio.studioName,
                         invoiceToken: String(activityData?.invoiceToken ?? "")
                     }}
                     footer={<p>Thank you for choosing {String(studio.studioName)}!</p>}
@@ -122,9 +123,9 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                     <div>
                                         <strong>Bill To</strong>:
                                     </div>
-                                    <div>{String(studentData?.name ?? "")}</div>
-                                    <div>{String(studentData?.phone ?? "")}</div>
-                                    <div>{String(studentData?.email ?? "")}</div>
+                                    <div>{String(studentData.name)}</div>
+                                    <div>{String(studentData.phone ?? "")}</div>
+                                    <div>{String(studentData.email ?? "")}</div>
                                 </div>
                             </div>
                             {/* Table */}

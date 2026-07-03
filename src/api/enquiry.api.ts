@@ -4,7 +4,7 @@ import { Enquiry } from "./types";
 
 export interface EnquiryAPIParams {
     newData: Record<string, unknown>;
-    token: string | null | undefined;
+    token: string;
 }
 
 export interface EnquiryAPIResponse {

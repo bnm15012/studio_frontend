@@ -103,20 +103,20 @@ export interface PaymentEntry extends Entity {
 }
 
 export interface StudentAssignment extends Entity {
-    assignmentId?: number;
-    studentId?: number;
-    activityName?: string;
-    membershipType?: string;
-    daysPerWeek?: number;
-    batchName?: string;
-    batchTime?: string;
-    activityAmount?: number;
-    registrationDate?: string;
-    membershipStartDate?: string;
-    membershipEndDate?: string;
-    membershipStatus?: "ACTIVE" | "INACTIVE";
+    assignmentId: number;
+    studentId: number;
+    activityName: string;
+    membershipType: string;
+    daysPerWeek: number;
+    batchName: string;
+    batchTime: string;
+    activityAmount: number;
+    registrationDate: string;
+    membershipStartDate: string;
+    membershipEndDate: string;
+    membershipStatus: "ACTIVE" | "INACTIVE";
     paymentEntry?: PaymentEntry;
-    attendanceEntries?: AttendanceEntry[];
+    attendanceEntries: AttendanceEntry[];
     invoiceToken?: string;
 }
 
@@ -124,12 +124,12 @@ export interface Student extends Entity {
     studentId?: number;
     branchId?: number;
     imageUrl?: string;
-    name?: string;
-    email?: string;
+    name: string;
+    email: string;
     phone?: string;
     dob?: string;
     age?: number;
-    membershipStatus?: "ACTIVE" | "INACTIVE";
+    membershipStatus: "ACTIVE" | "INACTIVE";
     gender?: "MALE" | "FEMALE" | "NOT_TO_SAY";
     address?: string;
     emergencyContactNumber?: string;

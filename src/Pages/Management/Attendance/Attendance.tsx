@@ -213,7 +213,7 @@ const Attendance = () => {
                                 if (Array.isArray(row)) {
                                     setShowBulkAttendanceDialog(row);
                                 } else {
-                                    setShowAttendence(row);
+                                    setShowAttendence(row as StudentAssignment);
                                 }
                             },
                         },
