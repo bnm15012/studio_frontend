@@ -7,10 +7,10 @@ export interface Entity {
     [key: string]: unknown;
 }
 
-export interface SelectOption {
+export interface SelectOption<T extends Record<string, unknown> = Record<string, unknown>> {
     key: string | number;
-    value: string;
-    [key: string]: unknown;
+    value: string | number;
+    row?: T;
 }
 
 export interface ApiResponse<T = unknown> {

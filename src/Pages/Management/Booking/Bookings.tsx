@@ -105,7 +105,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
         const clientEntry = modifiedData.clientEntry;
         if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
             const entry = clientEntry as { key?: number; clientId?: number };
-            modifiedData.clientEntry = { clientId: entry.key ?? entry.clientId };
+            modifiedData.clientEntry = { clientId: entry.clientId };
         }
         return modifiedData;
     }, []);

@@ -2,26 +2,21 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
+import { SelectOption } from "../../types";
 
-interface SelectOption {
-    key: string | number;
-    value: string | number;
-    [key: string]: unknown;
-}
-
-export interface SelectionFieldProps {
+export interface SelectionFieldProps<T extends Record<string, unknown> = Record<string, unknown>> {
     label?: string;
-    value?: SelectOption | null;
+    value?: SelectOption<T> | null;
     readOnly?: boolean;
-    setValue: (val: string | number | SelectOption) => void;
-    getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption[]>;
+    setValue: (val: string | number | SelectOption<T>) => void;
+    getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption<T>[]>;
     addValue?: boolean;
     variant?: "standard" | "outlined" | "filled";
     validation?: { required?: boolean;[key: string]: unknown };
     saveType?: "string" | "object";
 }
 
-export default function SelectionField({
+export default function SelectionField<T extends Record<string, unknown> = Record<string, unknown>>({
     label,
     value,
     readOnly,
@@ -31,9 +26,9 @@ export default function SelectionField({
     variant = "standard",
     validation = {},
     saveType = "string",
-}: SelectionFieldProps) {
+}: SelectionFieldProps<T>) {
     const [open, setOpen] = useState<boolean>(false);
-    const [options, setOptions] = useState<SelectOption[]>([]);
+    const [options, setOptions] = useState<SelectOption<T>[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>("");
     const [searchTerm, setSearchTerm] = useState<string>("");
