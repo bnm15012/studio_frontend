@@ -68,16 +68,16 @@ export interface FieldDef {
     [key: string]: unknown;
 }
 
-export interface ActionItem {
+export interface ActionItem<T extends Record<string, unknown> = Record<string, unknown>> {
     name: string;
-    onClick?: (row: Record<string, unknown>) => void;
+    onClick?: (row: T) => void;
     icon?: React.ReactNode;
     sx?: {
         color?: string;
         [key: string]: unknown;
     };
     hide?: boolean;
-    enabled?: boolean | ((row: Record<string, unknown>) => boolean);
+    enabled?: boolean | ((row: T) => boolean);
     multi?: boolean;
     help?: string;
 }

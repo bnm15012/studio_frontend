@@ -4,16 +4,16 @@ import { ShowAlertFn, SetLoadingFn, CrudThunks } from "@/core/types";
 import type { AppDispatch } from "@/state";
 import type { FieldDef } from "@/core/types";
 
-const defaultBeforeAdd = async (row: Record<string, unknown>): Promise<Record<string, unknown>> => row;
-const defaultBeforeUpdate = async (row: Record<string, unknown>): Promise<Record<string, unknown>> => row;
-const defaultOverRideOnChange = (value: unknown, obj: Record<string, unknown>, _field?: string): Record<string, unknown> => obj;
+const defaultBeforeAdd = async <T extends Record<string, unknown>>(row: T): Promise<T> => row;
+const defaultBeforeUpdate = async <T extends Record<string, unknown>>(row: T): Promise<T> => row;
+const defaultOverRideOnChange = <T extends Record<string, unknown>>(value: unknown, obj: T, _field?: string): T => obj;
 
-interface UseCrudActionProps {
+interface UseCrudActionProps<T extends Record<string, unknown> = Record<string, unknown>> {
     formKey?: string | number | null;
-    data: Record<string, unknown>[];
-    setData: React.Dispatch<React.SetStateAction<Record<string, unknown>[]>>;
+    data: T[];
+    setData: React.Dispatch<React.SetStateAction<T[]>>;
     dispatch: AppDispatch;
-    tableCruds: CrudThunks;
+    tableCruds: CrudThunks<T>;
     token: string | null | undefined;
     showAlert: ShowAlertFn;
     setLoading: SetLoadingFn;
@@ -29,12 +29,12 @@ interface UseCrudActionProps {
         rootKey?: string;
         fields: FieldDef[];
     }>;
-    beforeAdd?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
-    beforeUpdate?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
-    overRideOnChange?: (value: unknown, obj: Record<string, unknown>, field: string) => Record<string, unknown>;
+    beforeAdd?: (row: T) => T | Promise<T>;
+    beforeUpdate?: (row: T) => T | Promise<T>;
+    overRideOnChange?: (value: unknown, obj: T, field: string) => T;
 }
 
-export const useCrudAction = ({
+export const useCrudAction = <T extends Record<string, unknown> = Record<string, unknown>>({
     formKey,
     data,
     setData,
@@ -51,19 +51,19 @@ export const useCrudAction = ({
     beforeAdd = defaultBeforeAdd,
     beforeUpdate = defaultBeforeUpdate,
     overRideOnChange = defaultOverRideOnChange,
-}: UseCrudActionProps): {
+}: UseCrudActionProps<T>): {
     editingId: string | number | null;
-    record: Record<string, unknown>;
-    setRecord: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
-    handleEdit: (row: Record<string, unknown>) => void;
+    record: T;
+    setRecord: React.Dispatch<React.SetStateAction<T>>;
+    handleEdit: (row: T) => void;
     handleCancel: () => void;
     handleSave: (id: string | number | null | undefined) => Promise<void>;
     addNewRow: () => void;
     handleChange: (value: unknown, id: string | number | null | undefined, fieldPath: string) => void;
 } => {
     const [editingId, setEditingId] = useState<string | number | null>(null);
-    const [originalRow, setOriginalRow] = useState<Record<string, unknown> | null>(null);
-    const [record, setRecord] = useState<Record<string, unknown>>({});
+    const [originalRow, setOriginalRow] = useState<T | null>(null);
+    const [record, setRecord] = useState<T>({} as T);
 
     const updateEditId = (id: string | number | null) => {
         setEditingId(id);
@@ -74,7 +74,7 @@ export const useCrudAction = ({
     }, [tableState.currentPage]);
 
     const handleEdit = useCallback(
-        (row: Record<string, unknown>) => {
+        (row: T) => {
             if (editingId) {
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
@@ -82,7 +82,7 @@ export const useCrudAction = ({
             const original = data.find(
                 (d) => d[consts.current.primaryKey] === row[consts.current.primaryKey],
             );
-            setOriginalRow({ ...original });
+            setOriginalRow(original ? { ...original } as T : null);
             updateEditId(row[consts.current.primaryKey] as string | number | null);
         },
         [consts, data, editingId, showAlert],
@@ -91,7 +91,7 @@ export const useCrudAction = ({
     const handleCancel = useCallback(() => {
         if (formKey === "NEW") navigate(`/management/${tableName}/`);
         if (formKey) {
-            setRecord(editingId === "NEW" ? {} : (originalRow ?? {}));
+            setRecord(editingId === "NEW" ? {} as T : (originalRow ?? {} as T));
         } else {
             if (editingId === "NEW") {
                 setData((prev) =>
@@ -159,7 +159,7 @@ export const useCrudAction = ({
     );
 
     const updateField = useCallback(
-        (value: unknown, obj: Record<string, unknown>, field: string): Record<string, unknown> => {
+        (value: unknown, obj: T, field: string): T => {
             const updatedItem = overRideOnChange(value, { ...obj }, field);
 
             const parts = field.split(".");
@@ -174,7 +174,7 @@ export const useCrudAction = ({
             return updatedItem;
         },
         [overRideOnChange],
-    );
+    ) as (value: unknown, obj: T, field: string) => T;
 
     const handleChange = useCallback(
         (value: unknown, id: string | number | null | undefined, fieldPath: string) => {
@@ -208,11 +208,11 @@ export const useCrudAction = ({
         consts.current.fields
             .filter((f) => f.type !== "VIEW")
             .forEach((f) => {
-                newRow = updateField(f.defaultValue ?? "", newRow, f.name);
+                newRow = updateField(f.defaultValue ?? "", newRow as T, f.name) as Record<string, unknown>;
             });
 
-        if (formKey) setRecord(newRow);
-        else setData((prev) => [newRow, ...prev]);
+        if (formKey) setRecord(newRow as T);
+        else setData((prev) => [newRow as T, ...prev]);
 
         updateEditId("NEW");
     }, [editingId, consts, rootId, formKey, setData, showAlert, updateField]);

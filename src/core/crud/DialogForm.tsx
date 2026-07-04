@@ -1,4 +1,3 @@
-import React from "react";
 import Field from "../components/fields/Field";
 import { FlexBetween } from "../components/layout/FlexBox";
 import { Box } from "@mui/material";
@@ -14,8 +13,8 @@ import {
 } from "../utils/fieldHelpers";
 import { FieldDef } from "../types";
 
-interface DialogFormProps {
-    data: Record<string, unknown>;
+interface DialogFormProps<T extends Record<string, unknown> = Record<string, unknown>> {
+    data: T;
     fields: FieldDef[];
     fieldsMeta: {
         primary: string;
@@ -27,7 +26,7 @@ interface DialogFormProps {
     [key: string]: unknown;
 }
 
-export const DialogForm: React.FC<DialogFormProps> = (props) => {
+export function DialogForm<T extends Record<string, unknown> = Record<string, unknown>>(props: DialogFormProps<T>) {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
     const { isMobile } = useUI();
     const id = data?.[fieldsMeta.primary] as string | number | null | undefined;
@@ -84,6 +83,6 @@ export const DialogForm: React.FC<DialogFormProps> = (props) => {
             </FlexBetween>
         </StyledDialog>
     );
-};
+}
 
 export default DialogForm;

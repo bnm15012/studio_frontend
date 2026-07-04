@@ -38,23 +38,23 @@ const LoadMoreButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-interface CardViewProps {
+interface CardViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef[];
-    data: Record<string, unknown>[];
+    data: T[];
     fieldsMeta: {
         primary: string;
         root?: string;
     };
     loading?: boolean;
-    actions: ActionItem[];
-    handleViewOpen?: (row: Record<string, unknown>) => void;
+    actions: ActionItem<T>[];
+    handleViewOpen?: (row: T) => void;
     tableState: Record<string, unknown>;
     handleLoadMore: () => void | Promise<void>;
-    CardContentComponent?: React.ComponentType<{ row: Record<string, unknown>; handleViewOpen?: (row: Record<string, unknown>) => void }>;
+    CardContentComponent?: React.ComponentType<{ row: T; handleViewOpen?: (row: T) => void }>;
     multi?: boolean;
 }
 
-const CardView: React.FC<CardViewProps> = (props) => {
+function CardView<T extends Record<string, unknown> = Record<string, unknown>>(props: CardViewProps<T>) {
     const {
         fields,
         data,
@@ -74,7 +74,7 @@ const CardView: React.FC<CardViewProps> = (props) => {
     const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
     const hasClickRow = actions?.some((a) => a.name === "form" && !a.hide);
     const onClickRow = useCallback(
-        (row: Record<string, unknown>) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
+        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 
@@ -303,6 +303,6 @@ const CardView: React.FC<CardViewProps> = (props) => {
             )}
         </Box>
     );
-};
+}
 
-export default memo(CardView);
+export default memo(CardView) as typeof CardView;

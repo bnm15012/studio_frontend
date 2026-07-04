@@ -4,14 +4,10 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { IndianRupee } from "lucide-react";
 import { Box } from "@mui/material";
+import { Expense } from "@/api/types";
 
 interface ExpenseCardProps {
-    row: {
-        expenseCategory?: string;
-        amount?: string | number;
-        description?: string;
-        expenseDate?: string | Date;
-    };
+    row: Expense;
 }
 
 const ExpenseCard: React.FC<ExpenseCardProps> = ({ row }) => (

@@ -37,23 +37,23 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, animKey, y = 6, durati
 );
 
 // ── RowActions ──────────────────────────────────────────────────────────────
-interface RowActionsProps {
+interface RowActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
     isEditing: boolean;
     rowId?: string | number;
     handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
-    actions: ActionItem[];
-    row: Record<string, unknown>;
+    actions: ActionItem<T>[];
+    row: T;
 }
 
-export const RowActions: React.FC<RowActionsProps> = ({
+export function RowActions<T extends Record<string, unknown> = Record<string, unknown>>({
     isEditing,
     rowId,
     handleSave,
     handleCancel,
     actions,
     row,
-}) => {
+}: RowActionsProps<T>) {
     if (isEditing) {
         return (
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -67,7 +67,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
         );
     }
     return <Actions actions={actions} row={row} />;
-};
+}
 
 // ── RowNumber ───────────────────────────────────────────────────────────────
 interface TableState {

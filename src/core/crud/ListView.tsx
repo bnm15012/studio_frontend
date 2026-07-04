@@ -42,8 +42,8 @@ const rowVariants = {
 // Motion-enhanced table row
 const MotionTableRow = motion.create(StyledTableRow);
 
-interface MobileRowCardProps {
-    row: Record<string, unknown>;
+interface MobileRowCardProps<T extends Record<string, unknown> = Record<string, unknown>> {
+    row: T;
     rowIndex: number;
     fields: FieldDef[];
     fieldsMeta: {
@@ -56,15 +56,15 @@ interface MobileRowCardProps {
     handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
     handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
-    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleViewOpen?: (row: T) => void;
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
     selectedRows: (string | number)[];
     theme: Theme;
-    actions: ActionItem[];
+    actions: ActionItem<T>[];
 }
 
 // ── Mobile card for a single row ───────────────────────────────────────────
-const MobileRowCard: React.FC<MobileRowCardProps> = ({
+function MobileRowCard<T extends Record<string, unknown> = Record<string, unknown>>({
     row,
     rowIndex,
     fields,
@@ -80,7 +80,7 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
     selectedRows,
     theme,
     actions,
-}) => {
+}: MobileRowCardProps<T>) {
     const rowId = row[fieldsMeta.primary] as string | number;
     const isItemSelected = selectedRows.includes(rowId);
     const isRowEditing = editingId === rowId;
@@ -186,7 +186,7 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
                                     (field?.editable ? field.editable(row) : true)
                                 }
                                 handleChange={(v, _id, name) => handleChange(v, rowId, name)}
-                                handleViewOpen={handleViewOpen}
+                                handleViewOpen={handleViewOpen as ((row: Record<string, unknown>) => void) | undefined}
                             />
                         </Box>
                     </Box>
@@ -194,11 +194,11 @@ const MobileRowCard: React.FC<MobileRowCardProps> = ({
             </Box>
         </Paper>
     );
-};
+}
 
-interface DesktopTableProps {
+interface DesktopTableProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef[];
-    data: Record<string, unknown>[];
+    data: T[];
     fieldsMeta: {
         primary: string;
         root?: string;
@@ -210,17 +210,17 @@ interface DesktopTableProps {
     handleSave?: (rowId: string | number) => void | Promise<void>;
     handleCancel?: () => void;
     handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
-    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleViewOpen?: (row: T) => void;
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
     selectedRows: (string | number)[];
     visibleRowIds: (string | number)[];
-    actions: ActionItem[];
-    onClickRow?: (row: Record<string, unknown>) => void;
+    actions: ActionItem<T>[];
+    onClickRow?: (row: T) => void;
 }
 
 // ── Desktop table ──────────────────────────────────────────────────────────
-const DesktopTable: React.FC<DesktopTableProps> = ({
+function DesktopTable<T extends Record<string, unknown> = Record<string, unknown>>({
     fields,
     data,
     fieldsMeta,
@@ -238,7 +238,7 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
     visibleRowIds,
     actions,
     onClickRow,
-}) => {
+}: DesktopTableProps<T>) {
     const visibleFields = getVisibleFields(fields);
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
     const isIndeterminate = selectedRows.length > 0 && selectedRows.length < visibleRowIds.length;
@@ -311,7 +311,7 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
                                                 handleChange={(v, _id, name) =>
                                                     handleChange(v, rowId, name)
                                                 }
-                                                handleViewOpen={handleViewOpen}
+                                                handleViewOpen={handleViewOpen as ((row: Record<string, unknown>) => void) | undefined}
                                             />
                                         </StyledTableCell>
                                     ))}
@@ -346,29 +346,29 @@ const DesktopTable: React.FC<DesktopTableProps> = ({
             </StyledTable>
         </TableContainerCo>
     );
-};
+}
 
-interface ListViewProps {
+interface ListViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef[];
-    data: Record<string, unknown>[];
+    data: T[];
     editingId?: string | number | null;
     fieldsMeta: {
         primary: string;
         root?: string;
     };
-    actions: ActionItem[];
+    actions: ActionItem<T>[];
     handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
     handleSave?: (rowId: string | number) => void | Promise<void>;
     loading?: boolean;
     handleCancel?: () => void;
     tableState: Record<string, unknown>;
     handlePageChange: (page: number) => void;
-    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleViewOpen?: (row: T) => void;
     multi?: boolean;
 }
 
 // ── ListView ───────────────────────────────────────────────────────────────
-const ListView: React.FC<ListViewProps> = ({
+function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
     fields,
     data,
     editingId,
@@ -382,12 +382,12 @@ const ListView: React.FC<ListViewProps> = ({
     handlePageChange,
     handleViewOpen,
     multi = false,
-}) => {
+}: ListViewProps<T>) {
     const { isMobile } = useUI();
     const theme = useTheme();
 
     const onClickRow = useCallback(
-        (row: Record<string, unknown>) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
+        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 
@@ -535,6 +535,6 @@ const ListView: React.FC<ListViewProps> = ({
             </FlexBetween>
         </>
     );
-};
+}
 
-export default memo(ListView);
+export default memo(ListView) as typeof ListView;

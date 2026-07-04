@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 import { ShowAlertFn, SetLoadingFn, CrudThunks } from "../../types";
 import type { AppDispatch } from "../../../state";
 
-interface UseDeleteHandlerProps {
-    tableCruds: CrudThunks;
+interface UseDeleteHandlerProps<T extends Record<string, unknown> = Record<string, unknown>> {
+    tableCruds: CrudThunks<T>;
     token: string | null | undefined;
     showAlert: ShowAlertFn;
     setLoading: SetLoadingFn;
@@ -17,7 +17,7 @@ interface UseDeleteHandlerProps {
     formKey?: string | number | null;
 }
 
-export const useDeleteHandler = ({
+export const useDeleteHandler = <T extends Record<string, unknown> = Record<string, unknown>>({
     tableCruds,
     token,
     showAlert,
@@ -27,8 +27,8 @@ export const useDeleteHandler = ({
     tableName,
     consts,
     formKey,
-}: UseDeleteHandlerProps): {
-    handleDeleteClick: (row: Record<string, unknown>) => void;
+}: UseDeleteHandlerProps<T>): {
+    handleDeleteClick: (row: T) => void;
     deleteDialogOpen: boolean;
     deleteId: string | number | null;
     closeDeleteDialog: () => void;
@@ -38,7 +38,7 @@ export const useDeleteHandler = ({
     const [deleteId, setDeleteId] = useState<string | number | null>(null);
 
     const handleDeleteClick = useCallback(
-        (row: Record<string, unknown>) => {
+        (row: T) => {
             setDeleteId(row[consts.current.primaryKey] as string | number | null);
             setDeleteDialogOpen(true);
         },

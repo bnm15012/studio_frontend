@@ -3,12 +3,12 @@ import { alpha } from "@mui/material/styles";
 import React from "react";
 import { ActionItem } from "../../types";
 
-interface ActionsProps {
-    actions: ActionItem[];
-    row: unknown;
+interface ActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
+    actions: ActionItem<T>[];
+    row: T | T[];
 }
 
-const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
+function Actions<T extends Record<string, unknown> = Record<string, unknown>>({ actions, row }: ActionsProps<T>) {
     const theme = useTheme();
     const visibleActions = actions.filter((a) => !a.hide);
 
@@ -16,7 +16,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
         <>
             {visibleActions.map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled =
-                    typeof enabled === "function" ? enabled(row as Record<string, unknown>) : (enabled ?? true);
+                    typeof enabled === "function" ? enabled(row as T) : (enabled ?? true);
 
                 return (
                     <ButtonBase
@@ -24,7 +24,7 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
                         disabled={!isEnabled}
                         onClick={(e) => {
                             e.stopPropagation();
-                            onClick?.(row as Record<string, unknown>);
+                            onClick?.(row as T);
                         }}
                         sx={{
                             display: "flex",
@@ -74,6 +74,6 @@ const Actions: React.FC<ActionsProps> = ({ actions, row }) => {
             })}
         </>
     );
-};
+}
 
 export default Actions;

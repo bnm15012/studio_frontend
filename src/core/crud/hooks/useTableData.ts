@@ -3,8 +3,8 @@ import { useAppDispatch, useAppSelector } from "../../../state";
 import { usePageSearch } from "../../hooks/useSearch";
 import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "../../types";
 
-export interface UseTableDataParams {
-    tableCruds: CrudThunks;
+export interface UseTableDataParams<T extends Record<string, unknown> = Record<string, unknown>> {
+    tableCruds: CrudThunks<T>;
     tableName: string;
     token: string | null | undefined;
     showAlert: ShowAlertFn;
@@ -15,7 +15,7 @@ export interface UseTableDataParams {
     defaultParams?: Record<string, unknown>;
 }
 
-export const useTableData = ({
+export const useTableData = <T extends Record<string, unknown> = Record<string, unknown>>({
     tableCruds,
     tableName,
     token,
@@ -25,7 +25,7 @@ export const useTableData = ({
     currentView,
     setLoading,
     defaultParams = {},
-}: UseTableDataParams) => {
+}: UseTableDataParams<T>) => {
     const dispatch = useAppDispatch();
     const tableState = useAppSelector((state: Record<string, unknown>) => (state[tableName] as CrudState) || {} as CrudState);
 
@@ -34,7 +34,7 @@ export const useTableData = ({
     // Lazy-initialize from the Redux store so that if the store already has
     // cached items (e.g. back-navigation), the component never renders with an
     // empty array first — eliminating the visible flash/flicker on mount.
-    const [data, setData] = useState<Record<string, unknown>[]>(() => (tableState.items as Record<string, unknown>[]) ?? []);
+    const [data, setData] = useState<T[]>(() => (tableState.items as T[]) ?? []);
     const [page, setPage] = useState<number>(1);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<Record<string, unknown>>({});
@@ -94,7 +94,7 @@ export const useTableData = ({
     }, [fetchData]);
 
     useEffect(() => {
-        setData((tableState.items as Record<string, unknown>[]) ?? []);
+        setData((tableState.items as T[]) ?? []);
     }, [tableState.items]);
 
     return {

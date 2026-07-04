@@ -17,13 +17,13 @@ import { useUI } from "@/context/UIContext";
 import { FieldDef, ActionItem, CrudThunks } from "../types";
 import { useAppSelector, useAppDispatch } from "../../state";
 
-export interface ViewsProps {
+export interface ViewsProps<T extends Record<string, unknown> = Record<string, unknown>> {
     formKey?: string | number | null;
     tableName: string;
-    overRideOnChange?: (value: unknown, obj: Record<string, unknown>, field: string) => Record<string, unknown>;
+    overRideOnChange?: (value: unknown, obj: T, field: string) => T;
     size?: number;
     rootId?: string | number | null;
-    tableCruds?: CrudThunks;
+    tableCruds?: CrudThunks<T>;
     fields: FieldDef[];
     fieldsMeta: {
         primary: string;
@@ -32,19 +32,19 @@ export interface ViewsProps {
     apiRef?: React.MutableRefObject<Record<string, unknown>>;
     dialogProps?: Record<string, unknown>;
     defaultParams?: Record<string, unknown>;
-    beforeAdd?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
-    beforeUpdate?: (row: Record<string, unknown>) => Record<string, unknown> | Promise<Record<string, unknown>>;
+    beforeAdd?: (row: T) => T | Promise<T>;
+    beforeUpdate?: (row: T) => T | Promise<T>;
     cardLayout?: "vertical" | "horizontal";
     fieldToDisplayOnDelete?: string;
     currentView?: string;
     showAddButton?: boolean;
-    CardContentComponent?: React.ComponentType<{ row: Record<string, unknown>; handleViewOpen?: (row: Record<string, unknown>) => void }>;
-    actions?: ActionItem[];
+    CardContentComponent?: React.ComponentType<{ row: T; handleViewOpen?: (row: T) => void }>;
+    actions?: ActionItem<T>[];
     multi?: boolean;
     editMode?: "FORM" | "DIALOG" | "INLINE";
 }
 
-const Views: React.FC<ViewsProps> = (props) => {
+function Views<T extends Record<string, unknown> = Record<string, unknown>>(props: ViewsProps<T>) {
     const {
         formKey,
         dialogProps,
@@ -83,12 +83,12 @@ const Views: React.FC<ViewsProps> = (props) => {
     const [loading, setLoading] = useState(false);
 
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
-    const [viewRow, setViewRow] = useState<Record<string, unknown> | null>(null);
+    const [viewRow, setViewRow] = useState<T | null>(null);
 
     // Guard: tableCruds must be defined for CRUD operations
-    const safeCruds = tableCruds as CrudThunks;
+    const safeCruds = tableCruds as CrudThunks<T>;
 
-    const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData({
+    const { data, setData, tableState, fetchOne, handlePageChange, loadMore } = useTableData<T>({
         tableCruds: safeCruds,
         tableName,
         token,
@@ -109,7 +109,7 @@ const Views: React.FC<ViewsProps> = (props) => {
         handleSave,
         addNewRow,
         handleChange,
-    } = useCrudAction({
+    } = useCrudAction<T>({
         formKey,
         data,
         setData,
@@ -128,7 +128,7 @@ const Views: React.FC<ViewsProps> = (props) => {
         overRideOnChange,
     });
 
-    const handleViewOpen = (row: Record<string, unknown>) => {
+    const handleViewOpen = (row: T) => {
         setViewRow(row);
         setViewDialogOpen(true);
     };
@@ -161,22 +161,22 @@ const Views: React.FC<ViewsProps> = (props) => {
     }, [dispatch, showAlert, safeCruds, token]);
 
     const openFormView = useCallback(
-        (row: Record<string, unknown>) => {
+        (row: T) => {
             navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
         },
         [navigate, tableName],
     );
 
-    const mergedActions = useMergedActions(
+    const mergedActions = useMergedActions<T>(
         actions,
         useMemo(
             () => ({
                 loading,
                 editMode,
                 formKey,
-                handleEdit,
-                handleDeleteClick,
-                openFormView,
+                handleEdit: handleEdit as (row: Record<string, unknown>) => void,
+                handleDeleteClick: handleDeleteClick as (row: Record<string, unknown>) => void,
+                openFormView: openFormView as (row: Record<string, unknown>) => void,
             }),
             [editMode, formKey, handleEdit, handleDeleteClick, loading, openFormView],
         ),
@@ -244,14 +244,14 @@ const Views: React.FC<ViewsProps> = (props) => {
 
     useEffect(() => {
         if (formKey && formKey !== "NEW") {
-            setRecord((tableState.recordById as Record<string | number, Record<string, unknown>>)?.[formKey] ?? {});
+            setRecord((tableState.recordById as Record<string | number, T>)?.[formKey] ?? {} as T);
         }
     }, [formKey, setRecord, tableState.recordById]);
 
     return (
         <>
             {formKey ? (
-                <FormView
+                <FormView<T>
                     {...commonStableProps}
                     loading={loading}
                     editingId={editingId}
@@ -261,14 +261,14 @@ const Views: React.FC<ViewsProps> = (props) => {
                     currentView={currentView}
                 />
             ) : currentView === "CARD" ? (
-                <CardView
+                <CardView<T>
                     {...commonStableProps}
                     {...commonProps}
                     CardContentComponent={CardContentComponent}
                     handleLoadMore={loadMore}
                 />
             ) : (
-                <ListView
+                <ListView<T>
                     {...commonStableProps}
                     {...commonProps}
                     editingId={editMode === "INLINE" ? editingId : null}
@@ -277,7 +277,7 @@ const Views: React.FC<ViewsProps> = (props) => {
             {editMode !== "FORM" &&
                 (editMode === "DIALOG" || currentView === "CARD") &&
                 editingId && (
-                    <DialogForm
+                    <DialogForm<T>
                         setClose={handleCancel}
                         tableState={tableState}
                         loading={loading}
@@ -285,7 +285,7 @@ const Views: React.FC<ViewsProps> = (props) => {
                         actions={mergedActions}
                         {...commonStableProps}
                         {...dialogProps}
-                        data={data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === editingId) ?? {}}
+                        data={data.find((d) => d[consts.current.primaryKey] === editingId) ?? {} as T}
                     />
                 )}
             {viewDialogOpen && (
@@ -332,14 +332,13 @@ const Views: React.FC<ViewsProps> = (props) => {
                     onClose={closeDeleteDialog}
                     onConfirm={handleDeleteConfirm}
                     id={deleteId}
-                    displayData={`${tableName} for ${data.find((d: Record<string, unknown>) => d[consts.current.primaryKey] === deleteId)?.[
+                    displayData={`${tableName} for ${data.find((d) => d[consts.current.primaryKey] === deleteId)?.[
                         fieldToDisplayOnDelete
-                        ]
-                        }`}
+                        ]}`}
                 />
             )}
         </>
     );
-};
+}
 
 export default Views;

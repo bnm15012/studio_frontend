@@ -64,10 +64,10 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     </Box>
 );
 
-export interface FormViewProps {
+export interface FormViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef[];
     formKey: string | number | null | undefined;
-    data: Record<string, unknown> | null | undefined;
+    data: T | null | undefined;
     loading?: boolean;
     tableName: string;
     editingId?: string | number | null;
@@ -75,10 +75,10 @@ export interface FormViewProps {
     handleSave: (formKey: string | number | null | undefined) => void;
     handleCancel: () => void;
     currentView?: string;
-    actions?: ActionItem[];
+    actions?: ActionItem<T>[];
 }
 
-const FormView: React.FC<FormViewProps> = (props) => {
+function FormView<T extends Record<string, unknown> = Record<string, unknown>>(props: FormViewProps<T>) {
     const {
         fields,
         formKey,
@@ -172,7 +172,7 @@ const FormView: React.FC<FormViewProps> = (props) => {
                 <Box sx={{ display: "flex", gap: 0.5 }}>
                     {!editingId ? (
                         <>
-                            <Actions actions={actions || []} row={data} />
+                            <Actions actions={actions || []} row={data ?? {} as T} />
                             <IconButton>
                                 {loading ? (
                                     <CircularProgress size={18} />
@@ -288,6 +288,6 @@ const FormView: React.FC<FormViewProps> = (props) => {
             />
         </>
     );
-};
+}
 
-export default memo(FormView);
+export default memo(FormView) as typeof FormView;

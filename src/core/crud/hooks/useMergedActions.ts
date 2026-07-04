@@ -2,10 +2,13 @@ import { useMemo } from "react";
 import { defaultActions, DefaultActionsProps } from "../constant/defaultActions";
 import { ActionItem } from "../../types";
 
-export const useMergedActions = (actions: ActionItem[], args: DefaultActionsProps): ActionItem[] =>
+export const useMergedActions = <T extends Record<string, unknown> = Record<string, unknown>>(
+    actions: ActionItem<T>[],
+    args: DefaultActionsProps,
+): ActionItem<T>[] =>
     useMemo(() => {
         // Compute once and reuse — avoids calling defaultActions(args) twice per render.
-        const defaults = defaultActions(args);
+        const defaults = defaultActions(args) as ActionItem<T>[];
         const defaultNames = new Set(defaults.map((d) => d.name));
 
         const merged = defaults.map((def) => {
