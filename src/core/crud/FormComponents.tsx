@@ -19,7 +19,6 @@ export const StyledFieldItem = styled(Box)(({ theme }) => ({
 
     padding: theme.spacing(1),
     borderRadius: "8px",
-    backgroundColor: theme.palette.action.hover,
     transition: "background-color 0.2s ease",
 
     "&:hover": {

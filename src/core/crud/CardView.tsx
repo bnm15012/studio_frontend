@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect, useMemo, useCallback } from "react";
-import { Button, Box, Checkbox, Toolbar, Chip, Typography } from "@mui/material";
+import { Button, Box, Checkbox, Toolbar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { FieldContainer, FieldLabel } from "../components/fields/StyledField";
 import {
@@ -26,15 +26,14 @@ const LoadMoreButton = styled(Button)(({ theme }) => ({
     background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     color: "#fff",
     padding: theme.spacing(1.5, 4),
-    fontSize: "1rem",
-    fontWeight: 600,
-    borderRadius: 30,
-    boxShadow: "0 8px 24px rgba(102, 126, 234, 0.4)",
-    transition: "all 0.3s ease",
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    borderRadius: 24,
+    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+    transition: "box-shadow 0.2s ease",
     "&:hover": {
         background: "linear-gradient(135deg, #764ba2 0%, #667eea 100%)",
-        transform: "scale(1.05)",
-        boxShadow: "0 12px 32px rgba(102, 126, 234, 0.6)",
+        boxShadow: "0 6px 20px rgba(102, 126, 234, 0.4)",
     },
 }));
 
@@ -121,20 +120,22 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(p
                         alignItems: "center",
                         flexWrap: "wrap",
                         gap: 2,
-                        py: 1.5,
-                        px: 2,
-                        mb: 2,
+                        py: 1,
+                        px: 1.5,
+                        mb: 1.5,
                         borderRadius: "12px",
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                        border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                        animation: "fadeIn 0.2s ease-in-out",
+                        backgroundColor: alpha(theme.palette.primary.main, 0.06),
+                        minHeight: 48,
+                        animation: "fadeIn 0.15s ease-in-out",
                         "@keyframes fadeIn": {
-                            from: { opacity: 0, transform: "translateY(-10px)" },
+                            from: { opacity: 0, transform: "translateY(-8px)" },
                             to: { opacity: 1, transform: "translateY(0)" },
                         },
                     }}
                 >
-                    <Chip color="primary" label={`${selectedRows.length} selected`} />
+                    <Typography variant="body2" fontWeight={500} color="primary.main">
+                        {selectedRows.length} selected
+                    </Typography>
                     <FlexEvenly>
                         <Actions actions={multiActions} row={selectedRowsData} />
                     </FlexEvenly>
@@ -143,7 +144,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(p
 
             {/* ── Select All Checkbox row ── */}
             {multi && data.length > 0 && (
-                <Box display="flex" alignItems="center" gap={1} mb={1.5} px={1}>
+                <Box display="flex" alignItems="center" gap={0.75} mb={1} px={0.5}>
                     <Checkbox
                         color="primary"
                         indeterminate={isIndeterminate}
@@ -154,11 +155,11 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(p
                     />
                     <Typography
                         variant="body2"
-                        fontWeight={500}
+                        fontWeight={450}
                         color="text.secondary"
-                        sx={{ fontSize: "0.85rem" }}
+                        sx={{ fontSize: "0.8125rem" }}
                     >
-                        Select All ({data.length})
+                        Select all ({data.length})
                     </Typography>
                 </Box>
             )}
@@ -194,14 +195,15 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(p
                                     }}
                                     sx={{
                                         cursor: hasClickRow ? "pointer" : "auto",
-                                        transition: "all 0.2s ease",
                                         ...(isItemSelected && {
-                                            borderColor: theme.palette.primary.main,
                                             backgroundColor: alpha(
                                                 theme.palette.primary.main,
-                                                0.015,
+                                                0.04,
                                             ),
-                                            boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.08)}`,
+                                            boxShadow: [
+                                                `0 1px 3px rgba(0,0,0,0.08)`,
+                                                `0 0 0 1px ${alpha(theme.palette.primary.main, 0.3)}`,
+                                            ].join(", "),
                                         }),
                                     }}
                                 >

@@ -20,7 +20,7 @@ const CardChip: React.FC<CardChipProps> = ({ label, value, type = "STR", ChipIco
     return (
         <Box display="flex" alignItems="center" gap={0.75} sx={{ minWidth: 0 }}>
             <ChipIcon
-                sx={{ fontSize: "1rem", color: theme.palette.text.secondary, flexShrink: 0 }}
+                sx={{ fontSize: "0.9375rem", color: theme.palette.text.secondary, flexShrink: 0 }}
             />
             <Typography
                 sx={{

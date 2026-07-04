@@ -58,6 +58,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                     minWidth: 0,
                     flex: 1,
                     cursor: isClickable ? "pointer" : "default",
+                    py: 0.5,
                 }}
                 onClick={onClick}
             >
@@ -69,7 +70,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                         flexShrink: 0,
                     }}
                 >
-                    {renderIcon({ color: iconColor, fontSize: "1rem" })}
+                    {renderIcon({ color: iconColor, fontSize: "0.9375rem" })}
                 </Box>
                 <Typography
                     variant="body2"
@@ -103,8 +104,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
             sx={{
                 py: 0.75,
                 px: 0.5,
-                borderBottom: `1px solid ${alpha(theme.palette.divider, 0.3)}`,
-                transition: "background-color 0.2s ease",
+                borderBottom: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
                 "&:last-of-type": {
                     borderBottom: "none",
                 },
@@ -128,7 +128,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                 }}
                 onClick={onClick}
             >
-                {renderIcon({ color: theme.palette.primary.main, fontSize: "1.2rem" })}
+                {renderIcon({ color: theme.palette.text.secondary, fontSize: "1.1rem" })}
             </Box>
 
             <Box
@@ -142,10 +142,10 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                 <Typography
                     variant="caption"
                     sx={{
-                        fontWeight: 500,
+                        fontWeight: 450,
                         color: "text.secondary",
-                        fontSize: "0.7rem",
-                        lineHeight: 1,
+                        fontSize: "0.6875rem",
+                        lineHeight: 1.2,
                     }}
                 >
                     {label}
@@ -154,12 +154,12 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
                     variant="body2"
                     sx={{
                         color: "text.primary",
-                        fontWeight: 500,
+                        fontWeight: 450,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
-                        mt: 0.25,
-                        fontSize: "0.875rem",
+                        mt: 0.15,
+                        fontSize: "0.8125rem",
                     }}
                 >
                     {value}

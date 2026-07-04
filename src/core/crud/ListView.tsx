@@ -386,11 +386,6 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
     const { isMobile } = useUI();
     const theme = useTheme();
 
-    const onClickRow = useCallback(
-        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
-        [actions],
-    );
-
     const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
 
     useEffect(() => {
@@ -425,6 +420,12 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
             event.target.checked ? [...prev, id] : prev.filter((rowId) => rowId !== id),
         );
     }, []);
+
+
+    const onClickRow = useCallback(
+        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.( row),
+        [actions],
+    );
 
     // Shared props for both mobile card and desktop table
     const sharedRowProps = {

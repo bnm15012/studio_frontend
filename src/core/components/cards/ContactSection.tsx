@@ -29,18 +29,18 @@ const ContactSection: React.FC<ContactSectionProps> = ({ contact }) => {
     };
 
     return (
-        <Box display="flex" alignItems="center" gap={0.75}>
+        <Box display="flex" alignItems="center" gap={0.75} sx={{ minHeight: 0 }}>
             <Box
                 display="flex"
                 alignItems="center"
                 gap={0.75}
-                sx={{ minWidth: 0, flex: 1, cursor: "pointer" }}
+                sx={{ minWidth: 0, flex: 1, cursor: "pointer", py: 0.25 }}
                 onClick={handleClick}
             >
                 {isEmail ? (
-                    <Mail size={16} color={theme.palette.text.secondary} />
+                    <Mail size={15} color={theme.palette.text.secondary} />
                 ) : (
-                    <Phone size={16} color={theme.palette.text.secondary} />
+                    <Phone size={15} color={theme.palette.text.secondary} />
                 )}
                 <Typography
                     sx={{
@@ -66,7 +66,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ contact }) => {
                         "&:hover": { color: theme.palette.primary.main },
                     }}
                 >
-                    <Copy size={13} />
+                    <Copy size={12} />
                 </IconButton>
             </Tooltip>
         </Box>

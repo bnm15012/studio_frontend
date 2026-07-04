@@ -11,43 +11,38 @@ const getBadgeStyles = (badge: React.ReactNode, enabled: boolean | undefined, th
         const isActive = enabled;
         return {
             backgroundColor: isActive
-                ? alpha(theme.palette.success.main, 0.1)
+                ? alpha(theme.palette.success.main, 0.08)
                 : alpha(theme.palette.text.secondary, 0.06),
             color: isActive ? theme.palette.success.main : theme.palette.text.secondary,
-            border: `1px solid ${isActive ? alpha(theme.palette.success.main, 0.15) : alpha(theme.palette.text.secondary, 0.1)}`,
         };
     }
 
     const val = badge.toUpperCase();
     if (["ACTIVE", "COMPLETED", "FULLY PAID", "PAID", "YES", "TRUE", "SUCCESS"].includes(val)) {
         return {
-            backgroundColor: alpha(theme.palette.success.main, 0.1),
+            backgroundColor: alpha(theme.palette.success.main, 0.08),
             color: theme.palette.success.main,
-            border: `1px solid ${alpha(theme.palette.success.main, 0.15)}`,
         };
     }
     if (["PENDING", "PENDING PAYMENT", "WARNING", "PARTIAL", "PARTIALLY PAID"].includes(val)) {
         return {
-            backgroundColor: alpha(theme.palette.warning.main, 0.1),
+            backgroundColor: alpha(theme.palette.warning.main, 0.08),
             color: theme.palette.warning.main,
-            border: `1px solid ${alpha(theme.palette.warning.main, 0.15)}`,
         };
     }
     if (["INACTIVE", "REJECTED", "FAILED", "EXPIRED", "NO", "FALSE", "CANCELLED"].includes(val)) {
         return {
-            backgroundColor: alpha(theme.palette.error.main, 0.1),
+            backgroundColor: alpha(theme.palette.error.main, 0.08),
             color: theme.palette.error.main,
-            border: `1px solid ${alpha(theme.palette.error.main, 0.15)}`,
         };
     }
 
     const isActive = enabled;
     return {
         backgroundColor: isActive
-            ? alpha(theme.palette.primary.main, 0.1)
+            ? alpha(theme.palette.primary.main, 0.08)
             : alpha(theme.palette.text.secondary, 0.06),
         color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
-        border: `1px solid ${isActive ? alpha(theme.palette.primary.main, 0.15) : alpha(theme.palette.text.secondary, 0.1)}`,
     };
 };
 
@@ -74,40 +69,42 @@ const CardHeader: React.FC<CardHeaderProps> = ({
     const computedBadgeStyles = getBadgeStyles(badge, enabled, theme);
 
     return (
-        <FlexBetween alignItems="center" gap={1.25}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: 1 }}>
+        <FlexBetween alignItems="center" gap={1.5}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 0, flex: 1 }}>
                 {image ? (
                     <Box sx={{ flexShrink: 0 }}>
                         <Field
                             value={image}
                             type="IMAGE"
                             isEdit={false}
-                            extraProp={{ size: "40px" }}
+                            extraProp={{ size: "36px" }}
                         />
                     </Box>
                 ) : (
                     <Avatar
                         sx={{
-                            width: 40,
-                            height: 40,
+                            width: 36,
+                            height: 36,
                             backgroundColor: alpha(theme.palette.primary.main, 0.08),
                             color: theme.palette.primary.main,
                             flexShrink: 0,
+                            fontSize: "0.875rem",
+                            fontWeight: 500,
                         }}
                     >
-                        <FieldIcon sx={{ fontSize: "1.2rem" }} />
+                        <FieldIcon sx={{ fontSize: "1.1rem" }} />
                     </Avatar>
                 )}
                 <Box sx={{ minWidth: 0, flex: 1 }}>
                     <Typography
                         sx={{
-                            fontWeight: 600,
-                            fontSize: "1.0625rem",
+                            fontWeight: 500,
+                            fontSize: "0.9375rem",
                             color: "text.primary",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
-                            lineHeight: 1.3,
+                            lineHeight: 1.4,
                         }}
                     >
                         {fieldValue}
@@ -118,9 +115,10 @@ const CardHeader: React.FC<CardHeaderProps> = ({
                             sx={{
                                 color: "text.secondary",
                                 fontWeight: 400,
-                                fontSize: "0.7rem",
+                                fontSize: "0.6875rem",
                                 lineHeight: 1.3,
                                 display: "block",
+                                mt: 0.25,
                             }}
                         >
                             {subtitle}
@@ -133,12 +131,14 @@ const CardHeader: React.FC<CardHeaderProps> = ({
                     size="small"
                     label={badge}
                     sx={{
-                        fontWeight: 600,
-                        fontSize: "0.6rem",
-                        borderRadius: "10px",
+                        fontWeight: 500,
+                        fontSize: "0.625rem",
+                        borderRadius: "8px",
                         textTransform: "capitalize",
-                        letterSpacing: "0.02em",
-                        height: 22,
+                        height: 20,
+                        "& .MuiChip-label": {
+                            px: 1,
+                        },
                         ...computedBadgeStyles,
                         ...badgeSx,
                     }}

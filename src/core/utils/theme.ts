@@ -312,12 +312,11 @@ export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
                     textTransform: "none",
                     borderRadius: 12,
                     padding: "12px 24px",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    transition: "all 0.3s ease",
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                    transition: "box-shadow 0.2s ease",
                     "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 10px 25px rgba(139, 92, 246, 0.3)",
+                        boxShadow: "0 4px 12px rgba(139, 92, 246, 0.2)",
                     },
                     "&.Mui-disabled": {
                         background: "linear-gradient(135deg, #CBD5E1 0%, #94A3B8 100%)",
@@ -330,21 +329,22 @@ export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
                 },
                 containedPrimary: {
                     background: "linear-gradient(135deg, #601dfcff 0%, #1d6ef1ff 100%)",
-                    boxShadow: "0 4px 15px rgba(139, 92, 246, 0.4)",
+                    boxShadow: "0 2px 8px rgba(139, 92, 246, 0.3)",
                     "&:hover": {
                         background: "linear-gradient(135deg, #7C3AED 0%, #2563EB 100%)",
+                        boxShadow: "0 4px 16px rgba(139, 92, 246, 0.4)",
                     },
                 },
                 outlined: {
-                    borderWidth: 2,
+                    borderWidth: 1,
                     "&:hover": {
-                        borderWidth: 2,
-                        backgroundColor: "rgba(139, 92, 246, 0.1)",
+                        borderWidth: 1,
+                        backgroundColor: "rgba(139, 92, 246, 0.08)",
                     },
                 },
                 sizeLarge: {
-                    padding: "16px 32px",
-                    fontSize: "1.125rem",
+                    padding: "14px 28px",
+                    fontSize: "1rem",
                 },
             },
 
@@ -365,11 +365,9 @@ export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    borderRadius: 16,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                        transform: "translateY(-4px)",
-                    },
+                    borderRadius: 12,
+                    border: "none",
+                    backgroundImage: "none",
                 },
             },
         },

@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 export const StyledCardContainer = styled(Box)(({ theme }) => ({
     display: "grid",
     paddingBottom: theme.spacing(10),
-    gap: theme.spacing(1.25),
+    gap: theme.spacing(1),
     gridTemplateColumns: "repeat(auto-fill, minmax(min(17rem, 100%), 1fr))",
     [theme.breakpoints.down("sm")]: {
-        gap: theme.spacing(1),
+        gap: theme.spacing(0.75),
         gridTemplateColumns: "1fr",
     },
 }));
@@ -17,8 +17,8 @@ export const StyledCardContainer = styled(Box)(({ theme }) => ({
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
     position: "relative",
     display: "flex",
-    gap: theme.spacing(0.25),
-    padding: theme.spacing(1.5, 1.75),
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(1.5, 2),
     height: "100%",
     flexDirection: "column",
     background: theme.palette.background.paper,
@@ -32,9 +32,9 @@ export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     justifyContent: "space-evenly",
     flexDirection: "column",
     background: theme.palette.background.paper,
-    padding: theme.spacing(0, 0.5),
-    borderTop: `1px solid ${alpha(theme.palette.divider, 0.4)}`,
-    minHeight: 40,
+    padding: theme.spacing(0.5, 0.5),
+    borderTop: `1px solid ${alpha(theme.palette.divider, 0.15)}`,
+    minHeight: 44,
 }));
 
 export const CardBadge = styled(Box)(({ theme }) => ({
@@ -53,19 +53,16 @@ export const CardBadge = styled(Box)(({ theme }) => ({
 const MotionCard = motion.create(Card);
 
 const StyledCardBase = styled(MotionCard)(({ theme }) => ({
-    borderRadius: "16px",
+    borderRadius: "12px",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     backgroundColor: theme.palette.background.paper,
-    border: `1px solid ${alpha(theme.palette.divider, 0.35)}`,
-    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+    border: "none",
     position: "relative",
     cursor: "pointer",
     WebkitTapHighlightColor: "transparent",
-    "&:active": {
-        transform: "scale(0.985)",
-    },
+    transition: "box-shadow 0.2s ease",
 }));
 
 interface StyledMotionCardProps {
@@ -77,23 +74,23 @@ interface StyledMotionCardProps {
 
 export const StyledMotionCard: React.FC<StyledMotionCardProps> = ({ children, elevation = 3, ...props }) => {
     const theme = useTheme();
+    const shadowColor = theme.palette.mode === "dark" ? "0, 0, 0" : "0, 0, 0";
     return (
         <StyledCardBase
             elevation={0}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            whileHover={{
-                y: -1,
-                boxShadow: `0 4px 16px ${alpha(theme.palette.text.primary, 0.07)}`,
-            }}
-            whileTap={{ scale: 0.985 }}
+            whileTap={{ scale: 0.995 }}
             {...props}
             sx={{
-                boxShadow: `0 1px 2px ${alpha(theme.palette.text.primary, 0.05)}`,
+                boxShadow: [
+                    `0 1px 3px rgba(${shadowColor}, 0.08)`,
+                    `0 1px 2px rgba(${shadowColor}, 0.06)`,
+                ].join(", "),
                 ...props.sx,
             }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
         >
             {children}
         </StyledCardBase>
