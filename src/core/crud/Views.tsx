@@ -14,17 +14,17 @@ import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useUI } from "@/context/UIContext";
-import { FieldDef, ActionItem, CrudThunks } from "../types";
+import { FieldDef, ActionItem, CrudThunks, Entity } from "../types";
 import { useAppSelector, useAppDispatch } from "../../state";
 
-export interface ViewsProps<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface ViewsProps<T extends Entity = Entity> {
     formKey?: string | number | null;
     tableName: string;
     overRideOnChange?: (value: unknown, obj: T, field: string) => T;
     size?: number;
     rootId?: string | number | null;
     tableCruds?: CrudThunks<T>;
-    fields: FieldDef[];
+    fields: FieldDef<T>[];
     fieldsMeta: {
         primary: string;
         root?: string;
@@ -44,7 +44,7 @@ export interface ViewsProps<T extends Record<string, unknown> = Record<string, u
     editMode?: "FORM" | "DIALOG" | "INLINE";
 }
 
-function Views<T extends Record<string, unknown> = Record<string, unknown>>(props: ViewsProps<T>) {
+function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
     const {
         formKey,
         dialogProps,

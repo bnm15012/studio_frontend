@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import Field from "../../components/fields/Field";
 import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
-import { FieldDef } from "../../types";
+import { Entity, FieldDef } from "../../types";
 
 /**
  * FieldCell
@@ -14,15 +14,15 @@ import { FieldDef } from "../../types";
  *
  * Replaces repeated inline <Field /> blocks across ListView, DialogForm, and CardView.
  */
-interface FieldCellProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    field: FieldDef;
+interface FieldCellProps<T extends Entity = Entity> {
+    field: FieldDef<T>;
     row: T;
     isEdit: boolean;
     handleChange?: (value: unknown, rowId: string | number | null | undefined, fieldName: string) => void;
     handleViewOpen?: (row: T) => void;
 }
 
-function FieldCell<T extends Record<string, unknown> = Record<string, unknown>>({
+function FieldCell<T extends Entity = Entity>({
     field,
     row,
     isEdit,

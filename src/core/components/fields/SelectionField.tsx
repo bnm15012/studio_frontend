@@ -2,9 +2,9 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import { SelectOption } from "../../types";
+import { Entity, SelectOption } from "../../types";
 
-export interface SelectionFieldProps<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface SelectionFieldProps<T extends Entity = Entity> {
     label?: string;
     value?: SelectOption<T> | null;
     readOnly?: boolean;
@@ -16,7 +16,7 @@ export interface SelectionFieldProps<T extends Record<string, unknown> = Record<
     saveType?: "string" | "object";
 }
 
-export default function SelectionField<T extends Record<string, unknown> = Record<string, unknown>>({
+export default function SelectionField<T extends Entity = Entity>({
     label,
     value,
     readOnly,

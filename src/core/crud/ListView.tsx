@@ -20,7 +20,7 @@ import {
 } from "../components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
 import Actions from "./helper/Actions";
-import { ActionItem } from "../types";
+import { ActionItem, Entity } from "../types";
 import { useUI } from "@/context/UIContext";
 import FieldCell from "./components/FieldCell";
 import { getVisibleFields } from "../utils/fieldHelpers";
@@ -42,10 +42,10 @@ const rowVariants = {
 // Motion-enhanced table row
 const MotionTableRow = motion.create(StyledTableRow);
 
-interface MobileRowCardProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface MobileRowCardProps<T extends Entity = Entity> {
     row: T;
     rowIndex: number;
-    fields: FieldDef[];
+    fields: FieldDef<T>[];
     fieldsMeta: {
         primary: string;
         root?: string;
@@ -64,7 +64,7 @@ interface MobileRowCardProps<T extends Record<string, unknown> = Record<string, 
 }
 
 // ── Mobile card for a single row ───────────────────────────────────────────
-function MobileRowCard<T extends Record<string, unknown> = Record<string, unknown>>({
+function MobileRowCard<T extends Entity = Entity>({
     row,
     rowIndex,
     fields,
@@ -196,8 +196,8 @@ function MobileRowCard<T extends Record<string, unknown> = Record<string, unknow
     );
 }
 
-interface DesktopTableProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef[];
+interface DesktopTableProps<T extends Entity = Entity> {
+    fields: FieldDef<T>[];
     data: T[];
     fieldsMeta: {
         primary: string;
@@ -349,7 +349,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
 }
 
 interface ListViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef[];
+    fields: FieldDef<T>[];
     data: T[];
     editingId?: string | number | null;
     fieldsMeta: {

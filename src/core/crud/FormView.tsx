@@ -26,7 +26,7 @@ import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions from "./helper/Actions";
-import { ActionItem, FieldDef } from "../types";
+import { ActionItem, Entity, FieldDef } from "../types";
 import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
@@ -64,8 +64,8 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     </Box>
 );
 
-export interface FormViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef[];
+export interface FormViewProps<T extends Entity = Entity> {
+    fields: FieldDef<T>[];
     formKey: string | number | null | undefined;
     data: T | null | undefined;
     loading?: boolean;
@@ -78,7 +78,7 @@ export interface FormViewProps<T extends Record<string, unknown> = Record<string
     actions?: ActionItem<T>[];
 }
 
-function FormView<T extends Record<string, unknown> = Record<string, unknown>>(props: FormViewProps<T>) {
+function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
     const {
         fields,
         formKey,
@@ -102,7 +102,7 @@ function FormView<T extends Record<string, unknown> = Record<string, unknown>>(p
     const viewFields = fields.filter((f) => f.type === "VIEW");
     const component = fields.find((f) => f.type === "COMPONENT");
 
-    const groupedFields = normalFields.reduce((acc: Record<string, FieldDef[]>, field) => {
+    const groupedFields = normalFields.reduce((acc: Record<string, FieldDef<T>[]>, field) => {
         const section = field.section || "General";
         if (!acc[section]) acc[section] = [];
         acc[section].push(field);

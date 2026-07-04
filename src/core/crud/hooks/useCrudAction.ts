@@ -2,13 +2,13 @@ import { useState, useCallback, useEffect } from "react";
 import { validate } from "../utils/validate";
 import { ShowAlertFn, SetLoadingFn, CrudThunks } from "@/core/types";
 import type { AppDispatch } from "@/state";
-import type { FieldDef } from "@/core/types";
+import type { Entity, FieldDef } from "@/core/types";
 
-const defaultBeforeAdd = async <T extends Record<string, unknown>>(row: T): Promise<T> => row;
-const defaultBeforeUpdate = async <T extends Record<string, unknown>>(row: T): Promise<T> => row;
-const defaultOverRideOnChange = <T extends Record<string, unknown>>(value: unknown, obj: T, _field?: string): T => obj;
+const defaultBeforeAdd = async <T extends Entity>(row: T): Promise<T> => row;
+const defaultBeforeUpdate = async <T extends Entity>(row: T): Promise<T> => row;
+const defaultOverRideOnChange = <T extends Entity>(value: unknown, obj: T, _field?: string): T => obj;
 
-interface UseCrudActionProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface UseCrudActionProps<T extends Entity> {
     formKey?: string | number | null;
     data: T[];
     setData: React.Dispatch<React.SetStateAction<T[]>>;
@@ -27,14 +27,14 @@ interface UseCrudActionProps<T extends Record<string, unknown> = Record<string, 
     consts: React.MutableRefObject<{
         primaryKey: string;
         rootKey?: string;
-        fields: FieldDef[];
+        fields: FieldDef<T>[];
     }>;
     beforeAdd?: (row: T) => T | Promise<T>;
     beforeUpdate?: (row: T) => T | Promise<T>;
     overRideOnChange?: (value: unknown, obj: T, field: string) => T;
 }
 
-export const useCrudAction = <T extends Record<string, unknown> = Record<string, unknown>>({
+export const useCrudAction = <T extends Entity>({
     formKey,
     data,
     setData,

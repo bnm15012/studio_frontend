@@ -7,7 +7,7 @@ export interface Entity {
     [key: string]: unknown;
 }
 
-export interface SelectOption<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface SelectOption<T extends Entity = Entity> {
     key: string | number;
     value: string | number;
     row?: T;
@@ -30,13 +30,13 @@ export type SetLoadingFn = (loading: boolean) => void;
 /** Redux thunk action type — a function that receives dispatch and getState */
 export type ThunkAction = (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
 
-export interface ExtraProp {
+export interface ExtraProp<T extends Entity = Entity> {
     getOptions?: (
         search: string,
         page: number,
         limit: number,
-        row?: Record<string, unknown>,
-    ) => Promise<SelectOption[]>;
+        row?: T,
+    ) => Promise<SelectOption<T>[]>;
     CustomComponent?: React.ComponentType<Record<string, unknown>>;
     readOnly?: boolean;
     addValue?: boolean;
@@ -44,7 +44,7 @@ export interface ExtraProp {
     [key: string]: unknown;
 }
 
-export interface FieldDef {
+export interface FieldDef<T extends Entity = Entity> {
     name: string;
     show?: boolean;
     view?: boolean;
@@ -54,21 +54,21 @@ export interface FieldDef {
     defaultValue?: unknown;
     getValue?: (
         raw: unknown,
-        row: Record<string, unknown>,
+        row: T,
         isEdit: boolean,
     ) => unknown;
-    setValue?: (value: unknown, row?: Record<string, unknown>) => void;
-    editable?: (row: Record<string, unknown>) => boolean;
-    extraProp?: ExtraProp;
+    setValue?: (value: unknown, row?: T) => void;
+    editable?: (row: T) => boolean;
+    extraProp?: ExtraProp<T>;
     validation?: { required?: boolean; regex?: string | RegExp; message?: string; [key: string]: unknown };
     CustomComponent?: React.ComponentType<{
-        data: Record<string, unknown>;
-        field: FieldDef;
+        data: T;
+        field: FieldDef<T>;
     }>;
     [key: string]: unknown;
 }
 
-export interface ActionItem<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface ActionItem<T extends Entity = Entity> {
     name: string;
     onClick?: (row: T) => void;
     icon?: React.ReactNode;

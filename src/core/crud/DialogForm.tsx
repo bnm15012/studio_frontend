@@ -11,11 +11,11 @@ import {
     resolveFieldValue,
     isFieldEditable,
 } from "../utils/fieldHelpers";
-import { FieldDef } from "../types";
+import { Entity, FieldDef } from "../types";
 
-interface DialogFormProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface DialogFormProps<T extends Entity = Entity> {
     data: T;
-    fields: FieldDef[];
+    fields: FieldDef<T>[];
     fieldsMeta: {
         primary: string;
         root?: string;
@@ -26,7 +26,7 @@ interface DialogFormProps<T extends Record<string, unknown> = Record<string, unk
     [key: string]: unknown;
 }
 
-export function DialogForm<T extends Record<string, unknown> = Record<string, unknown>>(props: DialogFormProps<T>) {
+export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>) {
     const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
     const { isMobile } = useUI();
     const id = data?.[fieldsMeta.primary] as string | number | null | undefined;

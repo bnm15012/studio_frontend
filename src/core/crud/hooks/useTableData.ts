@@ -40,14 +40,14 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     const [filterKeys, setFilterKeys] = useState<Record<string, unknown>>({});
 
     const fetchData = useCallback(async () => {
-        tableCruds.getAll(
+        dispatch(tableCruds.getAll(
             showAlert,
             setLoading,
             token,
             { page, searchTerm, size, ...defaultParams, ...filterKeys },
             rootId ?? 0,
             currentView === "CARD",
-        )(dispatch, () => ({}));
+        ));
     }, [
         defaultParams,
         currentView,
@@ -65,7 +65,7 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
 
     const fetchOne = useCallback(
         async (formKey: string | number) => {
-            tableCruds.getById(formKey, token, showAlert, setLoading)(dispatch, () => ({}));
+            dispatch(tableCruds.getById(formKey, token, showAlert, setLoading));
         },
         [dispatch, tableCruds, token, showAlert, setLoading],
     );

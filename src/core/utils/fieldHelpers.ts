@@ -1,5 +1,5 @@
 import { getNestedValue } from "../../utils/objectHelpers";
-import { FieldDef, ExtraProp } from "../types";
+import { FieldDef, ExtraProp, Entity } from "../types";
 
 /**
  * Returns the fields that should be visible in list/card/dialog views.
@@ -7,7 +7,7 @@ import { FieldDef, ExtraProp } from "../types";
  * @param fields - field definitions
  * @returns visible fields
  */
-export const getVisibleFields = (fields: FieldDef[]): FieldDef[] =>
+export const getVisibleFields = <T extends Entity>(fields: FieldDef<T>[]): FieldDef<T>[] =>
     fields.filter((f) => f.show || f.view);
 
 /**
@@ -18,7 +18,7 @@ export const getVisibleFields = (fields: FieldDef[]): FieldDef[] =>
  * @param isEdit - editing mode flag
  * @returns resolved value
  */
-export const resolveFieldValue = (field: FieldDef, row: Record<string, unknown>, isEdit: boolean): unknown => {
+export const resolveFieldValue = <T extends Entity>(field: FieldDef<T>, row: T, isEdit: boolean): unknown => {
     const raw = getNestedValue(row, field.name);
     return field?.getValue ? field.getValue(raw, row, isEdit) : raw;
 };
@@ -31,7 +31,7 @@ export const resolveFieldValue = (field: FieldDef, row: Record<string, unknown>,
  * @param isEditing - editing state flag
  * @returns boolean indicating if editable
  */
-export const isFieldEditable = (field: FieldDef, row: Record<string, unknown>, isEditing: boolean): boolean => {
+export const isFieldEditable = <T extends Entity>(field: FieldDef<T>, row: T, isEditing: boolean): boolean => {
     if (!isEditing) return false;
     return field?.editable ? field.editable(row) : true;
 };
@@ -43,7 +43,7 @@ export const isFieldEditable = (field: FieldDef, row: Record<string, unknown>, i
  * @param row       - current data row
  * @returns patched extraProp object
  */
-export const bindGetOptions = (extraProp: ExtraProp | undefined, row: Record<string, unknown>): ExtraProp => {
+export const bindGetOptions = <T extends Entity>(extraProp: ExtraProp<T> | undefined, row: T): ExtraProp<T> => {
     if (!extraProp?.getOptions) return extraProp ?? {};
     return {
         ...extraProp,

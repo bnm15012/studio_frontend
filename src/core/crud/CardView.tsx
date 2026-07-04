@@ -39,7 +39,7 @@ const LoadMoreButton = styled(Button)(({ theme }) => ({
 }));
 
 interface CardViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef[];
+    fields: FieldDef<T>[];
     data: T[];
     fieldsMeta: {
         primary: string;

@@ -8,11 +8,11 @@ export interface CrudThunksOptions<T extends Entity = Entity> {
         setRecord: (record: T) => { type: string; payload: T };
         addItem: (item: T) => { type: string; payload: T };
         prependItem: (item: T) => { type: string; payload: T };
-        updateItem: (item: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
+        updateItem: (item: Entity) => { type: string; payload: Entity };
         removeItem: (id: string | number) => { type: string; payload: string | number };
         appendItems: (payload: { data: T[]; rootId: unknown }) => { type: string; payload: { data: T[]; rootId: unknown } };
         setItems: (payload: { data: T[]; rootId: unknown }) => { type: string; payload: { data: T[]; rootId: unknown } };
-        setInfo: (info: Record<string, unknown>) => { type: string; payload: Record<string, unknown> };
+        setInfo: (info: Entity) => { type: string; payload: Entity };
         clearData: () => { type: string };
         [key: string]: unknown;
     };
@@ -23,7 +23,7 @@ export interface CrudThunksOptions<T extends Entity = Entity> {
 export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, route }: CrudThunksOptions<T>) {
     const add =
         (
-            newData: Partial<T> | Record<string, unknown>,
+            newData: Partial<T> | Entity,
             token: string | null | undefined,
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
@@ -32,12 +32,12 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             async (dispatch: AppDispatch, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
-                        const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
+                        const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
                         const {
                             data: { data },
                         } = await api.post(`/${route}/add`, newData, getHeader(token));
 
-                        if ((state.recordById as Record<string, unknown>)["NEW"]) {
+                        if ((state.recordById as Entity)["NEW"]) {
                             dispatch(actions.setRecord((data as T[])[0]));
                         }
                         dispatch(prepend ? actions.prependItem((data as T[])[0]) : actions.addItem((data as T[])[0]));
@@ -51,7 +51,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
     const update =
         (
             id: string | number,
-            updatedData: Partial<T> | Record<string, unknown>,
+            updatedData: Partial<T> | Entity,
             token: string | null | undefined,
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
@@ -59,17 +59,17 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             async (dispatch: AppDispatch, getState: unknown) => {
                 await withLoading(setLoading, async () => {
                     try {
-                        const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
+                        const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
                         const { data } = await api.put(
                             `/${route}/update/${id}`,
                             updatedData,
                             getHeader(token),
                         );
                         const record = (data.data as T[])[0];
-                        if ((state.recordById as unknown as Record<string, unknown>)[id]) {
+                        if ((state.recordById as unknown as Entity)[id]) {
                             dispatch(actions.setRecord(record));
                         }
-                        dispatch(actions.updateItem(record as unknown as Record<string, unknown>));
+                        dispatch(actions.updateItem(record as unknown as Entity));
                     } catch (err: unknown) {
                         console.error(err);
                         showAlert(getApiMessage(err as Parameters<typeof getApiMessage>[0], `Failed to update ${route}`), "error");
@@ -106,10 +106,10 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             infinite?: boolean,
         ) =>
             async (dispatch: AppDispatch, getState: unknown) => {
-                const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
+                const state = (getState as () => Entity)()[route] as GenericState<T>;
 
                 if (rootId === "NEW") return;
-                if (isCacheValid(state as Parameters<typeof isCacheValid>[0], rootId, params)) return;
+                if (isCacheValid(state, rootId, params)) return;
                 if (!params?.page && (state.items as unknown[]).length) return;
 
                 await withLoading(setLoading, async () => {
@@ -122,7 +122,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                         });
 
                         const action =
-                            infinite && params?.searchTerm === state.searchTerm
+                            infinite && params?.searchTerm === state?.searchTerm
                                 ? actions.appendItems({ data: data as T[], rootId })
                                 : actions.setItems({ data: data as T[], rootId });
 
@@ -133,7 +133,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                                 pageSize: params?.size,
                                 searchTerm: params?.searchTerm,
                                 filterKeys: params,
-                                totalCount: (status as Record<string, unknown>).totalCount,
+                                totalCount: (status as Entity).totalCount,
                             }),
                         );
                     } catch (err: unknown) {
@@ -152,9 +152,11 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             { forceRefresh = false }: { forceRefresh?: boolean } = {},
         ) =>
             async (dispatch: AppDispatch, getState: unknown) => {
-                if (id === "NEW") return;
+                const state = ((getState as () => Entity)()[route] as GenericState<T> | undefined);
+                if (!state) return;
 
-                const cached = ((getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>).recordById[id];
+                if (id === "NEW") return;
+                const cached = state.recordById[id];
                 if (cached && !forceRefresh) return cached;
 
                 return withLoading(setLoading, async () => {
@@ -181,7 +183,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
             infinite = false,
         ) =>
             async (dispatch: AppDispatch, getState: unknown) => {
-                const state = (getState as () => Record<string, unknown>)()[route] as unknown as GenericState<T>;
+                const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
                 dispatch(actions.clearData());
                 return dispatch(
                     getAll(
@@ -192,7 +194,7 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                             page: 1,
                             size: state.pageSize as number,
                             searchTerm: state.searchTerm as string,
-                            ...(state.filterKeys as Record<string, unknown>),
+                            ...(state.filterKeys as Entity),
                         },
                         state.rootId as string | number,
                         infinite,
