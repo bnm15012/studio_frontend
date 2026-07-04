@@ -18,13 +18,18 @@ import {
     setNotifications,
     NotificationItem,
 } from "../../state/notificationSlice";
-import { useUI } from "@/context/UIContext";
+import { Branch } from "@/api/types";
 
-const Notification: React.FC = () => {
+interface NotificationProps {
+    branch: Branch;
+    token: string;
+}
+
+
+const Notification: React.FC<NotificationProps> = ({branch, token}) => {
     const theme = useTheme();
     const showAlert = useAlert();
     const dispatch = useAppDispatch();
-    const { currentBranch, token } = useUI();
     const notifications = useAppSelector((state) => state.notifications.items);
     const unreadCount = useAppSelector((state) => state.notifications.unreadCount);
 
@@ -40,7 +45,7 @@ const Notification: React.FC = () => {
         try {
             setLoading(true);
             const { data } = await getStudentNamesOncePerDay({
-                branchId: currentBranch.branchId,
+                branchId: branch.branchId,
                 token,
                 page: 1,
                 size: -1,
@@ -60,7 +65,7 @@ const Notification: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [currentBranch.branchId, token, dispatch, showAlert]);
+    }, [branch.branchId, token, dispatch, showAlert]);
 
     useEffect(() => {
         getBirthDayStudent();

@@ -29,20 +29,18 @@ export interface NavbarProps {
 const AuthenticatedUserSection: React.FC<{
     handleLogout: () => Promise<void>;
 }> = ({ handleLogout }) => {
-    const { isAdmin, isEnabled, FEATURE_KEYS, user } = useUI();
+    const { isAdmin, isEnabled, FEATURE_KEYS, user, currentBranch, token } = useUI();
 
     return (
         <FlexBetween>
-            <Notification />
-            {isAdmin && isEnabled && isEnabled(FEATURE_KEYS.BRANCH) && (
+            <Notification branch={currentBranch} token={token} />
+            {isAdmin && isEnabled(FEATURE_KEYS.BRANCH) && (
                 <BranchesDropdown />
             )}
-            {user && (
-                <UserProfileDropdown
-                    user={user}
-                    handleLogout={handleLogout}
-                />
-            )}
+            <UserProfileDropdown
+                user={user}
+                handleLogout={handleLogout}
+            />
         </FlexBetween>
     );
 };
