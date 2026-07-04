@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
+import type { MembershipPackage } from "../../../api/types";
 import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 
@@ -29,7 +30,7 @@ const MembershipType: React.FC = () => {
         <FlexBetweenColumn>
             <ActionBar search={false} api={api} addBtnText={"New Package"} />
             <Box>
-                <Views
+                <Views<MembershipPackage>
                     tableName={"membershipPackages"}
                     tableCruds={membershipPackageCruds}
                     size={LIMIT}

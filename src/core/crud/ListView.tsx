@@ -186,7 +186,7 @@ function MobileRowCard<T extends Record<string, unknown> = Record<string, unknow
                                     (field?.editable ? field.editable(row) : true)
                                 }
                                 handleChange={(v, _id, name) => handleChange(v, rowId, name)}
-                                handleViewOpen={handleViewOpen as ((row: Record<string, unknown>) => void) | undefined}
+                                handleViewOpen={handleViewOpen}
                             />
                         </Box>
                     </Box>
@@ -311,7 +311,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                                                 handleChange={(v, _id, name) =>
                                                     handleChange(v, rowId, name)
                                                 }
-                                                handleViewOpen={handleViewOpen as ((row: Record<string, unknown>) => void) | undefined}
+                                                handleViewOpen={handleViewOpen}
                                             />
                                         </StyledTableCell>
                                     ))}

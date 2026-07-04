@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
+import type { Payment } from "../../../api/types";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import PaymentCard from "./PaymentCardView";
@@ -77,7 +78,7 @@ const Expenses: React.FC = () => {
         <FlexBetweenColumn>
             <ActionBar api={api} add={false} />
             <Box>
-                <Views
+                <Views<Payment>
                     apiRef={api}
                     actions={[
                         { name: "delete", enabled: () => false, hide: true },

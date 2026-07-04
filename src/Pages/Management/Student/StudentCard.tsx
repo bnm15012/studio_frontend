@@ -4,6 +4,7 @@ import { alpha } from "@mui/material/styles";
 import { Mail, Phone, Copy } from "lucide-react";
 import { LocationOn } from "@mui/icons-material";
 import CardHeader from "@/core/components/cards/CardHeader";
+import { Student } from "@/api/types";
 
 interface InfoItemProps {
     icon: React.ReactNode;
@@ -117,7 +118,7 @@ const EmailRow: React.FC<EmailRowProps> = ({ email }) => {
 };
 
 interface StudentCardProps {
-    row: Record<string, unknown>;
+    row: Student;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({ row }) => {

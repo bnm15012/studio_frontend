@@ -5,6 +5,7 @@ import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";
+import type { Enquiry } from "../../../api/types";
 import { useUI } from "../../../context/UIContext";
 import EnquiryCardComponent from "./EnquiryCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -39,7 +40,7 @@ const Enquiry: React.FC = () => {
         <FlexBetweenColumn>
             <ActionBar api={api} qrProps={{ link: "enquiry-form" }} />
             <Box>
-                <Views
+                <Views<Enquiry>
                     tableName={"enquiries"}
                     tableCruds={enquiryCruds}
                     size={LIMIT}

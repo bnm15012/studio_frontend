@@ -193,7 +193,7 @@ const Attendance = () => {
                 <MarkPresentDialog />
             </ActionBar>
             <Box>
-                <Views
+                <Views<StudentAssignment>
                     defaultParams={{ rootType: "BRANCH" }}
                     tableName={"studentActivities"}
                     tableCruds={studentsAssignmentsCruds}

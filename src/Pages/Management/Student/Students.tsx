@@ -19,7 +19,7 @@ import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
-import type { Activity, BatchEntry, StudentAssignment } from "@/api/types";
+import type { Activity, BatchEntry, Student, StudentAssignment } from "@/api/types";
 
 const size = 7;
 
@@ -569,14 +569,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     tableName={"students"}
                 />
             )}
-            <Views
+            <Views<Student>
                 formKey={ID}
-                beforeAdd={(row: Record<string, unknown>) => {
+                beforeAdd={(row: Student) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
                 }}
-                beforeUpdate={async (row: Record<string, unknown>) => {
+                beforeUpdate={async (row: Student) => {
                     delete row.otherinfo;
                     delete row.age;
                     return row;
@@ -587,7 +587,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         icon: <WhatsApp />,
                         enabled: () => true,
                         sx: { color: "green" },
-                        onClick: (row: Record<string, unknown>) => {
+                        onClick: (row: Student) => {
                             if (row.studentId) {
                                 setOpenTemplateDialog({ open: true, data: row });
                             } else {

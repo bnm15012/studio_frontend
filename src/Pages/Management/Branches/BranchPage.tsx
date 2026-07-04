@@ -8,6 +8,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { usersCruds } from "../../../api/all.api";
 import type { RootState } from "@/state";
 import Views from "@/core/crud/Views";
+import type { User } from "../../../api/types";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
@@ -84,7 +85,7 @@ const BranchPage = () => {
                 </Button>
             </FlexBetween>
             <Box>
-                <Views
+                <Views<User>
                     beforeAdd={beforeAdd}
                     beforeUpdate={beforeAdd}
                     tableName={"users"}

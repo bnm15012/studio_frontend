@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@mui/material";
 import Field from "../../components/fields/Field";
 import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
@@ -15,21 +14,21 @@ import { FieldDef } from "../../types";
  *
  * Replaces repeated inline <Field /> blocks across ListView, DialogForm, and CardView.
  */
-interface FieldCellProps {
+interface FieldCellProps<T extends Record<string, unknown> = Record<string, unknown>> {
     field: FieldDef;
-    row: Record<string, unknown>;
+    row: T;
     isEdit: boolean;
     handleChange?: (value: unknown, rowId: string | number | null | undefined, fieldName: string) => void;
-    handleViewOpen?: (row: Record<string, unknown>) => void;
+    handleViewOpen?: (row: T) => void;
 }
 
-const FieldCell: React.FC<FieldCellProps> = ({
+function FieldCell<T extends Record<string, unknown> = Record<string, unknown>>({
     field,
     row,
     isEdit,
     handleChange,
     handleViewOpen,
-}) => {
+}: FieldCellProps<T>) {
     if (field.view) {
         return (
             <Button

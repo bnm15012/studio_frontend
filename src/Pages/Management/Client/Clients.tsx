@@ -3,6 +3,7 @@ import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
+import type { Client } from "../../../api/types";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
@@ -46,7 +47,7 @@ const Clients: React.FC = () => {
         <FlexBetweenColumn>
             <ActionBar api={api} />
             <Box>
-                <Views
+                <Views<Client>
                     tableName={"clients"}
                     tableCruds={clientCruds}
                     size={LIMIT}

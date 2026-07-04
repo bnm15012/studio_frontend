@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
+import type { Expense } from "../../../api/types";
 import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useUI } from "../../../context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
@@ -84,7 +85,7 @@ const Expenses: React.FC = () => {
         <FlexBetweenColumn>
             <ActionBar api={api} />
             <Box>
-                <Views
+                <Views<Expense>
                     tableName={"expenses"}
                     tableCruds={expenseCruds}
                     size={LIMIT}

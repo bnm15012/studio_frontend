@@ -4,11 +4,11 @@ import { ActionItem } from "../../types";
 
 export const useMergedActions = <T extends Record<string, unknown> = Record<string, unknown>>(
     actions: ActionItem<T>[],
-    args: DefaultActionsProps,
+    args: DefaultActionsProps<T>,
 ): ActionItem<T>[] =>
     useMemo(() => {
         // Compute once and reuse — avoids calling defaultActions(args) twice per render.
-        const defaults = defaultActions(args) as ActionItem<T>[];
+        const defaults = defaultActions<T>(args);
         const defaultNames = new Set(defaults.map((d) => d.name));
 
         const merged = defaults.map((def) => {

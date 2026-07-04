@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
+import type { GenericTemplate } from "../../../api/types";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useUI } from "../../../context/UIContext";
@@ -66,7 +67,7 @@ const TemplatesPage: React.FC = () => {
     return (
         <FlexBetweenColumn>
             <ActionBar api={api} />
-            <Views
+            <Views<GenericTemplate>
                 size={5}
                 tableName={"genericTemplate"}
                 tableCruds={genericTemplateCruds}

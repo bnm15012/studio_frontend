@@ -2,6 +2,7 @@ import { useAppSelector } from "@/state";
 import { FlexBetweenColumn } from '../../../core/components/layout/FlexBox';
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
+import type { Instructor } from "../../../api/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useUI } from "../../../context/UIContext";
@@ -228,7 +229,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                     tableName={"instructors"}
                 />
             )}
-            <Views
+            <Views<Instructor>
                 formKey={ID}
                 apiRef={apiInstructor}
                 tableName={"instructors"}

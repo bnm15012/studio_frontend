@@ -45,7 +45,7 @@ const Branches = () => {
         <FlexBetweenColumn>
             <ActionBar search={false} api={api} addBtnText={"New Branch"} refresh={false} />
             <Box>
-                <Views
+                <Views<Branch>
                     tableName={"branch"}
                     tableCruds={branchCruds}
                     actions={[

@@ -6,23 +6,23 @@ const EditIcon = <Edit />;
 const DeleteIcon = <Delete />;
 const FormIcon = <OpenInNew />;
 
-export interface DefaultActionsProps {
+export interface DefaultActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
     loading: boolean;
     editMode?: "FORM" | "INLINE" | string;
     formKey?: unknown;
-    handleEdit: (row: Record<string, unknown>) => void;
-    handleDeleteClick: (row: Record<string, unknown>) => void;
-    openFormView: (row: Record<string, unknown>) => void;
+    handleEdit: (row: T) => void;
+    handleDeleteClick: (row: T) => void;
+    openFormView: (row: T) => void;
 }
 
-export const defaultActions = ({
+export const defaultActions = <T extends Record<string, unknown> = Record<string, unknown>>({
     loading,
     editMode,
     formKey,
     handleEdit,
     handleDeleteClick,
     openFormView,
-}: DefaultActionsProps): ActionItem[] => {
+}: DefaultActionsProps<T>): ActionItem<T>[] => {
     const base = [
         { name: "edit", icon: EditIcon, sx: { color: "blue" }, onClick: handleEdit },
         { name: "delete", icon: DeleteIcon, sx: { color: "red" }, onClick: handleDeleteClick },
