@@ -33,11 +33,9 @@ export function createCrudThunks<T extends Entity = Entity>({ actions, idKey, ro
                 await withLoading(setLoading, async () => {
                     try {
                         const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
-                        const {
-                            data: { data },
-                        } = await api.post(`/${route}/add`, newData, getHeader(token));
+                        const { data: { data } } = await api.post(`/${route}/add`, newData, getHeader(token));
 
-                        if ((state.recordById as Entity)["NEW"]) {
+                        if ((state.recordById)["NEW"]) {
                             dispatch(actions.setRecord((data as T[])[0]));
                         }
                         dispatch(prepend ? actions.prependItem((data as T[])[0]) : actions.addItem((data as T[])[0]));

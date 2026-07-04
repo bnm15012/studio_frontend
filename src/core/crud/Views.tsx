@@ -157,7 +157,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
     });
 
     const refreshData = useCallback(() => {
-        safeCruds.refresh(showAlert, setLoading, token)(dispatch, () => ({}));
+        dispatch(safeCruds.refresh(showAlert, setLoading, token))
     }, [dispatch, showAlert, safeCruds, token]);
 
     const openFormView = useCallback(
