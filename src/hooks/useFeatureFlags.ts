@@ -1,7 +1,8 @@
+import { Setting } from "@/state/authSlice";
 import { useMemo } from "react";
 
 export function useFeatureFlags(
-    settings: Record<string, unknown>,
+    settings: Setting,
     userAccessEntry?: Record<string, string | null | undefined> | null,
 ) {
     const featureFlags = useMemo(() => {
@@ -14,15 +15,12 @@ export function useFeatureFlags(
                   return acc;
               }, {})
             : {};
-
         const flags: Record<string, boolean> = {};
-        if (settings && typeof settings === "object") {
-            Object.keys(settings).forEach((feature) => {
-                const settingEnabled = settings[feature];
-                const userLevel = userKeys[feature] ? userKeys[feature] === "FULL" : true;
-                flags[feature] = !!(settingEnabled && userLevel);
-            });
-        }
+        Object.keys(settings).forEach((feature) => {
+            const settingEnabled = settings[feature];
+            const userLevel = userKeys[feature] ? userKeys[feature] === "FULL" : true;
+            flags[feature] = !!(settingEnabled && userLevel);
+        });
 
         return flags;
     }, [settings, userAccessEntry]);

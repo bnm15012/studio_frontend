@@ -1,4 +1,5 @@
 import { Entity } from "@/core/types";
+import { Setting } from "@/state/authSlice";
 
 export interface Branch extends Entity {
     branchId: number;
@@ -35,7 +36,7 @@ export interface Studio extends Entity {
     passcode?: string;
     amcEnabled?: boolean;
     configuration?: {
-        configrationEntryList?: Record<string, boolean>;
+        configrationEntryList?: Setting;
     };
     branchList?: Branch[];
 }

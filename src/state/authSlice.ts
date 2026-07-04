@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, Studio, SubscriptionPlan } from "@/api/types";
 
 export interface Setting {
-    [key: string]: unknown;
+    [key: string]: boolean;
 }
 
 export interface AuthState {
@@ -11,7 +11,7 @@ export interface AuthState {
     token: string | null;
     studio: Studio | null;
     subscriptionPlan: SubscriptionPlan | null;
-    settings: Setting[];
+    settings: Setting;
 }
 
 const initialState: AuthState = {
@@ -20,7 +20,7 @@ const initialState: AuthState = {
     token: null,
     studio: null,
     subscriptionPlan: null,
-    settings: [],
+    settings: {},
 };
 
 export const authState = createSlice({
@@ -36,7 +36,7 @@ export const authState = createSlice({
                 user: User | null;
                 studio: Studio | null;
                 token: string | null;
-                settings?: Setting[];
+                settings?: Setting;
             }>,
         ) => {
             const { user, studio, token, settings } = action.payload;
@@ -44,11 +44,11 @@ export const authState = createSlice({
             state.user = user || null;
             state.studio = studio || null;
             state.token = token ? `Bearer ${token}` : null;
-            state.settings = settings || [];
+            state.settings = settings || {};
             state.mode = "light";
         },
-        setSettings: (state, action: PayloadAction<{ settings?: Setting[] }>) => {
-            state.settings = action.payload.settings || [];
+        setSettings: (state, action: PayloadAction<{ settings?: Setting }>) => {
+            state.settings = action.payload.settings || {};
         },
         setSubscriptionPlan: (
             state,
