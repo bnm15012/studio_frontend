@@ -11,6 +11,9 @@ import HtmlToPdfViewer from "../../../Components/New/Html2PDF/HtmlToPdfViewer";
 const StudentInvoice = ({ open, onClose, activityData, studentData, studio, currentBranch, isUser = false }) => {
     const pdfViewerRef = useRef();
     const { isBatchEnabled } = useUI();
+    const discount = (
+        Number(activityData?.paymentEntry?.amount || 0) - Number(activityData?.activityAmount || 0)
+    ).toFixed(2);
 
     return (
         <StyledDialog
@@ -264,7 +267,7 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                                                                 padding: "2px 5px",
                                                             }}
                                                         >
-                                                            Discount
+                                                            Discount / Other
                                                         </td>
                                                         <td
                                                             style={{
@@ -272,19 +275,7 @@ const StudentInvoice = ({ open, onClose, activityData, studentData, studio, curr
                                                                 padding: "2px 5px",
                                                             }}
                                                         >
-                                                            {Math.abs(
-                                                                (
-                                                                    Number(
-                                                                        activityData
-                                                                            ?.paymentEntry
-                                                                            ?.amount || 0,
-                                                                    ) -
-                                                                    Number(
-                                                                        activityData?.activityAmount ||
-                                                                        0,
-                                                                    )
-                                                                ).toFixed(2),
-                                                            )}
+                                                            {discount}
                                                         </td>
                                                     </tr>
                                                     <tr>
