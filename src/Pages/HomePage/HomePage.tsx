@@ -1,15 +1,15 @@
 import { useAppSelector } from "@/state";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
 import { HeroSection } from "./HeroSection";
-import { TestimonialsSection } from "./TestimonialsSection";
-import { FeaturesSection } from "./FeaturesSection";
-import { DashboardPreview } from "./DashboardPreview";
-import Footer from "../../Components/Footer";
-import PricingSection from "../Pricing/PricingSection";
-import DemoVideoSection from "./DemoVideoSection";
+const TestimonialsSection = lazy(() => import("./TestimonialsSection"));
+const FeaturesSection = lazy(() => import("./FeaturesSection"));
+const DashboardPreview = lazy(() => import("./DashboardPreview"));
+const PricingSection = lazy(() => import("../Pricing/PricingSection"));
+const DemoVideoSection = lazy(() => import("./DemoVideoSection"));
+const Footer = lazy(() => import("../../Components/Footer"));
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -28,12 +28,14 @@ const HomePage = () => {
         <Box sx={{ minHeight: "100vh" }}>
             <Navbar />
             <HeroSection />
-            <FeaturesSection />
-            <DashboardPreview />
-            <DemoVideoSection />
-            <TestimonialsSection />
-            <PricingSection />
-            <Footer />
+            <Suspense fallback={<></>}>
+                <FeaturesSection />
+                <DashboardPreview />
+                <DemoVideoSection />
+                <TestimonialsSection />
+                <PricingSection />
+                <Footer />
+            </Suspense>
         </Box>
     );
 };

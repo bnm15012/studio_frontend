@@ -2,9 +2,9 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAppSelector } from "../state";
 import { AppUIProvider, NonAuthUIProvider } from "../context/UIContext";
-import HomePage from "../Pages/HomePage/HomePage";
 import Loading from "@/core/components/loading/Loading";
 
+import HomePage from "../Pages/HomePage/HomePage";
 const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
 const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));
 const Management = lazy(() => import("../Pages/Management/Management"));

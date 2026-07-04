@@ -11,7 +11,7 @@ import {
 import { BarChart as BarChartIcon, ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
 import { featurePageContent } from "./data";
 
-export function FeaturesSection() {
+function FeaturesSection() {
 
     return (
         <Box
@@ -302,3 +302,5 @@ export function FeaturesSection() {
         </Box>
     );
 }
+
+export default FeaturesSection;

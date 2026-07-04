@@ -1,7 +1,7 @@
 import { Box, Typography, Container, Chip } from "@mui/material";
 import { Monitor as MonitorIcon } from "@mui/icons-material";
 
-export function DashboardPreview() {
+function DashboardPreview() {
     const dashboardFeatures = [
         {
             title: "Dashboard Overview",
@@ -224,3 +224,5 @@ export function DashboardPreview() {
         </Box>
     );
 }
+
+export default DashboardPreview

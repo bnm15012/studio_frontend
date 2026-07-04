@@ -3,11 +3,17 @@ import react from "@vitejs/plugin-react-swc";
 import checker from "vite-plugin-checker";
 import path from "node:path";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
     react(),
-    tsconfigPaths(),    
+    tsconfigPaths(),
+    visualizer({
+      open: true,
+      gzipSize: true,
+      brotliSize: true,
+    }),
     checker({
       typescript: true,
       eslint: false, // { lintCommand: 'eslint "./src/**/*.{ts,tsx,js,jsx}"' },

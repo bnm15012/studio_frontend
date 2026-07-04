@@ -1,22 +1,23 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import { useParams } from "react-router-dom";
-import Clients from "./Client/Clients";
-import Bookings from "./Booking/Bookings";
-import Students from "./Student/Students";
-import Instructors from "./Instructor/Instructors";
-import Activities from "./Activity/Activities";
-import Expenses from "./Expense/Expenses";
-import Payments from "./Payments/Payments";
-import Reports from "./Reports/Reports";
-import Enquiry from "./Enquiry/Enquiry";
-import Communication from "./Communication/Communication";
-import Branches from "./Branches/Branches";
-import BranchPage from "./Branches/BranchPage";
-import BulkUploadJobs from "./BulkUploadJobs/BulkUploadJobs";
-import TemplatesPage from "./TemplatesPage/TemplatesPage";
-import MembershipType from "./MembershipType/MembershipType";
-import Attendance from "./Attendance/Attendance";
+import Loading from "@/core/components/loading/Loading";
+const Clients = lazy(() => import("./Client/Clients"));
+const Bookings = lazy(() => import("./Booking/Bookings"));
+const Students = lazy(() => import("./Student/Students"));
+const Instructors = lazy(() => import("./Instructor/Instructors"));
+const Activities = lazy(() => import("./Activity/Activities"));
+const Expenses = lazy(() => import("./Expense/Expenses"));
+const Payments = lazy(() => import("./Payments/Payments"));
+const Reports = lazy(() => import("./Reports/Reports"));
+const Enquiry = lazy(() => import("./Enquiry/Enquiry"));
+const Communication = lazy(() => import("./Communication/Communication"));
+const Branches = lazy(() => import("./Branches/Branches"));
+const BranchPage = lazy(() => import("./Branches/BranchPage"));
+const BulkUploadJobs = lazy(() => import("./BulkUploadJobs/BulkUploadJobs"));
+const TemplatesPage = lazy(() => import("./TemplatesPage/TemplatesPage"));
+const MembershipType = lazy(() => import("./MembershipType/MembershipType"));
+const Attendance = lazy(() => import("./Attendance/Attendance"));
 
 const Management: React.FC = () => {
     const { page, ID } = useParams<{ page: string; ID?: string }>();
@@ -62,7 +63,14 @@ const Management: React.FC = () => {
         }
     };
 
-    return <WidgetsOnPage isSidebarShouldBeOn={true} components={<>{renderComponent()}</>} />;
+    return (
+        <WidgetsOnPage
+            isSidebarShouldBeOn={true}
+            components={
+                <Suspense fallback={<Loading/>}>{renderComponent()}</Suspense>
+            }
+        />
+    );
 };
 
 export default Management;

@@ -2,7 +2,7 @@ import { Box, Typography, Container, Card, CardContent, Avatar, Rating, Chip } f
 import { Star as StarIcon, FormatQuote as QuoteIcon } from "@mui/icons-material";
 import TrustedPartners from "./TrustedPartners";
 
-export function TestimonialsSection() {
+function TestimonialsSection() {
     const testimonials = [
         {
             name: "Ajay Roy",
@@ -390,3 +390,5 @@ export function TestimonialsSection() {
         </Box>
     );
 }
+
+export default TestimonialsSection;
