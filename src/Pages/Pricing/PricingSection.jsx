@@ -145,7 +145,7 @@ const PricingSection = () => {
                         Start with a 7-day free trial. No credit card required. Cancel anytime.
                     </Typography>
                 </Box>
-                <PricingPlanCards />
+                <PricingPlanCards useWhiteText={true} />
 
                 {/* Comparison Section */}
                 <Box sx={{ maxWidth: 1400, mx: "auto", mb: 12 }}>

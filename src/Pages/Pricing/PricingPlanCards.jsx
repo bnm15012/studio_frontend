@@ -25,7 +25,7 @@ import { openDialog } from "../../state/dialogSlice";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 
-const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
+const PricingPlanCards = ({ buttonText = "Get Started", AMC = false, useWhiteText = false }) => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -164,12 +164,12 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                           {plan.popular ? <StarIcon /> : <FlashOn />}
                         </Box>
                       </Box> */}
-                                        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1, color: "#ffffff" }}>
+                                        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1, color: useWhiteText ? "#ffffff" : "#000000" }}>
                                             {plan?.planType?.replace("_", " ")}
                                         </Typography>
                                         <Typography
                                             variant="body2"
-                                            sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 2 }}
+                                            sx={{ color: useWhiteText ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)", mb: 2 }}
                                         >
                                             {plan?.description}
                                         </Typography>
@@ -191,7 +191,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                             <Typography
                                                 variant="body1"
                                                 sx={{
-                                                    color: "rgba(255, 255, 255, 0.7)",
+                                                    color: useWhiteText ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
                                                     display: "inline",
                                                     ml: 1,
                                                 }}
@@ -216,6 +216,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                         py: 1.5,
                                         fontSize: "1.125rem",
                                         transition: "transform 0.3s ease",
+                                        color: useWhiteText ? "white" : "inherit",
                                         "&:hover": {
                                             transform: "scale(1.05)",
                                         },
@@ -224,7 +225,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                     {buttonText}
                                 </Button>
 
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3, color: "#ffffff" }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3, color: useWhiteText ? "#ffffff" : "#000000" }}>
                                     What&apos;s included:
                                 </Typography>
                                 <List sx={{ p: 0 }}>
@@ -266,7 +267,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                             variant: "body1",
                                                             sx: {
                                                                 fontWeight: 500,
-                                                                color: "rgba(255, 255, 255, 0.9)",
+                                                                color: useWhiteText ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)",
                                                             },
                                                         },
                                                     }}
@@ -309,7 +310,7 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
                                                             variant: "body1",
                                                             sx: {
                                                                 fontWeight: 500,
-                                                                color: "rgba(255, 255, 255, 0.8)",
+                                                                color: useWhiteText ? "rgba(255, 255, 255, 0.8)" : "rgba(0, 0, 0, 0.8)",
                                                             },
                                                         },
                                                     }}
@@ -337,5 +338,6 @@ const PricingPlanCards = ({ buttonText = "Get Started", AMC = false }) => {
 PricingPlanCards.propTypes = {
     buttonText: PropTypes.string,
     AMC: PropTypes.bool,
+    useWhiteText: PropTypes.bool,
 };
 export default PricingPlanCards;
