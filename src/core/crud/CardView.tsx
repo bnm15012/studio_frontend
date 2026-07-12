@@ -139,7 +139,6 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
     }, [loading, data.length]);
 
     const showSkeletons = loading && isFirstLoad.current && data.length === 0;
-    const showScrollLoader = scrollFetching;
 
     return (
         <Box>
@@ -308,7 +307,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
                 </FadeIn>
             </AnimatePresence>
 
-            {showScrollLoader && (
+            {scrollFetching && (
                 <Box
                     sx={{
                         width: "100%",
