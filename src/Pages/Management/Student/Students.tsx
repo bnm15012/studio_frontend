@@ -39,14 +39,27 @@ const FIELDS = [
         type: "IMAGE",
         extraProp: { size: "30px" },
     },
-    { show: true, section: "Personal Details", name: "name", label: "Name" },
-    { show: true, section: "Contact Details", name: "email", label: "Email" },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "name",
+        label: "Name",
+        validation: { required: true },
+    },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "email",
+        label: "Email",
+        validation: { required: true },
+    },
     {
         show: true,
         section: "Contact Details",
         name: "phone",
         label: "Phone",
         validation: {
+            required: true,
             regex: /^[6-9]\d{9}$/,
             message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
         },
@@ -117,6 +130,7 @@ const FIELDS = [
         name: "emergencyContactNumber",
         label: "Emergency Contact",
         validation: {
+            required: true,
             regex: /^[6-9]\d{9}$/,
             message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
         },
