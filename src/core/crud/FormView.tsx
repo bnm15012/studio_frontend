@@ -306,12 +306,14 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
             </FadeIn>
 
             {/* TABS */}
-            <ViewTabs
-                currentView={currentView}
-                editingId={editingId}
-                formKey={formKey}
-                viewFields={viewFields}
-            />
+            {formKey !== "NEW" && viewFields.length > 0 && (
+                <ViewTabs
+                    currentView={currentView}
+                    editingId={editingId}
+                    formKey={formKey}
+                    viewFields={viewFields}
+                />
+            )}
         </>
     );
 }

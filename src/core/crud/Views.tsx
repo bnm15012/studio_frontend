@@ -276,9 +276,13 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
 
     const didInitNewRow = useRef(false);
     useEffect(() => {
-        if (formKey === "NEW" && !didInitNewRow.current) {
-            didInitNewRow.current = true;
-            addNewRow();
+        if (formKey === "NEW") {
+            if (!didInitNewRow.current) {
+                didInitNewRow.current = true;
+                addNewRow();
+            }
+        } else {
+            didInitNewRow.current = false;
         }
     }, [formKey, addNewRow]);
 
