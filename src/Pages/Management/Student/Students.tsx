@@ -51,7 +51,11 @@ const FIELDS = [
         section: "Contact Details",
         name: "email",
         label: "Email",
-        validation: { required: true },
+        validation: {
+            required: true,
+            regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Email is not valid",
+        },
     },
     {
         show: true,

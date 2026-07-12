@@ -24,11 +24,21 @@ interface DialogFormProps<T extends Entity = Entity> {
     ) => void;
     handleSave: (rowId: string | number | null | undefined) => void | Promise<void>;
     setClose: () => void;
+    submitAttempted?: boolean;
     [key: string]: unknown;
 }
 
 export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>) {
-    const { data, fields, fieldsMeta, setClose, handleChange, handleSave, ...dialogProps } = props;
+    const {
+        data,
+        fields,
+        fieldsMeta,
+        setClose,
+        handleChange,
+        handleSave,
+        submitAttempted,
+        ...dialogProps
+    } = props;
     const { isMobile } = useUI();
     const id = data?.[fieldsMeta.primary] as string | number | null | undefined;
     const visibleFields = fields.filter((f) => f.show || f.view);
@@ -83,6 +93,7 @@ export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>)
                                 type={field.type}
                                 extraProp={bindGetOptions(field.extraProp ?? {}, data)}
                                 validation={field.validation as Record<string, unknown>}
+                                submitAttempted={submitAttempted}
                             />
                         </Box>
                     </Box>

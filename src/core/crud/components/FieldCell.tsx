@@ -25,6 +25,7 @@ interface FieldCellProps<T extends Entity = Entity> {
         fieldName: string,
     ) => void;
     handleViewOpen?: (row: T) => void;
+    submitAttempted?: boolean;
 }
 
 function FieldCell<T extends Entity = Entity>({
@@ -33,6 +34,7 @@ function FieldCell<T extends Entity = Entity>({
     isEdit,
     handleChange,
     handleViewOpen,
+    submitAttempted,
 }: FieldCellProps<T>) {
     if (field.view) {
         return (
@@ -68,6 +70,7 @@ function FieldCell<T extends Entity = Entity>({
             type={field.type}
             extraProp={bindGetOptions(field.extraProp ?? {}, row)}
             validation={field.validation as Record<string, unknown>}
+            submitAttempted={submitAttempted}
         />
     );
 }

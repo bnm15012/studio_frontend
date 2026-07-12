@@ -88,6 +88,7 @@ export interface FormViewProps<T extends Entity = Entity> {
     handleCancel: () => void;
     currentView?: string;
     actions: ActionItem<T>[];
+    submitAttempted?: boolean;
 }
 
 function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
@@ -103,6 +104,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
         handleCancel,
         currentView,
         actions,
+        submitAttempted,
     } = props;
 
     const navigate = useNavigate();
@@ -242,6 +244,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                                             ...imageField.extraProp,
                                             size: "140px",
                                         }}
+                                        submitAttempted={submitAttempted}
                                     />
                                 </Box>
                             </FlexEvenly>
@@ -290,6 +293,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                                                     validation={
                                                         field.validation as Record<string, unknown>
                                                     }
+                                                    submitAttempted={submitAttempted}
                                                 />
                                             </StyledFieldItem>
                                         ))}

@@ -41,6 +41,7 @@ interface FieldProps {
     type?: string;
     validation?: Record<string, unknown>;
     extraProp?: ExtraProp;
+    submitAttempted?: boolean;
 }
 
 const Field: React.FC<FieldProps> = ({
@@ -52,6 +53,7 @@ const Field: React.FC<FieldProps> = ({
     type = "text",
     validation = {},
     extraProp = {},
+    submitAttempted,
 }) => {
     const { min, max, rows, getOptions, readOnly, CustomComponent } = extraProp;
     const setValueFn = setValue ?? (() => {});
@@ -62,6 +64,7 @@ const Field: React.FC<FieldProps> = ({
         setValue: setValueFn,
         label,
         validation,
+        submitAttempted,
         ...extraProp,
     };
 

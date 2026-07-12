@@ -66,10 +66,12 @@ export const useCrudAction = <T extends Entity>({
         id: string | number | null | undefined,
         fieldPath: string,
     ) => void;
+    submitAttempted: boolean;
 } => {
     const [editingId, setEditingId] = useState<string | number | null>(null);
     const [originalRow, setOriginalRow] = useState<T | null>(null);
     const [record, setRecord] = useState<T>({} as T);
+    const [submitAttempted, setSubmitAttempted] = useState(false);
 
     const updateEditId = (id: string | number | null) => {
         setEditingId(id);
@@ -81,6 +83,7 @@ export const useCrudAction = <T extends Entity>({
 
     const handleEdit = useCallback(
         (row: T) => {
+            setSubmitAttempted(false);
             if (editingId) {
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
@@ -95,6 +98,7 @@ export const useCrudAction = <T extends Entity>({
     );
 
     const handleCancel = useCallback(() => {
+        setSubmitAttempted(false);
         if (formKey === "NEW") navigate(`/management/${tableName}/`);
         if (formKey) {
             setRecord(editingId === "NEW" ? ({} as T) : (originalRow ?? ({} as T)));
@@ -117,6 +121,7 @@ export const useCrudAction = <T extends Entity>({
 
     const handleSave = useCallback(
         async (id: string | number | null | undefined) => {
+            setSubmitAttempted(true);
             try {
                 if (id === undefined) return;
                 const newRow = formKey
@@ -203,6 +208,7 @@ export const useCrudAction = <T extends Entity>({
     );
 
     const addNewRow = useCallback(() => {
+        setSubmitAttempted(false);
         if (editingId) {
             showAlert("Can't Add New while edit", "warning");
             return;
@@ -238,5 +244,6 @@ export const useCrudAction = <T extends Entity>({
         handleSave,
         addNewRow,
         handleChange,
+        submitAttempted,
     };
 };

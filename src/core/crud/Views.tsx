@@ -135,6 +135,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
         handleSave,
         addNewRow,
         handleChange,
+        submitAttempted,
     } = useCrudAction<T>({
         formKey,
         data,
@@ -265,6 +266,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
         loading,
         editingId,
         actions: mergedActions,
+        submitAttempted,
     };
 
     useEffect(() => {
@@ -311,6 +313,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                     formKey={formKey}
                     data={record}
                     currentView={currentView}
+                    submitAttempted={submitAttempted}
                 />
             ) : (
                 <>
@@ -381,6 +384,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                         actions={mergedActions}
                         {...commonStableProps}
                         {...dialogProps}
+                        submitAttempted={submitAttempted}
                         data={
                             data.find((d) => d[consts.current.primaryKey] === editingId) ??
                             ({} as T)

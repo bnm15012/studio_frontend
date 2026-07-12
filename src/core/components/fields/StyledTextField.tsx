@@ -22,6 +22,7 @@ export interface StyledTextFieldProps {
     validation?: ValidationRules;
     readOnly?: boolean;
     sx?: SxProps<Theme>;
+    submitAttempted?: boolean;
 }
 
 const StyledTextField: React.FC<StyledTextFieldProps> = ({
@@ -35,10 +36,16 @@ const StyledTextField: React.FC<StyledTextFieldProps> = ({
     validation = {},
     readOnly = false,
     sx,
+    submitAttempted = false,
 }) => {
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
+        if (!submitAttempted) {
+            setError("");
+            return;
+        }
+
         if (!validation || (!validation.required && !value)) {
             setError("");
             return;
@@ -55,7 +62,7 @@ const StyledTextField: React.FC<StyledTextFieldProps> = ({
         } else {
             setError("");
         }
-    }, [value, validation]);
+    }, [value, validation, submitAttempted]);
 
     return (
         <TextField

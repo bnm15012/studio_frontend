@@ -51,6 +51,7 @@ interface DesktopTableProps<T extends Entity = Entity> {
     visibleRowIds: (string | number)[];
     actions: ActionItem<T>[];
     onClickRow?: (row: T) => void;
+    submitAttempted?: boolean;
 }
 
 // ── Desktop table ──────────────────────────────────────────────────────────
@@ -72,6 +73,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
     visibleRowIds,
     actions,
     onClickRow,
+    submitAttempted,
 }: DesktopTableProps<T>) {
     const visibleFields = getVisibleFields(fields);
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
@@ -152,6 +154,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                                                     handleChange(v, rowId, name)
                                                 }
                                                 handleViewOpen={handleViewOpen}
+                                                submitAttempted={submitAttempted}
                                             />
                                         </StyledTableCell>
                                     ))}
@@ -210,6 +213,7 @@ export interface ListViewProps<T extends Record<string, unknown> = Record<string
     visibleRowIds: (string | number)[];
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    submitAttempted?: boolean;
 }
 
 function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
@@ -230,6 +234,7 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
     visibleRowIds,
     handleSelectRow,
     handleSelectAll,
+    submitAttempted,
 }: ListViewProps<T>) {
     const { isMobile } = useUI();
     const theme = useTheme();
@@ -253,6 +258,7 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
         selectedRows,
         theme,
         actions,
+        submitAttempted,
     };
 
     const totalCount = Number(tableState.totalCount ?? 0);

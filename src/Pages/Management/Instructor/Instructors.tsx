@@ -2,7 +2,7 @@ import { useAppSelector } from "@/state";
 import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
-import type { Instructor } from "../../../api/types";
+import type { Activity, Instructor } from "../../../api/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useAppUI } from "@/context/UIContext";
@@ -42,7 +42,11 @@ const FIELDS = [
         section: "Contact Details",
         name: "email",
         label: "Email",
-        validation: { required: true },
+        validation: {
+            required: true,
+            regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Email is not valid",
+        },
     },
     {
         show: true,
@@ -82,6 +86,11 @@ const FIELDS = [
         section: "Contact Details",
         name: "emergencyContactNumber",
         label: "Emergency Contact",
+        validation: {
+            required: true,
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
     },
     {
         show: false,
@@ -161,13 +170,16 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
-                                    .filter((a) =>
+                                    .filter((a: Activity) =>
                                         a
                                             .activityType!.toLowerCase()
                                             .includes(search.toLowerCase()),
                                     )
                                     .slice(page * limit, (page + 1) * limit)
-                                    .map((a) => ({ key: a.activityType, value: a.activityType })),
+                                    .map((a: Activity) => ({
+                                        key: a.activityType,
+                                        value: a.activityType,
+                                    })),
                         },
                         validation: { required: true },
                     },
@@ -197,7 +209,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                     {
                         show: true,
                         name: "membershipStatus",
-                        label: "Membership Status",
+                        label: "Status",
                         defaultValue: "INACTIVE",
                         getValue: (value: unknown) => (
                             <Box
