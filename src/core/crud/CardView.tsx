@@ -133,7 +133,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
         if (!loading) {
             const timer = setTimeout(() => {
                 setScrollFetching(false);
-            }, 400);
+            }, 700);
             return () => clearTimeout(timer);
         }
     }, [loading, data.length]);
@@ -153,7 +153,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
             )}
 
             <AnimatePresence mode="wait">
-                <FadeIn animKey={tableState?.currentPage ?? 0} y={0} duration={0.18}>
+                <FadeIn animKey="card-view-content" y={0} duration={0.18}>
                     <StyledCardContainer>
                         {showSkeletons ? (
                             <CardSkeleton />

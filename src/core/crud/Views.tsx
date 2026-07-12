@@ -298,28 +298,6 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
 
     return (
         <>
-            {actionBarProps && !formKey && (
-                <Box
-                    sx={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 10,
-                        bgcolor: "background.default",
-                        py: 1,
-                    }}
-                >
-                    <ActionBar
-                        {...actionBarProps}
-                        api={apiRef}
-                        columnVisibility={{
-                            currentView: formKey ? "FORM" : currentView,
-                            tableKey: tableName,
-                            fields: fields as unknown as FieldDef[],
-                            onVisibilityChange: setVisibilityMap,
-                        }}
-                    />
-                </Box>
-            )}
             {formKey ? (
                 <FormView<T>
                     {...commonStableProps}
@@ -332,13 +310,36 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                 />
             ) : (
                 <>
-                    {multi && selectedRows.length > 0 && (
+                    {multi && selectedRows.length > 0 ? (
                         <SelectionToolbar
                             selectedCount={selectedRows.length}
                             selectedRowsData={selectedRowsData}
                             multiActions={multiActions}
                             labelVariant={currentView === "CARD" ? "text" : "chip"}
                         />
+                    ) : (
+                        actionBarProps && (
+                            <Box
+                                sx={{
+                                    position: "sticky",
+                                    top: 0,
+                                    zIndex: 10,
+                                    bgcolor: "background.default",
+                                    py: 1,
+                                }}
+                            >
+                                <ActionBar
+                                    {...actionBarProps}
+                                    api={apiRef}
+                                    columnVisibility={{
+                                        currentView: formKey ? "FORM" : currentView,
+                                        tableKey: tableName,
+                                        fields: fields as unknown as FieldDef[],
+                                        onVisibilityChange: setVisibilityMap,
+                                    }}
+                                />
+                            </Box>
+                        )
                     )}
                     {currentView === "CARD" ? (
                         <CardView<T>
