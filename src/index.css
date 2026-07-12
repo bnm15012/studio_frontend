@@ -1,11 +1,55 @@
 ::-webkit-scrollbar {
-    width: 2px;
+    width: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
     border-radius: 100px;
-    background-color: aliceblue;
+    background-color: #94a3b8;
 }
+
+/* =============================================
+   GLOBAL RESPONSIVE FOUNDATION
+   ============================================= */
+
+/* Prevent horizontal scroll at the page level */
+html,
+body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/* Smooth momentum scrolling on iOS */
+html {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Touch target minimum size for accessibility (WCAG 2.5.5) */
+button,
+a,
+[role="button"] {
+    touch-action: manipulation;
+}
+
+/* Responsive table wrapper utility */
+.table-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile: very thin scrollbar */
+/* @media (max-width: 600px) {
+    ::-webkit-scrollbar {
+        width: 2px;
+    }
+} */
 
 .css-ylubir-MuiPaper-root-MuiDialog-paper {
     box-shadow: none !important;
