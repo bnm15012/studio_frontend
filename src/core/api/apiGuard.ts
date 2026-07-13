@@ -18,7 +18,12 @@
  *   installRateLimitInterceptor(api);
  */
 
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import type {
+    AxiosInstance,
+    InternalAxiosRequestConfig,
+    AxiosResponse,
+    AxiosRequestConfig,
+} from "axios";
 
 // ── Config ─────────────────────────────────────────────────────────────────────
 
@@ -105,31 +110,28 @@ export function installDedupeInterceptor(axiosInstance: AxiosInstance): void {
     );
 }
 
-/**
- * Wrap every outgoing GET with deduplication at the adapter level.
- * Call this BEFORE installing the interceptors on the instance.
- *
- * Returns an unregister function (for testing).
- */
 export function wrapGetWithDedupe(axiosInstance: AxiosInstance): () => void {
     const originalRequest = axiosInstance.request.bind(axiosInstance);
 
+    interface PatchedAxiosInstance {
+        request: AxiosInstance["request"];
+    }
+
     // Monkey-patch `request` so all Axios sugar methods (get/post/…) go through it
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (axiosInstance as any).request = function <T = unknown>(
-        config: InternalAxiosRequestConfig,
-    ): Promise<AxiosResponse<T>> {
+    (axiosInstance as unknown as PatchedAxiosInstance).request = function <T, R, D>(
+        config: AxiosRequestConfig<D>,
+    ): Promise<R> {
         const method = (config.method ?? "get").toLowerCase();
 
         if (DEDUPE_METHODS.has(method)) {
-            const key = buildKey(config);
+            const key = buildKey(config as InternalAxiosRequestConfig);
 
             if (inflightMap.has(key)) {
                 // Return the already-running promise
-                return inflightMap.get(key) as Promise<AxiosResponse<T>>;
+                return inflightMap.get(key) as Promise<R>;
             }
 
-            const promise = originalRequest<T>(config).finally(() => {
+            const promise = originalRequest<T, R, D>(config).finally(() => {
                 inflightMap.delete(key);
             });
 
@@ -137,12 +139,11 @@ export function wrapGetWithDedupe(axiosInstance: AxiosInstance): () => void {
             return promise;
         }
 
-        return originalRequest<T>(config);
+        return originalRequest<T, R, D>(config);
     };
 
     return () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (axiosInstance as any).request = originalRequest;
+        (axiosInstance as unknown as PatchedAxiosInstance).request = originalRequest;
         inflightMap.clear();
     };
 }
