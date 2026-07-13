@@ -1,6 +1,6 @@
 import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { IconButton, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -41,7 +41,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
     const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState<Booking | null>(null);
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
     const templates = useAppSelector((state) => state.genericTemplate.items);
 
     useEffect(() => {

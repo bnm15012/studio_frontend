@@ -157,3 +157,9 @@ export interface PaginationParams {
     searchTerm?: string;
     [key: string]: unknown;
 }
+
+export interface ViewsApiRef {
+    addNewRow?: () => void;
+    refreshData?: () => void;
+    [key: string]: unknown;
+}

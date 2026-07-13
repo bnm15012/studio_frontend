@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";
@@ -34,7 +34,7 @@ const FIELDS: FieldDef<Enquiry>[] = [
 
 const Enquiry: React.FC = () => {
     const { isMobile, currentBranch } = useAppUI();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>

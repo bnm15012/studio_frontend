@@ -54,8 +54,10 @@ export const getStudentNamesOncePerDay = async ({
     return result;
 };
 
+import type { Student } from "@/api/types";
+
 interface AddStudentParams {
-    newData: Record<string, unknown>;
+    newData: Partial<Student>;
     token: string | null | undefined;
 }
 

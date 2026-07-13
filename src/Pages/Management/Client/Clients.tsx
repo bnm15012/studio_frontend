@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Client } from "../../../api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -40,7 +40,7 @@ const FIELDS: FieldDef<Client>[] = [
 
 const Clients: React.FC = () => {
     const { isMobile, currentBranch } = useAppUI();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>

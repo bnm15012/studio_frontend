@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Payment } from "../../../api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import PaymentCard from "./PaymentCardView";
 
@@ -71,7 +71,7 @@ const FIELDS: FieldDef<Payment>[] = [
 
 const Expenses: React.FC = () => {
     const { isMobile, currentBranch } = useAppUI();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>

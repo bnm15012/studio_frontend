@@ -2,7 +2,7 @@ import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
 import type { GenericTemplate } from "../../../api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useAppUI } from "@/context/UIContext";
@@ -121,7 +121,7 @@ const TemplatesPage: React.FC = () => {
         if (x.activityType) templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType);
     });
 
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>

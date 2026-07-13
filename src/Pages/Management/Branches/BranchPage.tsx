@@ -13,7 +13,7 @@ import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import { FieldDef } from "@/core/types";
+import { FieldDef, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
@@ -47,7 +47,7 @@ const FIELDS: FieldDef<User>[] = [
 const BranchPage = () => {
     const { isMobile, studio } = useAppUI();
     const navigate = useNavigate();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
     const selectedBranch = useAppSelector((state: RootState) => state.branch.selectedBranch);
 
     if (!selectedBranch) {
@@ -81,7 +81,7 @@ const BranchPage = () => {
                     variant="contained"
                     startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
                     onClick={() => {
-                        (api.current as { addNewRow?: () => void })?.addNewRow?.();
+                        api.current?.addNewRow?.();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >

@@ -6,11 +6,13 @@ import { addEnquiryAPI } from "../../api/enquiry.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import type { FieldDef } from "@/core/types";
 
+import type { Student, Enquiry } from "@/api/types";
+
 interface FormDefinition {
     id: string;
     name: string;
     onSubmit: (arg: {
-        newData: Record<string, unknown>;
+        newData: Partial<Student> | Partial<Enquiry>;
         formSignature: string;
     }) => Promise<{ success: boolean; message: string }>;
     fields: FieldDef[];
@@ -24,7 +26,7 @@ const FormFillPage = () => {
                 id: "student-form",
                 name: "Student Registration Form",
                 onSubmit: addStudentAPI as unknown as (arg: {
-                    newData: Record<string, unknown>;
+                    newData: Partial<Student> | Partial<Enquiry>;
                     formSignature: string;
                 }) => Promise<{ success: boolean; message: string }>,
                 fields: [
@@ -121,7 +123,7 @@ const FormFillPage = () => {
                 id: "enquiry-form",
                 name: "Enquiry Form",
                 onSubmit: addEnquiryAPI as unknown as (arg: {
-                    newData: Record<string, unknown>;
+                    newData: Partial<Student> | Partial<Enquiry>;
                     formSignature: string;
                 }) => Promise<{ success: boolean; message: string }>,
                 fields: [

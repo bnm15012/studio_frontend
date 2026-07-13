@@ -16,7 +16,7 @@ import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
-import { FieldDef, ActionItem, CrudThunks, Entity, ViewMode } from "../types";
+import { FieldDef, ActionItem, CrudThunks, Entity, ViewMode, ViewsApiRef } from "../types";
 import { useAppDispatch } from "../../state";
 import { useRowSelection } from "./hooks/useRowSelection";
 import { SelectionToolbar } from "./components/SelectionToolbar";
@@ -39,7 +39,7 @@ export interface ViewsProps<T extends Entity = Entity> {
         primary: string;
         root?: string;
     };
-    apiRef?: React.MutableRefObject<Record<string, unknown>>;
+    apiRef?: React.MutableRefObject<ViewsApiRef>;
     dialogProps?: Record<string, unknown>;
     defaultParams?: Record<string, unknown>;
     beforeAdd?: (row: T) => T | Promise<T>;

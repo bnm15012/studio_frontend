@@ -3,7 +3,7 @@ import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type { Activity, Instructor } from "../../../api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useAppUI } from "@/context/UIContext";
@@ -129,8 +129,8 @@ interface InstructorsProps {
 
 const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const { isMobile, currentBranch } = useAppUI();
-    const api = useRef<Record<string, unknown>>({});
-    const apiInstructor = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
+    const apiInstructor = useRef<ViewsApiRef>({});
     const [generateContractDoc, setGenerateContractDoc] = useState<Record<string, unknown> | null>(
         null,
     );

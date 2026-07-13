@@ -6,6 +6,7 @@ import type { MembershipPackage } from "../../../api/types";
 import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 import { useAppUI } from "@/context/UIContext";
+import type { ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
@@ -22,7 +23,7 @@ const FIELDS = [
 ];
 
 const MembershipType: React.FC = () => {
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
     const { studio } = useAppUI();
     return (
         <FlexBetweenColumn>

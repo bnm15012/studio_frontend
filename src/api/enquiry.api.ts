@@ -3,7 +3,7 @@ import { getApiMessage } from "@/core/api/helper";
 import { Enquiry } from "./types";
 
 export interface EnquiryAPIParams {
-    newData: Record<string, unknown>;
+    newData: Partial<Enquiry>;
     token: string;
 }
 

@@ -12,10 +12,12 @@ const getHeaders = (token: string | null | undefined) => ({
     headers: { Authorization: `${token}` },
 });
 
+import { PaginationParams } from "@/core/types";
+
 interface GetClientParams {
     branchId: string | number;
     token: string | null | undefined;
-    params?: Record<string, unknown>;
+    params?: PaginationParams;
 }
 
 export const getCLientByNamesAPI = async ({ branchId, token, params }: GetClientParams) => {

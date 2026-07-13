@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Expense } from "../../../api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -79,7 +79,7 @@ const FIELDS: FieldDef<Expense>[] = [
 
 const Expenses: React.FC = () => {
     const { isMobile, currentBranch } = useAppUI();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>

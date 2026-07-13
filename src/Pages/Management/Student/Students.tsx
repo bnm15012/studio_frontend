@@ -19,7 +19,7 @@ import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
 import type { Activity, BatchEntry, Student, StudentAssignment } from "@/api/types";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 
 const size = 12;
 
@@ -166,8 +166,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
         open: boolean;
         data?: Record<string, unknown>;
     }>({ open: false });
-    const api = useRef<Record<string, unknown>>({} as Record<string, unknown>);
-    const apiStudent = useRef<Record<string, unknown>>({} as Record<string, unknown>);
+    const api = useRef<ViewsApiRef>({});
+    const apiStudent = useRef<ViewsApiRef>({});
     let extraField: FieldDef<Student>[] = [];
     if (permissions.ENROLMENT) {
         extraField = [

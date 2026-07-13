@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { branchCruds } from "../../../api/all.api";
 import type { Branch } from "../../../api/types";
 import Views from "@/core/crud/Views";
-import type { FieldDef } from "@/core/types";
+import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
@@ -39,7 +39,7 @@ const Branches = () => {
     const { isMobile, studio } = useAppUI();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const api = useRef<Record<string, unknown>>({});
+    const api = useRef<ViewsApiRef>({});
 
     return (
         <FlexBetweenColumn>
