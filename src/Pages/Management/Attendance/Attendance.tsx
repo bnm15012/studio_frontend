@@ -94,14 +94,14 @@ const Attendance = () => {
                 name: "membershipStatus",
                 label: "Membership Status",
                 defaultValue: "INACTIVE",
-                getValue: (value: unknown) => (
+                getValue: (value: string) => (
                     <Box
                         sx={{
                             color: value === "ACTIVE" ? "green" : "red",
                             fontWeight: "bolder",
                         }}
                     >
-                        {value as React.ReactNode}
+                        {value}
                     </Box>
                 ),
                 extraProp: { readOnly: true },
@@ -111,11 +111,9 @@ const Attendance = () => {
                 name: "present",
                 label: "Present",
                 type: "CHECK",
-                getValue: (value: unknown, row: Record<string, unknown>) =>
-                    (row?.attendanceEntries as Array<Record<string, unknown>>)?.filter(
-                        (entry: Record<string, unknown>) =>
-                            (entry.date as string).split(" ")[0] === date,
-                    )?.[0]?.present || false,
+                getValue: (_value: unknown, row: StudentAssignment) =>
+                    row.attendanceEntries.filter((entry) => entry.date?.split(" ")[0] === date)?.[0]
+                        ?.present || false,
             },
         ],
         [permissions, date],

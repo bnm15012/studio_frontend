@@ -211,14 +211,14 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value: unknown) => (
+                        getValue: (value: string) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",
                                     fontWeight: "bolder",
                                 }}
                             >
-                                {String(value)}
+                                {value}
                             </Box>
                         ),
                         extraProp: { readOnly: true },
