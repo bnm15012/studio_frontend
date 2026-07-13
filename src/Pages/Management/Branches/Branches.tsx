@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { branchCruds } from "../../../api/all.api";
 import type { Branch } from "../../../api/types";
 import Views from "@/core/crud/Views";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
+import type { FieldDef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
@@ -25,14 +25,14 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"];
 
-const FIELDS = [
+const FIELDS: FieldDef<Branch>[] = [
     { show: true, name: "name", label: "Name" },
     { show: true, name: "address", label: "Address" },
     { show: true, name: "city", label: "City" },
     { show: true, name: "state", label: "State" },
     { show: true, name: "pincode", label: "Pincode" },
     { show: true, name: "phone", label: "Phone" },
-    { show: true, name: "isActive", label: "Active", type: FIELD_TYPES.BOOL, defaultValue: true },
+    { show: true, name: "isActive", label: "Active", type: "BOOL", defaultValue: true },
 ];
 
 const Branches = () => {

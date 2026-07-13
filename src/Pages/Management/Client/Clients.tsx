@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Client } from "../../../api/types";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
+import type { FieldDef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -20,16 +20,16 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"];
 
-const FIELDS = [
+const FIELDS: FieldDef<Client>[] = [
     { show: true, name: "groupName", label: "Group Name" },
     { show: true, name: "pocName", label: "Poc Name" },
-    { show: true, name: "pocPhone", label: "Group Phone", type: FIELD_TYPES.NUMBER },
+    { show: true, name: "pocPhone", label: "Group Phone", type: "NUMBER" },
     { show: true, name: "pocEmail", label: "Group Email" },
     {
         show: true,
         name: "clientType",
         label: "Client Type",
-        type: FIELD_TYPES.SELECT,
+        type: "SELECT",
         getValue: (value: unknown) => value && { value, key: value },
         extraProp: {
             getOptions: async () => clientTypes.map((a) => ({ key: a, value: a })),

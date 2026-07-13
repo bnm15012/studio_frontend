@@ -364,7 +364,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                 <Grid
                                     item
                                     xs={12}
-                                    sm={field.type === "textarea" ? 12 : 6}
+                                    sm={field.type === "TEXTAREA" ? 12 : 6}
                                     key={field.name}
                                 >
                                     <FieldWrapper>

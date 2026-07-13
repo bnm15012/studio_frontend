@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Expense } from "../../../api/types";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
+import type { FieldDef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -28,13 +28,13 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"];
 
-const FIELDS = [
+const FIELDS: FieldDef<Expense>[] = [
     { show: true, name: "description", label: "Description" },
     {
         show: true,
         name: "expenseDate",
         label: "Expense Date",
-        type: FIELD_TYPES.DATE,
+        type: "DATE",
         validation: { required: true },
         defaultValue: getCurrentDateTimeLocal(),
     },
@@ -42,7 +42,7 @@ const FIELDS = [
         show: true,
         name: "expenseCategory",
         label: "Expense Category",
-        type: FIELD_TYPES.SELECT,
+        type: "SELECT",
         validation: { required: true },
         getValue: (value: unknown) => value && { key: value, value },
         extraProp: {
@@ -57,7 +57,7 @@ const FIELDS = [
         show: true,
         name: "paymentType",
         label: "Payment Type",
-        type: FIELD_TYPES.SELECT,
+        type: "SELECT",
         getValue: (value: unknown) => value && { key: value, value },
         defaultValue: PAYMENT_TYPE[0],
         extraProp: {
@@ -72,7 +72,7 @@ const FIELDS = [
         name: "amount",
         validation: { required: true },
         label: "Amount",
-        type: FIELD_TYPES.NUMBER,
+        type: "NUMBER",
         defaultValue: 0,
     },
 ];

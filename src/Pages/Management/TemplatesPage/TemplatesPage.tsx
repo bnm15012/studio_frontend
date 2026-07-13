@@ -2,6 +2,7 @@ import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
 import type { GenericTemplate } from "../../../api/types";
+import type { FieldDef } from "@/core/types";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useAppUI } from "@/context/UIContext";
@@ -66,7 +67,7 @@ const TEMPLATE_VARIABLES = {
     },
 };
 
-const FIELDS = [
+const FIELDS: FieldDef<GenericTemplate>[] = [
     {
         show: true,
         name: "templateType",

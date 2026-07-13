@@ -87,7 +87,7 @@ export interface Instructor extends Entity {
 }
 
 export interface AttendanceEntry extends Entity {
-    date?: string;
+    date: string;
     present?: boolean;
 }
 

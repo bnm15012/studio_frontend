@@ -82,7 +82,7 @@ const FIELDS = [
         name: "age",
         label: "Age",
         type: "NUMBER",
-        getValue: (_: unknown, row: Record<string, unknown>) => {
+        getValue: (_: unknown, row: Student) => {
             if (!row.dob) return null;
 
             const dob = new Date(String(row.dob));

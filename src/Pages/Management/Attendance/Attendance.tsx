@@ -16,6 +16,7 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
 import type { AttendanceEntry, StudentAssignment } from "../../../api/types";
+import type { FieldDef } from "@/core/types";
 
 const LIMIT = 50;
 const FIELD_META = {
@@ -52,7 +53,7 @@ const Attendance = () => {
     );
 
     const FIELDS = useMemo(
-        () => [
+        (): FieldDef<StudentAssignment>[] => [
             {
                 show: true,
                 name: "studentName",

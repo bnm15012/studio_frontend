@@ -37,7 +37,7 @@ const FormFillPage = () => {
                     {
                         name: "email",
                         label: "Email",
-                        type: "email",
+                        type: "EMAIL",
                         section: "Basic Info",
                         validation: {
                             required: true,
@@ -48,7 +48,7 @@ const FormFillPage = () => {
                     {
                         name: "phone",
                         label: "Phone Number",
-                        type: "number",
+                        type: "NUMBER",
                         section: "Basic Info",
                         validation: {
                             required: true,
@@ -70,7 +70,7 @@ const FormFillPage = () => {
                     },
                     {
                         name: "emergencyContactNumber",
-                        type: "number",
+                        type: "NUMBER",
                         section: "Basic Info",
                         label: "Emergency Contact",
                         validation: {
@@ -134,7 +134,7 @@ const FormFillPage = () => {
                     {
                         name: "contact",
                         label: "Phone Number",
-                        type: "number",
+                        type: "NUMBER",
                         validation: {
                             required: true,
                             regex: /^\d{10}$/,

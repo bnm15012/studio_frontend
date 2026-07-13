@@ -9,7 +9,6 @@ import { usersCruds } from "../../../api/all.api";
 import type { RootState } from "@/state";
 import Views from "@/core/crud/Views";
 import type { User } from "../../../api/types";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
 import { useAppUI } from "@/context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
@@ -30,8 +29,8 @@ const FIELDS: FieldDef[] = [
     { show: true, name: "userName", label: "User Name" },
     { show: true, name: "email", label: "Email" },
     { show: false, name: "password", label: "password", defaultValue: "123456" },
-    { show: true, name: "enabled", label: "Active", defaultValue: true, type: FIELD_TYPES.BOOL },
-    { show: true, name: "phone", label: "Phone", type: FIELD_TYPES.NUMBER },
+    { show: true, name: "enabled", label: "Active", defaultValue: true, type: "BOOL" },
+    { show: true, name: "phone", label: "Phone", type: "NUMBER" },
     {
         show: true,
         name: "userAccessEntry",

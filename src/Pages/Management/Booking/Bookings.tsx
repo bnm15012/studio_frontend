@@ -5,7 +5,6 @@ import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { IconButton, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarView from "./Calendar/CalendarView.tsx";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes.js";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
 import type { Booking } from "../../../api/types";
@@ -181,7 +180,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     section: "Payment Details",
                     name: "totalAmount",
                     label: "Total Amount",
-                    type: FIELD_TYPES.NUMBER,
+                    type: "NUMBER",
                 },
                 {
                     show: true,
@@ -219,7 +218,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     name: "paidAmount",
                     label: "Paid Amount",
                     section: "Payment Details",
-                    type: FIELD_TYPES.NUMBER,
+                    type: "NUMBER",
                     extraProp: { readOnly: true },
                     getValue: (obj: unknown, row: Booking) =>
                         (Array.isArray(row?.paymentEntries) &&
@@ -234,7 +233,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     name: "dueAmount",
                     label: "Due Amount",
                     section: "Payment Details",
-                    type: FIELD_TYPES.NUMBER,
+                    type: "NUMBER",
                     extraProp: { readOnly: true },
                     getValue: (obj: unknown, row: Booking) =>
                         ((row.totalAmount as number) || 0) -

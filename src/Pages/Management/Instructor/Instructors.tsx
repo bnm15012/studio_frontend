@@ -3,6 +3,7 @@ import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type { Activity, Instructor } from "../../../api/types";
+import type { FieldDef } from "@/core/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useAppUI } from "@/context/UIContext";
@@ -21,7 +22,7 @@ const FIELD_META = {
     root: "branchId",
 };
 
-const FIELDS = [
+const FIELDS: FieldDef<Instructor>[] = [
     {
         show: true,
         section: "Personal Details",
@@ -136,7 +137,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
-        () => ({
+        (): FieldDef<Instructor> => ({
             show: false,
             name: "assignments",
             label: "Contracts",

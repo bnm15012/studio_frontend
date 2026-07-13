@@ -1,6 +1,7 @@
 /** Central type definitions used across the core layer — AppDispatch, Entity, SelectOption, FieldDef, ActionItem, and Redux thunk types. */
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
+import { FieldTypes } from "./components/fields/FieldTypes";
 
 export type AppDispatch = (action: unknown) => unknown;
 
@@ -50,10 +51,10 @@ export interface FieldDef<T extends Entity = Entity> {
     show?: boolean;
     view?: boolean;
     label?: string;
-    type?: string;
+    type?: FieldTypes;
     section?: string;
     defaultValue?: unknown;
-    getValue?: (raw: unknown, row: T, isEdit: boolean) => unknown;
+    getValue?(raw: unknown, row: T, isEdit: boolean): unknown;
     setValue?: (value: unknown, row?: T) => void;
     editable?: (row: T) => boolean;
     extraProp?: ExtraProp<T>;

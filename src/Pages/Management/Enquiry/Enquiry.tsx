@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import { FIELD_TYPES } from "@/core/components/fields/FieldTypes";
+import type { FieldDef } from "@/core/types";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";
@@ -19,16 +19,16 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"];
 
-const FIELDS = [
+const FIELDS: FieldDef<Enquiry>[] = [
     {
         name: "enquiryDate",
         label: "Date",
         show: true,
-        type: FIELD_TYPES.DATE,
+        type: "DATE",
         defaultValue: getCurrentDateTimeLocal(),
     },
     { name: "name", label: "Name", show: true },
-    { name: "contact", label: "Contact", show: true, type: FIELD_TYPES.NUMBER },
+    { name: "contact", label: "Contact", show: true, type: "NUMBER" },
     { name: "enquiryPurpose", label: "Purpose", show: true },
 ];
 
