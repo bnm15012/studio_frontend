@@ -15,7 +15,7 @@ const STATUS = ["PENDING", "COMPLETED"];
 
 const FIELD_META = { primary: "id", root: "branchId" };
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const FIELDS: FieldDef<Payment>[] = [
     { show: true, name: "payeeType", label: "Payee Type", extraProp: { readOnly: true } },

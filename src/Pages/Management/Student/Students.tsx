@@ -141,7 +141,7 @@ const FIELDS = [
     },
 ];
 
-const VIEWS = ["LIST", "CARD", "FORM"];
+const VIEWS = ["LIST", "CARD", "FORM"] as const;
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 

@@ -1,14 +1,13 @@
-import React from "react";
-import { useAppSelector } from "@/state";
 import { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import AddIcon from "@mui/icons-material/Add";
-import { usersCruds } from "../../../api/all.api";
+import { useAppSelector } from "@/state";
+import { usersCruds } from "@/api/all.api";
 import type { RootState } from "@/state";
 import Views from "@/core/crud/Views";
-import type { User } from "../../../api/types";
+import type { User } from "@/api/types";
 import { useAppUI } from "@/context/UIContext";
 import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
@@ -23,9 +22,9 @@ const FIELD_META = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
-const FIELDS: FieldDef[] = [
+const FIELDS: FieldDef<User>[] = [
     { show: true, name: "userName", label: "User Name" },
     { show: true, name: "email", label: "Email" },
     { show: false, name: "password", label: "password", defaultValue: "123456" },
@@ -51,14 +50,18 @@ const BranchPage = () => {
     const api = useRef<Record<string, unknown>>({});
     const selectedBranch = useAppSelector((state: RootState) => state.branch.selectedBranch);
 
-    const beforeAdd = async (row: Record<string, unknown>) => {
+    if (!selectedBranch) {
+        throw new Error("No branch selected");
+    }
+
+    const beforeAdd = async (row: User) => {
         const updatedRow = { ...row };
         delete updatedRow["branchId"];
         updatedRow["studioEntry"] = {
             studioId: studio.studioId,
             branchList: [
                 {
-                    branchId: selectedBranch?.branchId,
+                    branchId: selectedBranch.branchId,
                 },
             ],
         };
@@ -71,7 +74,7 @@ const BranchPage = () => {
                     <ArrowBackIcon />
                 </IconButton>
                 <Typography variant="h5" fontWeight={"bold"} my={"auto"}>
-                    Branch: {selectedBranch?.name}
+                    Branch: {selectedBranch.name}
                 </Typography>
                 <Box ml={"auto"}></Box>
                 <Button
@@ -95,7 +98,7 @@ const BranchPage = () => {
                     key={"users"}
                     fields={FIELDS}
                     actions={[{ name: "delete", hide: true, onClick: () => {} }]}
-                    rootId={selectedBranch?.branchId}
+                    rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[!isMobile ? 0 : 1]}

@@ -16,7 +16,7 @@ import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
-import { FieldDef, ActionItem, CrudThunks, Entity } from "../types";
+import { FieldDef, ActionItem, CrudThunks, Entity, ViewMode } from "../types";
 import { useAppDispatch } from "../../state";
 import { useRowSelection } from "./hooks/useRowSelection";
 import { SelectionToolbar } from "./components/SelectionToolbar";
@@ -31,9 +31,9 @@ export interface ViewsProps<T extends Entity = Entity> {
     formKey?: string | number | null;
     tableName: string;
     overRideOnChange?: (value: unknown, obj: T, field: string) => T;
-    size?: number;
-    rootId?: string | number | null;
-    tableCruds?: CrudThunks<T>;
+    size: number;
+    rootId: string | number | null;
+    tableCruds: CrudThunks<T>;
     fields: FieldDef<T>[];
     fieldsMeta: {
         primary: string;
@@ -46,7 +46,7 @@ export interface ViewsProps<T extends Entity = Entity> {
     beforeUpdate?: (row: T) => T | Promise<T>;
     cardLayout?: "vertical" | "horizontal";
     fieldToDisplayOnDelete?: string;
-    currentView?: string;
+    currentView: ViewMode;
     showAddButton?: boolean;
     CardContentComponent?: React.ComponentType<{
         row: T;

@@ -18,7 +18,7 @@ const FIELD_META = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const FIELDS: FieldDef<Client>[] = [
     { show: true, name: "groupName", label: "Group Name" },

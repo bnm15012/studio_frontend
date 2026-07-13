@@ -23,7 +23,7 @@ const FIELD_META = {
     primary: "assignmentId",
     root: "branchId",
 };
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const Attendance = () => {
     const { permissions, isMobile, token, currentBranch } = useAppUI();

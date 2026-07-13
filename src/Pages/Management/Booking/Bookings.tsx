@@ -31,7 +31,7 @@ const FIELD_META = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const Bookings = ({ ID }: { ID?: string | number }) => {
     const { isMobile, token, studio, currentBranch } = useAppUI();

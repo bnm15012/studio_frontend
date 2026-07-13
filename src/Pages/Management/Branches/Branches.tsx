@@ -23,7 +23,7 @@ const FIELD_META = {
     root: "studioId",
 };
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const FIELDS: FieldDef<Branch>[] = [
     { show: true, name: "name", label: "Name" },

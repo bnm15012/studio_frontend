@@ -4,45 +4,45 @@ import { Setting } from "@/state/authSlice";
 export interface Branch extends Entity {
     branchId: number;
     name: string;
-    address: string;
-    city: string;
-    state: string;
-    pincode: string;
-    phone: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    phone?: string;
     isActive: boolean;
-    studioId?: number;
+    studioId: number;
 }
 
 export interface User extends Entity {
-    userId?: number;
-    userName?: string;
-    email?: string;
+    userId: number;
+    userName: string;
+    email: string;
     phone?: string;
     password?: string;
-    role?: string;
+    role: string;
     enabled?: boolean;
     imageUrl?: string;
     userAccessEntry?: Record<string, "NONE" | "FULL">;
-    token?: string;
+    token: string;
 }
 
 export interface Studio extends Entity {
-    studioId?: number;
-    studioName?: string;
+    studioId: number;
+    studioName: string;
     location?: string;
-    email?: string;
+    email: string;
     logo?: string;
     gstNumber?: string;
     passcode?: string;
     amcEnabled?: boolean;
-    configuration?: {
-        configrationEntryList?: Setting;
+    configuration: {
+        configrationEntryList: Setting;
     };
-    branchList?: Branch[];
+    branchList: Branch[];
 }
 
 export interface SubscriptionPlan extends Entity {
-    id?: string | number;
+    id: string | number;
     subscriptionPlan?: string;
     name?: string;
     price?: number;

@@ -112,7 +112,7 @@ const FIELDS: FieldDef<GenericTemplate>[] = [
     },
 ];
 
-const VIEWS = ["LIST", "CARD"];
+const VIEWS = ["LIST", "CARD"] as const;
 
 const TemplatesPage: React.FC = () => {
     const { isMobile, studio } = useAppUI();
@@ -133,7 +133,7 @@ const TemplatesPage: React.FC = () => {
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="templateName"
                 fieldsMeta={FIELD_META}
-                rootId={studio.studioId}
+                rootId={studio.studioId ?? null}
                 apiRef={api}
                 dialogProps={{ fullScreen: isMobile, size: "md" }}
                 fields={FIELDS}

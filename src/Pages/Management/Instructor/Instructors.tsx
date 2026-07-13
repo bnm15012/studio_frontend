@@ -119,7 +119,7 @@ const FIELDS: FieldDef<Instructor>[] = [
     },
     { show: false, section: "Bank Details", name: "bankAccountDetails.upiId", label: "UPI" },
 ];
-const VIEWS = ["LIST", "CARD", "FORM"];
+const VIEWS = ["LIST", "CARD", "FORM"] as const;
 
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 

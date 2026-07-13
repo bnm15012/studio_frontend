@@ -27,7 +27,7 @@ import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
 import React, { memo } from "react";
 import ViewTabs from "./ViewTabs";
 import Actions from "./helper/Actions";
-import { ActionItem, Entity, FieldDef } from "../types";
+import { ActionItem, Entity, FieldDef, ViewMode } from "../types";
 import { FadeIn } from "./components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
@@ -86,7 +86,7 @@ export interface FormViewProps<T extends Entity = Entity> {
     ) => void;
     handleSave: (formKey: string | number | null | undefined) => void;
     handleCancel: () => void;
-    currentView?: string;
+    currentView?: ViewMode;
     actions: ActionItem<T>[];
     submitAttempted?: boolean;
 }

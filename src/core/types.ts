@@ -5,6 +5,8 @@ import { FieldTypes } from "./components/fields/FieldTypes";
 
 export type AppDispatch = (action: unknown) => unknown;
 
+export type ViewMode = "LIST" | "CARD" | "FORM";
+
 export interface Entity {
     [key: string]: unknown;
 }

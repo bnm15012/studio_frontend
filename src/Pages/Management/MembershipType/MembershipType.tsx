@@ -14,7 +14,7 @@ const FIELD_META = {
     root: "studioId",
 };
 
-const VIEWS = ["LIST"];
+const VIEWS = ["LIST"] as const;
 
 const FIELDS = [
     { show: true, name: "membershipPackage", label: "Membership Type" },
@@ -34,7 +34,7 @@ const MembershipType: React.FC = () => {
                     size={LIMIT}
                     key={"membershipPackages"}
                     fields={FIELDS}
-                    rootId={studio.studioId}
+                    rootId={studio.studioId ?? null}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[0]}
