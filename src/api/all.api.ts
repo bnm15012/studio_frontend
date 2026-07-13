@@ -20,32 +20,35 @@ import {
 } from "@/api/types";
 import { GenericState } from "@/core/state/stateTypes";
 import type { AppDispatch } from "@/state";
+import { ShowAlertFn } from "@/core/types";
 
-export const usersCruds = createCrudModule<User>({ route: "users", idKey: "userId" });
-export const instructorsCruds = createCrudModule<Instructor>({
+export const usersCruds = createCrudModule<User>()({ route: "users", idKey: "userId" });
+export const instructorsCruds = createCrudModule<Instructor>()({
     route: "instructors",
     idKey: "instructorId",
 });
-export const instructorsAssignmentsCruds = createCrudModule<InstructorAssignment>({
+export const instructorsAssignmentsCruds = createCrudModule<InstructorAssignment>()({
     route: "instructorActivities",
     idKey: "assignmentId",
 });
-export const studentsCruds = createCrudModule<Student>({ route: "students", idKey: "studentId" });
-export const clientCruds = createCrudModule<Client>({ route: "clients", idKey: "clientId" });
-export const bookingCruds = createCrudModule<Booking>({ route: "booking" });
-export const expenseCruds = createCrudModule<Expense>({ route: "expenses", idKey: "expenseId" });
-export const membershipPackageCruds = createCrudModule<MembershipPackage>({
+export const studentsCruds = createCrudModule<Student>()({ route: "students", idKey: "studentId" });
+export const clientCruds = createCrudModule<Client>()({ route: "clients", idKey: "clientId" });
+export const bookingCruds = createCrudModule<Booking>()({ route: "booking" });
+export const expenseCruds = createCrudModule<Expense>()({ route: "expenses", idKey: "expenseId" });
+export const membershipPackageCruds = createCrudModule<MembershipPackage>()({
     route: "membershipPackages",
 });
-export const enquiryCruds = createCrudModule<Enquiry>({ route: "enquiries", idKey: "enquiryId" });
-export const paymentCruds = createCrudModule<Payment>({ route: "payments" });
-export const genericTemplateCruds = createCrudModule<GenericTemplate>({ route: "genericTemplate" });
-export const activityCruds = createCrudModule<Activity>({
+export const enquiryCruds = createCrudModule<Enquiry>()({ route: "enquiries", idKey: "enquiryId" });
+export const paymentCruds = createCrudModule<Payment>()({ route: "payments" });
+export const genericTemplateCruds = createCrudModule<GenericTemplate>()({
+    route: "genericTemplate",
+});
+export const activityCruds = createCrudModule<Activity>()({
     route: "activities",
     idKey: "activityId",
 });
 
-export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
+export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>()({
     route: "studentActivities",
     idKey: "assignmentId",
     extraCruds: ({ actions, getHeader, route }) => ({
@@ -57,7 +60,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
                     date: string;
                 },
                 token: string | null | undefined,
-                showAlert: (msg: string, type: string) => void,
+                showAlert: ShowAlertFn,
                 setLoading: (loading: boolean) => void,
             ) =>
             async (dispatch: AppDispatch) => {
@@ -87,7 +90,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
             (
                 assignmentId: string | number,
                 token: string | null | undefined,
-                showAlert: (msg: string, type: string) => void,
+                showAlert: ShowAlertFn,
                 setLoading: (loading: boolean) => void,
                 throwErro?: boolean,
             ) =>
@@ -117,7 +120,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>({
             },
         fetchInvoiceApi: async (
             invoiceToken: string,
-            showAlert: (msg: string, type: string) => void,
+            showAlert: ShowAlertFn,
             setLoading: (loading: boolean) => void,
         ) =>
             withLoading(setLoading, async () => {
@@ -145,7 +148,7 @@ export interface BranchState extends GenericState<Branch> {
     selectedBranch: Branch | null;
 }
 
-export const branchCruds = createCrudModule<Branch, BranchState>({
+export const branchCruds = createCrudModule<Branch, BranchState>()({
     route: "branch",
     idKey: "branchId",
     extraState: { currentBranch: null, selectedBranch: null },

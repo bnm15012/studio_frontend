@@ -125,15 +125,7 @@ const Attendance = () => {
         present: boolean;
         date: string;
     }) => {
-        dispatch(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (studentsAssignmentsCruds as any).markAttendanceBulk(
-                data,
-                token,
-                showAlert,
-                setLoading,
-            ),
-        );
+        dispatch(studentsAssignmentsCruds.markAttendanceBulk(data, token, showAlert, setLoading));
     };
 
     const AttendanceCard = useMemo(() => {

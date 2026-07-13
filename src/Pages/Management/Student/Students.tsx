@@ -19,6 +19,7 @@ import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
 import type { Activity, BatchEntry, Student, StudentAssignment } from "@/api/types";
+import type { FieldDef } from "@/core/types";
 
 const size = 12;
 
@@ -30,7 +31,7 @@ const FIELD_META = {
 const PAYMENT_STATUS = ["COMPLETED", "PENDING"];
 const PAYMENT_TYPE = ["CASH", "UPI"];
 
-const FIELDS = [
+const FIELDS: FieldDef<Student>[] = [
     {
         show: true,
         section: "Personal Details",
@@ -167,8 +168,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     }>({ open: false });
     const api = useRef<Record<string, unknown>>({} as Record<string, unknown>);
     const apiStudent = useRef<Record<string, unknown>>({} as Record<string, unknown>);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let extraField: any[] = [];
+    let extraField: FieldDef<Student>[] = [];
     if (permissions.ENROLMENT) {
         extraField = [
             {
@@ -177,7 +177,11 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 name: "additionalData",
                 label: "",
                 type: "CUSTOM",
-                extraProp: { CustomComponent: OtherInfo },
+                extraProp: {
+                    CustomComponent: OtherInfo as unknown as React.ComponentType<
+                        Record<string, unknown>
+                    >,
+                },
             },
         ];
     }
@@ -314,7 +318,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const ASSIGNMENT_FIELD = useMemo(
-        () => ({
+        (): FieldDef<Student> => ({
             show: false,
             name: "assignments",
             label: "Assigned Activities",

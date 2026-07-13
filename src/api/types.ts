@@ -22,7 +22,7 @@ export interface User extends Entity {
     role: string;
     enabled?: boolean;
     imageUrl?: string;
-    userAccessEntry?: Record<string, "NONE" | "FULL">;
+    userAccessEntry: Record<string, "NONE" | "FULL">;
     token: string;
 }
 
