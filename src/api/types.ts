@@ -1,6 +1,10 @@
 import { Entity } from "@/core/types";
 import { Setting } from "@/state/authSlice";
 
+export type paymentType = "CASH" | "UPI";
+export type paymentStatus = "COMPLETED" | "PENDING" | "PARTIALLY PAID";
+export type genderType = "MALE" | "FEMALE" | "NOT_TO_SAY";
+
 export interface Branch extends Entity {
     branchId: number;
     name: string;
@@ -94,8 +98,8 @@ export interface AttendanceEntry extends Entity {
 export interface PaymentEntry extends Entity {
     paymentDate?: string;
     payeeType?: string;
-    status?: "COMPLETED" | "PENDING";
-    paymentType?: "CASH" | "UPI";
+    status?: paymentStatus;
+    paymentType?: paymentType;
     actualAmount?: number;
     amount?: number;
     branchId?: number;
@@ -122,8 +126,8 @@ export interface StudentAssignment extends Entity {
 }
 
 export interface Student extends Entity {
-    studentId?: number;
-    branchId?: number;
+    studentId: number;
+    branchId: number;
     imageUrl?: string;
     name: string;
     email: string;
@@ -131,7 +135,7 @@ export interface Student extends Entity {
     dob?: string;
     age?: number;
     membershipStatus: "ACTIVE" | "INACTIVE";
-    gender?: "MALE" | "FEMALE" | "NOT_TO_SAY";
+    gender?: genderType;
     address?: string;
     emergencyContactNumber?: string;
     additionalData?: string;
@@ -155,7 +159,7 @@ export interface Booking extends Entity {
     purpose?: string;
     clientEntry?: Partial<Client>;
     totalAmount?: number;
-    paymentStatus?: "COMPLETED" | "PARTIALLY PAID" | "PENDING";
+    paymentStatus?: paymentStatus;
     paidAmount?: number;
     dueAmount?: number;
     bookingDate?: string;
@@ -179,7 +183,7 @@ export interface Expense extends Entity {
         | "SUPPLIES"
         | "MARKETING"
         | "OTHER";
-    paymentType?: "CASH" | "UPI";
+    paymentType?: paymentType;
     amount?: number;
 }
 
@@ -200,15 +204,15 @@ export interface Enquiry extends Entity {
 }
 
 export interface Payment extends Entity {
-    id?: number;
+    id?: number | string;
     branchId?: number;
     payeeType?: string;
     payeeName?: string;
     payeeId?: number;
-    status?: "PENDING" | "COMPLETED";
+    status?: paymentStatus;
     paymentDate?: string;
-    paymentType?: "CASH" | "UPI";
-    amount?: number;
+    paymentType?: paymentType;
+    amount: number;
     actualAmount?: number;
 }
 
@@ -223,11 +227,11 @@ export interface BatchEntry extends Entity {
 }
 
 export interface Activity extends Entity {
-    activityId?: number;
-    activityType?: string;
+    activityId: number | string;
+    activityType: string;
     description?: string;
-    branchId?: number;
-    batchEntries?: BatchEntry[];
+    branchId: number;
+    batchEntries: BatchEntry[];
     membershipPlanRequest: {
         membershipPlanEntryList?: {
             membershipType: string;
@@ -246,7 +250,7 @@ export interface GenericTemplate extends Entity {
 }
 
 export interface BulkUploadJob extends Entity {
-    id?: number;
+    id: number | string;
     entityType?: string;
     fileUrl?: string;
     status?: string;

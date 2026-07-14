@@ -73,7 +73,7 @@ const FIELDS: FieldDef<GenericTemplate>[] = [
         name: "templateType",
         label: "Template Type",
         type: "SELECT",
-        getValue: (value: unknown) => value && { key: value as string, value: value as string },
+        getValue: (value) => (value ? { key: String(value), value } : null),
         extraProp: {
             variant: "outlined",
             getOptions: async () => [...templateTypes].map((type) => ({ key: type, value: type })),

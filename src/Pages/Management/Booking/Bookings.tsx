@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarView from "./Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
-import type { Booking } from "../../../api/types";
+import type { Booking, Payment } from "../../../api/types";
 
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useAppUI } from "@/context/UIContext";
@@ -145,7 +145,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
 
             if (paymentData) {
                 modifiedData.paymentEntries = [
-                    { ...(row.paymentEntry || {}), ...(paymentData || {}) },
+                    { ...(row.paymentEntry || {}), ...(paymentData || {}) } as Payment,
                 ];
             } else {
                 throw new Error("Payment cancelled");

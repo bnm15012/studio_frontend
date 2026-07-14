@@ -48,16 +48,19 @@ export interface ExtraProp<T extends Entity = Entity> {
     [key: string]: unknown;
 }
 
-export interface FieldDef<T extends Entity = Entity> {
-    name: string;
+export interface FieldDef<
+    T extends Entity = Entity,
+    K extends string & keyof T = string & keyof T,
+> {
+    name: K;
     show?: boolean;
     view?: boolean;
     label?: string;
     type?: FieldTypes;
     section?: string;
-    defaultValue?: unknown;
-    getValue?(raw: unknown, row: T, isEdit: boolean): unknown;
-    setValue?: (value: unknown, row?: T) => void;
+    defaultValue?: T[K];
+    getValue?(value: T[K], row: T, isEdit: boolean): React.ReactNode | { key: string; value: T[K] };
+    setValue?: (value: T[K], row?: T) => void;
     editable?: (row: T) => boolean;
     extraProp?: ExtraProp<T>;
     validation?: {
@@ -107,7 +110,7 @@ export interface CrudState<T = GenericItem> {
 
 export interface CrudThunks<T extends Entity = Entity> {
     add: (
-        newData: Partial<T> | Record<string, unknown>,
+        newData: Partial<T>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
@@ -115,7 +118,7 @@ export interface CrudThunks<T extends Entity = Entity> {
     ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
     update: (
         id: string | number | null,
-        updatedData: Partial<T> | Record<string, unknown>,
+        updatedData: Partial<T>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
@@ -130,7 +133,7 @@ export interface CrudThunks<T extends Entity = Entity> {
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         token: string | null | undefined,
-        params: Record<string, unknown>,
+        params: PaginationParams,
         rootId: string | number | null | undefined,
         infinite?: boolean,
         _force?: boolean,

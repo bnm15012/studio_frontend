@@ -18,7 +18,7 @@ import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
-import type { Activity, BatchEntry, Student, StudentAssignment } from "@/api/types";
+import type { Activity, BatchEntry, genderType, Student, StudentAssignment } from "@/api/types";
 import type { FieldDef, ViewsApiRef } from "@/core/types";
 
 const size = 12;
@@ -83,7 +83,7 @@ const FIELDS: FieldDef<Student>[] = [
         name: "age",
         label: "Age",
         type: "NUMBER",
-        getValue: (_: unknown, row: Student) => {
+        getValue: (_value, row) => {
             if (!row.dob) return null;
 
             const dob = new Date(String(row.dob));
@@ -103,9 +103,14 @@ const FIELDS: FieldDef<Student>[] = [
         section: "Personal Details",
         name: "membershipStatus",
         label: "Status",
-        getValue: (value: unknown) => (
-            <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                {value as string}
+        getValue: (value) => (
+            <Box
+                sx={{
+                    color: value === "ACTIVE" ? "green" : "red",
+                    fontWeight: "bolder",
+                }}
+            >
+                {String(value)}
             </Box>
         ),
         defaultValue: "ACTIVE",
@@ -118,7 +123,7 @@ const FIELDS: FieldDef<Student>[] = [
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value: unknown) => value && { key: value, value },
+        getValue: (value: genderType) => value && { key: value, value },
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -128,7 +133,12 @@ const FIELDS: FieldDef<Student>[] = [
                     .map((a) => ({ key: a, value: a })),
         },
     },
-    { show: false, section: "Contact Details", name: "address", label: "Address" },
+    {
+        show: false,
+        section: "Contact Details",
+        name: "address",
+        label: "Address",
+    },
     {
         show: false,
         section: "Contact Details",
@@ -158,9 +168,16 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
 
     const [showInvoice, setShowInvoice] = useState<StudentAssignment>();
     const [showAttendence, setShowAttendence] = useState<StudentAssignment>();
-    const tableState = useAppSelector((state) => state["students"]) || { recordById: {} };
+    const tableState = useAppSelector((state) => state["students"]) || {
+        recordById: {},
+    };
     const [openPaymentDialog, setOpenPaymentDialog] = useState<
-        false | { onSave: (data: unknown) => void; onClose: () => void; paymentInit: unknown }
+        | false
+        | {
+              onSave: (data: unknown) => void;
+              onClose: () => void;
+              paymentInit: unknown;
+          }
     >(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{
         open: boolean;
@@ -272,7 +289,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     getEndDateBySubscriptionPlan(
                         String(newObj.membershipStartDate ?? ""),
                         entry?.planType,
-                        cachedMembershipTypes as { membershipPackage: string; days?: number }[],
+                        cachedMembershipTypes as {
+                            membershipPackage: string;
+                            days?: number;
+                        }[],
                     );
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(String(newObj.activityName), String(value));
@@ -282,7 +302,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     String(newObj.membershipStartDate ?? ""),
                     String(value),
-                    cachedMembershipTypes as { membershipPackage: string; days?: number }[],
+                    cachedMembershipTypes as {
+                        membershipPackage: string;
+                        days?: number;
+                    }[],
                 );
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
@@ -309,7 +332,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     String(value),
                     String(newObj.membershipType),
-                    cachedMembershipTypes as { membershipPackage: string; days?: number }[],
+                    cachedMembershipTypes as {
+                        membershipPackage: string;
+                        days?: number;
+                    }[],
                 );
             }
             return newObj;
@@ -359,7 +385,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value: string) => value && { value, key: value },
+                        getValue: (value: string) => value && { value, key: String(value) },
                         editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
@@ -383,7 +409,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Membership Type",
                         type: "SELECT",
                         editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
-                        getValue: (value: unknown) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
                             addValue: false,
                             getOptions: async (
@@ -418,7 +444,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Days / week",
                         editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
                         type: "SELECT",
-                        getValue: (value: unknown) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
                             addValue: false,
                             getOptions: async (
@@ -452,7 +478,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Batch Name",
                         type: "SELECT",
                         editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
-                        getValue: (value: unknown) => value && { value, key: value },
+                        getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
                             addValue: false,
                             getOptions: async (
@@ -601,14 +627,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value: unknown) => (
+                        getValue: (value: string) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",
                                     fontWeight: "bolder",
                                 }}
                             >
-                                {value as string}
+                                {value}
                             </Box>
                         ),
                         extraProp: { readOnly: true },

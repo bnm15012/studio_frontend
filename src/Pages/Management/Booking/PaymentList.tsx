@@ -17,31 +17,22 @@ import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
 import DialogForm from "@/core/crud/DialogForm";
 import { useAppUI } from "@/context/UIContext";
+import { Booking, Payment, paymentStatus, paymentType } from "@/api/types";
+import { FieldDef } from "@/core/types";
 
-const paymentTypes = ["CASH", "UPI"];
-const paymentStatusTypes = ["COMPLETED", "PENDING"];
+const paymentTypes: paymentType[] = ["CASH", "UPI"];
+const paymentStatusTypes: paymentStatus[] = ["COMPLETED", "PENDING"];
 
-const PaymentList = ({
-    data,
-    field,
-}: {
-    data: Record<string, unknown>;
-    field: Record<string, unknown>;
-}) => {
-    const value = Array.isArray(data?.[field?.name as string])
-        ? (data[field.name as string] as Record<string, unknown>[])
-        : [];
-    const title = String(field?.label || "Payments");
-    const paidAmount = value.reduce(
-        (acc: number, curr: Record<string, unknown>) => acc + (curr.amount as number),
-        0,
-    );
+const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> }) => {
+    const value: Payment[] = Array.isArray(data?.paymentEntries) ? data.paymentEntries : [];
+    const title = field.label || "Payments";
+    const paidAmount = value.reduce((acc: number, curr: Payment) => acc + curr.amount, 0);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const showAlert = useAlert();
     const { token } = useAppUI();
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const [paymentFormData, setPaymentFormData] = useState<Record<string, unknown> | undefined>();
+    const [paymentFormData, setPaymentFormData] = useState<Payment | undefined>();
 
     if (!value?.length) {
         return (
@@ -58,7 +49,7 @@ const PaymentList = ({
 
     const handleSave = async () => {
         if (!paymentFormData) return;
-        if ((paymentFormData.id as string) !== "NEW") {
+        if (paymentFormData.id !== "NEW") {
             dispatch(
                 paymentCruds.update(
                     paymentFormData.id as string | number,
@@ -75,10 +66,10 @@ const PaymentList = ({
                         payeeType: "BOOKING",
                         amount: paymentFormData.amount,
                         paymentDate: paymentFormData.paymentDate,
-                        status: paymentFormData.status,
-                        paymentType: paymentTypes[0],
-                        branchId: data.branchId as number,
-                        payeeId: data.id as number,
+                        status: "COMPLETED",
+                        paymentType: "CASH",
+                        branchId: data.branchId,
+                        payeeId: data.id,
                     },
                     token,
                     showAlert,
@@ -113,7 +104,7 @@ const PaymentList = ({
                         setPaymentFormData({
                             id: "NEW",
                             amount: (data.totalAmount as number) - paidAmount,
-                            paymentDate: getCurrentDateTimeLocal(),
+                            paymentDate: getCurrentDateTimeLocal() ?? undefined,
                             status: paymentStatusTypes[0],
                             paymentType: paymentTypes[0],
                         });
@@ -127,7 +118,7 @@ const PaymentList = ({
             </FlexBetween>
 
             <StyledCardContainer>
-                {value.map((m: Record<string, unknown>) => (
+                {value.map((m: Payment) => (
                     <StyledMotionCard key={String(m.id)}>
                         <StyledCardContent>
                             <PaymentCard row={m} />
@@ -164,7 +155,7 @@ const PaymentList = ({
                             name: "status",
                             label: "Status",
                             type: "SELECT",
-                            getValue: (value: unknown) => value && { key: value, value },
+                            getValue: (value: paymentStatus) => value && { key: value, value },
                             extraProp: {
                                 getOptions: async (search: string, page: number, limit: number) =>
                                     ["PENDING", "COMPLETED"]
@@ -179,7 +170,7 @@ const PaymentList = ({
                             name: "paymentType",
                             label: "Payment Category",
                             type: "SELECT",
-                            getValue: (value: unknown) => value && { key: value, value },
+                            getValue: (value: paymentType) => value && { key: value, value },
                             extraProp: {
                                 getOptions: async (search: string, page: number, limit: number) =>
                                     ["CASH", "UPI"]
@@ -192,10 +183,13 @@ const PaymentList = ({
                         },
                     ]}
                     handleChange={(value, _, fieldName) => {
-                        setPaymentFormData((prev) => ({
-                            ...prev,
-                            [fieldName]: value,
-                        }));
+                        setPaymentFormData(
+                            (prev) =>
+                                ({
+                                    ...prev,
+                                    [fieldName]: value,
+                                }) as Payment,
+                        );
                     }}
                     handleSave={handleSave}
                     setClose={() => setOpenPaymentDialog(false)}

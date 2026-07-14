@@ -19,12 +19,12 @@ export const getVisibleFields = <T extends Entity>(fields: FieldDef<T>[]): Field
  * @param isEdit - editing mode flag
  * @returns resolved value
  */
-export const resolveFieldValue = <T extends Entity>(
-    field: FieldDef<T>,
+export const resolveFieldValue = <T extends Entity, K extends string & keyof T>(
+    field: FieldDef<T, K>,
     row: T,
     isEdit: boolean,
-): unknown => {
-    const raw = getNestedValue(row, field.name);
+): React.ReactNode | { key: string; value: T[K] } | T[K] => {
+    const raw = getNestedValue<T, K>(row, field.name);
     return field?.getValue ? field.getValue(raw, row, isEdit) : raw;
 };
 

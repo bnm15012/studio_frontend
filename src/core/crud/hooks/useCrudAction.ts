@@ -132,7 +132,9 @@ export const useCrudAction = <T extends Entity>({
                 if (id === "NEW") {
                     const processedRow = await beforeAdd(newRow);
                     const { [consts.current.primaryKey]: _rowId, ...withoutId } = processedRow;
-                    dispatch(tableCruds.add(withoutId, token, showAlert, setLoading, true));
+                    dispatch(
+                        tableCruds.add(withoutId as Partial<T>, token, showAlert, setLoading, true),
+                    );
                     setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== id));
                 } else {
                     dispatch(

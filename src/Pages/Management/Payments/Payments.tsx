@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import type { Payment } from "../../../api/types";
+import type { Payment, paymentStatus, paymentType } from "../../../api/types";
 import type { FieldDef, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import PaymentCard from "./PaymentCardView";
@@ -30,7 +30,7 @@ const FIELDS: FieldDef<Payment>[] = [
         name: "status",
         label: "Status",
         type: "SELECT",
-        getValue: (value: unknown) => value && { key: value, value },
+        getValue: (value: paymentStatus) => value && { key: value, value },
         defaultValue: STATUS[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -51,7 +51,7 @@ const FIELDS: FieldDef<Payment>[] = [
         name: "paymentType",
         label: "Payment Type",
         type: "SELECT",
-        getValue: (value: unknown) => value && { key: value, value },
+        getValue: (value: paymentType) => value && { key: value, value },
         defaultValue: PAYMENT_TYPE[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>

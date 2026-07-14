@@ -30,7 +30,7 @@ const FIELDS: FieldDef<Client>[] = [
         name: "clientType",
         label: "Client Type",
         type: "SELECT",
-        getValue: (value: unknown) => value && { value, key: value },
+        getValue: (value) => (value ? { value, key: String(value) } : null),
         extraProp: {
             getOptions: async () => clientTypes.map((a) => ({ key: a, value: a })),
         },
