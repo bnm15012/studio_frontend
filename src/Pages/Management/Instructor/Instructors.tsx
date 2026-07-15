@@ -15,7 +15,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
 import ActionBar from "@/core/components/layout/ActionBar";
 
-const size = 12;
+const LIMIT = 12;
 
 const FIELD_META = {
     primary: "instructorId",
@@ -251,7 +251,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                 apiRef={apiInstructor}
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}
-                size={size}
+                size={LIMIT}
                 key={"instructors"}
                 fields={[...FIELDS, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}

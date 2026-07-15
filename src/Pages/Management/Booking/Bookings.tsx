@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarView from "./Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
-import type { Booking, Payment } from "../../../api/types";
+import type { Booking, Payment, paymentStatus, paymentType } from "../../../api/types";
 
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useAppUI } from "@/context/UIContext";
@@ -59,12 +59,12 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const pendingPaymentRef = useRef<{
-        onSave: (data: Booking | null) => void;
+        onSave: (data: Partial<Payment> | null) => void;
         onClose: () => void;
-        paymentInit: Booking;
+        paymentInit: Partial<Payment>;
     } | null>(null);
     const getClientsByName = useCallback(
-        async (params: Booking) => {
+        async (params: Booking<Booking>) => {
             const { success, data, message } = await getCLientByNamesAPI({
                 branchId: currentBranch.branchId,
                 token,
@@ -87,9 +87,9 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
     );
 
     const awaitForDialog = useCallback(
-        (paymentInit: Booking) =>
-            new Promise<Booking | null>((resolve) => {
-                const handleSave = (data: Booking | null) => {
+        (paymentInit: Partial<Payment>) =>
+            new Promise<Partial<Payment> | null>((resolve) => {
+                const handleSave = (data: Partial<Payment> | null) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -121,9 +121,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
 
     const beforeAdd = useCallback(
         async (row: Booking) => {
-            const modifiedData = { ...row };
-            delete modifiedData.dueAmount;
-            delete modifiedData.paidAmount;
+            const { dueAmount, paidAmount, ...modifiedData } = row;
             const clientEntry = modifiedData.clientEntry;
 
             if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
@@ -131,14 +129,14 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                 modifiedData.clientEntry = { clientId: entry.key };
             }
 
-            const paymentInit = {
+            const paymentInit: Partial<Payment> = {
                 type: "BOOKING",
                 actualAmount: row.totalAmount,
                 amount: row.totalAmount,
-                status: paymentStatusTypes[0],
-                paymentType: paymentTypes[0],
+                status: paymentStatusTypes[0] as paymentStatus,
+                paymentType: paymentTypes[0] as paymentType,
                 branchId: currentBranch.branchId,
-                paymentDate: getCurrentDateTimeLocal(),
+                paymentDate: getCurrentDateTimeLocal() ?? undefined,
             };
 
             const paymentData = await awaitForDialog(paymentInit);
@@ -335,7 +333,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     onSave={(data) => pendingPaymentRef.current?.onSave?.(data)}
                     onClose={() => pendingPaymentRef.current?.onClose?.()}
                     initialData={pendingPaymentRef.current?.paymentInit}
-                    paymentStatus={paymentStatusTypes.map((ps) => ({ label: ps, value: ps }))}
+                    paymentStatus={paymentStatusTypes as paymentStatus[]}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
                 />
             )}

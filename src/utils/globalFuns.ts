@@ -1,7 +1,6 @@
-export const compareData = (
-    obj1: Record<string, unknown>,
-    obj2: Record<string, unknown>,
-): boolean => {
+import { Entity } from "@/core/types";
+
+export const compareData = <T extends Entity>(obj1: T, obj2: T): boolean => {
     if (!obj1 || !obj2) return false;
     return (
         JSON.stringify(obj2, Object.keys(obj2).sort()) ===
@@ -11,7 +10,7 @@ export const compareData = (
 
 export function replacePlaceholders(
     templateStr: string | null | undefined,
-    dataMap: Record<string, unknown> & { getLocalDateTime?: (date: string) => string },
+    dataMap: Entity & { getLocalDateTime?: (date: string) => string },
 ): string {
     if (!templateStr) return "";
     return templateStr.replace(/{{\s*([\w_]+)\s*}}/g, (_, key) => {

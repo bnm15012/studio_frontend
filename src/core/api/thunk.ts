@@ -1,7 +1,7 @@
 /** Creates Redux async thunks for CRUD operations (fetch list, fetch one, create, update, delete) with caching, loading states, and error handling. */
 import api from "../utils/api";
 import { getApiMessage, getHeader, isCacheValid, withLoading } from "./helper";
-import { CrudThunks, Entity, AppDispatch } from "../types";
+import { CrudThunks, Entity, AppDispatch, RequestParams } from "../types";
 import { GenericState } from "@/core/state/stateTypes";
 import { buildThunkKey, tryAcquireThunk, releaseThunk } from "./apiGuard";
 
@@ -134,7 +134,7 @@ export function createCrudThunks<T extends Entity = Entity>({
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
             token: string | null | undefined,
-            params: Record<string, unknown>,
+            params: RequestParams,
             rootId: string | number,
             infinite?: boolean,
             /** Internal flag — used by `refresh` to bypass cache checks. Not part of the public CrudThunks interface. */

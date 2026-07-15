@@ -133,7 +133,7 @@ export interface CrudThunks<T extends Entity = Entity> {
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         token: string | null | undefined,
-        params: PaginationParams,
+        params: RequestParams,
         rootId: string | number | null | undefined,
         infinite?: boolean,
         _force?: boolean,
@@ -154,7 +154,7 @@ export interface CrudThunks<T extends Entity = Entity> {
     [key: string]: unknown;
 }
 
-export interface PaginationParams {
+export interface RequestParams {
     page?: number;
     size?: number;
     searchTerm?: string;

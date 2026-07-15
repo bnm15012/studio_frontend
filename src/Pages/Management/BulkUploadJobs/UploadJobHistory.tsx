@@ -15,7 +15,7 @@ import Loading from "@/core/components/loading/Loading";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { useAppUI } from "@/context/UIContext";
 
-const size = 7;
+const LIMIT = 7;
 const UploadJobHistory = () => {
     const showAlert = useAlert();
     const { token, currentBranch } = useAppUI();
@@ -31,11 +31,11 @@ const UploadJobHistory = () => {
                 branchId: currentBranch.branchId,
                 token,
                 page,
-                size,
+                size: LIMIT,
             });
             if (success) {
                 setData(data);
-                setTotalPage(Math.ceil(totalCount / size));
+                setTotalPage(Math.ceil(totalCount / LIMIT));
             } else {
                 showAlert(message, "error");
             }

@@ -30,7 +30,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
     const [options, setOptions] = useState<GenericItem[]>([]);
     const [selected, setSelected] = useState<GenericItem[]>(data);
     const [loading, setLoading] = useState<boolean>(false);
-    const size = 10;
+    const LIMIT = 10;
     const pageFetched = useRef<number[]>([]);
     const [totalRecords, setTotalRecords] = useState<number | undefined>();
 
@@ -38,7 +38,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
         async (page = 1) => {
             if (pageFetched.current.includes(page)) return;
             setLoading(true);
-            const { data, totalCount } = await fetchOptions(page, size);
+            const { data, totalCount } = await fetchOptions(page, LIMIT);
             setTotalRecords(totalCount);
             setOptions((prev) => {
                 const merged = [...prev, ...data];
@@ -65,7 +65,7 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    fetchMoreOptions(Math.floor(options.length / size) + 1);
+                    fetchMoreOptions(Math.floor(options.length / LIMIT) + 1);
                 }
             },
             { rootMargin: "100px" },

@@ -4,9 +4,10 @@ import { BookTemplate } from "lucide-react";
 import CardChip from "@/core/components/cards/CardChip";
 import { Subject } from "@mui/icons-material";
 import { Box } from "@mui/material";
+import { GenericTemplate } from "@/api/types";
 
 interface TemplateCardProps {
-    row: Record<string, unknown>;
+    row: GenericTemplate;
 }
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ row }) => {
@@ -15,12 +16,12 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ row }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                fieldValue={String(templateName)}
+                fieldValue={templateName}
                 FieldIcon={BookTemplate}
-                badge={String(templateType ?? "")}
+                badge={templateType}
                 enabled={true}
             />
-            {!!templateSubject && <CardChip ChipIcon={Subject} value={String(templateSubject)} />}
+            {!!templateSubject && <CardChip ChipIcon={Subject} value={templateSubject} />}
         </Box>
     );
 };

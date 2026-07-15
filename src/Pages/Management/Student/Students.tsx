@@ -18,18 +18,28 @@ import StudentAttendence from "./StudentAttendence";
 import OtherInfo from "./OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
-import type { Activity, BatchEntry, genderType, Student, StudentAssignment } from "@/api/types";
+import type {
+    Activity,
+    BatchEntry,
+    genderType,
+    GenericTemplate,
+    Payment,
+    paymentStatus,
+    paymentType,
+    Student,
+    StudentAssignment,
+} from "@/api/types";
 import type { FieldDef, ViewsApiRef } from "@/core/types";
 
-const size = 12;
+const LIMIT = 12;
 
 const FIELD_META = {
     primary: "studentId",
     root: "branchId",
 };
 
-const PAYMENT_STATUS = ["COMPLETED", "PENDING"];
-const PAYMENT_TYPE = ["CASH", "UPI"];
+const PAYMENT_STATUS: paymentStatus[] = ["COMPLETED", "PENDING"];
+const PAYMENT_TYPE: paymentType[] = ["CASH", "UPI"];
 
 const FIELDS: FieldDef<Student>[] = [
     {
@@ -174,14 +184,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState<
         | false
         | {
-              onSave: (data: unknown) => void;
-              onClose: () => void;
-              paymentInit: unknown;
-          }
+            onSave: (data: Partial<Payment>) => void;
+            onClose: () => void;
+            paymentInit: Partial<Payment>;
+        }
     >(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{
         open: boolean;
-        data?: Record<string, unknown>;
+        data?: GenericTemplate;
     }>({ open: false });
     const api = useRef<ViewsApiRef>({});
     const apiStudent = useRef<ViewsApiRef>({});
@@ -204,16 +214,16 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     }
 
     const awaitForDialog = useCallback(
-        (paymentInit: unknown) =>
+        (paymentInit: Partial<Payment>) =>
             new Promise((resolve) => {
-                const handleSave = (data: unknown) => {
+                const handleSave = (data: Partial<Payment>) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
 
                 const handleClose = () => {
                     setOpenPaymentDialog(false);
-                    resolve(null);
+                    throw new Error("Payment cancelled");
                 };
 
                 setOpenPaymentDialog({
@@ -226,12 +236,12 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const beforeAdd = useCallback(
-        async (row: Record<string, unknown>) => {
+        async (row: Student) => {
             const modifiedData = { ...row };
 
-            const paymentInit = {
-                actualAmount: modifiedData.activityAmount,
-                amount: modifiedData.activityAmount,
+            const paymentInit: Partial<Payment> = {
+                actualAmount: Number(modifiedData.activityAmount ?? 0),
+                amount: Number(modifiedData.activityAmount ?? 0),
                 status: PAYMENT_STATUS[0],
                 paymentType: PAYMENT_TYPE[0],
                 paymentDate: modifiedData?.paymentEntry?.paymentDate ?? getCurrentDateTimeLocal(),
@@ -240,12 +250,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             const paymentData = await awaitForDialog(paymentInit);
 
             if (paymentData) {
-                modifiedData.paymentEntry = {
-                    ...((row.paymentEntry as Record<string, unknown>) || {}),
-                    ...paymentData,
-                };
-            } else {
-                throw new Error("Payment cancelled");
+                modifiedData.paymentEntry = { ...(row.paymentEntry || {}), ...paymentData };
             }
             return modifiedData;
         },
@@ -691,7 +696,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
-                size={size}
+                size={LIMIT}
                 key={"students"}
                 fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
                 rootId={currentBranch.branchId}
@@ -715,14 +720,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             {openPaymentDialog && (
                 <PaymentEntryDialog
                     open={true}
-                    onSave={(data: unknown) => {
+                    onSave={(data) => {
                         if (openPaymentDialog) openPaymentDialog.onSave(data);
                     }}
                     onClose={() => {
                         if (openPaymentDialog) openPaymentDialog.onClose();
                     }}
-                    initialData={openPaymentDialog?.paymentInit as Record<string, unknown>}
-                    paymentStatus={PAYMENT_STATUS.map((ps) => ({ label: ps, value: ps }))}
+                    initialData={openPaymentDialog?.paymentInit}
+                    paymentStatus={PAYMENT_STATUS}
                     paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
                 />
             )}

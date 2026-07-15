@@ -9,15 +9,20 @@ import {
     Typography,
 } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import DateTime from "@/core/components/fields/DateTime";
+import { Payment, paymentStatus, paymentType } from "@/api/types";
+
+interface PaymentOption {
+    label: string;
+    value: string;
+}
 
 interface PaymentEntryDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (data: Record<string, unknown>) => void;
-    initialData?: Record<string, unknown>;
-    paymentStatus: Array<{ value: string; label: string }>;
-    paymentType: Array<{ value: string; label: string }>;
+    onSave: (data: Partial<Payment>) => void;
+    initialData?: Partial<Payment>;
+    paymentStatus: paymentStatus[];
+    paymentType: PaymentOption[];
 }
 
 const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
@@ -28,14 +33,14 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     paymentStatus,
     paymentType,
 }) => {
-    const [formData, setFormData] = useState<Record<string, unknown>>(initialData || {});
+    const [formData, setFormData] = useState<Partial<Payment>>(initialData || {});
 
     useEffect(() => {
         if (initialData) setFormData({ ...initialData });
     }, [initialData]);
 
     const handleConfirm = () => {
-        const data = { ...formData };
+        const data: Partial<Payment> = { ...formData };
         if (data.type === "BOOKING") {
             delete data.actualAmount;
             delete data.type;
@@ -67,7 +72,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                     value={formData.amount ?? ""}
                     fullWidth
                     onChange={(e) =>
-                        setFormData((prev: Record<string, unknown>) => ({
+                        setFormData((prev) => ({
                             ...prev,
                             amount: Number(e.target.value),
                         }))
@@ -80,19 +85,19 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
 
                 <FormControl fullWidth>
                     <InputLabel>Payment Status</InputLabel>
-                    <Select
-                        value={formData.status || ""}
+                    <Select<paymentStatus>
+                        value={formData.status || "PENDING"}
                         label="Payment Status"
                         onChange={(e) =>
-                            setFormData((prev: Record<string, unknown>) => ({
+                            setFormData((prev) => ({
                                 ...prev,
-                                status: e.target.value,
+                                status: e.target.value as paymentStatus,
                             }))
                         }
                     >
                         {paymentStatus?.map((status) => (
-                            <MenuItem key={status.value} value={status.value}>
-                                {status.label}
+                            <MenuItem key={status} value={status}>
+                                {status}
                             </MenuItem>
                         ))}
                     </Select>
@@ -114,9 +119,9 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                         value={formData.paymentType || ""}
                         label="Payment Type"
                         onChange={(e) =>
-                            setFormData((prev: Record<string, unknown>) => ({
+                            setFormData((prev) => ({
                                 ...prev,
-                                paymentType: e.target.value,
+                                paymentType: e.target.value as paymentType,
                             }))
                         }
                     >

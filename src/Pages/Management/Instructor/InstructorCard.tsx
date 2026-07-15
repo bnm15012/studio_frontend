@@ -3,9 +3,10 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import ContactSection from "@/core/components/cards/ContactSection";
 import CardLocation from "@/core/components/cards/CardLocation";
 import { Box } from "@mui/material";
+import { Instructor } from "@/api/types";
 
 interface InstructorCardProps {
-    row: Record<string, unknown>;
+    row: Instructor;
 }
 
 const InstructorCard: React.FC<InstructorCardProps> = ({ row }) => {
