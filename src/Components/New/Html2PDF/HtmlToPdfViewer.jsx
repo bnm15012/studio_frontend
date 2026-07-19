@@ -10,7 +10,18 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const indianMobileRegex = /^[6-9]\d{9}$/;
 
 const HtmlToPdfViewer = forwardRef(
-    ({ content, header, studio, fileName = "document", footer, remainingPayload = {}, whatsAppPayload = {} }, ref) => {
+    (
+        {
+            content,
+            header,
+            studio,
+            fileName = "document",
+            footer,
+            remainingPayload = {},
+            whatsAppPayload = {},
+        },
+        ref,
+    ) => {
         const previewRef = useRef(null);
         const sourceRef = useRef(null);
         const containerRef = useRef(null);
@@ -22,8 +33,8 @@ const HtmlToPdfViewer = forwardRef(
         const pdfOptions = {
             filename: `${fileName}.pdf`,
             margin: [0, 0, 0, 0],
-            image: { type: "jpeg", quality: 0.01 },
-            html2canvas: { scale: 5, useCORS: true },
+            image: { type: "jpeg", quality: 0.95 },
+            html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: "mm", format: "a4" },
         };
 
@@ -56,7 +67,8 @@ const HtmlToPdfViewer = forwardRef(
 
             setDialogOpen(false);
             if (dialogType === "email") await sendMail();
-            else if (dialogType === "mobile") await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload });
+            else if (dialogType === "mobile")
+                await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload });
         };
 
         useImperativeHandle(ref, () => ({
@@ -167,14 +179,19 @@ const HtmlToPdfViewer = forwardRef(
                     </div>
                 </div>
 
-                <div className="preview-container" ref={containerRef} style={{
-                    width: "100%",
-                    overflow: "hidden",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    position: "relative",
-                }}>
+                <div
+                    className="preview-container"
+                    ref={containerRef}
+                    style={{
+                        width: "100%",
+                        overflowX: "hidden",
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        position: "relative",
+                    }}
+                >
                     <div id="preview" ref={previewRef}></div>
                 </div>
 
