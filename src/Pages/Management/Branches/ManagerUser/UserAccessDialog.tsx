@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
+import { userRights } from "@/api/types";
 
 const ACCESS_BUTTONS = {
     activity: "Activity",
@@ -20,8 +21,8 @@ const ACCESS_RIGHTS = ["NONE", "FULL"];
 interface UserAccessDialogProps {
     open: boolean;
     onClose: () => void;
-    userAccessEntry: Record<string, "NONE" | "FULL">;
-    onSave: (access: Record<string, "NONE" | "FULL">) => void;
+    userAccessEntry: Record<string, userRights>;
+    onSave: (access: Record<string, userRights>) => void;
     isEdit?: boolean;
 }
 
@@ -33,17 +34,17 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({
     isEdit = false,
 }) => {
     const settings = useAppSelector((state) => state.auth.settings);
-    const [accessState, setAccessState] = useState<Record<string, unknown>>({});
+    const [accessState, setAccessState] = useState<Record<string, userRights>>({});
 
-    const studioLevelAccess = Object.keys(settings as unknown as Record<string, unknown>)
-        .filter((k) => (settings as unknown as Record<string, unknown>)[k])
+    const studioLevelAccess = Object.keys(settings)
+        .filter((k) => settings[k])
         .map((key) => key.replace(/_/g, ""));
 
     useEffect(() => {
         if (userAccessEntry) {
             setAccessState({ ...userAccessEntry });
         } else {
-            const initialState: Record<string, string> = {};
+            const initialState: Record<string, userRights> = {};
             Object.keys(ACCESS_BUTTONS).forEach((key: string) => {
                 initialState[key] = "NONE";
             });
@@ -51,12 +52,12 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({
         }
     }, [userAccessEntry]);
 
-    const handleChange = (key: string, value: "NONE" | "FULL") => {
+    const handleChange = (key: string, value: userRights) => {
         setAccessState((prev) => ({ ...prev, [key]: value }));
     };
 
     const handleSave = () => {
-        onSave(accessState as Record<string, "NONE" | "FULL">);
+        onSave(accessState);
         onClose();
     };
 
@@ -91,7 +92,7 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({
                                 value={accessState[key] === "FULL"}
                                 type="BOOL"
                                 setValue={(v: unknown) =>
-                                    handleChange(key, ACCESS_RIGHTS[v ? 1 : 0] as "NONE" | "FULL")
+                                    handleChange(key, ACCESS_RIGHTS[v ? 1 : 0] as userRights)
                                 }
                             />
                         </Box>

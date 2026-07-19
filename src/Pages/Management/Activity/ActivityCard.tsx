@@ -25,22 +25,11 @@ import { useAppUI } from "@/context/UIContext";
 import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
 import { colorTokens } from "@/core/utils/theme/theme";
 
+import type { Activity } from "@/api/types";
+
 interface ActivityCardProps {
-    activity: {
-        activityId?: string | number;
-        activityType: string;
-        description?: string;
-        batchEntries: {
-            batchId: string | number;
-            name: string;
-            planType: string;
-            startTime: string;
-            endTime: string;
-            price: string | number;
-            daysPerWeek: string | number;
-        }[];
-    };
-    onEdit: (activity: ActivityCardProps["activity"]) => void;
+    activity: Activity;
+    onEdit: (activity: Activity) => void;
     onDelete: (activityId: string | number) => void;
     /** Index used to pick the gradient from the theme's activityCardGradient palette */
     index?: number;

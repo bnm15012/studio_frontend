@@ -37,9 +37,7 @@ const FIELDS: FieldDef<User>[] = [
         type: "CUSTOM",
         defaultValue: {},
         extraProp: {
-            CustomComponent: UserAccessButton as unknown as React.ComponentType<
-                Record<string, unknown>
-            >,
+            CustomComponent: UserAccessButton,
         },
     },
 ];

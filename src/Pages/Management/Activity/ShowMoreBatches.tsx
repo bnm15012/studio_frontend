@@ -3,16 +3,10 @@ import { DialogContent } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import StyledDialog from "@/core/components/dialogs/StyledDialog"; // adjust path as needed
 
+import type { BatchEntry } from "@/api/types";
+
 interface ShowMoreBatchesProps {
-    batchEntries: {
-        batchId: string | number;
-        name: string;
-        planType: string;
-        startTime: string;
-        endTime: string;
-        price: string | number;
-        daysPerWeek: string | number;
-    }[];
+    batchEntries: BatchEntry[];
     onClose: () => void;
 }
 

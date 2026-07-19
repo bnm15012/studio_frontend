@@ -204,9 +204,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 label: "",
                 type: "CUSTOM",
                 extraProp: {
-                    CustomComponent: OtherInfo as unknown as React.ComponentType<
-                        Record<string, unknown>
-                    >,
+                    CustomComponent: OtherInfo,
                 },
             },
         ];

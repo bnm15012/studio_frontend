@@ -29,21 +29,11 @@ const MarkPresentDialog: React.FC = () => {
     const markPresent = useCallback(
         async (assignmentId: string) => {
             try {
-                await (dispatch as unknown as (action: unknown) => Promise<void>)(
-                    (
-                        studentsAssignmentsCruds as unknown as {
-                            markAttendanceQR: (
-                                assignmentId: string | number,
-                                token: string | null | undefined,
-                                showAlert: (msg: string, type: string) => void,
-                                setLoading: (loading: boolean) => void,
-                                throwError?: boolean,
-                            ) => (dispatch: unknown) => Promise<void>;
-                        }
-                    ).markAttendanceQR(
+                await dispatch(
+                    studentsAssignmentsCruds.markAttendanceQR(
                         assignmentId,
                         token,
-                        showAlert as (msg: string, type: string) => void,
+                        showAlert,
                         setLoading,
                         true,
                     ),

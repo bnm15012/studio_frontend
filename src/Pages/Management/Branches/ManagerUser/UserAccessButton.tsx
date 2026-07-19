@@ -3,10 +3,11 @@ import { useState } from "react";
 import UserAccessDialog from "./UserAccessDialog";
 
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
+import { userRights } from "@/api/types";
 
 interface UserAccessButtonProps {
-    value: Record<string, "NONE" | "FULL">;
-    setValue: (access: Record<string, "NONE" | "FULL">) => void;
+    value?: Record<string, userRights>;
+    setValue?: (access: Record<string, userRights>) => void;
     isEdit?: boolean;
 }
 
@@ -30,9 +31,9 @@ const UserAccessButton = (props: UserAccessButtonProps) => {
                 <UserAccessDialog
                     open={true}
                     onClose={() => setAccessDialogOpen(false)}
-                    userAccessEntry={value}
+                    userAccessEntry={value ?? {}}
                     isEdit={isEdit}
-                    onSave={setValue}
+                    onSave={setValue ?? (() => {})}
                 />
             )}
         </>

@@ -36,7 +36,7 @@ interface BatchFormData {
     startTime: string;
     endTime: string;
 }
-interface ActivityFormData {
+export interface ActivityFormData {
     activityId: string | number;
     activityType: string;
     description: string;
@@ -48,7 +48,7 @@ interface ActivityDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     activity?: Activity | null;
-    onSave: (data: Record<string, unknown>) => void;
+    onSave: (data: ActivityFormData) => void | Promise<void>;
 }
 
 const ActivityDialog: React.FC<ActivityDialogProps> = ({
@@ -90,7 +90,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
 
     useEffect(() => {
         if (activity) {
-            setFormData(activity as unknown as ActivityFormData);
+            setFormData(activity as ActivityFormData);
         } else {
             setFormData({
                 activityId: "NEW",
@@ -135,7 +135,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
     };
 
     const handleSave = () => {
-        onSave(formData as unknown as Record<string, unknown>);
+        onSave(formData);
     };
 
     const isFormValid = () => {

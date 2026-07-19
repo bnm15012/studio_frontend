@@ -6,6 +6,7 @@ export type paymentStatus = "COMPLETED" | "PENDING" | "PARTIALLY PAID";
 export type genderType = "MALE" | "FEMALE" | "NOT_TO_SAY";
 export type activityStatus = "ACTIVE" | "INACTIVE";
 export type clientType = "GROUP" | "INDIVIDUAL" | "COMPANY";
+export type userRights = "FULL" | "NONE";
 export type expenseCategory =
     | "ELECTRICITY"
     | "SALARY"
@@ -36,7 +37,7 @@ export interface User extends Entity {
     role: string;
     enabled?: boolean;
     imageUrl?: string;
-    userAccessEntry: Record<string, "NONE" | "FULL">;
+    userAccessEntry: Record<string, userRights>;
     token: string;
 }
 

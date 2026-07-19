@@ -2,14 +2,12 @@
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
 import { FieldTypes } from "./components/fields/FieldTypes";
+import { Entity } from "./state/stateTypes";
+export type { Entity };
 
 export type AppDispatch = (action: unknown) => unknown;
 
 export type ViewMode = "LIST" | "CARD" | "FORM";
-
-export interface Entity {
-    [key: string]: unknown;
-}
 
 export interface SelectOption<T extends Entity = Entity> {
     key: string | number;
@@ -41,7 +39,8 @@ export interface ExtraProp<T extends Entity = Entity> {
         limit: number,
         row?: T,
     ) => Promise<SelectOption<T>[]>;
-    CustomComponent?: React.ComponentType<Record<string, unknown>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    CustomComponent?: React.ComponentType<any>;
     readOnly?: boolean;
     addValue?: boolean;
     saveType?: string;

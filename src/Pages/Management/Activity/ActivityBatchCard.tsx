@@ -7,16 +7,10 @@ import { membershipTypeColors } from "./Activities.constants";
 import { useAppUI } from "@/context/UIContext";
 import { alpha } from "@mui/material/styles";
 
+import type { BatchEntry } from "@/api/types";
+
 interface ActivityBatchCardProps {
-    batch: {
-        batchId: string | number;
-        name: string;
-        planType: string;
-        startTime: string;
-        endTime: string;
-        price: string | number;
-        daysPerWeek: string | number;
-    };
+    batch: BatchEntry;
 }
 
 const ActivityBatchCard: React.FC<ActivityBatchCardProps> = ({ batch }) => {
@@ -38,7 +32,7 @@ const ActivityBatchCard: React.FC<ActivityBatchCardProps> = ({ batch }) => {
                     {/* Plan type pill */}
                     <Chip
                         size="small"
-                        label={batch.planType.replace(/_/g, " ")}
+                        label={batch.planType?.replace(/_/g, " ") ?? ""}
                         sx={{
                             backgroundColor: alpha(chipColor, 0.12),
                             color: chipColor,

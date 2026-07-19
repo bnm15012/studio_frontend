@@ -4,9 +4,10 @@ import UserAccessButton from "./UserAccessButton";
 
 import CardHeader from "@/core/components/cards/CardHeader";
 import { Box } from "@mui/material";
-import React from "react";
 
-const UserCard = ({ row }: { row: Record<string, unknown> }) => {
+import type { User } from "@/api/types";
+
+const UserCard = ({ row }: { row: User }) => {
     const { userName, email, role, enabled, phone, userAccessEntry, imageUrl } = row;
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
@@ -24,9 +25,7 @@ const UserCard = ({ row }: { row: Record<string, unknown> }) => {
                     type="CUSTOM"
                     isEdit={false}
                     extraProp={{
-                        CustomComponent: UserAccessButton as unknown as React.ComponentType<
-                            Record<string, unknown>
-                        >,
+                        CustomComponent: UserAccessButton,
                     }}
                 />
             </Box>

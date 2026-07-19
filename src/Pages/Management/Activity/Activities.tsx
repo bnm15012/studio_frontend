@@ -15,20 +15,12 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { activityCruds } from "../../../api/all.api";
 import ActivityCard from "./ActivityCard";
-import ActivityDialog from "./ActivityDialog";
+import ActivityDialog, { type ActivityFormData } from "./ActivityDialog";
 import { useAppUI } from "@/context/UIContext";
 import { sortMembershipPlans } from "./Activity.util";
 import type { Activity, BatchEntry } from "../../../api/types";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-
-interface ActivityFormData {
-    activityId: string | number;
-    activityType: string;
-    description: string;
-    branchId: number;
-    batchEntries: BatchEntry[];
-}
 
 const Activities = () => {
     const showAlert = useAlert();
@@ -61,21 +53,8 @@ const Activities = () => {
         setDialogOpen(true);
     };
 
-    const handleEditActivity = (activity: {
-        activityId?: string | number;
-        activityType: string;
-        description?: string;
-        batchEntries: {
-            batchId: string | number;
-            name: string;
-            planType: string;
-            startTime: string;
-            endTime: string;
-            price: string | number;
-            daysPerWeek: string | number;
-        }[];
-    }) => {
-        setEditingActivity(activity as unknown as Activity);
+    const handleEditActivity = (activity: Activity) => {
+        setEditingActivity(activity);
         setDialogOpen(true);
     };
 
@@ -114,7 +93,7 @@ const Activities = () => {
             return;
         }
 
-        if (!checkUniqueConstraint(updatedActivity.batchEntries)) {
+        if (!checkUniqueConstraint(updatedActivity.batchEntries as BatchEntry[])) {
             showAlert(
                 `name, plan type and days per week cannot be the same for multiple ${permissions.BATCH ? "batch" : "membership"}.`,
                 "error",
@@ -124,11 +103,14 @@ const Activities = () => {
 
         try {
             if (String(updatedActivity.activityId ?? "") === "NEW") {
-                delete (updatedActivity as unknown as Record<string, unknown>).activityId;
-                updatedActivity.batchEntries.forEach((batch: BatchEntry) => delete batch.batchId);
+                const newPayload = { ...updatedActivity };
+                delete (newPayload as Partial<ActivityFormData>).activityId;
+                newPayload.batchEntries.forEach(
+                    (batch) => delete (batch as Partial<BatchEntry>).batchId,
+                );
                 dispatch(
                     activityCruds.add(
-                        updatedActivity as unknown as Record<string, unknown>,
+                        newPayload as unknown as Partial<Activity>,
                         token,
                         showAlert,
                         setLoading,
@@ -136,11 +118,12 @@ const Activities = () => {
                 );
                 setDialogOpen(false);
             } else {
-                updatedActivity.batchEntries.forEach((batch: BatchEntry) => {
-                    if (typeof batch.batchId === "string") delete batch.batchId;
+                updatedActivity.batchEntries.forEach((batch) => {
+                    if (typeof batch.batchId === "string")
+                        delete (batch as Partial<BatchEntry>).batchId;
                 });
 
-                const sortedActivity = sortMembershipPlans(updatedActivity as unknown as Activity);
+                const sortedActivity = sortMembershipPlans(updatedActivity as Activity);
                 await dispatch(
                     activityCruds.update(
                         updatedActivity.activityId!,
@@ -293,22 +276,7 @@ const Activities = () => {
                         <ActivityCard
                             key={activity.activityId}
                             index={i}
-                            activity={
-                                activity as unknown as {
-                                    activityId?: string | number;
-                                    activityType: string;
-                                    description?: string;
-                                    batchEntries: {
-                                        batchId: string | number;
-                                        name: string;
-                                        planType: string;
-                                        startTime: string;
-                                        endTime: string;
-                                        price: string | number;
-                                        daysPerWeek: string | number;
-                                    }[];
-                                }
-                            }
+                            activity={activity}
                             onEdit={handleEditActivity}
                             onDelete={handleDeleteActivity}
                         />
@@ -360,7 +328,7 @@ const Activities = () => {
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
                 activity={editingActivity}
-                onSave={handleSaveCard as unknown as (data: Record<string, unknown>) => void}
+                onSave={handleSaveCard}
             />
         </Box>
     );

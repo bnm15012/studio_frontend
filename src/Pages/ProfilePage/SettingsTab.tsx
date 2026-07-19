@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
 import { updateStudio } from "../Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { setSettings } from "../../state/authSlice";
+import { setSettings, Setting } from "../../state/authSlice";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 
@@ -14,9 +14,7 @@ const SettingsTab: React.FC = () => {
 
     const initialConfigurations = useAppSelector((state) => state.auth.settings);
 
-    const [configurations, setConfigurations] = useState<Record<string, boolean>>(
-        initialConfigurations as unknown as Record<string, boolean>,
-    );
+    const [configurations, setConfigurations] = useState<Setting>(initialConfigurations || {});
     const [isChanged, setIsChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
