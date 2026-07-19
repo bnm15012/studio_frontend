@@ -1,24 +1,21 @@
 /** Multi-select dialog with infinite-scroll option loading, checkbox selection, and save/cancel. */
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
 import StyledDialog from "./StyledDialog";
 
 import { GenericItem } from "../../types";
 
-interface MultiSelectDialogProps {
+interface MultiSelectDialogProps<T extends GenericItem = GenericItem> {
     open: boolean;
     onClose: () => void;
-    fetchOptions: (
-        page: number,
-        size: number,
-    ) => Promise<{ data: GenericItem[]; totalCount: number }>;
-    data: GenericItem[];
-    setData: (val: GenericItem[]) => void;
+    fetchOptions: (page: number, size: number) => Promise<{ data: T[]; totalCount: number }>;
+    data: T[];
+    setData: (val: T[]) => void;
     valueKey?: string;
     labelKey?: string;
 }
 
-const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
+export function MultiSelectDialog<T extends GenericItem = GenericItem>({
     open,
     onClose,
     fetchOptions,
@@ -26,9 +23,9 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
     setData,
     valueKey = "value",
     labelKey = "label",
-}) => {
-    const [options, setOptions] = useState<GenericItem[]>([]);
-    const [selected, setSelected] = useState<GenericItem[]>(data);
+}: MultiSelectDialogProps<T>) {
+    const [options, setOptions] = useState<T[]>([]);
+    const [selected, setSelected] = useState<T[]>(data);
     const [loading, setLoading] = useState<boolean>(false);
     const LIMIT = 10;
     const pageFetched = useRef<number[]>([]);
@@ -38,11 +35,11 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
         async (page = 1) => {
             if (pageFetched.current.includes(page)) return;
             setLoading(true);
-            const { data, totalCount } = await fetchOptions(page, LIMIT);
+            const { data: fetchedData, totalCount } = await fetchOptions(page, LIMIT);
             setTotalRecords(totalCount);
             setOptions((prev) => {
-                const merged = [...prev, ...data];
-                const uniqueMap = new Map<string | number | undefined, GenericItem>();
+                const merged = [...prev, ...fetchedData];
+                const uniqueMap = new Map<string | number | undefined, T>();
                 merged.forEach((item) => {
                     uniqueMap.set(item[valueKey] as string | number | undefined, item);
                 });
@@ -94,33 +91,35 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
             fullWidth
         >
             <DialogContent dividers style={{ maxHeight: "400px", overflow: "auto" }}>
-                {options.map((option, index) => (
-                    <MenuItem
-                        key={option[labelKey] as string | number}
-                        onClick={() => {
-                            const exists = selected.some(
-                                (sel) => sel[valueKey] === option[valueKey],
-                            );
-                            if (exists) {
-                                setSelected((prev) =>
-                                    prev.filter((sel) => sel[valueKey] !== option[valueKey]),
-                                );
-                            } else {
-                                setSelected((prev) => [...prev, option]);
-                            }
-                        }}
-                        style={{ display: "flex", alignItems: "center", gap: 10 }}
-                    >
-                        <span>{index + 1}.</span>
-                        <Checkbox
-                            edge="start"
-                            checked={selected.some((sel) => sel[valueKey] === option[valueKey])}
-                            tabIndex={-1}
-                            disableRipple
-                        />
-                        <ListItemText primary={option[labelKey] as React.ReactNode} />
-                    </MenuItem>
-                ))}
+                {options.map((option, index) => {
+                    const optVal = option[valueKey];
+                    const optLabel = option[labelKey];
+                    return (
+                        <MenuItem
+                            key={String(optLabel ?? index)}
+                            onClick={() => {
+                                const exists = selected.some((sel) => sel[valueKey] === optVal);
+                                if (exists) {
+                                    setSelected((prev) =>
+                                        prev.filter((sel) => sel[valueKey] !== optVal),
+                                    );
+                                } else {
+                                    setSelected((prev) => [...prev, option]);
+                                }
+                            }}
+                            style={{ display: "flex", alignItems: "center", gap: 10 }}
+                        >
+                            <span>{index + 1}.</span>
+                            <Checkbox
+                                edge="start"
+                                checked={selected.some((sel) => sel[valueKey] === optVal)}
+                                tabIndex={-1}
+                                disableRipple
+                            />
+                            <ListItemText primary={String(optLabel ?? "")} />
+                        </MenuItem>
+                    );
+                })}
                 <div ref={observerRef} style={{ height: 40, textAlign: "center" }}>
                     {loading && <CircularProgress />}
                     {options.length === totalRecords && <>No more record to show</>}
@@ -128,6 +127,6 @@ const MultiSelectDialog: React.FC<MultiSelectDialogProps> = ({
             </DialogContent>
         </StyledDialog>
     );
-};
+}
 
 export default MultiSelectDialog;

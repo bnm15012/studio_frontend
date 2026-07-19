@@ -1,9 +1,9 @@
 /** Hook encapsulating the delete flow: dispatches delete thunk, shows alerts, handles navigation after deletion. */
 import { useCallback, useState } from "react";
-import { ShowAlertFn, SetLoadingFn, CrudThunks } from "../../types";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, Entity } from "../../types";
 import type { AppDispatch } from "../../../state";
 
-interface UseDeleteHandlerProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface UseDeleteHandlerProps<T extends Entity = Entity> {
     tableCruds: CrudThunks<T>;
     token: string | null | undefined;
     showAlert: ShowAlertFn;
@@ -11,14 +11,11 @@ interface UseDeleteHandlerProps<T extends Record<string, unknown> = Record<strin
     dispatch: AppDispatch;
     navigate: (path: string) => void;
     tableName: string;
-    consts: React.MutableRefObject<{
-        primaryKey: string;
-        [key: string]: unknown;
-    }>;
+    consts: React.MutableRefObject<{ primaryKey: string }>;
     formKey?: string | number | null;
 }
 
-export const useDeleteHandler = <T extends Record<string, unknown> = Record<string, unknown>>({
+export const useDeleteHandler = <T extends Entity = Entity>({
     tableCruds,
     token,
     showAlert,

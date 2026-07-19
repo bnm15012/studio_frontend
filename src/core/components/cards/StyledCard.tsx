@@ -70,7 +70,10 @@ interface StyledMotionCardProps {
     children: React.ReactNode;
     elevation?: number;
     sx?: SxProps<Theme>;
-    [key: string]: unknown;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+    role?: string;
+    tabIndex?: number;
+    onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
 }
 
 export const StyledMotionCard: React.FC<StyledMotionCardProps> = ({ children, ...props }) => {

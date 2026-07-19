@@ -25,7 +25,6 @@ export interface GenericSliceActions<T extends Entity> {
     removeItem: ActionCreatorWithPayload<((item: T) => boolean) | string | number>;
     setRecord: ActionCreatorWithPayload<T>;
     clearData: ActionCreatorWithoutPayload;
-    [key: string]: unknown;
 }
 
 /** Shape of the opts object passed into the extraCruds factory. */

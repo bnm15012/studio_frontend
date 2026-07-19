@@ -39,7 +39,6 @@ interface CacheState {
 interface CacheParams {
     page?: unknown;
     searchTerm?: string;
-    [key: string]: unknown;
 }
 
 /**

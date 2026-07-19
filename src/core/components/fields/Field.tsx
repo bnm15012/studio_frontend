@@ -1,7 +1,7 @@
 /** Master field renderer that dispatches to the correct input component (Switch, DateTime, TextField, Select, Checkbox, Image, Editor, Custom) based on field type. */
 import React, { lazy, Suspense } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
-import { SelectOption } from "@/core/types";
+import { SelectOption, ExtraProp } from "@/core/types";
 import { SelectionFieldProps } from "@/core/components/fields/SelectionField";
 import { StyledSwitchProps } from "@/core/components/fields/StyledSwitch";
 import { DateTimeProps } from "@/core/components/fields/DateTime";
@@ -19,19 +19,6 @@ const ImageComponent = lazy(() => import("@/core/components/fields/ImageComponen
 const ImageDialog = lazy(() => import("@/core/crud/ImageDialog"));
 const StyledCheckbox = lazy(() => import("@/core/components/fields/StyledCheckbox"));
 
-interface ExtraProp {
-    min?: string | number;
-    max?: string | number;
-    rows?: number;
-    getOptions?: (search: string, page: number, limit: number) => Promise<SelectOption[]>;
-    readOnly?: boolean;
-    CustomComponent?: React.ComponentType<Record<string, unknown>>;
-    defaultImage?: string;
-    /** Token map for TemplateEditor — passed as `variables` prop. */
-    variables?: Record<string, unknown>;
-    [key: string]: unknown;
-}
-
 interface FieldProps {
     value?: unknown;
     setValue?: (val: unknown) => void;
@@ -40,7 +27,8 @@ interface FieldProps {
     label?: string;
     type?: string;
     validation?: Record<string, unknown>;
-    extraProp?: ExtraProp;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extraProp?: ExtraProp<any>;
     submitAttempted?: boolean;
 }
 

@@ -24,7 +24,6 @@ interface UseCrudActionProps<T extends Entity> {
     tableName: string;
     tableState: {
         currentPage: string | number;
-        [key: string]: unknown;
     };
     consts: React.MutableRefObject<{
         primaryKey: string;

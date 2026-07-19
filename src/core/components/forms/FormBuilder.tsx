@@ -200,7 +200,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                   required?: boolean;
                   regex?: string | RegExp;
                   message?: string;
-                  [key: string]: unknown;
               }
             | undefined,
     ) => {

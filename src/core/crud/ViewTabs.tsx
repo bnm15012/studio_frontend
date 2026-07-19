@@ -9,7 +9,6 @@ import type { ViewMode } from "../types";
 interface ViewFieldApi {
     current?: {
         addNewRow?: (...args: unknown[]) => void;
-        [key: string]: unknown;
     } | null;
 }
 

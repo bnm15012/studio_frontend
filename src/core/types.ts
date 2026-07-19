@@ -3,6 +3,7 @@ import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
 import { FieldTypes } from "./components/fields/FieldTypes";
 import { Entity } from "./state/stateTypes";
+import { RootState } from "@/state";
 export type { Entity };
 
 export type AppDispatch = (action: unknown) => unknown;
@@ -30,9 +31,12 @@ export type ShowAlertFn = (msg: string, type?: AlertColor) => void;
 export type SetLoadingFn = (loading: boolean) => void;
 
 /** Redux thunk action type — a function that receives dispatch and getState */
-export type ThunkAction = (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
+export type ThunkAction = (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
 
 export interface ExtraProp<T extends Entity = Entity> {
+    min?: string | number;
+    max?: string | number;
+    rows?: number;
     getOptions?: (
         search: string,
         page: number,
@@ -44,7 +48,13 @@ export interface ExtraProp<T extends Entity = Entity> {
     readOnly?: boolean;
     addValue?: boolean;
     saveType?: string;
-    [key: string]: unknown;
+    size?: string | number;
+    variant?: string;
+    includeCurrentTime?: boolean;
+    variables?: unknown;
+    multiline?: boolean;
+    defaultImage?: string;
+    disableVars?: boolean;
 }
 
 export interface FieldDef<
@@ -66,13 +76,13 @@ export interface FieldDef<
         required?: boolean;
         regex?: string | RegExp;
         message?: string;
-        [key: string]: unknown;
     };
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
     }>;
-    [key: string]: unknown;
+    api?: unknown;
+    viewProps?: unknown;
 }
 
 export interface ActionItem<T extends Entity = Entity> {
@@ -114,14 +124,14 @@ export interface CrudThunks<T extends Entity = Entity> {
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         prepend?: boolean,
-    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
     update: (
         id: string | number | null,
         updatedData: Partial<T>,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
-    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
     remove: (
         id: string | number | null,
         token: string | null | undefined,
@@ -136,32 +146,29 @@ export interface CrudThunks<T extends Entity = Entity> {
         rootId: string | number | null | undefined,
         infinite?: boolean,
         _force?: boolean,
-    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
+    ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
     getById: (
         id: string | number,
         token: string | null | undefined,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         options?: { forceRefresh?: boolean },
-    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<T | null>;
+    ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<T | null>;
     refresh: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         token: string | null | undefined,
         infinite?: boolean,
-    ) => (dispatch: AppDispatch, getState: () => unknown) => Promise<void>;
-    [key: string]: unknown;
+    ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
 }
 
 export interface RequestParams {
     page?: number;
     size?: number;
     searchTerm?: string;
-    [key: string]: unknown;
 }
 
 export interface ViewsApiRef {
     addNewRow?: () => void;
     refreshData?: () => void;
-    [key: string]: unknown;
 }

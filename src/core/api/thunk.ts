@@ -22,7 +22,6 @@ export interface CrudThunksOptions<T extends Entity = Entity> {
         };
         setInfo: (info: Entity) => { type: string; payload: Entity };
         clearData: () => { type: string };
-        [key: string]: unknown;
     };
     idKey: string;
     route: string;

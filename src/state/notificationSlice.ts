@@ -5,7 +5,6 @@ export interface NotificationItem {
     read: boolean;
     title?: string;
     message?: string;
-    [key: string]: unknown;
 }
 
 export interface NotificationsState {

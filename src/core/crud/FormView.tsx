@@ -315,7 +315,9 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                     currentView={currentView}
                     editingId={editingId}
                     formKey={formKey}
-                    viewFields={viewFields}
+                    viewFields={
+                        viewFields as unknown as Parameters<typeof ViewTabs>[0]["viewFields"]
+                    }
                 />
             )}
         </>
