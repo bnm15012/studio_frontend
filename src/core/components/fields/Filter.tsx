@@ -15,6 +15,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DateTime from "./DateTime";
 import { getCurrentDateLocal } from "../../utils/DateUtil";
 import { iconBtnFilledSx } from "../layout/ActionButtonStyle";
+import { FilterKeys } from "@/core/types";
 
 export interface FilterOption {
     name: string;
@@ -24,7 +25,7 @@ export interface FilterOption {
 
 interface FilterProps {
     filterOptions?: FilterOption[];
-    onChange?: (filters: Record<string, string>) => void;
+    onChange?: (filters: FilterKeys) => void;
 }
 
 const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
@@ -66,7 +67,7 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
 
         const activeFilters = Object.fromEntries(
             Object.entries(tempSelected).filter(([, value]) => value),
-        ) as Record<string, string>;
+        ) as FilterKeys;
 
         onChange?.(activeFilters);
         handleClose();

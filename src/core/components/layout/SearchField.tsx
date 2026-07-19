@@ -7,6 +7,7 @@ import Filter from "../fields/Filter";
 import { FilterOption } from "../fields/Filter";
 import { iconBtnFilledSx } from "./ActionButtonStyle";
 import { FlexBetween } from "./FlexBox";
+import { FilterKeys } from "@/core/types";
 
 const StyledSearchField = styled(FlexBetween)(({ theme }) => ({
     display: "flex",
@@ -23,10 +24,10 @@ const StyledSearchField = styled(FlexBetween)(({ theme }) => ({
 }));
 
 interface SearchFieldProps {
-    handleSearch: (term: string, filterKeys: Record<string, string>) => void;
+    handleSearch: (term: string, filterKeys: FilterKeys) => void;
     filterOptions?: FilterOption[];
     placeHolder?: string;
-    handleFilterKeys?: (keys: Record<string, string>) => void;
+    handleFilterKeys?: (keys: FilterKeys) => void;
 }
 
 const SearchField: React.FC<SearchFieldProps> = ({
@@ -36,7 +37,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
     handleFilterKeys = () => {},
 }) => {
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [filterKeys, setFilterKeys] = useState<Record<string, string>>({});
+    const [filterKeys, setFilterKeys] = useState<FilterKeys>({});
 
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
@@ -73,7 +74,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
             {filterOptions.length > 0 && (
                 <Filter
                     filterOptions={filterOptions}
-                    onChange={(o: Record<string, string>) => {
+                    onChange={(o: FilterKeys) => {
                         setFilterKeys(o);
                         handleFilterKeys(o);
                         handleSearch(searchTerm, o);

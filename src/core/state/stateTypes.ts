@@ -3,6 +3,8 @@ export interface Entity {
     [key: string]: unknown;
 }
 
+export type FilterKeys = Record<string, string>;
+
 export interface GenericState<T> {
     rootId: string | number;
     items: T[];

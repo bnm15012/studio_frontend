@@ -2,9 +2,9 @@
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
 import { FieldTypes } from "./components/fields/FieldTypes";
-import { Entity } from "./state/stateTypes";
+import { Entity, FilterKeys } from "./state/stateTypes";
 import { RootState } from "@/state";
-export type { Entity };
+export type { Entity, FilterKeys };
 
 export type AppDispatch = (action: unknown) => unknown;
 
