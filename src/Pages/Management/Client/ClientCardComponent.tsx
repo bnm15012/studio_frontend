@@ -5,9 +5,10 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import { Box } from "@mui/material";
+import type { Client } from "@/api/types";
 
 interface ClientCardProps {
-    row: Record<string, unknown>;
+    row: Client;
 }
 
 const ClientCardComponent: React.FC<ClientCardProps> = ({ row }) => {

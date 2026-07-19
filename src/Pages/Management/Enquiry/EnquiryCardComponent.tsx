@@ -6,16 +6,10 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { FileText } from "lucide-react";
 import { Box } from "@mui/material";
-
-// interface EnquiryRow {
-//     enquiryDate: string | Date;
-//     name: string;
-//     contact: string;
-//     enquiryPurpose: string;
-// }
+import type { Enquiry } from "@/api/types";
 
 interface EnquiryCardProps {
-    row: Record<string, unknown>;
+    row: Enquiry;
 }
 
 const EnquiryCard: React.FC<EnquiryCardProps> = ({ row }) => {
@@ -26,8 +20,8 @@ const EnquiryCard: React.FC<EnquiryCardProps> = ({ row }) => {
             <CardHeader
                 FieldIcon={QuestionAnswerIcon}
                 fieldValue={String(enquiryPurpose)}
-                enabled={isToday(enquiryDate as string)}
-                badge={getTimePassed(enquiryDate as string)}
+                enabled={isToday(enquiryDate)}
+                badge={getTimePassed(enquiryDate)}
             />
             <Box display="flex" alignItems="center" gap={1.5}>
                 <CardChip value={String(name)} ChipIcon={FileText} />

@@ -20,11 +20,12 @@ export interface AppUIContext {
 
     permissions: Setting;
     isAdmin: boolean;
+    isMobile: boolean;
 }
 
 export const { UIProvider, useUI, UIContext } = createUIContext<Partial<AppUIContext>>();
 
-export const useAppUI = () => {
+export const useAppUI = (): AppUIContext => {
     const ui = useUI();
 
     if (
@@ -38,9 +39,7 @@ export const useAppUI = () => {
         throw new Error("useAppUI must be used within AppUIProvider.");
     }
 
-    return ui as AppUIContext & {
-        isMobile: boolean;
-    };
+    return ui as AppUIContext;
 };
 
 export const NonAuthUIProvider: React.FC<React.PropsWithChildren> = ({ children }) => (
@@ -59,9 +58,7 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     const token = useAppSelector((state) => state.auth.token);
     const studio = useAppSelector((state) => state.auth.studio);
     const currentBranch = useAppSelector((state) => state.branch.currentBranch);
-
     const isReady = Boolean(user && currentBranch && token && studio);
-
     const permissions = useFeatureFlags(settings, user?.userAccessEntry);
 
     if (!isReady) {

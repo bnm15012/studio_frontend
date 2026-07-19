@@ -18,7 +18,7 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import DialogForm from "@/core/crud/DialogForm";
 import { useAppUI } from "@/context/UIContext";
 import { Booking, Payment, paymentStatus, paymentType } from "@/api/types";
-import { FieldDef } from "@/core/types";
+import type { FieldDef } from "@/core/types";
 
 const paymentTypes: paymentType[] = ["CASH", "UPI"];
 const paymentStatusTypes: paymentStatus[] = ["COMPLETED", "PENDING"];
@@ -32,7 +32,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const { token } = useAppUI();
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const [paymentFormData, setPaymentFormData] = useState<Payment | undefined>();
+    const [paymentFormData, setPaymentFormData] = useState<Partial<Payment> | undefined>();
 
     if (!value?.length) {
         return (
@@ -104,7 +104,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                         setPaymentFormData({
                             id: "NEW",
                             amount: (data.totalAmount as number) - paidAmount,
-                            paymentDate: getCurrentDateTimeLocal() ?? undefined,
+                            paymentDate: getCurrentDateTimeLocal() ?? "",
                             status: paymentStatusTypes[0],
                             paymentType: paymentTypes[0],
                         });
@@ -136,9 +136,9 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     </StyledMotionCard>
                 ))}
             </StyledCardContainer>
-            {openPaymentDialog && (
-                <DialogForm
-                    data={paymentFormData as Record<string, unknown>}
+            {openPaymentDialog && paymentFormData && (
+                <DialogForm<Partial<Payment>>
+                    data={paymentFormData}
                     fieldsMeta={{ primary: "id", root: "branchId" }}
                     fields={[
                         {

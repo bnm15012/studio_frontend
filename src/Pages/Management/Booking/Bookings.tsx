@@ -64,18 +64,20 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
         paymentInit: Partial<Payment>;
     } | null>(null);
     const getClientsByName = useCallback(
-        async (params: Booking<Booking>) => {
+        async (params: { clientName?: string; page?: number; size?: number }) => {
             const { success, data, message } = await getCLientByNamesAPI({
                 branchId: currentBranch.branchId,
                 token,
                 params,
             });
             if (success) {
-                const items = data as Array<Booking> | undefined;
+                const items = data as
+                    | Array<{ pocName: string; clientId: string | number }>
+                    | undefined;
                 return (
                     items?.map((c) => ({
-                        value: c.pocName as string,
-                        key: c.clientId as string | number,
+                        value: c.pocName,
+                        key: c.clientId,
                     })) || []
                 );
             } else {
@@ -120,8 +122,8 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
     }, []);
 
     const beforeAdd = useCallback(
-        async (row: Booking) => {
-            const { dueAmount, paidAmount, ...modifiedData } = row;
+        async (row: Booking): Promise<Booking> => {
+            const modifiedData: Booking = { ...row };
             const clientEntry = modifiedData.clientEntry;
 
             if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
@@ -136,14 +138,14 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                 status: paymentStatusTypes[0] as paymentStatus,
                 paymentType: paymentTypes[0] as paymentType,
                 branchId: currentBranch.branchId,
-                paymentDate: getCurrentDateTimeLocal() ?? undefined,
+                paymentDate: getCurrentDateTimeLocal() ?? "",
             };
 
             const paymentData = await awaitForDialog(paymentInit);
 
             if (paymentData) {
                 modifiedData.paymentEntries = [
-                    { ...(row.paymentEntry || {}), ...(paymentData || {}) } as Payment,
+                    { ...(row.paymentEntries?.[0] ?? {}), ...(paymentData ?? {}) } as Payment,
                 ];
             } else {
                 throw new Error("Payment cancelled");
@@ -189,9 +191,9 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                         const dueAmount =
                             ((row.totalAmount as number) || 0) -
                             ((Array.isArray(row?.paymentEntries) &&
-                                (row.paymentEntries as Booking[])
-                                    .filter((p: Booking) => p.status == "COMPLETED")
-                                    .map((p: Booking) => p.amount as number)
+                                (row.paymentEntries as Payment[])
+                                    .filter((p) => p.status == "COMPLETED")
+                                    .map((p) => p.amount as number)
                                     .reduce((a: number, b: number) => a + b, 0)) ||
                                 0);
                         if (dueAmount === 0) {
@@ -220,9 +222,9 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     extraProp: { readOnly: true },
                     getValue: (obj: unknown, row: Booking) =>
                         (Array.isArray(row?.paymentEntries) &&
-                            (row.paymentEntries as Booking[])
-                                .filter((p: Booking) => p.status == "COMPLETED")
-                                .map((p: Booking) => p.amount as number)
+                            (row.paymentEntries as Payment[])
+                                .filter((p) => p.status == "COMPLETED")
+                                .map((p) => p.amount as number)
                                 .reduce((a: number, b: number) => a + b, 0)) ||
                         0,
                 },
@@ -236,9 +238,9 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     getValue: (obj: unknown, row: Booking) =>
                         ((row.totalAmount as number) || 0) -
                         ((Array.isArray(row?.paymentEntries) &&
-                            (row.paymentEntries as Booking[])
-                                .filter((p: Booking) => p.status == "COMPLETED")
-                                .map((p: Booking) => p.amount as number)
+                            (row.paymentEntries as Payment[])
+                                .filter((p) => p.status == "COMPLETED")
+                                .map((p) => p.amount as number)
                                 .reduce((a: number, b: number) => a + b, 0)) ||
                             0),
                 },
@@ -267,7 +269,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     type: "COMPONENT",
                     CustomComponent: PaymentList,
                 },
-            ] as FieldDef[],
+            ] as FieldDef<Booking>[],
         [getClientsByName],
     );
 
@@ -342,7 +344,7 @@ const Bookings = ({ ID }: { ID?: string | number }) => {
                     open={true}
                     isUser={true}
                     studio={studio}
-                    template={templates?.find((t) => t.templateType === "BOOKING")}
+                    template={templates.find((t) => t.templateType === "BOOKING")}
                     currentBranch={currentBranch}
                     onClose={() => setShowInvoice(null)}
                     bookingData={showInvoice}

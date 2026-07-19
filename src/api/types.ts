@@ -167,7 +167,7 @@ export interface Booking extends Entity {
     id: number;
     branchId: number;
     purpose: string;
-    clientEntr?: Partial<Client>;
+    clientEntry: Partial<Client>;
     totalAmount: number;
     paymentStatus: paymentStatus;
     paidAmount: number;

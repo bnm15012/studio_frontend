@@ -9,6 +9,7 @@ import {
     Typography,
 } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import DateTime from "@/core/components/fields/DateTime";
 import { Payment, paymentStatus, paymentType } from "@/api/types";
 
 interface PaymentOption {
@@ -104,8 +105,10 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                 </FormControl>
 
                 <DateTime
-                    value={formData.paymentDate}
-                    setValue={(value) => setFormData((prev) => ({ ...prev, paymentDate: value }))}
+                    value={formData.paymentDate ?? ""}
+                    setValue={(value: string | null) =>
+                        setFormData((prev) => ({ ...prev, paymentDate: value ?? "" }))
+                    }
                     label="Payment Date"
                     format="DATE"
                     variant="outlined"

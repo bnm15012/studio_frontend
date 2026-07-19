@@ -8,7 +8,7 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
-import { Branch, GenericTemplate, Studio } from "@/api/types";
+import { Booking, Branch, GenericTemplate, Studio } from "@/api/types";
 
 const sectionTitle = {
     marginTop: "10mm",
@@ -31,15 +31,15 @@ const BookingInvoice = ({
 }: {
     open: boolean;
     onClose: () => void;
-    bookingData: Record<string, unknown>;
+    bookingData: Booking;
     studio: Studio;
     currentBranch: Branch;
     isUser?: boolean;
     template?: GenericTemplate;
 }) => {
     const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
-    const bd = bookingData as Record<string, unknown>;
-    const ce = (bd.clientEntry || {}) as Record<string, unknown>;
+    const bd = bookingData;
+    const ce = bd.clientEntry;
 
     const preparedDescription = template
         ? replacePlaceholders(String(template.templateContent), {
@@ -97,7 +97,7 @@ const BookingInvoice = ({
                     remainingPayload={{
                         title: "Booking Invoice",
                         templateName: "BOOKING_INVOICE",
-                        clientIds: [ce.clientId],
+                        clientIds: String(ce.clientId),
                     }}
                     footer={<p>Thank you for choosing {studio.studioName}!</p>}
                     header={

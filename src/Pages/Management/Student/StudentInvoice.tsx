@@ -93,13 +93,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                 <h2>INVOICE</h2>
                                 <div>
                                     <strong>Invoice #</strong>: INV-
-                                    {
-                                        (
-                                            activityData?.paymentEntry as
-                                                | Record<string, unknown>
-                                                | undefined
-                                        )?.id as React.ReactNode
-                                    }
+                                    {String(activityData?.paymentEntry?.id ?? "")}
                                 </div>
                                 <div>
                                     <strong>Invoice Date</strong>:{" "}
@@ -333,11 +327,8 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                                             }}
                                                         >
                                                             {Number(
-                                                                (
-                                                                    activityData?.paymentEntry as
-                                                                        | Record<string, unknown>
-                                                                        | undefined
-                                                                )?.amount || 0,
+                                                                activityData?.paymentEntry
+                                                                    ?.amount || 0,
                                                             ).toFixed(2)}
                                                         </td>
                                                     </tr>

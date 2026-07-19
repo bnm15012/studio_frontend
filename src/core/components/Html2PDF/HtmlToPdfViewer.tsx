@@ -2,7 +2,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ConfirmationDialog } from "./ConfirmationDialog";
 import Loading from "../loading/Loading";
-import { usePdfActions } from "./usePdfActions";
+import { usePdfActions, type WhatsAppPayload, type SendFilePayload } from "./usePdfActions";
 import { paginate } from "./html2pdf.util";
 import "./html2pdf.css";
 
@@ -15,8 +15,8 @@ interface HtmlToPdfViewerProps {
     studio: { logo: string; studioName: string };
     fileName?: string;
     footer?: React.ReactNode;
-    remainingPayload?: Record<string, unknown>;
-    whatsAppPayload?: Record<string, unknown>;
+    remainingPayload?: SendFilePayload;
+    whatsAppPayload?: Partial<WhatsAppPayload>;
 }
 
 export interface HtmlToPdfViewerRef {
@@ -85,12 +85,7 @@ const HtmlToPdfViewer = forwardRef<HtmlToPdfViewerRef, HtmlToPdfViewerProps>(
             setDialogOpen(false);
             if (dialogType === "email") await sendMail();
             else if (dialogType === "mobile")
-                await sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload } as unknown as {
-                    phone: string;
-                    name?: string;
-                    studioName?: string;
-                    invoiceToken?: string;
-                });
+                sendWhatsApp({ phone: `+91${inputValue}`, ...whatsAppPayload });
         };
 
         useImperativeHandle(ref, () => ({

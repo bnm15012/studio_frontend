@@ -5,12 +5,200 @@ import { useAlert } from "../feedback/Alert";
 import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
 import { useAppUI } from "@/context/UIContext";
 
+// ---------------------------------------------------------------------------
+// Window augmentation for html2pdf.js (CDN bundle) globals
+// ---------------------------------------------------------------------------
+
+interface JsPdfInstance {
+    setPage: (page: number) => JsPdfInstance;
+    addPage: (format?: string, orientation?: string) => JsPdfInstance;
+    addImage: (
+        imageData: string,
+        format: string,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+    ) => JsPdfInstance;
+    autoPrint: () => void;
+    output: (
+        type: "blob" | "bloburl" | "arraybuffer" | "datauristring",
+    ) => string | Blob | ArrayBuffer;
+    save: (filename?: string) => void;
+}
+
+interface Html2CanvasOptions {
+    scale?: number;
+    useCORS?: boolean;
+    logging?: boolean;
+    allowTaint?: boolean;
+    backgroundColor?: string;
+}
+
+interface Html2PdfOptions {
+    margin?: number | number[];
+    filename?: string;
+    image?: { type: string; quality: number };
+    html2canvas?: Html2CanvasOptions;
+    jsPDF?: { unit: string; format: string; orientation?: string };
+}
+
+interface Html2PdfWorker {
+    set: (opts: Html2PdfOptions) => Html2PdfWorker;
+    from: (el: HTMLElement) => Html2PdfWorker;
+    toPdf: () => Html2PdfWorker;
+    toImg: () => Html2PdfWorker;
+    outputImg: (type: "datauristring" | "datauri" | "img") => Promise<string>;
+    get: (key: "pdf") => Promise<JsPdfInstance>;
+    save: () => Promise<void>;
+}
+
+declare global {
+    interface Window {
+        html2pdf: () => Html2PdfWorker;
+        html2canvas?: (el: HTMLElement, opts?: Html2CanvasOptions) => Promise<HTMLCanvasElement>;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Public prop types
+// ---------------------------------------------------------------------------
+
+export interface PdfOptions {
+    filename?: string;
+    margin?: number | number[];
+    image?: { type: string; quality: number };
+    html2canvas?: Html2CanvasOptions;
+    jsPDF?: { unit: string; format: string; orientation?: string };
+}
+
+export interface WhatsAppPayload {
+    phone: string;
+    name?: string;
+    studioName?: string;
+    invoiceToken?: string;
+}
+
+export interface SendFilePayload {
+    [key: string]: string | number | boolean | null | undefined | (string | number)[];
+}
+
 interface UsePdfActionsProps {
     contentRef: React.RefObject<HTMLElement | null>;
-    pdfOptions: Record<string, unknown>;
+    pdfOptions: PdfOptions;
     fileName: string;
-    remainingPayload?: Record<string, unknown>;
+    remainingPayload?: SendFilePayload;
 }
+
+// ---------------------------------------------------------------------------
+// Page-by-page PDF generator (avoids canvas size limit on 39+ page documents)
+// ---------------------------------------------------------------------------
+
+/**
+ * Generates a jsPDF document by rendering each .pdf-page element individually.
+ * This avoids the browser canvas size limit (~16384px) which causes all pages
+ * to go blank when the entire tall preview is captured at once with html2pdf.
+ *
+ * Strategy:
+ * 1. Capture every .pdf-page as a JPEG data URL (one html2canvas call each).
+ * 2. Bootstrap a plugin-equipped jsPDF via a 1px dummy element through html2pdf.
+ * 3. Overwrite page 1 and append remaining pages using addImage.
+ */
+const generatePdfFromPages = async (contentEl: HTMLElement, scale = 3): Promise<JsPdfInstance> => {
+    const pages = Array.from(contentEl.querySelectorAll<HTMLElement>(".pdf-page"));
+    if (pages.length === 0) throw new Error("No .pdf-page elements found.");
+
+    if (!window.html2pdf) {
+        throw new Error("html2pdf is not available. Make sure html2pdf.js is loaded.");
+    }
+
+    const W_MM = 210;
+    const H_MM = 297;
+
+    const html2canvasOpts: Html2CanvasOptions = {
+        scale,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+    };
+
+    const pdfOpts: Html2PdfOptions = {
+        margin: [0, 0, 0, 0],
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: html2canvasOpts,
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    };
+
+    /**
+     * Capture a single .pdf-page element as a JPEG data URL.
+     * Strips decorative margin/shadow before capture and restores after.
+     * Prefers window.html2canvas (exposed by html2pdf bundle) for simplicity;
+     * falls back to html2pdf's own outputImg worker chain.
+     */
+    const captureDataUrl = async (pageEl: HTMLElement): Promise<string> => {
+        const prevMargin = pageEl.style.margin;
+        const prevBoxShadow = pageEl.style.boxShadow;
+        pageEl.style.margin = "0";
+        pageEl.style.boxShadow = "none";
+        try {
+            if (window.html2canvas) {
+                const canvas = await window.html2canvas(pageEl, html2canvasOpts);
+                return canvas.toDataURL("image/jpeg", 0.95);
+            }
+            // Fallback via html2pdf worker — outputImg internally runs toImg/toCanvas
+            return await window.html2pdf().set(pdfOpts).from(pageEl).outputImg("datauristring");
+        } finally {
+            pageEl.style.margin = prevMargin;
+            pageEl.style.boxShadow = prevBoxShadow;
+        }
+    };
+
+    // Step 1: Capture every page as a data URL (sequential to avoid DOM conflicts)
+    const dataUrls: string[] = [];
+    for (const pageEl of pages) {
+        dataUrls.push(await captureDataUrl(pageEl));
+    }
+
+    // Step 2: Get a jsPDF instance that has ALL plugins (addImage, addPage, etc.)
+    // from html2pdf's own toPdf chain. This is the ONLY reliable way to get
+    // a plugin-equipped jsPDF when using html2pdf.bundle.min.js — window.jspdf.jsPDF
+    // and window.jsPDF give a bare constructor without the image plugin.
+    const dummyEl = document.createElement("div");
+    dummyEl.style.cssText =
+        "width:1px;height:1px;position:absolute;top:-9999px;left:-9999px;visibility:hidden;";
+    document.body.appendChild(dummyEl);
+    let basePdf: JsPdfInstance;
+    try {
+        basePdf = await window
+            .html2pdf()
+            .set({ ...pdfOpts, html2canvas: { scale: 1, logging: false } })
+            .from(dummyEl)
+            .toPdf()
+            .get("pdf");
+    } finally {
+        document.body.removeChild(dummyEl);
+    }
+
+    // Step 3: The dummy element produced one nearly-empty page in basePdf.
+    // Overwrite page 1 with our first captured image (the 1×1px dummy content
+    // is invisible under a full-A4 JPEG), then add the remaining pages.
+    // NOTE: jsPDF v2 stores pages in a closure — there is no public API to
+    //       delete pages, so we reuse page 1 and append the rest.
+    basePdf.setPage(1);
+    basePdf.addImage(dataUrls[0], "JPEG", 0, 0, W_MM, H_MM);
+
+    for (let i = 1; i < dataUrls.length; i++) {
+        basePdf.addPage("a4", "portrait");
+        basePdf.addImage(dataUrls[i], "JPEG", 0, 0, W_MM, H_MM);
+    }
+
+    return basePdf;
+};
+
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
 
 export const usePdfActions = ({
     contentRef,
@@ -22,33 +210,16 @@ export const usePdfActions = ({
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
-    // Helper function to get the html2pdf instance with common settings
-    const getPdfInstance = () => {
-        if (!contentRef.current) {
-            throw new Error("Content ref is empty. Cannot generate PDF.");
-        }
-        const html2pdf = (window as unknown as { html2pdf: () => Html2PdfInstance }).html2pdf();
-        return html2pdf.set(pdfOptions).from(contentRef.current);
-    };
+    // Scale factor used for rendering (html2canvas scale)
+    const CANVAS_SCALE = pdfOptions?.html2canvas?.scale ?? 3;
 
-    interface Html2PdfInstance {
-        set: (opts: Record<string, unknown>) => Html2PdfInstance;
-        from: (el: HTMLElement) => Html2PdfInstance;
-        outputPdf: (type: string) => Promise<Blob>;
-        toPdf: () => {
-            save: () => Promise<void>;
-            get: (key: string) => {
-                then: (
-                    cb: (pdf: { output: (type: string) => string; autoPrint: () => void }) => void,
-                ) => void;
-            };
-        };
-        save: () => Promise<void>;
-    }
-
-    // New helper to temporarily reset scale before PDF generation
+    /**
+     * Temporarily resets the preview container's CSS transform so that
+     * html2canvas captures elements at their true (scale:1) dimensions,
+     * then restores the original transform afterwards.
+     */
     const withTemporaryScaleReset = async <T>(
-        pdfAction: () => Promise<T> | T,
+        pdfAction: (el: HTMLElement) => Promise<T> | T,
     ): Promise<T | undefined> => {
         if (!contentRef.current) {
             showAlert("Content not available for PDF generation.", "error");
@@ -65,9 +236,8 @@ export const usePdfActions = ({
             // Reset transform so pages render at their actual pixel size
             el.style.transform = "none";
             el.style.transformOrigin = "top left";
-            // Width / height are set by the viewer; keep them so layout stays correct
 
-            return await action(el);
+            return await pdfAction(el);
         } finally {
             el.style.transform = origTransform;
             el.style.transformOrigin = origTransformOrigin;
@@ -76,47 +246,41 @@ export const usePdfActions = ({
         }
     };
 
-    const createPdfBlob = async () =>
+    const createPdfBlob = async (): Promise<Blob | undefined> =>
         withTemporaryScaleReset(async (el) => {
             const pdf = await generatePdfFromPages(el, CANVAS_SCALE);
-            return pdf.output("blob");
+            return pdf.output("blob") as Blob;
         });
 
     const downloadPDF = async () => {
         setLoading(true);
-        await withTemporaryScaleReset(async () => {
-            try {
-                await getPdfInstance().toPdf().save();
-            } catch (error: unknown) {
-                console.error(error);
-                showAlert("Failed to download PDF", "error");
-            } finally {
-                setLoading(false);
-            }
-        });
+        try {
+            await withTemporaryScaleReset(async (el) => {
+                const pdf = await generatePdfFromPages(el, CANVAS_SCALE);
+                pdf.save(`${fileName}.pdf`);
+            });
+        } catch (error) {
+            console.error(error);
+            showAlert("Failed to download PDF", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const printPDF = async () => {
         setLoading(true);
-        await withTemporaryScaleReset(async () => {
-            try {
-                await getPdfInstance()
-                    .toPdf()
-                    .get("pdf")
-                    .then((pdf: { output: (type: string) => string; autoPrint: () => void }) => {
-                        if (contentRef.current) {
-                            contentRef.current.classList.remove("generating-pdf");
-                        }
-                        pdf.autoPrint();
-                        window.open(pdf.output("bloburl"), "_blank");
-                    });
-            } catch (err: unknown) {
-                console.error(err);
-                showAlert("Failed to print PDF", "error");
-            } finally {
-                setLoading(false);
-            }
-        });
+        try {
+            await withTemporaryScaleReset(async (el) => {
+                const pdf = await generatePdfFromPages(el, CANVAS_SCALE);
+                pdf.autoPrint();
+                window.open(pdf.output("bloburl") as string, "_blank");
+            });
+        } catch (err) {
+            console.error(err);
+            showAlert("Failed to print PDF", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const sendFile = async ({ type, contentLabel }: { type: string; contentLabel: string }) => {
@@ -133,9 +297,9 @@ export const usePdfActions = ({
 
             showAlert(`Sending ${type}...`, "info");
             const { success, message } = await (
-                sendMessageApi as unknown as (args: {
+                sendMessageApi as (args: {
                     token: string | null;
-                    payload: Record<string, unknown>;
+                    payload: typeof payload;
                     file: File | null;
                 }) => Promise<{ success: boolean; message: string }>
             )({
@@ -147,7 +311,7 @@ export const usePdfActions = ({
             });
 
             showAlert(message || `${type} sent`, success ? "success" : "error");
-        } catch (err: unknown) {
+        } catch (err) {
             console.error(err);
             showAlert(`Failed to send ${type}`, "error");
         } finally {
@@ -155,18 +319,8 @@ export const usePdfActions = ({
         }
     };
 
-    const redirectToWhatsApp = ({
-        phone,
-        name,
-        studioName,
-        invoiceToken,
-    }: {
-        phone: string;
-        name?: string;
-        studioName?: string;
-        invoiceToken?: string;
-    }) => {
-        sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
+    const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }: WhatsAppPayload) => {
+        void sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
         const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken ?? ""}`;
         const message = `Hello ${name ?? ""},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName ?? ""}`;
         const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -174,12 +328,7 @@ export const usePdfActions = ({
     };
 
     const sendMail = () => sendFile({ type: "EMAIL", contentLabel: "Invoice" });
-    const sendWhatsApp = (payload: {
-        phone: string;
-        name?: string;
-        studioName?: string;
-        invoiceToken?: string;
-    }) => redirectToWhatsApp(payload);
+    const sendWhatsApp = (payload: WhatsAppPayload) => redirectToWhatsApp(payload);
 
     return { loading, downloadPDF, printPDF, sendMail, sendWhatsApp };
 };

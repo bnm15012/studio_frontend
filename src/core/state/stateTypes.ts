@@ -13,5 +13,4 @@ export interface GenericState<T> {
     totalPages: number;
     currentPage: number;
     pageSize: number;
-    [key: string]: unknown;
 }

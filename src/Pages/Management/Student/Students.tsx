@@ -22,7 +22,6 @@ import type {
     Activity,
     BatchEntry,
     genderType,
-    GenericTemplate,
     Payment,
     paymentStatus,
     paymentType,
@@ -184,14 +183,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState<
         | false
         | {
-            onSave: (data: Partial<Payment>) => void;
-            onClose: () => void;
-            paymentInit: Partial<Payment>;
-        }
+              onSave: (data: Partial<Payment>) => void;
+              onClose: () => void;
+              paymentInit: Partial<Payment>;
+          }
     >(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{
         open: boolean;
-        data?: GenericTemplate;
+        data?: Student;
     }>({ open: false });
     const api = useRef<ViewsApiRef>({});
     const apiStudent = useRef<ViewsApiRef>({});
@@ -236,7 +235,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const beforeAdd = useCallback(
-        async (row: Student) => {
+        async (row: StudentAssignment) => {
             const modifiedData = { ...row };
 
             const paymentInit: Partial<Payment> = {
@@ -244,13 +243,13 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 amount: Number(modifiedData.activityAmount ?? 0),
                 status: PAYMENT_STATUS[0],
                 paymentType: PAYMENT_TYPE[0],
-                paymentDate: modifiedData?.paymentEntry?.paymentDate ?? getCurrentDateTimeLocal(),
+                paymentDate:
+                    modifiedData.paymentEntry.paymentDate ?? getCurrentDateTimeLocal() ?? "",
             };
 
             const paymentData = await awaitForDialog(paymentInit);
-
             if (paymentData) {
-                modifiedData.paymentEntry = { ...(row.paymentEntry || {}), ...paymentData };
+                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             }
             return modifiedData;
         },
