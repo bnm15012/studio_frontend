@@ -116,7 +116,7 @@ export const usePdfActions = ({ contentRef, pdfOptions, fileName, remainingPaylo
     const redirectToWhatsApp = ({ phone, name, studioName, invoiceToken }) => {
         sendFile({ type: "WHATSAPP", contentLabel: "Invoice" });
         const invoiceUrl = `${window.location.origin}/#/invoice/${invoiceToken}`;
-        const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl} \n\nRegards, \n${studioName}`;
+        const message = `Hello ${name},\n\nPlease find your invoice here: ${invoiceUrl}\n(Link will be expired in 30 days)\n\nRegards, \n${studioName}`;
         const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, "_blank");
     };

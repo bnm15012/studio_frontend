@@ -10,6 +10,7 @@ import {
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import StyledDialog from "../../../Components/New/StyledDialog";
+import DateTime from "../../../Components/Fields/StyledFields/DateTime";
 
 const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus, paymentType }) => {
     const [formData, setFormData] = useState(initialData || {});
@@ -78,6 +79,16 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
                     </Select>
                 </FormControl>
 
+                <DateTime
+                    value={formData.paymentDate}
+                    setValue={(value) => setFormData((prev) => ({ ...prev, paymentDate: value }))}
+                    label="Payment Date"
+                    format="DATE"
+                    variant="outlined"
+                    size="medium"
+                    includeCurrentTime={false}
+                />
+
                 <FormControl fullWidth>
                     <InputLabel>Payment Type</InputLabel>
                     <Select
@@ -94,6 +105,7 @@ const PaymentEntryDialog = ({ open, onClose, onSave, initialData, paymentStatus,
                         ))}
                     </Select>
                 </FormControl>
+
             </Box>
         </StyledDialog>
     );

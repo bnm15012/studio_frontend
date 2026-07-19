@@ -32,6 +32,7 @@ const DateTime = ({
     format = "DATETIME",
     variant = "standard",
     includeCurrentTime = true,
+    size = "small",
     placeholder = "Select date and time",
 }) => {
     const theme = useTheme();
@@ -81,11 +82,10 @@ const DateTime = ({
         slotProps: {
             textField: {
                 variant,
-                size: "small",
+                size,
                 fullWidth: true,
                 placeholder:
-                    placeholder ||
-                    (format === "DATE" ? "Select date" : "Select date and time"),
+                    placeholder || (format === "DATE" ? "Select date" : "Select date and time"),
                 sx: {
                     borderRadius: 2,
                     "& .MuiOutlinedInput-root": {
@@ -173,6 +173,7 @@ DateTime.propTypes = {
     minVal: PropTypes.string,
     maxVal: PropTypes.string,
     includeCurrentTime: PropTypes.bool,
+    size: PropTypes.string,
     placeholder: PropTypes.string,
     readOnly: PropTypes.bool,
 };

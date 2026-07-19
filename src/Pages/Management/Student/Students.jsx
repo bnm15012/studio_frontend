@@ -183,18 +183,12 @@ const Students = ({ ID }) => {
         async (row) => {
             const modifiedData = { ...row };
 
-            let paymentInit = {
-                actualAmount: 0,
-                amount: 0,
-                status: PAYMENT_STATUS[0],
-                paymentType: PAYMENT_TYPE[0],
-            };
-
-            paymentInit = {
+            const paymentInit = {
                 actualAmount: modifiedData.activityAmount,
                 amount: modifiedData.activityAmount,
                 status: PAYMENT_STATUS[0],
                 paymentType: PAYMENT_TYPE[0],
+                paymentDate: modifiedData?.paymentEntry?.paymentDate ?? getCurrentDateTimeLocal(),
             };
 
             const paymentData = await awaitForDialog(paymentInit);
