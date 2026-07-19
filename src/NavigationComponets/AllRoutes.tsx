@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { AppUIProvider, NonAuthUIProvider } from "../context/UIContext";
 import Loading from "@/core/components/loading/Loading";
 import { useAppSelector } from "@/state";
@@ -31,11 +31,12 @@ import ServerErrorDialog from "@/core/components/dialogs/ServerErrorDialog";
 import AuthTransitionOverlay from "@/core/components/loading/AuthTransitionOverlay";
 
 export const AllRoutes = () => {
+    const location = useLocation();
     const token = useAppSelector((state) => state.auth.token);
     const loading = useAppSelector((state) => state.auth.loading);
 
     return (
-        <Suspense fallback={<Loading />}>
+        <Suspense key={location.pathname} fallback={<Loading />}>
             {loading ? (
                 <AuthTransitionOverlay />
             ) : token ? (

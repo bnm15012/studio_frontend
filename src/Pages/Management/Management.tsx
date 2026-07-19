@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import Loading from "@/core/components/loading/Loading";
 const Clients = lazy(() => import("./Client/Clients"));
 const Bookings = lazy(() => import("./Booking/Bookings"));
@@ -21,6 +21,7 @@ const Attendance = lazy(() => import("./Attendance/Attendance"));
 
 const Management: React.FC = () => {
     const { page, ID } = useParams<{ page: string; ID?: string }>();
+    const location = useLocation();
 
     const renderComponent = () => {
         switch (page) {
@@ -65,7 +66,9 @@ const Management: React.FC = () => {
 
     return (
         <WidgetsOnPage isSidebarShouldBeOn={true}>
-            <Suspense fallback={<Loading />}>{renderComponent()}</Suspense>
+            <Suspense key={location.pathname} fallback={<Loading />}>
+                {renderComponent()}
+            </Suspense>
         </WidgetsOnPage>
     );
 };
