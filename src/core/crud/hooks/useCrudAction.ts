@@ -11,15 +11,17 @@ const defaultOverRideOnChange = <T extends Entity>(value: unknown, obj: T, _fiel
     obj;
 
 interface UseCrudActionProps<T extends Entity> {
-    formKey?: string | number | null;
+    /** 0 = new record, positive = existing id, undefined = list mode */
+    formKey?: number;
     data: T[];
     setData: React.Dispatch<React.SetStateAction<T[]>>;
     dispatch: AppDispatch;
     tableCruds: CrudThunks<T>;
-    token: string | null | undefined;
+    token: string;
     showAlert: ShowAlertFn;
     setLoading: SetLoadingFn;
-    rootId?: string | number | null;
+    /** 0 means no root context yet */
+    rootId?: number;
     navigate: (path: string) => void;
     tableName: string;
     tableState: {
@@ -53,37 +55,35 @@ export const useCrudAction = <T extends Entity>({
     beforeUpdate = defaultBeforeUpdate,
     overRideOnChange = defaultOverRideOnChange,
 }: UseCrudActionProps<T>): {
-    editingId: string | number | null;
+    /** 0 = new row, positive = row being edited, -1 = nothing editing */
+    editingId: number;
     record: T;
     setRecord: React.Dispatch<React.SetStateAction<T>>;
     handleEdit: (row: T) => void;
     handleCancel: () => void;
-    handleSave: (id: string | number | null | undefined) => Promise<void>;
+    handleSave: (id: number) => Promise<void>;
     addNewRow: () => void;
-    handleChange: (
-        value: unknown,
-        id: string | number | null | undefined,
-        fieldPath: string,
-    ) => void;
+    handleChange: (value: unknown, id: number, fieldPath: string) => void;
     submitAttempted: boolean;
 } => {
-    const [editingId, setEditingId] = useState<string | number | null>(null);
+    /** -1 = nothing editing, 0 = new row, positive = editing existing */
+    const [editingId, setEditingId] = useState<number>(-1);
     const [originalRow, setOriginalRow] = useState<T | null>(null);
     const [record, setRecord] = useState<T>({} as T);
     const [submitAttempted, setSubmitAttempted] = useState(false);
 
-    const updateEditId = (id: string | number | null) => {
+    const updateEditId = (id: number) => {
         setEditingId(id);
     };
 
     useEffect(() => {
-        updateEditId(null);
+        updateEditId(-1);
     }, [tableState.currentPage]);
 
     const handleEdit = useCallback(
         (row: T) => {
             setSubmitAttempted(false);
-            if (editingId) {
+            if (editingId >= 0) {
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
             }
@@ -91,18 +91,18 @@ export const useCrudAction = <T extends Entity>({
                 (d) => d[consts.current.primaryKey] === row[consts.current.primaryKey],
             );
             setOriginalRow(original ? ({ ...original } as T) : null);
-            updateEditId(row[consts.current.primaryKey] as string | number | null);
+            updateEditId(Number(row[consts.current.primaryKey]) || 0);
         },
         [consts, data, editingId, showAlert],
     );
 
     const handleCancel = useCallback(() => {
         setSubmitAttempted(false);
-        if (formKey === "NEW") navigate(`/management/${tableName}/`);
+        if (formKey === 0) navigate(`/management/${tableName}/`);
         if (formKey) {
-            setRecord(editingId === "NEW" ? ({} as T) : (originalRow ?? ({} as T)));
+            setRecord(editingId === 0 ? ({} as T) : (originalRow ?? ({} as T)));
         } else {
-            if (editingId === "NEW") {
+            if (editingId === 0) {
                 setData((prev) =>
                     prev.filter((row) => row[consts.current.primaryKey] !== editingId),
                 );
@@ -114,21 +114,20 @@ export const useCrudAction = <T extends Entity>({
                 );
             }
         }
-        updateEditId(null);
+        updateEditId(-1);
         setOriginalRow(null);
     }, [formKey, navigate, tableName, editingId, originalRow, setData, consts]);
 
     const handleSave = useCallback(
-        async (id: string | number | null | undefined) => {
+        async (id: number) => {
             setSubmitAttempted(true);
             try {
-                if (id === undefined) return;
                 const newRow = formKey
                     ? record
                     : data.find((e) => e[consts.current.primaryKey] === id);
                 if (!newRow) return;
                 validate(newRow, consts.current.fields);
-                if (id === "NEW") {
+                if (id === 0) {
                     const processedRow = await beforeAdd(newRow);
                     const { [consts.current.primaryKey]: _rowId, ...withoutId } = processedRow;
                     dispatch(
@@ -146,8 +145,8 @@ export const useCrudAction = <T extends Entity>({
                         ),
                     );
                 }
-                updateEditId(null);
-                if (formKey === "NEW") navigate(`/management/${tableName}/`);
+                updateEditId(-1);
+                if (formKey === 0) navigate(`/management/${tableName}/`);
             } catch (error: unknown) {
                 console.error(error);
                 const msg =
@@ -192,7 +191,7 @@ export const useCrudAction = <T extends Entity>({
     ) as (value: unknown, obj: T, field: string) => T;
 
     const handleChange = useCallback(
-        (value: unknown, id: string | number | null | undefined, fieldPath: string) => {
+        (value: unknown, id: number, fieldPath: string) => {
             if (formKey) {
                 setRecord((prev) => updateField(value, prev, fieldPath));
             } else {
@@ -210,12 +209,12 @@ export const useCrudAction = <T extends Entity>({
 
     const addNewRow = useCallback(() => {
         setSubmitAttempted(false);
-        if (editingId) {
+        if (editingId >= 0) {
             showAlert("Can't Add New while edit", "warning");
             return;
         }
         let newRow: Record<string, unknown> = {
-            [consts.current.primaryKey]: "NEW",
+            [consts.current.primaryKey]: 0,
         };
         if (consts.current.rootKey) {
             newRow[consts.current.rootKey] = rootId;
@@ -233,7 +232,7 @@ export const useCrudAction = <T extends Entity>({
         if (formKey) setRecord(newRow as T);
         else setData((prev) => [newRow as T, ...prev]);
 
-        updateEditId("NEW");
+        updateEditId(0);
     }, [editingId, consts, rootId, formKey, setData, showAlert, updateField]);
 
     return {

@@ -28,13 +28,15 @@ import {
 } from "../components/layout/columnVisibilityHelper";
 
 export interface ViewsProps<T extends Entity = Entity> {
-    formKey?: string | number | null;
+    /** 0 = new record, positive integer = existing record id, undefined = list mode */
+    formKey?: number;
     tableName: string;
     overRideOnChange?: (value: unknown, obj: T, field: string) => T;
     size: number;
-    rootId: string | number | null;
+    /** 0 means "no root context yet" — fetch will be skipped until non-zero */
+    rootId: number;
     tableCruds: CrudThunks<T>;
-    fields: FieldDef<T>[];
+    fields: FieldDef<T, string & keyof T>[];
     fieldsMeta: {
         primary: string;
         root?: string;
@@ -86,17 +88,14 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
         infiniteScroll = true,
     } = props;
 
-    const consts = useRef({
-        primaryKey: fieldsMeta.primary,
-        rootKey: fieldsMeta.root,
-        fields,
-    });
+    const consts = useRef({ primaryKey: fieldsMeta.primary, rootKey: fieldsMeta.root, fields });
 
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const navigate = useNavigate();
     const theme = useTheme();
-    const { isMobile, token } = useAppUI();
+    const { isMobile, token: rawToken } = useAppUI();
+    const token = rawToken ?? "";
     const [loading, setLoading] = useState(false);
 
     const [visibilityMap, setVisibilityMap] = useState<ColumnVisibilityMap>(() =>
@@ -278,7 +277,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
 
     const didInitNewRow = useRef(false);
     useEffect(() => {
-        if (formKey === "NEW") {
+        if (formKey === 0) {
             if (!didInitNewRow.current) {
                 didInitNewRow.current = true;
                 addNewRow();
@@ -289,13 +288,13 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
     }, [formKey, addNewRow]);
 
     useEffect(() => {
-        if (formKey && formKey !== "NEW") {
+        if (formKey && formKey !== 0) {
             fetchOne(formKey);
         }
     }, [formKey, fetchOne]);
 
     useEffect(() => {
-        if (formKey && formKey !== "NEW") {
+        if (formKey && formKey !== 0) {
             setRecord(
                 (tableState.recordById as Record<string | number, T>)?.[formKey] ?? ({} as T),
             );
@@ -304,7 +303,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
 
     return (
         <>
-            {formKey ? (
+            {formKey !== undefined ? (
                 <FormView<T>
                     {...commonStableProps}
                     loading={loading}
@@ -339,7 +338,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                                     {...actionBarProps}
                                     api={apiRef}
                                     columnVisibility={{
-                                        currentView: formKey ? "FORM" : currentView,
+                                        currentView: formKey !== undefined ? "FORM" : currentView,
                                         tableKey: tableName,
                                         fields: fields as unknown as FieldDef[],
                                         onVisibilityChange: setVisibilityMap,
@@ -364,7 +363,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                         <ListView<T>
                             {...commonStableProps}
                             {...commonProps}
-                            editingId={editMode === "INLINE" ? editingId : null}
+                            editingId={editMode === "INLINE" ? editingId : -1}
                             selectedRows={selectedRows}
                             visibleRowIds={visibleRowIds}
                             handleSelectRow={handleSelectRowEvent}
@@ -375,7 +374,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
             )}
             {editMode !== "FORM" &&
                 (editMode === "DIALOG" || currentView === "CARD") &&
-                editingId && (
+                editingId >= 0 && (
                     <DialogForm<T>
                         setClose={handleCancel}
                         tableState={tableState}
@@ -429,7 +428,7 @@ function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
                 </FlexEvenly>
             )}
 
-            {deleteDialogOpen && deleteId && (
+            {deleteDialogOpen && deleteId > 0 && (
                 <DeleteDialog
                     open={deleteDialogOpen}
                     onClose={closeDeleteDialog}

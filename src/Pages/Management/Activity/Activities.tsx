@@ -77,7 +77,7 @@ const Activities = () => {
             return;
         }
 
-        if (!updatedActivity.activityType || updatedActivity.activityType === "NEW") {
+        if (!updatedActivity.activityType || updatedActivity.activityType === "") {
             showAlert("Activity type is required.", "error");
             return;
         }
@@ -102,7 +102,8 @@ const Activities = () => {
         }
 
         try {
-            if (String(updatedActivity.activityId ?? "") === "NEW") {
+            const activityId = updatedActivity.activityId;
+            if (activityId === 0) {
                 const newPayload = { ...updatedActivity };
                 delete (newPayload as Partial<ActivityFormData>).activityId;
                 newPayload.batchEntries.forEach(
@@ -126,7 +127,7 @@ const Activities = () => {
                 const sortedActivity = sortMembershipPlans(updatedActivity as Activity);
                 await dispatch(
                     activityCruds.update(
-                        updatedActivity.activityId!,
+                        Number(updatedActivity.activityId!),
                         sortedActivity,
                         token,
                         showAlert,
@@ -142,7 +143,7 @@ const Activities = () => {
     };
 
     const handleDeleteActivity = async (activityId: string | number) => {
-        await dispatch(activityCruds.remove(activityId, token, showAlert, setLoading));
+        await dispatch(activityCruds.remove(Number(activityId), token, showAlert, setLoading));
         showAlert("Activity deleted successfully!", "success");
     };
 

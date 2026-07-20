@@ -166,7 +166,7 @@ const VIEWS = ["LIST", "CARD", "FORM"] as const;
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
 interface StudentsProps {
-    ID?: string | number;
+    ID?: number;
 }
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
@@ -388,7 +388,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Activity",
                         type: "SELECT",
                         getValue: (value: string) => value && { value, key: String(value) },
-                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
@@ -410,7 +410,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "membershipType",
                         label: "Membership Type",
                         type: "SELECT",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
                         getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
                             addValue: false,
@@ -444,7 +444,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "daysPerWeek",
                         label: "Days / week",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
                         type: "SELECT",
                         getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
@@ -479,7 +479,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
                         getValue: (value: unknown) => value && { value, key: String(value) },
                         extraProp: {
                             addValue: false,

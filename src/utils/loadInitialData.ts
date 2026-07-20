@@ -13,7 +13,7 @@ export const loadInitialDataAPI =
         const currentBranch = state.branch.currentBranch!;
         const branchId = currentBranch.branchId;
         const studioId = currentBranch.studioId;
-        const token = auth.token;
+        const token = auth.token!;
 
         const noop = () => {};
         dispatch(activityCruds.getAll(noop, noop, token, { size: 500 }, branchId));

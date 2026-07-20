@@ -20,8 +20,10 @@ const MembershipType = lazy(() => import("./MembershipType/MembershipType"));
 const Attendance = lazy(() => import("./Attendance/Attendance"));
 
 const Management: React.FC = () => {
-    const { page, ID } = useParams<{ page: string; ID?: string }>();
+    const { page, ID: rawID } = useParams<{ page: string; ID?: string }>();
     const location = useLocation();
+    /** Convert URL param to number. "NEW" → 0, digits → Number, absent → undefined */
+    const ID = rawID !== undefined ? (rawID === "NEW" ? 0 : Number(rawID) || 0) : undefined;
 
     const renderComponent = () => {
         switch (page) {

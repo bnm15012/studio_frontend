@@ -33,7 +33,7 @@ const FIELD_META = {
 
 const VIEWS = ["LIST", "CARD"] as const;
 
-const Bookings = ({ ID }: { ID?: string | number }) => {
+const Bookings = ({ ID }: { ID?: number }) => {
     const { isMobile, token, studio, currentBranch } = useAppUI();
     const dispatch = useAppDispatch();
     const showAlert = useAlert();

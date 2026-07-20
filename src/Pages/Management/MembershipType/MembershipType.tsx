@@ -35,7 +35,7 @@ const MembershipType: React.FC = () => {
                     size={LIMIT}
                     key={"membershipPackages"}
                     fields={FIELDS}
-                    rootId={studio.studioId ?? null}
+                    rootId={studio.studioId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     currentView={VIEWS[0]}

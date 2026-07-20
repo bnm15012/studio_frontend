@@ -133,7 +133,7 @@ const TemplatesPage: React.FC = () => {
                 currentView={VIEWS[!isMobile ? 0 : 1]}
                 fieldToDisplayOnDelete="templateName"
                 fieldsMeta={FIELD_META}
-                rootId={studio.studioId ?? null}
+                rootId={studio.studioId}
                 apiRef={api}
                 dialogProps={{ fullScreen: isMobile, size: "md" }}
                 fields={FIELDS}

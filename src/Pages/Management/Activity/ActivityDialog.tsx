@@ -93,7 +93,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
             setFormData(activity as ActivityFormData);
         } else {
             setFormData({
-                activityId: "NEW",
+                activityId: 0,
                 activityType: "ZUMBA",
                 description: "",
                 branchId: currentBranch.branchId,
@@ -104,7 +104,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
 
     const addBatch = () => {
         const newBatch = {
-            batchId: "NEW" + String(Date.now()),
+            batchId: 0 + String(Date.now()),
             name: "New Batch",
             planType: "MONTHLY",
             daysPerWeek: 3,
@@ -294,13 +294,13 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                                                 ...membershipTypes,
                                                 ...validMembershipTypes,
                                             ].includes(batch.planType) && (
-                                                <MenuItem
-                                                    value={batch.planType}
-                                                    key={batch.planType}
-                                                >
-                                                    {batch.planType}
-                                                </MenuItem>
-                                            )}
+                                                    <MenuItem
+                                                        value={batch.planType}
+                                                        key={batch.planType}
+                                                    >
+                                                        {batch.planType}
+                                                    </MenuItem>
+                                                )}
                                             {membershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
                                                     {type}

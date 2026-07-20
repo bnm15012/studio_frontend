@@ -47,7 +47,7 @@ export function createCrudThunks<T extends Entity = Entity>({
                         data: { data },
                     } = await api.post(`/${route}/add`, newData, getHeader(token));
 
-                    if (state.recordById["NEW"]) {
+                    if (state.recordById[0]) {
                         dispatch(actions.setRecord((data as T[])[0]));
                     }
                     dispatch(
@@ -142,14 +142,14 @@ export function createCrudThunks<T extends Entity = Entity>({
         async (dispatch: AppDispatch, getState: unknown) => {
             const state = (getState as () => Entity)()[route] as GenericState<T>;
 
-            if (rootId === "NEW") return;
+            if (rootId === 0) return;
             if (!_force && isCacheValid(state, rootId, params)) return;
-            if (!_force && !params?.page && (state.items as unknown[]).length) return;
+            if (!_force && !params.page && (state.items as unknown[]).length) return;
 
             // ── Thunk in-flight guard ──────────────────────────────────────────
             // Prevents identical concurrent dispatches (e.g. two components both
             // calling getAll for the same route/page before the first resolves).
-            const thunkKey = buildThunkKey(route, rootId, params?.page);
+            const thunkKey = buildThunkKey(route, rootId, params.page);
             if (!tryAcquireThunk(thunkKey)) {
                 // An identical fetch is already in flight — skip silently.
                 return;
@@ -166,16 +166,16 @@ export function createCrudThunks<T extends Entity = Entity>({
                         });
 
                         const action =
-                            infinite && params?.searchTerm === state?.searchTerm
+                            infinite && params.searchTerm === state?.searchTerm
                                 ? actions.appendItems({ data: data as T[], rootId })
                                 : actions.setItems({ data: data as T[], rootId });
 
                         dispatch(action);
                         dispatch(
                             actions.setInfo({
-                                currentPage: params?.page,
-                                pageSize: params?.size,
-                                searchTerm: params?.searchTerm,
+                                currentPage: params.page,
+                                pageSize: params.size,
+                                searchTerm: params.searchTerm,
                                 filterKeys: params,
                                 totalCount: (status as Entity).totalCount,
                             }),
@@ -209,7 +209,7 @@ export function createCrudThunks<T extends Entity = Entity>({
             const state = (getState as () => Entity)()[route] as GenericState<T> | undefined;
             if (!state) return;
 
-            if (id === "NEW") return;
+            if (id === 0) return;
             const cached = state.recordById[id];
             if (cached && !forceRefresh) return cached;
 
@@ -250,7 +250,7 @@ export function createCrudThunks<T extends Entity = Entity>({
             const searchTerm = (state.searchTerm as string) || "";
             const filterKeys = (state.filterKeys as Entity) || {};
 
-            if (rootId === null || rootId === undefined || rootId === "NEW") {
+            if (rootId === null || rootId === undefined || rootId === 0) {
                 console.warn(`[refresh] Skipped for route "${route}" — rootId is not set.`);
                 return;
             }

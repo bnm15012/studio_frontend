@@ -21,7 +21,7 @@ interface FieldCellProps<T extends Entity = Entity> {
     isEdit: boolean;
     handleChange?: (
         value: unknown,
-        rowId: string | number | null | undefined,
+        rowId: number,
         fieldName: string,
     ) => void;
     handleViewOpen?: (row: T) => void;
@@ -60,13 +60,13 @@ function FieldCell<T extends Entity = Entity>({
         );
     }
 
-    const rowId = row?.[Object.keys(row)[0]] as string | number | undefined; // fallback; callers provide explicit id via handleChange closure
+    const rowId = Number(row?.[Object.keys(row)[0]]) || 0;
 
     return (
         <Field
             isEdit={isEdit}
             value={resolveFieldValue(field, row, isEdit)}
-            setValue={(v) => handleChange?.(v, rowId ?? null, field.name)}
+            setValue={(v) => handleChange?.(v, rowId, field.name)}
             type={field.type}
             extraProp={bindGetOptions(field.extraProp ?? {}, row)}
             validation={field.validation as Record<string, unknown>}

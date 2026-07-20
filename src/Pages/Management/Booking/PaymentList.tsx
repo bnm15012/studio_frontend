@@ -49,10 +49,10 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
 
     const handleSave = async () => {
         if (!paymentFormData) return;
-        if (paymentFormData.id !== "NEW") {
+        if (paymentFormData.id !== 0) {
             dispatch(
                 paymentCruds.update(
-                    paymentFormData.id as string | number,
+                    Number(paymentFormData.id),
                     paymentFormData,
                     token,
                     showAlert,
@@ -81,7 +81,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
         if (!loading) {
             setTimeout(() => {
                 dispatch(
-                    bookingCruds.getById(data.id as string | number, token, showAlert, setLoading, {
+                    bookingCruds.getById(Number(data.id), token, showAlert, setLoading, {
                         forceRefresh: true,
                     }),
                 );
@@ -102,7 +102,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     onClick={() => {
                         setOpenPaymentDialog(true);
                         setPaymentFormData({
-                            id: "NEW",
+                            id: 0,
                             amount: (data.totalAmount as number) - paidAmount,
                             paymentDate: getCurrentDateTimeLocal() ?? "",
                             status: paymentStatusTypes[0],

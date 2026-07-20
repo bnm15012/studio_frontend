@@ -35,10 +35,10 @@ export interface CardViewProps<T extends Record<string, unknown> = Record<string
     /** Enable infinite scroll (sentinel-based auto-load). Default: true */
     infiniteScroll?: boolean;
     // Selection state lifted to Views
-    selectedRows: (string | number)[];
+    selectedRows: number[];
     isAllSelected: boolean;
     isIndeterminate: boolean;
-    handleSelectRow: (id: string | number, checked: boolean) => void;
+    handleSelectRow: (id: number, checked: boolean) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -158,7 +158,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
                             <CardSkeleton />
                         ) : (
                             data.map((row, index) => {
-                                const rowId = row[fieldsMeta.primary] as string | number;
+                                const rowId = Number(row[fieldsMeta.primary]) || 0;
                                 const isItemSelected = selectedRows.includes(rowId);
 
                                 return (

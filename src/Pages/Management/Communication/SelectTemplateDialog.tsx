@@ -42,7 +42,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                     setLoading,
                     token,
                     { searchTerm: "COMMUNICATION" },
-                    studio.studioId ?? 0,
+                    studio.studioId,
                     false,
                 ),
             );

@@ -47,6 +47,6 @@ interface CacheParams {
  */
 export const isCacheValid = (state: CacheState, rootId: unknown, params: CacheParams): boolean =>
     state.rootId === rootId &&
-    state.currentPage === params?.page &&
-    params?.searchTerm === state.searchTerm &&
+    state.currentPage === params.page &&
+    params.searchTerm === state.searchTerm &&
     JSON.stringify(params) === JSON.stringify(state.filterKeys);

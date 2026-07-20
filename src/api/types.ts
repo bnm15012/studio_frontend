@@ -57,7 +57,7 @@ export interface Studio extends Entity {
 }
 
 export interface SubscriptionPlan extends Entity {
-    id: string | number;
+    id: number;
     subscriptionPlan: string;
     name: string;
     price: number;
@@ -70,7 +70,7 @@ export interface SubscriptionPlan extends Entity {
 }
 
 export interface InstructorAssignment extends Entity {
-    assignmentI?: number;
+    assignmentId: number;
     instructorId: number;
     activityName: string;
     assignedDate: string;
@@ -208,7 +208,7 @@ export interface Enquiry extends Entity {
 }
 
 export interface Payment extends Entity {
-    id: number | string;
+    id: number;
     branchId: number;
     payeeType: string;
     payeeName: string;
@@ -221,17 +221,17 @@ export interface Payment extends Entity {
 }
 
 export interface BatchEntry extends Entity {
-    batchId?: number;
-    name?: string;
-    planType?: string;
-    startTime?: string;
-    endTime?: string;
-    daysPerWeek?: number;
-    price?: number;
+    batchId: number;
+    name: string;
+    planType: string;
+    startTime: string;
+    endTime: string;
+    daysPerWeek: number;
+    price: number;
 }
 
 export interface Activity extends Entity {
-    activityId: number | string;
+    activityId: number;
     activityType: string;
     description?: string;
     branchId: number;
@@ -254,7 +254,7 @@ export interface GenericTemplate extends Entity {
 }
 
 export interface BulkUploadJob extends Entity {
-    id: number | string;
+    id: number;
     entityType?: string;
     fileUrl?: string;
     status?: string;

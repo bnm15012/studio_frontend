@@ -65,7 +65,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                 {
                     attendanceEntries,
                 },
-                token,
+                token!,
                 showAlert,
                 () => {},
             ),

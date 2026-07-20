@@ -7,10 +7,10 @@ import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "../../types";
 export interface UseTableDataParams<T extends Record<string, unknown> = Record<string, unknown>> {
     tableCruds: CrudThunks<T>;
     tableName: string;
-    token: string | null | undefined;
+    token: string;
     showAlert: ShowAlertFn;
     size: number;
-    rootId: string | number | null | undefined;
+    rootId: number;
     currentView: string;
     setLoading: SetLoadingFn;
     defaultParams?: Record<string, unknown>;
@@ -49,7 +49,7 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
                 setLoading,
                 token,
                 { page, searchTerm, size, ...defaultParams, ...filterKeys },
-                rootId ?? 0,
+                rootId,
                 currentView === "CARD",
             ),
         );
@@ -69,7 +69,7 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     ]);
 
     const fetchOne = useCallback(
-        async (formKey: string | number) => {
+        async (formKey: number) => {
             dispatch(tableCruds.getById(formKey, token, showAlert, setLoading));
         },
         [dispatch, tableCruds, token, showAlert, setLoading],

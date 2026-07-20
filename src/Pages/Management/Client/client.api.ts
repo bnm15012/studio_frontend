@@ -17,7 +17,7 @@ import { RequestParams } from "@/core/types";
 interface GetClientParams {
     branchId: string | number;
     token: string | null | undefined;
-    params?: RequestParams;
+    params: RequestParams;
 }
 
 export const getCLientByNamesAPI = async ({ branchId, token, params }: GetClientParams) => {

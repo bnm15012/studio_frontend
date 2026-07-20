@@ -20,8 +20,10 @@ interface ViewFieldItem {
 
 interface ViewTabsProps {
     viewFields: ViewFieldItem[];
-    editingId?: string | number | null;
-    formKey?: string | number | null;
+    /** -1 = not editing, 0 = new row, positive = editing existing */
+    editingId?: number;
+    /** 0 = new record, positive = existing id */
+    formKey?: number;
     currentView?: ViewMode;
 }
 
@@ -50,7 +52,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     ))}
                 </Tabs>
 
-                {editingId !== "NEW" && hasAddNewRow && (
+                {editingId !== undefined && editingId >= 0 && hasAddNewRow && (
                     <Button
                         variant="contained"
                         onClick={() => currentViewField?.api?.current?.addNewRow?.(editingId)}
@@ -68,7 +70,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                 >
                     <Views
                         {...(view.viewProps as ViewsProps)}
-                        rootId={formKey ?? null}
+                        rootId={formKey ?? 0}
                         currentView={currentView ?? "LIST"}
                     />
                 </Box>

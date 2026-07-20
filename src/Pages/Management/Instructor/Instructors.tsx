@@ -124,7 +124,7 @@ const VIEWS = ["LIST", "CARD", "FORM"] as const;
 const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
 
 interface InstructorsProps {
-    ID?: string | number;
+    ID?: number;
 }
 
 const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
@@ -167,7 +167,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         label: "Activity",
                         type: "SELECT",
                         getValue: (value: unknown) => value && { value, key: value },
-                        editable: (row: Record<string, unknown>) => row.assignmentId === "NEW",
+                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities

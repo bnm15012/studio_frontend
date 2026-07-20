@@ -5,14 +5,14 @@ import type { AppDispatch } from "../../../state";
 
 interface UseDeleteHandlerProps<T extends Entity = Entity> {
     tableCruds: CrudThunks<T>;
-    token: string | null | undefined;
+    token: string;
     showAlert: ShowAlertFn;
     setLoading: SetLoadingFn;
     dispatch: AppDispatch;
     navigate: (path: string) => void;
     tableName: string;
     consts: React.MutableRefObject<{ primaryKey: string }>;
-    formKey?: string | number | null;
+    formKey?: number;
 }
 
 export const useDeleteHandler = <T extends Entity = Entity>({
@@ -28,16 +28,17 @@ export const useDeleteHandler = <T extends Entity = Entity>({
 }: UseDeleteHandlerProps<T>): {
     handleDeleteClick: (row: T) => void;
     deleteDialogOpen: boolean;
-    deleteId: string | number | null;
+    deleteId: number;
     closeDeleteDialog: () => void;
     handleDeleteConfirm: () => Promise<void>;
 } => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [deleteId, setDeleteId] = useState<string | number | null>(null);
+    /** 0 means no row selected for deletion */
+    const [deleteId, setDeleteId] = useState<number>(0);
 
     const handleDeleteClick = useCallback(
         (row: T) => {
-            setDeleteId(row[consts.current.primaryKey] as string | number | null);
+            setDeleteId(Number(row[consts.current.primaryKey]) || 0);
             setDeleteDialogOpen(true);
         },
         [consts],
@@ -45,11 +46,12 @@ export const useDeleteHandler = <T extends Entity = Entity>({
 
     const closeDeleteDialog = useCallback(() => {
         setDeleteDialogOpen(false);
-        setDeleteId(null);
+        setDeleteId(0);
     }, []);
 
     const handleDeleteConfirm = useCallback(async () => {
         try {
+            if (deleteId === 0) return;
             tableCruds.remove(deleteId, token, showAlert, setLoading)(dispatch);
             if (formKey) navigate(`/management/${tableName}`);
         } catch (error: unknown) {

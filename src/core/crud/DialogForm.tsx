@@ -17,12 +17,8 @@ interface DialogFormProps<T extends Entity = Entity> {
         primary: string;
         root?: string;
     };
-    handleChange: (
-        value: unknown,
-        rowId: string | number | null | undefined,
-        fieldName: string,
-    ) => void;
-    handleSave: (rowId: string | number | null | undefined) => void | Promise<void>;
+    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
+    handleSave: (rowId: number) => void | Promise<void>;
     setClose: () => void;
     submitAttempted?: boolean;
     [key: string]: unknown;
@@ -40,7 +36,7 @@ export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>)
         ...dialogProps
     } = props;
     const { isMobile } = useUI();
-    const id = data?.[fieldsMeta.primary] as string | number | null | undefined;
+    const id = Number(data?.[fieldsMeta.primary]) || 0;
     const visibleFields = fields.filter((f) => f.show || f.view);
 
     return (
@@ -48,7 +44,7 @@ export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>)
             open={true}
             onClose={setClose}
             closeIcon={true}
-            title={id === "NEW" ? "Create Record" : "Edit Record"}
+            title={id === 0 ? "Create Record" : "Edit Record"}
             {...dialogProps}
             actions={[
                 { component: <Close />, key: "cancel", onClick: setClose },
@@ -82,11 +78,7 @@ export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>)
                                 setValue={(v) =>
                                     handleChange(
                                         v,
-                                        data[fieldsMeta.primary] as
-                                            | string
-                                            | number
-                                            | null
-                                            | undefined,
+                                        Number(data[fieldsMeta.primary]) || 0,
                                         field.name,
                                     )
                                 }

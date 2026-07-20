@@ -10,13 +10,18 @@ export type AppDispatch = (action: unknown) => unknown;
 
 export type ViewMode = "LIST" | "CARD" | "FORM";
 
-export interface SelectOption<T extends Entity = Entity> {
+export interface GenericItem {
+    id?: number;
+    [key: string]: unknown;
+}
+
+export interface SelectOption<T = GenericItem> {
     key: string | number;
     value: string | number;
     row?: T;
 }
 
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = GenericItem> {
     success: boolean;
     data?: T;
     message?: string;
@@ -33,7 +38,7 @@ export type SetLoadingFn = (loading: boolean) => void;
 /** Redux thunk action type — a function that receives dispatch and getState */
 export type ThunkAction = (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
 
-export interface ExtraProp<T extends Entity = Entity> {
+export interface ExtraProp<T = GenericItem> {
     min?: string | number;
     max?: string | number;
     rows?: number;
@@ -57,10 +62,7 @@ export interface ExtraProp<T extends Entity = Entity> {
     disableVars?: boolean;
 }
 
-export interface FieldDef<
-    T extends Entity = Entity,
-    K extends string & keyof T = string & keyof T,
-> {
+export interface FieldDef<T = GenericItem, K extends string & keyof T = string & keyof T> {
     name: K;
     show?: boolean;
     view?: boolean;
@@ -85,7 +87,7 @@ export interface FieldDef<
     viewProps?: unknown;
 }
 
-export interface ActionItem<T extends Entity = Entity> {
+export interface ActionItem<T = GenericItem> {
     name: string;
     onClick?: (row: T) => void;
     icon?: React.ReactNode;
@@ -99,15 +101,10 @@ export interface ActionItem<T extends Entity = Entity> {
     help?: string;
 }
 
-export interface GenericItem {
-    id?: string | number;
-    [key: string]: unknown;
-}
-
 export interface CrudState<T = GenericItem> {
-    rootId: string | number;
+    rootId: number;
     items: T[];
-    recordById: Record<string | number, T>;
+    recordById: Record<number, T>;
     searchTerm: string;
     filterKeys: Record<string, unknown>;
     totalCount: number;
@@ -117,39 +114,40 @@ export interface CrudState<T = GenericItem> {
     [key: string]: unknown;
 }
 
-export interface CrudThunks<T extends Entity = Entity> {
+export interface CrudThunks<T = GenericItem> {
     add: (
         newData: Partial<T>,
-        token: string | null | undefined,
+        token: string,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         prepend?: boolean,
     ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
     update: (
-        id: string | number | null,
+        id: number,
         updatedData: Partial<T>,
-        token: string | null | undefined,
+        token: string,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
     ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
+    /** id=0 means "nothing selected" — callers must guard before calling remove */
     remove: (
-        id: string | number | null,
-        token: string | null | undefined,
+        id: number,
+        token: string,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
     ) => (dispatch: AppDispatch) => Promise<void>;
     getAll: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
-        token: string | null | undefined,
+        token: string,
         params: RequestParams,
-        rootId: string | number | null | undefined,
+        rootId: number,
         infinite?: boolean,
         _force?: boolean,
     ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
     getById: (
-        id: string | number,
-        token: string | null | undefined,
+        id: number,
+        token: string,
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
         options?: { forceRefresh?: boolean },
@@ -157,7 +155,7 @@ export interface CrudThunks<T extends Entity = Entity> {
     refresh: (
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
-        token: string | null | undefined,
+        token: string,
         infinite?: boolean,
     ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
 }

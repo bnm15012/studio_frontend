@@ -39,8 +39,8 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, animKey, y = 6, durati
 // ── RowActions ──────────────────────────────────────────────────────────────
 interface RowActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
     isEditing: boolean;
-    rowId?: string | number;
-    handleSave?: (rowId: string | number) => void | Promise<void>;
+    rowId?: number;
+    handleSave?: (rowId: number) => void | Promise<void>;
     handleCancel?: () => void;
     actions: ActionItem<T>[];
     row: T;
@@ -60,7 +60,7 @@ export function RowActions<T extends Record<string, unknown> = Record<string, un
                 <IconButton
                     size="small"
                     color="primary"
-                    onClick={() => rowId != null && handleSave?.(rowId)}
+                    onClick={() => rowId !== undefined && handleSave?.(rowId)}
                 >
                     <SaveIcon fontSize="small" />
                 </IconButton>

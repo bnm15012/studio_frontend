@@ -74,17 +74,19 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
 
 export interface FormViewProps<T extends Entity = Entity> {
     fields: FieldDef<T>[];
-    formKey: string | number | null | undefined;
+    /** 0 = new record, positive = existing id */
+    formKey: number;
     data: T;
     loading: boolean;
     tableName: string;
-    editingId?: string | number | null;
+    /** -1 = not editing, 0 = new, positive = editing existing */
+    editingId?: number;
     handleChange: (
         value: unknown,
-        formKey: string | number | null | undefined,
+        formKey: number,
         fieldName: string,
     ) => void;
-    handleSave: (formKey: string | number | null | undefined) => void;
+    handleSave: (formKey: number) => void;
     handleCancel: () => void;
     currentView?: ViewMode;
     actions: ActionItem<T>[];
@@ -153,7 +155,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                if (editingId) handleCancel();
+                                if (editingId && editingId > 0) handleCancel();
                                 navigate(`/management/${tableName}`);
                             }}
                         >
@@ -179,12 +181,12 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
 
                             <Chip
                                 size="small"
-                                label={editingId ? "Editing" : "Saved"}
+                                label={editingId && editingId >= 0 ? "Editing" : "Saved"}
                                 sx={{
                                     height: 18,
                                     fontSize: 10,
                                     px: 0.5,
-                                    backgroundColor: editingId
+                                    backgroundColor: editingId && editingId >= 0
                                         ? alpha(theme.palette.warning.main, 0.15)
                                         : alpha(theme.palette.success.main, 0.12),
                                 }}
@@ -194,7 +196,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                 </Box>
 
                 <Box sx={{ display: "flex", gap: 0.5 }}>
-                    {!editingId ? (
+                    {!(editingId && editingId >= 0) ? (
                         <>
                             <Actions actions={actions} row={data} />
                             <IconButton>
@@ -310,7 +312,7 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
             </FadeIn>
 
             {/* TABS */}
-            {formKey !== "NEW" && viewFields.length > 0 && (
+            {formKey !== 0 && viewFields.length > 0 && (
                 <ViewTabs
                     currentView={currentView}
                     editingId={editingId}

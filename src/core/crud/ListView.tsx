@@ -37,18 +37,19 @@ interface DesktopTableProps<T extends Entity = Entity> {
         primary: string;
         root?: string;
     };
-    editingId?: string | number | null;
+    /** -1 = nothing editing, 0 = new row, positive = existing row */
+    editingId?: number;
     multi?: boolean;
     tableState: Record<string, unknown>;
     loading?: boolean;
-    handleSave?: (rowId: string | number) => void | Promise<void>;
+    handleSave?: (rowId: number) => void | Promise<void>;
     handleCancel?: () => void;
-    handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
+    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
     handleViewOpen?: (row: T) => void;
-    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    selectedRows: (string | number)[];
-    visibleRowIds: (string | number)[];
+    selectedRows: number[];
+    visibleRowIds: number[];
     actions: ActionItem<T>[];
     onClickRow?: (row: T) => void;
     submitAttempted?: boolean;
@@ -106,7 +107,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                 <TableBody>
                     <AnimatePresence mode="popLayout">
                         {data.map((row, rowIndex) => {
-                            const rowId = row[fieldsMeta.primary] as string | number;
+                            const rowId = Number(row[fieldsMeta.primary]) || 0;
                             const isItemSelected = selectedRows.includes(rowId);
                             return (
                                 <StyledTableRow
@@ -194,24 +195,24 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
 export interface ListViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef<T>[];
     data: T[];
-    editingId?: string | number | null;
+    /** -1 = nothing editing, 0 = new row, positive = existing row */
+    editingId?: number;
     fieldsMeta: {
         primary: string;
         root?: string;
     };
     actions: ActionItem<T>[];
-    handleChange: (value: unknown, rowId: string | number, fieldName: string) => void;
-    handleSave?: (rowId: string | number) => void | Promise<void>;
+    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
+    handleSave?: (rowId: number) => void | Promise<void>;
     loading?: boolean;
     handleCancel?: () => void;
     tableState: Record<string, unknown>;
     handlePageChange: (page: number) => void;
     handleViewOpen?: (row: T) => void;
     multi?: boolean;
-    // Selection state lifted to Views
-    selectedRows: (string | number)[];
-    visibleRowIds: (string | number)[];
-    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: string | number) => void;
+    selectedRows: number[];
+    visibleRowIds: number[];
+    handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
     submitAttempted?: boolean;
 }
