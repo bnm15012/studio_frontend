@@ -3,7 +3,7 @@ import { Entity, FieldDef } from "@/core/types";
 
 export type ColumnVisibilityMap = Record<string, boolean>;
 
-export interface ColumnVisibilityButtonProps<T extends Entity = Entity> {
+export interface ColumnVisibilityButtonProps<T extends Entity> {
     /**
      * Unique key used to namespace the visibility map in localStorage.
      * Typically the table / entity name, e.g. "students" or "invoices".

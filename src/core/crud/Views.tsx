@@ -16,7 +16,15 @@ import { useTableData } from "./hooks/useTableData";
 import { useDeleteHandler } from "./hooks/useDeleteHandler";
 import { FlexEvenly } from "../components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
-import { FieldDef, ActionItem, CrudThunks, Entity, ViewMode, ViewsApiRef } from "../types";
+import {
+    FieldDef,
+    FieldMeta,
+    ActionItem,
+    CrudThunks,
+    Entity,
+    ViewMode,
+    ViewsApiRef,
+} from "../types";
 import { useAppDispatch } from "../../state";
 import { useRowSelection } from "./hooks/useRowSelection";
 import { SelectionToolbar } from "./components/SelectionToolbar";
@@ -27,7 +35,7 @@ import {
     getStoredVisibility,
 } from "../components/layout/columnVisibilityHelper";
 
-export interface ViewsProps<T extends Entity = Entity> {
+export interface ViewsProps<T extends Entity> {
     /** 0 = new record, positive integer = existing record id, undefined = list mode */
     formKey?: number;
     tableName: string;
@@ -37,10 +45,7 @@ export interface ViewsProps<T extends Entity = Entity> {
     rootId: number;
     tableCruds: CrudThunks<T>;
     fields: FieldDef<T, string & keyof T>[];
-    fieldsMeta: {
-        primary: string;
-        root?: string;
-    };
+    fieldsMeta: FieldMeta;
     apiRef?: React.MutableRefObject<ViewsApiRef>;
     dialogProps?: Record<string, unknown>;
     defaultParams?: Record<string, unknown>;
@@ -62,7 +67,7 @@ export interface ViewsProps<T extends Entity = Entity> {
     infiniteScroll?: boolean;
 }
 
-function Views<T extends Entity = Entity>(props: ViewsProps<T>) {
+function Views<T extends Entity>(props: ViewsProps<T>) {
     const {
         formKey,
         dialogProps,

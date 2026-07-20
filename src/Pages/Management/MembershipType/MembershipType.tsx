@@ -6,11 +6,11 @@ import type { MembershipPackage } from "../../../api/types";
 import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 import { useAppUI } from "@/context/UIContext";
-import type { ViewsApiRef } from "@/core/types";
+import type { FieldMeta, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "id",
     root: "studioId",
 };

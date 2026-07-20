@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Payment, paymentStatus, paymentType } from "../../../api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import PaymentCard from "./PaymentCardView";
 
@@ -13,7 +13,7 @@ const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 12;
 const STATUS = ["PENDING", "COMPLETED"];
 
-const FIELD_META = { primary: "id", root: "branchId" };
+const FIELD_META: FieldMeta = { primary: "id", root: "branchId" };
 
 const VIEWS = ["LIST", "CARD"] as const;
 

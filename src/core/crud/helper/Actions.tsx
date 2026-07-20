@@ -4,12 +4,12 @@ import { alpha } from "@mui/material/styles";
 import React from "react";
 import { ActionItem, Entity } from "../../types";
 
-interface ActionsProps<T extends Entity = Entity> {
+interface ActionsProps<T extends Entity> {
     actions: ActionItem<T>[];
     row: T | T[];
 }
 
-function Actions<T extends Entity = Entity>({ actions, row }: ActionsProps<T>) {
+function Actions<T extends Entity>({ actions, row }: ActionsProps<T>) {
     const theme = useTheme();
     const visibleActions = actions.filter((a) => !a.hide);
 

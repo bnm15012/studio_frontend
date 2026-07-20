@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { branchCruds } from "../../../api/all.api";
 import type { Branch } from "../../../api/types";
 import Views from "@/core/crud/Views";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
@@ -18,7 +18,7 @@ interface BranchActions {
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "branchId",
     root: "studioId",
 };

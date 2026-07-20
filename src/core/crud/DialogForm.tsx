@@ -6,17 +6,14 @@ import StyledDialog from "../components/dialogs/StyledDialog";
 import { FieldLabel } from "../components/fields/StyledField";
 import { useUI } from "@/context/UIContext";
 import { bindGetOptions, resolveFieldValue, isFieldEditable } from "../utils/fieldHelpers";
-import { Entity, FieldDef } from "../types";
+import { Entity, FieldDef, FieldMeta } from "../types";
 import { Close } from "@mui/icons-material";
 import { Save } from "lucide-react";
 
-interface DialogFormProps<T extends Entity = Entity> {
+interface DialogFormProps<T extends Entity> {
     data: T;
     fields: FieldDef<T>[];
-    fieldsMeta: {
-        primary: string;
-        root?: string;
-    };
+    fieldsMeta: FieldMeta;
     handleChange: (value: unknown, rowId: number, fieldName: string) => void;
     handleSave: (rowId: number) => void | Promise<void>;
     setClose: () => void;
@@ -24,7 +21,7 @@ interface DialogFormProps<T extends Entity = Entity> {
     [key: string]: unknown;
 }
 
-export function DialogForm<T extends Entity = Entity>(props: DialogFormProps<T>) {
+export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
     const {
         data,
         fields,

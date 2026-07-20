@@ -3,7 +3,7 @@ import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type { Activity, Instructor } from "../../../api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
 import { useAppUI } from "@/context/UIContext";
@@ -17,7 +17,7 @@ import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "instructorId",
     root: "branchId",
 };

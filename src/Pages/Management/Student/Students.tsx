@@ -28,11 +28,11 @@ import type {
     Student,
     StudentAssignment,
 } from "@/api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "studentId",
     root: "branchId",
 };

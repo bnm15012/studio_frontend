@@ -11,20 +11,16 @@ import {
 } from "../components/cards/StyledCard";
 import { getNestedValue } from "../../utils/objectHelpers";
 import Actions from "./helper/Actions";
-import { ActionItem } from "../types";
+import { ActionItem, FieldDef, FieldMeta } from "../types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "./components/shared";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { FieldDef } from "../types";
 import { SelectAllBar } from "./components/SelectionToolbar";
 
 export interface CardViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
     fields: FieldDef<T>[];
     data: T[];
-    fieldsMeta: {
-        primary: string;
-        root?: string;
-    };
+    fieldsMeta: FieldMeta;
     loading?: boolean;
     actions: ActionItem<T>[];
     handleViewOpen?: (row: T) => void;

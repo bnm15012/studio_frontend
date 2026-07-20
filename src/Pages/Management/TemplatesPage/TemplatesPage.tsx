@@ -2,7 +2,7 @@ import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
 import type { GenericTemplate } from "../../../api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useAppUI } from "@/context/UIContext";
@@ -11,10 +11,7 @@ import ActionBar from "@/core/components/layout/ActionBar";
 
 const templateTypes = new Set<string>(["COMMUNICATION", "BOOKING"]);
 
-const FIELD_META = {
-    primary: "id",
-    root: "studioId",
-};
+const FIELD_META: FieldMeta = { primary: "id", root: "studioId" };
 
 /** Available {{variable}} tokens for template EDITOR fields. */
 const TEMPLATE_VARIABLES = {
@@ -117,7 +114,7 @@ const VIEWS = ["LIST", "CARD"] as const;
 const TemplatesPage: React.FC = () => {
     const { isMobile, studio } = useAppUI();
 
-    useAppSelector((state) => state.activities.items)?.forEach((x) => {
+    useAppSelector((state) => state.activities.items).forEach((x) => {
         if (x.activityType) templateTypes.add("INSTRUCTOR_CONTRACT_" + x.activityType);
     });
 

@@ -15,20 +15,16 @@ import { Entity, FieldDef } from "../../types";
  *
  * Replaces repeated inline <Field /> blocks across ListView, DialogForm, and CardView.
  */
-interface FieldCellProps<T extends Entity = Entity> {
+interface FieldCellProps<T extends Entity> {
     field: FieldDef<T>;
     row: T;
     isEdit: boolean;
-    handleChange?: (
-        value: unknown,
-        rowId: number,
-        fieldName: string,
-    ) => void;
+    handleChange?: (value: unknown, rowId: number, fieldName: string) => void;
     handleViewOpen?: (row: T) => void;
     submitAttempted?: boolean;
 }
 
-function FieldCell<T extends Entity = Entity>({
+function FieldCell<T extends Entity>({
     field,
     row,
     isEdit,

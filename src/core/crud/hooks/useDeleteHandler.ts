@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { ShowAlertFn, SetLoadingFn, CrudThunks, Entity } from "../../types";
 import type { AppDispatch } from "../../../state";
 
-interface UseDeleteHandlerProps<T extends Entity = Entity> {
+interface UseDeleteHandlerProps<T extends Entity> {
     tableCruds: CrudThunks<T>;
     token: string;
     showAlert: ShowAlertFn;
@@ -15,7 +15,7 @@ interface UseDeleteHandlerProps<T extends Entity = Entity> {
     formKey?: number;
 }
 
-export const useDeleteHandler = <T extends Entity = Entity>({
+export const useDeleteHandler = <T extends Entity>({
     tableCruds,
     token,
     showAlert,

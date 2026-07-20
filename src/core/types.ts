@@ -10,6 +10,11 @@ export type AppDispatch = (action: unknown) => unknown;
 
 export type ViewMode = "LIST" | "CARD" | "FORM";
 
+export interface FieldMeta {
+    primary: string;
+    root?: string;
+}
+
 export interface GenericItem {
     id?: number;
     [key: string]: unknown;

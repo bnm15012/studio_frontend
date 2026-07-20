@@ -72,7 +72,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     </Box>
 );
 
-export interface FormViewProps<T extends Entity = Entity> {
+export interface FormViewProps<T extends Entity> {
     fields: FieldDef<T>[];
     /** 0 = new record, positive = existing id */
     formKey: number;
@@ -81,11 +81,7 @@ export interface FormViewProps<T extends Entity = Entity> {
     tableName: string;
     /** -1 = not editing, 0 = new, positive = editing existing */
     editingId?: number;
-    handleChange: (
-        value: unknown,
-        formKey: number,
-        fieldName: string,
-    ) => void;
+    handleChange: (value: unknown, formKey: number, fieldName: string) => void;
     handleSave: (formKey: number) => void;
     handleCancel: () => void;
     currentView?: ViewMode;
@@ -93,7 +89,7 @@ export interface FormViewProps<T extends Entity = Entity> {
     submitAttempted?: boolean;
 }
 
-function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
+function FormView<T extends Entity>(props: FormViewProps<T>) {
     const {
         fields,
         formKey,
@@ -186,9 +182,10 @@ function FormView<T extends Entity = Entity>(props: FormViewProps<T>) {
                                     height: 18,
                                     fontSize: 10,
                                     px: 0.5,
-                                    backgroundColor: editingId && editingId >= 0
-                                        ? alpha(theme.palette.warning.main, 0.15)
-                                        : alpha(theme.palette.success.main, 0.12),
+                                    backgroundColor:
+                                        editingId && editingId >= 0
+                                            ? alpha(theme.palette.warning.main, 0.15)
+                                            : alpha(theme.palette.success.main, 0.12),
                                 }}
                             />
                         </Box>

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";
@@ -12,7 +12,7 @@ import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "enquiryId",
     root: "branchId",
 };

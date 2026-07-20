@@ -5,7 +5,7 @@ import { CrudThunks, Entity, AppDispatch, RequestParams } from "../types";
 import { GenericState } from "@/core/state/stateTypes";
 import { buildThunkKey, tryAcquireThunk, releaseThunk } from "./apiGuard";
 
-export interface CrudThunksOptions<T extends Entity = Entity> {
+export interface CrudThunksOptions<T extends Entity> {
     actions: {
         setRecord: (record: T) => { type: string; payload: T };
         addItem: (item: T) => { type: string; payload: T };
@@ -27,10 +27,7 @@ export interface CrudThunksOptions<T extends Entity = Entity> {
     route: string;
 }
 
-export function createCrudThunks<T extends Entity = Entity>({
-    actions,
-    route,
-}: CrudThunksOptions<T>) {
+export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunksOptions<T>) {
     const add =
         (
             newData: Partial<T> | Entity,

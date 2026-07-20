@@ -34,7 +34,7 @@ import { Entity } from "@/core/types";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-function ColumnVisibilityButton<T extends Entity = Entity>({
+function ColumnVisibilityButton<T extends Entity>({
     tableKey,
     fields,
     onVisibilityChange,

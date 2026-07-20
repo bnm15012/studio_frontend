@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Client } from "../../../api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -13,7 +13,7 @@ const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 
 const LIMIT = 12;
 
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "clientId",
     root: "branchId",
 };

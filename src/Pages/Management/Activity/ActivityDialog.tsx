@@ -294,13 +294,13 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                                                 ...membershipTypes,
                                                 ...validMembershipTypes,
                                             ].includes(batch.planType) && (
-                                                    <MenuItem
-                                                        value={batch.planType}
-                                                        key={batch.planType}
-                                                    >
-                                                        {batch.planType}
-                                                    </MenuItem>
-                                                )}
+                                                <MenuItem
+                                                    value={batch.planType}
+                                                    key={batch.planType}
+                                                >
+                                                    {batch.planType}
+                                                </MenuItem>
+                                            )}
                                             {membershipTypes.map((type) => (
                                                 <MenuItem key={type} value={type}>
                                                     {type}

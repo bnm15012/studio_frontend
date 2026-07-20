@@ -59,10 +59,7 @@ export type CrudModule<
         removeAll: ActionCreatorWithoutPayload;
     };
 
-export function createCrudModule<
-    T extends Entity = Entity,
-    S extends GenericState<T> = GenericState<T>,
->() {
+export function createCrudModule<T extends Entity, S extends GenericState<T> = GenericState<T>>() {
     return <E extends Record<string, unknown> = Record<string, never>>(
         options: CreateCrudModuleOptions<T, S, E>,
     ): CrudModule<T, S, E> => {

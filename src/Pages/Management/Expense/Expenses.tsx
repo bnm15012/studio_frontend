@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Expense, paymentType } from "../../../api/types";
-import type { FieldDef, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -21,7 +21,7 @@ const categories = [
 ];
 const LIMIT = 12;
 const PAYMENT_TYPE = ["CASH", "UPI"];
-const FIELD_META = {
+const FIELD_META: FieldMeta = {
     primary: "expenseId",
     root: "branchId",
 };

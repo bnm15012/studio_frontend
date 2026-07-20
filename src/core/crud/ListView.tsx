@@ -10,11 +10,10 @@ import {
     StyledTableRow,
 } from "../components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { ActionItem, Entity } from "../types";
+import { ActionItem, Entity, FieldDef, FieldMeta } from "../types";
 import { useUI } from "@/context/UIContext";
 import FieldCell from "./components/FieldCell";
 import { getVisibleFields } from "../utils/fieldHelpers";
-import { FieldDef } from "../types";
 import { AnimatePresence } from "framer-motion";
 import { RowActions, EmptyState } from "./components/shared";
 import { getRowNumber } from "./components/getRowNumber";
@@ -30,13 +29,10 @@ const rowVariants = {
     exit: { opacity: 0, transition: { duration: 0.15 } },
 };
 
-interface DesktopTableProps<T extends Entity = Entity> {
+interface DesktopTableProps<T extends Entity> {
     fields: FieldDef<T>[];
     data: T[];
-    fieldsMeta: {
-        primary: string;
-        root?: string;
-    };
+    fieldsMeta: FieldMeta;
     /** -1 = nothing editing, 0 = new row, positive = existing row */
     editingId?: number;
     multi?: boolean;
@@ -197,10 +193,7 @@ export interface ListViewProps<T extends Record<string, unknown> = Record<string
     data: T[];
     /** -1 = nothing editing, 0 = new row, positive = existing row */
     editingId?: number;
-    fieldsMeta: {
-        primary: string;
-        root?: string;
-    };
+    fieldsMeta: FieldMeta;
     actions: ActionItem<T>[];
     handleChange: (value: unknown, rowId: number, fieldName: string) => void;
     handleSave?: (rowId: number) => void | Promise<void>;
