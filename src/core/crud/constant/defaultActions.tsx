@@ -51,9 +51,9 @@ export const defaultActions = <T extends Record<string, unknown> = Record<string
         enabled: !loading,
         hide:
             a.name === "edit"
-                ? editMode === "FORM" && !formKey
+                ? editMode === "FORM" && formKey === undefined
                 : a.name === "form"
-                  ? editMode !== "FORM" || !!formKey
+                  ? editMode !== "FORM" || formKey !== undefined
                   : false,
     }));
 };

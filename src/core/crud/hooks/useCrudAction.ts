@@ -67,7 +67,7 @@ export const useCrudAction = <T extends Entity>({
     submitAttempted: boolean;
 } => {
     /** -1 = nothing editing, 0 = new row, positive = editing existing */
-    const [editingId, setEditingId] = useState<number>(-1);
+    const [editingId, setEditingId] = useState<number>(formKey === 0 ? 0 : -1);
     const [originalRow, setOriginalRow] = useState<T | null>(null);
     const [record, setRecord] = useState<T>({} as T);
     const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -77,8 +77,8 @@ export const useCrudAction = <T extends Entity>({
     };
 
     useEffect(() => {
-        updateEditId(-1);
-    }, [tableState.currentPage]);
+        updateEditId(formKey === 0 ? 0 : -1);
+    }, [tableState.currentPage, formKey]);
 
     const handleEdit = useCallback(
         (row: T) => {
@@ -99,7 +99,7 @@ export const useCrudAction = <T extends Entity>({
     const handleCancel = useCallback(() => {
         setSubmitAttempted(false);
         if (formKey === 0) navigate(`/management/${tableName}/`);
-        if (formKey) {
+        if (formKey !== undefined) {
             setRecord(editingId === 0 ? ({} as T) : (originalRow ?? ({} as T)));
         } else {
             if (editingId === 0) {
@@ -122,9 +122,10 @@ export const useCrudAction = <T extends Entity>({
         async (id: number) => {
             setSubmitAttempted(true);
             try {
-                const newRow = formKey
-                    ? record
-                    : data.find((e) => e[consts.current.primaryKey] === id);
+                const newRow =
+                    formKey !== undefined
+                        ? record
+                        : data.find((e) => e[consts.current.primaryKey] === id);
                 if (!newRow) return;
                 validate(newRow, consts.current.fields);
                 if (id === 0) {
@@ -192,7 +193,7 @@ export const useCrudAction = <T extends Entity>({
 
     const handleChange = useCallback(
         (value: unknown, id: number, fieldPath: string) => {
-            if (formKey) {
+            if (formKey !== undefined) {
                 setRecord((prev) => updateField(value, prev, fieldPath));
             } else {
                 setData((prev) =>
@@ -229,7 +230,7 @@ export const useCrudAction = <T extends Entity>({
                 >;
             });
 
-        if (formKey) setRecord(newRow as T);
+        if (formKey !== undefined) setRecord(newRow as T);
         else setData((prev) => [newRow as T, ...prev]);
 
         updateEditId(0);

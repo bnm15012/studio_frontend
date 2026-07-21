@@ -23,20 +23,25 @@ const Management: React.FC = () => {
     const { page, ID: rawID } = useParams<{ page: string; ID?: string }>();
     const location = useLocation();
     /** Convert URL param to number. "NEW" → 0, digits → Number, absent → undefined */
-    const ID = rawID !== undefined ? (rawID === "NEW" ? 0 : Number(rawID) || 0) : undefined;
+    const ID =
+        rawID !== undefined
+            ? rawID === "0" || rawID.toLowerCase() === "new"
+                ? 0
+                : Number(rawID) || 0
+            : undefined;
 
     const renderComponent = () => {
         switch (page) {
             case "clients":
                 return <Clients />;
             case "booking":
-                if (ID) return <Bookings ID={ID} />;
+                if (ID !== undefined) return <Bookings ID={ID} />;
                 return <Bookings />;
             case "students":
-                if (ID) return <Students ID={ID} />;
+                if (ID !== undefined) return <Students ID={ID} />;
                 return <Students />;
             case "instructors":
-                if (ID) return <Instructors ID={ID} />;
+                if (ID !== undefined) return <Instructors ID={ID} />;
                 return <Instructors />;
             case "activity":
                 return <Activities />;

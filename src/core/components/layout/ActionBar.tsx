@@ -121,7 +121,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
                         <IconButton
                             onClick={() => {
                                 if (tableName) {
-                                    navigate(`/management/${tableName}/NEW`);
+                                    navigate(`/management/${tableName}/0`);
                                 } else {
                                     api.current?.addNewRow?.();
                                 }

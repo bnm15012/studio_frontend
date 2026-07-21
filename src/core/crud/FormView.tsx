@@ -151,7 +151,7 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                         <IconButton
                             size="small"
                             onClick={() => {
-                                if (editingId && editingId > 0) handleCancel();
+                                if (editingId !== undefined && editingId >= 0) handleCancel();
                                 navigate(`/management/${tableName}`);
                             }}
                         >
@@ -177,13 +177,19 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
 
                             <Chip
                                 size="small"
-                                label={editingId && editingId >= 0 ? "Editing" : "Saved"}
+                                label={
+                                    formKey === 0
+                                        ? "New Record"
+                                        : editingId !== undefined && editingId >= 0
+                                          ? "Editing"
+                                          : "Saved"
+                                }
                                 sx={{
                                     height: 18,
                                     fontSize: 10,
                                     px: 0.5,
                                     backgroundColor:
-                                        editingId && editingId >= 0
+                                        (editingId !== undefined && editingId >= 0) || formKey === 0
                                             ? alpha(theme.palette.warning.main, 0.15)
                                             : alpha(theme.palette.success.main, 0.12),
                                 }}
@@ -193,7 +199,7 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                 </Box>
 
                 <Box sx={{ display: "flex", gap: 0.5 }}>
-                    {!(editingId && editingId >= 0) ? (
+                    {(editingId === undefined || editingId < 0) && formKey !== 0 ? (
                         <>
                             <Actions actions={actions} row={data} />
                             <IconButton>
@@ -233,7 +239,10 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                 <Box sx={{ p: 1, borderRadius: 2 }}>
                                     <Field
                                         label={imageField.label}
-                                        isEdit={!!editingId}
+                                        isEdit={
+                                            (editingId !== undefined && editingId >= 0) ||
+                                            formKey === 0
+                                        }
                                         value={getNestedValue(data, imageField.name)}
                                         setValue={(v: unknown) =>
                                             handleChange(v, formKey, imageField.name)
@@ -267,35 +276,41 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                     <Divider sx={{ mb: 1 }} />
 
                                     <StyledFieldContainer>
-                                        {fieldsInSection.map((field) => (
-                                            <StyledFieldItem key={field.name}>
-                                                <FieldLabel>{field.label}</FieldLabel>
-                                                <Field
-                                                    isEdit={isFieldEditable(
-                                                        field,
-                                                        data,
-                                                        !!editingId,
-                                                    )}
-                                                    value={resolveFieldValue(
-                                                        field,
-                                                        data,
-                                                        !!editingId,
-                                                    )}
-                                                    setValue={(v: unknown) =>
-                                                        handleChange(v, formKey, field.name)
-                                                    }
-                                                    type={field.type}
-                                                    extraProp={bindGetOptions(
-                                                        field.extraProp ?? {},
-                                                        data,
-                                                    )}
-                                                    validation={
-                                                        field.validation as Record<string, unknown>
-                                                    }
-                                                    submitAttempted={submitAttempted}
-                                                />
-                                            </StyledFieldItem>
-                                        ))}
+                                        {fieldsInSection.map((field) => {
+                                            const isEditing = editingId !== -1 || formKey === 0;
+                                            return (
+                                                <StyledFieldItem key={field.name}>
+                                                    <FieldLabel>{field.label}</FieldLabel>
+                                                    <Field
+                                                        isEdit={isFieldEditable(
+                                                            field,
+                                                            data,
+                                                            isEditing,
+                                                        )}
+                                                        value={resolveFieldValue(
+                                                            field,
+                                                            data,
+                                                            isEditing,
+                                                        )}
+                                                        setValue={(v: unknown) =>
+                                                            handleChange(v, formKey, field.name)
+                                                        }
+                                                        type={field.type}
+                                                        extraProp={bindGetOptions(
+                                                            field.extraProp ?? {},
+                                                            data,
+                                                        )}
+                                                        validation={
+                                                            field.validation as Record<
+                                                                string,
+                                                                unknown
+                                                            >
+                                                        }
+                                                        submitAttempted={submitAttempted}
+                                                    />
+                                                </StyledFieldItem>
+                                            );
+                                        })}
                                     </StyledFieldContainer>
                                 </Box>
                             ))}
