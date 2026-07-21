@@ -101,7 +101,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                     </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence mode="sync">
                         {data.map((row, rowIndex) => {
                             const rowId = Number(row[fieldsMeta.primary]) || 0;
                             const isItemSelected = selectedRows.includes(rowId);
@@ -113,7 +113,6 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                                     initial="hidden"
                                     animate="visible"
                                     exit="exit"
-                                    layout
                                     sx={{ cursor: onClickRow ? "pointer" : "auto" }}
                                     onClick={() => onClickRow && onClickRow(row)}
                                     selected={isItemSelected}
