@@ -101,7 +101,7 @@ const Field = <FT, T>({
                         image={value as string | null | undefined}
                         setImage={(val) => setValueFn(val as FT)}
                         isEdit={true}
-                        defaultImage={extraProp?.defaultImage}
+                        defaultImage={extraProp.defaultImage}
                     />
                 );
             case "CUSTOM":

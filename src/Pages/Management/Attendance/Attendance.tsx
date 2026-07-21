@@ -41,7 +41,7 @@ const Attendance = () => {
 
     const filterOptions = useMemo(
         () => [
-            { name: "date", key: "date" },
+            { name: "date", key: "date", values: [] },
             { name: "Limit", key: "size", values: ["10", "20", "30", "100", "150", "200"] },
             {
                 name: "Activity",
@@ -112,10 +112,12 @@ const Attendance = () => {
                 name: "present",
                 label: "Present",
                 type: "CHECK",
-                getValue: (_value: boolean, row: StudentAssignment) =>
-                    row?.attendanceEntries?.filter(
-                        (entry) => entry.date?.split(" ")[0] === date,
-                    )?.[0]?.present || false,
+                getValue: (_value: boolean, row: StudentAssignment) => {
+                    if (!row.attendanceEntries) return false;
+                    return row.attendanceEntries.filter(
+                        (entry) => entry.date.split(" ")[0] === date,
+                    )?.[0]?.present;
+                },
             },
         ],
         [permissions, date],
@@ -132,8 +134,8 @@ const Attendance = () => {
     const AttendanceCard = useMemo(() => {
         const Comp = ({ row }: { row: StudentAssignment }) => {
             const isPresent =
-                row?.attendanceEntries?.filter(
-                    (entry: AttendanceEntry) => entry.date?.split(" ")[0] === date,
+                row.attendanceEntries?.filter(
+                    (entry: AttendanceEntry) => entry.date.split(" ")[0] === date,
                 )?.[0]?.present || false;
 
             return (

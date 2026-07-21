@@ -77,7 +77,7 @@ const Communication = () => {
                         initialTemplate.id || 0,
                     );
                     let nextId = prevMaxId + 1;
-                    const processedData = (res?.data || []).map(
+                    const processedData = (res.data || []).map(
                         (template: Record<string, unknown>) => {
                             if (!template.id) {
                                 return { ...template, id: nextId++ };

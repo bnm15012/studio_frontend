@@ -41,7 +41,7 @@ const CardInfoRow: React.FC<CardInfoRowProps> = ({
             return React.cloneElement(element as React.ReactElement, {
                 sx: {
                     ...customSx,
-                    ...(element.props?.sx || {}),
+                    ...(element.props.sx || {}),
                 } as SxProps<Theme>,
             });
         }

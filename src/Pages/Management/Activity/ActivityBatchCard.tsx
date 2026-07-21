@@ -32,7 +32,7 @@ const ActivityBatchCard: React.FC<ActivityBatchCardProps> = ({ batch }) => {
                     {/* Plan type pill */}
                     <Chip
                         size="small"
-                        label={batch.planType?.replace(/_/g, " ") ?? ""}
+                        label={batch.planType.replace(/_/g, " ") ?? ""}
                         sx={{
                             backgroundColor: alpha(chipColor, 0.12),
                             color: chipColor,

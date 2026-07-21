@@ -98,9 +98,9 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
     }, [data.length]);
 
     const visibleFields = fields.filter((f) => f.show);
-    const hasClickRow = actions?.some((a) => a.name === "form" && !a.hide);
+    const hasClickRow = actions.some((a) => a.name === "form" && !a.hide);
     const onClickRow = useCallback(
-        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
+        (row: T) => actions.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 
@@ -240,7 +240,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
                                                                 <FieldLabel>
                                                                     {field.label}
                                                                 </FieldLabel>
-                                                                {field?.getValue
+                                                                {field.getValue
                                                                     ? (() => {
                                                                           const resolved =
                                                                               field.getValue(

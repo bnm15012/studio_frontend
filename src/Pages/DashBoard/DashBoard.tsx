@@ -98,7 +98,7 @@ const DashBoard: React.FC = () => {
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const [loading, setLoading] = useState(false);
-    const [data, setDashboardData] = useState<DashboardCardItem[] | null>(null);
+    const [data, setDashboardData] = useState<DashboardCardItem[]>([]);
     const [currentMonthIncome, setCurrentMonthIncome] = useState(0);
     const [lastMonthIncome, setLastMonthIncome] = useState(0);
 
@@ -137,7 +137,7 @@ const DashBoard: React.FC = () => {
                     },
                     {
                         color: "#EF4444",
-                        value: allActivities?.length || 0,
+                        value: allActivities.length || 0,
                         label: "Activities",
                         navigateTo: "/management/activity",
                         icon: <LocalActivityRounded />,
@@ -180,7 +180,7 @@ const DashBoard: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [token, currentBranch.branchId, allActivities?.length, showAlert]);
+    }, [token, currentBranch.branchId, allActivities.length, showAlert]);
 
     useEffect(() => {
         if (user) loadDashboardData();
@@ -361,7 +361,7 @@ const DashBoard: React.FC = () => {
                             },
                         }}
                     >
-                        {data?.map((item: DashboardCardItem, index: number) => {
+                        {data.map((item: DashboardCardItem, index: number) => {
                             const delay = 0.05 * index;
                             return (
                                 <SummaryCard

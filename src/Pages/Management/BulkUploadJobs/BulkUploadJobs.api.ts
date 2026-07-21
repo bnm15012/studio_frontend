@@ -21,7 +21,7 @@ export const createBulkUploadJobAPI = async (
         return {
             success: false,
             message: err.response
-                ? err.response.data?.message || ""
+                ? err.response?.data?.message || ""
                 : "Failed to create bulk upload job",
         };
     }
@@ -50,13 +50,13 @@ export const getBulkUploadJobsAPI = async ({
             data,
             success: true,
             totalCount: status.totalCount,
-            message: status?.statusMessage || "Fetched bulk upload jobs successfully!",
+            message: status.statusMessage || "Fetched bulk upload jobs successfully!",
         };
     } catch (error: unknown) {
         const err = error as { response?: { data?: { message?: string } } };
         return {
             success: false,
-            message: err.response?.data?.message || "Failed to fetch bulk upload jobs",
+            message: err?.response?.data?.message || "Failed to fetch bulk upload jobs",
         };
     }
 };

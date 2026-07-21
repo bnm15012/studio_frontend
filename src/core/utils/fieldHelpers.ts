@@ -25,7 +25,7 @@ export const resolveFieldValue = <T extends Entity, K extends string & keyof T>(
     isEdit: boolean,
 ): React.ReactNode | { key: string; value: T[K] } | T[K] => {
     const raw = getNestedValue<T, K>(row, field.name);
-    return field?.getValue ? field.getValue(raw, row, isEdit) : raw;
+    return field.getValue ? field.getValue(raw, row, isEdit) : raw;
 };
 
 /**
@@ -42,7 +42,7 @@ export const isFieldEditable = <T extends Entity>(
     isEditing: boolean,
 ): boolean => {
     if (!isEditing) return false;
-    return field?.editable ? field.editable(row) : true;
+    return field.editable ? field.editable(row) : true;
 };
 
 /**
@@ -60,7 +60,7 @@ export const bindGetOptions = <T extends Entity>(
     return {
         ...extraProp,
         getOptions: async (search: string, page: number, limit: number) =>
-            extraProp.getOptions!(search, page, limit, row),
+            extraProp?.getOptions!(search, page, limit, row),
     };
 };
 

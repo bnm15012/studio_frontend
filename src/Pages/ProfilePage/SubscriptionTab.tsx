@@ -77,7 +77,7 @@ const SubscriptionTab: React.FC = () => {
                     <InfoRow
                         icon={PriceCheckIcon}
                         label="Price"
-                        value={`Rs ${subscriptionPlan.price?.toFixed(2) || "0.00"}`}
+                        value={`Rs ${subscriptionPlan.price.toFixed(2) || "0.00"}`}
                     />
                     <Divider />
 

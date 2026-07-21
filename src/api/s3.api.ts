@@ -29,7 +29,7 @@ export const generatePresignUrl = async (
         return {
             success: true,
             data: response.data.data,
-            message: response.data.status?.statusMessage || "Success",
+            message: response.data.status.statusMessage || "Success",
         };
     } catch (err: unknown) {
         const message = getApiMessage(

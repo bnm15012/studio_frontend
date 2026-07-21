@@ -36,8 +36,8 @@ export const getStudentNamesAPI = async ({
             success: false,
             message:
                 error instanceof Error
-                    ? (error as { response?: { data?: { message?: string } } }).response?.data
-                          ?.message || error.message
+                    ? (error as { response?: { data?: { status?: { statusMessage?: string } } } })
+                          ?.response?.data?.status?.statusMessage || error.message
                     : "Failed to fetch students",
         };
     }

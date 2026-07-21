@@ -38,8 +38,8 @@ api.interceptors.response.use(
             originalRequest._retryCount = 0; // Initialize retry count
 
             const state = store.getState() as RootState;
-            const refreshToken = state.auth?.token;
-            const email = state.auth?.user?.email;
+            const refreshToken = state.auth.token;
+            const email = state?.auth?.user?.email;
             if (refreshToken && email) {
                 try {
                     // Attempt to refresh the token with a maximum of 5 retries

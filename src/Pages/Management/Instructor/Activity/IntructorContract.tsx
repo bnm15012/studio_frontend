@@ -126,18 +126,15 @@ const InstructorContract = ({
                             <p>Instructor Personal Details</p>
                             <table>
                                 {[
-                                    ["Name", String(instructorData?.name ?? "")],
-                                    [
-                                        "Date of Birth",
-                                        getLocalDateTime(String(instructorData?.dob)),
-                                    ],
-                                    ["Email", String(instructorData?.email ?? "")],
-                                    ["Mobile", String(instructorData?.phone ?? "")],
+                                    ["Name", String(instructorData.name ?? "")],
+                                    ["Date of Birth", getLocalDateTime(String(instructorData.dob))],
+                                    ["Email", String(instructorData.email ?? "")],
+                                    ["Mobile", String(instructorData.phone ?? "")],
                                     [
                                         "Emergency Contact",
-                                        String(instructorData?.emergencyContactNumber ?? ""),
+                                        String(instructorData.emergencyContactNumber ?? ""),
                                     ],
-                                    ["Address", String(instructorData?.address ?? "")],
+                                    ["Address", String(instructorData.address ?? "")],
                                 ].map(([label, value], idx) => (
                                     <tr key={idx}>
                                         <td

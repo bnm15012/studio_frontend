@@ -132,7 +132,7 @@ export interface StudentAssignment extends Entity {
     membershipEndDate: string;
     membershipStatus: activityStatus;
     paymentEntry: PaymentEntry;
-    attendanceEntries: AttendanceEntry[];
+    attendanceEntries?: AttendanceEntry[];
     invoiceToken?: string;
 }
 

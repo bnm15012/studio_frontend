@@ -291,10 +291,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     getEndDateBySubscriptionPlan(
                         String(newObj.membershipStartDate ?? ""),
                         entry?.planType,
-                        cachedMembershipTypes as {
-                            membershipPackage: string;
-                            days?: number;
-                        }[],
+                        cachedMembershipTypes,
                     );
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(String(newObj.activityName), String(value));
@@ -304,10 +301,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     String(newObj.membershipStartDate ?? ""),
                     String(value),
-                    cachedMembershipTypes as {
-                        membershipPackage: string;
-                        days?: number;
-                    }[],
+                    cachedMembershipTypes,
                 );
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
@@ -334,10 +328,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.membershipEndDate = getEndDateBySubscriptionPlan(
                     String(value),
                     String(newObj.membershipType),
-                    cachedMembershipTypes as {
-                        membershipPackage: string;
-                        days?: number;
-                    }[],
+                    cachedMembershipTypes,
                 );
             }
             return newObj;

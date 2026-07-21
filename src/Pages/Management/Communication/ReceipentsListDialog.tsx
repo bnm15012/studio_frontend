@@ -92,7 +92,7 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
                                         {String(recipient.name ?? "")}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" noWrap>
-                                        {String(recipient?.contact ?? "")}
+                                        {String(recipient.contact ?? "")}
                                     </Typography>
                                 </Box>
                                 {recipient.status === "SENT" ? (

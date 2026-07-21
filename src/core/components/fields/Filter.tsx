@@ -20,7 +20,7 @@ import { FilterKeys } from "@/core/types";
 export interface FilterOption {
     name: string;
     key: string;
-    values?: string[];
+    values: string[];
 }
 
 interface FilterProps {
@@ -128,7 +128,7 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
                                     value={tempSelected[key] || ""}
                                     onChange={handleRadioChange(key)}
                                 >
-                                    {values?.map((value) => (
+                                    {values.map((value) => (
                                         <FormControlLabel
                                             key={value}
                                             value={value}

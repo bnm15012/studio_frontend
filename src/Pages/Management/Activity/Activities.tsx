@@ -149,7 +149,7 @@ const Activities = () => {
 
     // ── Stats ────────────────────────────────────────────────────────────────
     const totalBatches = useMemo(
-        () => allActivities.reduce((acc, a) => acc + (a.batchEntries?.length ?? 0), 0),
+        () => allActivities.reduce((acc, a) => acc + (a.batchEntries.length ?? 0), 0),
         [allActivities],
     );
 

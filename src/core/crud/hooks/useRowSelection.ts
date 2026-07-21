@@ -39,12 +39,12 @@ export function useRowSelection<T extends Entity>({
     }, resetOn);
 
     const visibleRowIds = useMemo(
-        () => (data?.map((row) => Number(row[primaryKey]) || 0) ?? []) as number[],
+        () => (data.map((row) => Number(row[primaryKey]) || 0) ?? []) as number[],
         [data, primaryKey],
     );
 
     const selectedRowsData = useMemo(
-        () => data?.filter((row) => selectedRows.includes(Number(row[primaryKey]) || 0)) ?? [],
+        () => data.filter((row) => selectedRows.includes(Number(row[primaryKey]) || 0)) ?? [],
         [data, selectedRows, primaryKey],
     );
 

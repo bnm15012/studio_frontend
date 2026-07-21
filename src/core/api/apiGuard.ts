@@ -101,7 +101,7 @@ export function installDedupeInterceptor(axiosInstance: AxiosInstance): void {
             return response;
         },
         (error) => {
-            if (error?.config) {
+            if (error.config) {
                 const key = buildKey(error.config as InternalAxiosRequestConfig);
                 inflightMap.delete(key);
             }

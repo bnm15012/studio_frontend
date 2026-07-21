@@ -96,7 +96,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                             }))
                         }
                     >
-                        {paymentStatus?.map((status) => (
+                        {paymentStatus.map((status) => (
                             <MenuItem key={status} value={status}>
                                 {status}
                             </MenuItem>
@@ -128,7 +128,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                             }))
                         }
                     >
-                        {paymentType?.map((type) => (
+                        {paymentType.map((type) => (
                             <MenuItem key={type.value} value={type.value}>
                                 {type.label}
                             </MenuItem>

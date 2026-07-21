@@ -172,8 +172,8 @@ const TemplateEditor: React.FC<EditorInputBoxProps> = ({
     // Scroll active item into view inside the Popper list
     useEffect(() => {
         if (!listRef.current) return;
-        const item = listRef.current.children[activeIdx] as HTMLElement | undefined;
-        item?.scrollIntoView({ block: "nearest" });
+        const item = listRef.current.children[activeIdx];
+        item.scrollIntoView({ block: "nearest" });
     }, [activeIdx]);
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -275,7 +275,7 @@ const TemplateEditor: React.FC<EditorInputBoxProps> = ({
                 case "Enter":
                 case "Tab":
                     e.preventDefault();
-                    commitToken(filteredTokens[activeIdx]?.key ?? "");
+                    commitToken(filteredTokens[activeIdx].key ?? "");
                     break;
                 case "Escape":
                     e.preventDefault();

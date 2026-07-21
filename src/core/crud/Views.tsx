@@ -226,7 +226,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
     } = useRowSelection({
         data,
         primaryKey: fieldsMeta.primary,
-        resetOn: [tableState?.currentPage, data],
+        resetOn: [tableState.currentPage, data],
         actions: mergedActions,
     });
 
@@ -300,9 +300,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
 
     useEffect(() => {
         if (formKey && formKey !== 0) {
-            setRecord(
-                (tableState.recordById as Record<string | number, T>)?.[formKey] ?? ({} as T),
-            );
+            setRecord((tableState.recordById as Record<string | number, T>)[formKey] ?? ({} as T));
         }
     }, [formKey, setRecord, tableState.recordById]);
 

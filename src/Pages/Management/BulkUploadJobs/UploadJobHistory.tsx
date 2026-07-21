@@ -94,7 +94,7 @@ const UploadJobHistory = () => {
                                     <StyledTableCell>{String(row.fileName ?? "")}</StyledTableCell>
                                     <StyledTableCell>
                                         <Typography sx={{ wordBreak: "break-all" }}>
-                                            {row?.completedAt
+                                            {row.completedAt
                                                 ? getLocalDateTime(
                                                       String(row.completedAt),
                                                       "DATETIME",
@@ -103,7 +103,7 @@ const UploadJobHistory = () => {
                                         </Typography>
                                     </StyledTableCell>
                                     <StyledTableCell>
-                                        {(row.errorMessages as string[])?.length > 0
+                                        {(row.errorMessages as string[]).length > 0
                                             ? (row.errorMessages as string[]).join(", ")
                                             : "—"}
                                     </StyledTableCell>

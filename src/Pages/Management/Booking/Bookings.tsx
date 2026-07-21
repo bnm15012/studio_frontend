@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarView from "./Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
-import type { Booking, Payment, paymentStatus, paymentType } from "../../../api/types";
+import type { Booking, Client, Payment, paymentStatus, paymentType } from "../../../api/types";
 
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useAppUI } from "@/context/UIContext";
@@ -71,11 +71,8 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 params,
             });
             if (success) {
-                const items = data as
-                    | Array<{ pocName: string; clientId: string | number }>
-                    | undefined;
                 return (
-                    items?.map((c) => ({
+                    data.map((c: Partial<Client>) => ({
                         value: c.pocName,
                         key: c.clientId,
                     })) || []
@@ -190,7 +187,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     getValue: (value: unknown, row: Booking) => {
                         const dueAmount =
                             ((row.totalAmount as number) || 0) -
-                            ((Array.isArray(row?.paymentEntries) &&
+                            ((Array.isArray(row.paymentEntries) &&
                                 (row.paymentEntries as Payment[])
                                     .filter((p) => p.status == "COMPLETED")
                                     .map((p) => p.amount as number)
@@ -198,7 +195,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                 0);
                         if (dueAmount === 0) {
                             return "COMPLETED";
-                        } else if (dueAmount > 0 && dueAmount != (row?.totalAmount as number)) {
+                        } else if (dueAmount > 0 && dueAmount != (row.totalAmount as number)) {
                             return "PARTIALLY PAID";
                         }
                         return "PENDING";
@@ -221,7 +218,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     type: "NUMBER",
                     extraProp: { readOnly: true },
                     getValue: (obj: unknown, row: Booking) =>
-                        (Array.isArray(row?.paymentEntries) &&
+                        (Array.isArray(row.paymentEntries) &&
                             (row.paymentEntries as Payment[])
                                 .filter((p) => p.status == "COMPLETED")
                                 .map((p) => p.amount as number)
@@ -237,7 +234,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     extraProp: { readOnly: true },
                     getValue: (obj: unknown, row: Booking) =>
                         ((row.totalAmount as number) || 0) -
-                        ((Array.isArray(row?.paymentEntries) &&
+                        ((Array.isArray(row.paymentEntries) &&
                             (row.paymentEntries as Payment[])
                                 .filter((p) => p.status == "COMPLETED")
                                 .map((p) => p.amount as number)

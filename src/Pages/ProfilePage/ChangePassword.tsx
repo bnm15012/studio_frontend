@@ -40,7 +40,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
             const { success, message: responseMessage } = await updateProfile({
                 dispatch,
                 values: { userId: user.userId, email: user.email, password },
-                token,
+                token: token!,
             });
             if (success) {
                 showAlert("Password changed successfully!", "success");

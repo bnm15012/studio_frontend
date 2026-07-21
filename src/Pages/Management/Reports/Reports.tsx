@@ -87,7 +87,7 @@ const Reports: React.FC = () => {
                 };
 
                 if (success && data.length > 0) {
-                    const report = data[0]?.ieMonthlyReportEntry as
+                    const report = data[0].ieMonthlyReportEntry as
                         | Record<string, unknown>
                         | undefined;
                     if (!report) {
@@ -99,7 +99,7 @@ const Reports: React.FC = () => {
                     const totalExpense = Number(report.expense ?? 0);
 
                     const incomeFormatted =
-                        (report.incomeEntries as Record<string, unknown>[] | undefined)?.map(
+                        ((report.incomeEntries as Record<string, unknown>[] | undefined) ?? []).map(
                             (entry: Record<string, unknown>, index: number) => [
                                 index + 1,
                                 String(entry.studentName ?? ""),
@@ -111,16 +111,16 @@ const Reports: React.FC = () => {
                         ) ?? [];
 
                     const expenseFormatted =
-                        (report.expenseEntries as Record<string, unknown>[] | undefined)?.map(
-                            (entry: Record<string, unknown>, index: number) => [
-                                index + 1,
-                                String(entry.description || entry.expenseCategory || ""),
-                                String(entry.paymentType ?? ""),
-                                String(entry.expenseCategory ?? ""),
-                                getLocalDateTime(String(entry.expenseDate ?? null)),
-                                `₹${String(entry.amount ?? "")}`,
-                            ],
-                        ) ?? [];
+                        (
+                            (report?.expenseEntries as Record<string, unknown>[] | undefined) ?? []
+                        ).map((entry: Record<string, unknown>, index: number) => [
+                            index + 1,
+                            String(entry.description || entry.expenseCategory || ""),
+                            String(entry.paymentType ?? ""),
+                            String(entry.expenseCategory ?? ""),
+                            getLocalDateTime(String(entry.expenseDate ?? null)),
+                            `₹${String(entry.amount ?? "")}`,
+                        ]) ?? [];
 
                     setEiData({
                         income: incomeFormatted,
@@ -159,7 +159,7 @@ const Reports: React.FC = () => {
                         return [
                             index + 1,
                             String(entry.payeeType ?? ""),
-                            String(entry?.payeeName ?? ""),
+                            String(entry.payeeName ?? ""),
                             `₹${String(entry.amount ?? "")}`,
                             String(entry.paymentType ?? ""),
                             String(entry.status ?? ""),
@@ -454,34 +454,32 @@ const Reports: React.FC = () => {
                                     <p style={{ fontSize: 18, marginBottom: 10 }}>Summary</p>
                                     <table style={{ width: "100%", fontSize: 16 }}>
                                         <tbody>
-                                            {eiData?.totalIncome != null && (
+                                            {eiData.totalIncome != null && (
                                                 <tr>
                                                     <td style={{ textAlign: "left" }}>
                                                         <strong>Total Income</strong>
                                                     </td>
                                                     <td style={{ textAlign: "right" }}>
                                                         ₹
-                                                        {eiData?.totalIncome?.toLocaleString(
-                                                            "en-IN",
-                                                        )}
+                                                        {eiData.totalIncome.toLocaleString("en-IN")}
                                                     </td>
                                                 </tr>
                                             )}
-                                            {eiData?.totalExpense != null && (
+                                            {eiData.totalExpense != null && (
                                                 <tr>
                                                     <td style={{ textAlign: "left" }}>
                                                         <strong>Total Expense</strong>
                                                     </td>
                                                     <td style={{ textAlign: "right" }}>
                                                         ₹
-                                                        {eiData?.totalExpense?.toLocaleString(
+                                                        {eiData.totalExpense.toLocaleString(
                                                             "en-IN",
                                                         )}
                                                     </td>
                                                 </tr>
                                             )}
-                                            {eiData?.totalExpense != null &&
-                                                eiData?.totalIncome != null && (
+                                            {eiData.totalExpense != null &&
+                                                eiData.totalIncome != null && (
                                                     <tr>
                                                         <td style={{ textAlign: "left" }}>
                                                             <strong>Net Balance</strong>
@@ -489,19 +487,19 @@ const Reports: React.FC = () => {
                                                         <td style={{ textAlign: "right" }}>
                                                             ₹
                                                             {(
-                                                                Number(eiData?.totalIncome ?? 0) -
-                                                                Number(eiData?.totalExpense ?? 0)
+                                                                Number(eiData.totalIncome ?? 0) -
+                                                                Number(eiData.totalExpense ?? 0)
                                                             ).toLocaleString("en-IN")}
                                                         </td>
                                                     </tr>
                                                 )}
-                                            {(eiData?.totalCompletedPayment != null ||
-                                                eiData?.totalPendingPayment != null) && (
+                                            {(eiData.totalCompletedPayment != null ||
+                                                eiData.totalPendingPayment != null) && (
                                                 <tr>
                                                     <td>
                                                         <strong>
                                                             Total{" "}
-                                                            {eiData?.totalPendingPayment != null
+                                                            {eiData.totalPendingPayment != null
                                                                 ? "pending"
                                                                 : "completed"}{" "}
                                                             amount

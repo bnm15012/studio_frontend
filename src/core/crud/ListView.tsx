@@ -145,7 +145,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                                                 row={row}
                                                 isEdit={
                                                     editingId === rowId &&
-                                                    (field?.editable ? field.editable(row) : true)
+                                                    (field.editable ? field.editable(row) : true)
                                                 }
                                                 handleChange={(v, _id, name) =>
                                                     handleChange(v, rowId, name)
@@ -173,7 +173,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
                         })}
                     </AnimatePresence>
 
-                    {data?.length === 0 && !loading && (
+                    {data.length === 0 && !loading && (
                         <StyledTableRow>
                             <StyledTableCell colSpan={2 + visibleFields.length + (multi ? 1 : 0)}>
                                 <FlexEvenly>
@@ -234,7 +234,7 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
     const theme = useTheme();
 
     const onClickRow = useCallback(
-        (row: T) => actions?.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
+        (row: T) => actions.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
         [actions],
     );
 

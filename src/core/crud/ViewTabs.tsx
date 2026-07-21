@@ -35,7 +35,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
     };
 
     const currentViewField = viewFields[tabIndex];
-    const hasAddNewRow = typeof currentViewField?.api?.current?.addNewRow === "function";
+    const hasAddNewRow = typeof currentViewField.api?.current?.addNewRow === "function";
 
     return (
         <Box>
@@ -55,7 +55,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                 {editingId !== undefined && editingId >= 0 && hasAddNewRow && (
                     <Button
                         variant="contained"
-                        onClick={() => currentViewField?.api?.current?.addNewRow?.(editingId)}
+                        onClick={() => currentViewField.api?.current?.addNewRow?.(editingId)}
                         sx={{ ml: 1 }}
                     >
                         <Add sx={{ color: "white" }} />

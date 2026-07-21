@@ -22,7 +22,7 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
         activities.find(
             (f: Activity) =>
-                f.activityId === (selectedData?.activity as Record<string, unknown>)?.activityId,
+                f.activityId === (selectedData?.activity as Record<string, unknown>).activityId,
         ) || null,
     );
     const [selectedMembership, setSelectedMembership] = useState(
@@ -119,11 +119,11 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                 <FormControl fullWidth>
                     <Select
                         variant="standard"
-                        value={String(selectedActivity?.activityId ?? "")}
+                        value={selectedActivity?.activityId ?? ""}
                         onChange={(e) => {
                             const selectedId = e.target.value;
                             const selected = activities.find(
-                                (activity) => String(activity.activityId) === String(selectedId),
+                                (activity) => activity.activityId === selectedId,
                             );
                             if (selected) {
                                 handleActivityChange(
@@ -232,8 +232,8 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
                                         disabled={availableBatches.length === 0}
                                     >
                                         {availableBatches.map((batch, idx) => (
-                                            <MenuItem key={idx} value={batch.name}>
-                                                {batch.name} (Rs. {batch.price})
+                                            <MenuItem key={idx} value={batch?.name}>
+                                                {batch?.name} (Rs. {batch?.price})
                                             </MenuItem>
                                         ))}
                                     </Select>

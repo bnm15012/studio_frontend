@@ -1,3 +1,4 @@
+import { MembershipPackage } from "@/api/types";
 import { addDays } from "@/core/utils/DateUtil";
 
 const subscriptionPlans: Record<string, number> = {
@@ -10,10 +11,7 @@ const subscriptionPlans: Record<string, number> = {
     AMC: 365,
 };
 
-const parsePlanDays = (
-    planName: string | null | undefined,
-    membershipTypes?: { membershipPackage: string; days?: number }[],
-): number => {
+const parsePlanDays = (planName: string, membershipTypes: MembershipPackage[]): number => {
     if (!planName) return 0;
 
     const name = planName.toLowerCase();
@@ -23,16 +21,16 @@ const parsePlanDays = (
             return subscriptionPlans[key];
         }
     }
-    const packag = membershipTypes?.filter((m) => m.membershipPackage === planName)?.[0];
-    if (packag) return packag?.days || 0;
+    const packag = membershipTypes.filter((m) => m.membershipPackage === planName)[0];
+    if (packag) return packag.days || 0;
 
     return 0;
 };
 
 const getEndDateBySubscriptionPlan = (
     startDate: string,
-    planName: string | null | undefined,
-    membershipTypes?: { membershipPackage: string; days?: number }[],
+    planName: string,
+    membershipTypes: MembershipPackage[] = [],
 ): string | null => {
     const days = parsePlanDays(planName, membershipTypes);
     return addDays(startDate, days);

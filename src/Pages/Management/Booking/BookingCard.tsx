@@ -4,6 +4,7 @@ import { CreditCard, Hourglass, Target } from "lucide-react";
 import CardChip from "@/core/components/cards/CardChip";
 import { Person } from "@mui/icons-material";
 import { Box } from "@mui/material";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 const BookingCard = ({ row }: { row: Record<string, unknown> }) => {
     const { purpose, clientEntry, totalAmount, startTime, endTime, paymentEntries } = row;
@@ -31,21 +32,18 @@ const BookingCard = ({ row }: { row: Record<string, unknown> }) => {
                 badge={getStatus()}
                 enabled={!isPast(startTime as string)}
             />
-            {!!(clientEntry as Record<string, unknown>)?.pocName && (
-                <CardChip
-                    ChipIcon={Person}
-                    value={String((clientEntry as Record<string, unknown>).pocName)}
-                />
-            )}
-            <Box display="flex" alignItems="center" gap={1.5}>
-                <CardChip
-                    ChipIcon={Hourglass}
-                    value={String(startTime) + " - " + String(endTime)}
-                />
-            </Box>
-            {totalAmount !== undefined && totalAmount !== null && (
-                <CardChip ChipIcon={CreditCard} value={`Rs. ${String(totalAmount)}`} />
-            )}
+            <FlexBetween>
+                {!!(clientEntry as Record<string, unknown>).pocName && (
+                    <CardChip
+                        ChipIcon={Person}
+                        value={String((clientEntry as Record<string, unknown>).pocName)}
+                    />
+                )}
+                {totalAmount !== undefined && totalAmount !== null && (
+                    <CardChip ChipIcon={CreditCard} value={`Rs. ${String(totalAmount)}`} />
+                )}
+            </FlexBetween>
+            <CardChip ChipIcon={Hourglass} value={String(startTime) + " - " + String(endTime)} />
         </Box>
     );
 };

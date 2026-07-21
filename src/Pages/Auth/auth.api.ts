@@ -106,7 +106,7 @@ export const changePasswordApiCall = async ({
         );
         return {
             success: true,
-            message: response?.data?.message || "Password changed successfully!",
+            message: response.data.message || "Password changed successfully!",
         };
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
@@ -117,7 +117,7 @@ export const changePasswordApiCall = async ({
 interface UpdateProfileParams {
     values: Record<string, unknown>;
     dispatch: AppDispatch;
-    token: string | null | undefined;
+    token: string;
 }
 
 export const updateProfile = async ({ values, dispatch, token }: UpdateProfileParams) => {
@@ -135,7 +135,7 @@ export const updateProfile = async ({ values, dispatch, token }: UpdateProfilePa
             dispatch(
                 setLogin({
                     user: savedUser.data[0],
-                    token: token?.split("Bearer ")[1] || "",
+                    token: token.split("Bearer ")[1] || "",
                     studio: savedUser.data[0].studioEntry,
                     settings: savedUser.data[0].studioEntry.configuration.configrationEntryList,
                 }),

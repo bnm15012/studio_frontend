@@ -28,7 +28,7 @@ const BulkUploadJobs = () => {
                     | undefined;
                 const success = result.success;
 
-                if (!success || !s3Bucket?.uploadUrl || !s3Bucket?.fileUrl) {
+                if (!success || !s3Bucket || !s3Bucket.uploadUrl || !s3Bucket.fileUrl) {
                     throw new Error("Failed to get upload URL");
                 } else {
                     showAlert("Preparing to upload file...", "info");
@@ -40,7 +40,7 @@ const BulkUploadJobs = () => {
 
                 const uploadResponse = await uploadToS3(
                     file,
-                    s3Bucket.uploadUrl,
+                    s3Bucket?.uploadUrl ?? "",
                     showAlert as (msg: string, type: string) => void,
                 );
                 if (!uploadResponse) {
@@ -52,7 +52,7 @@ const BulkUploadJobs = () => {
                 const payload = {
                     branchEntry: currentBranch,
                     entityType: entityType,
-                    fileUrl: s3Bucket.fileUrl,
+                    fileUrl: s3Bucket?.fileUrl,
                 };
 
                 const { success: successFileUpload, message } = await createBulkUploadJobAPI(

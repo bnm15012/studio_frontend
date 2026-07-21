@@ -166,13 +166,13 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                                             variant="h5"
                                             sx={{ fontWeight: "bold", mb: 1, color: textColor }}
                                         >
-                                            {plan?.planType?.replace("_", " ")}
+                                            {plan.planType.replace("_", " ")}
                                         </Typography>
                                         <Typography
                                             variant="body2"
                                             sx={{ color: textColor, mb: 2 }}
                                         >
-                                            {plan?.description}
+                                            {plan.description}
                                         </Typography>
                                         <Box>
                                             <Typography
@@ -209,7 +209,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                                     onClick={() => {
                                         handlePayment(plan);
                                     }}
-                                    variant={!plan?.popular ? "outlined" : "contained"}
+                                    variant={!plan.popular ? "outlined" : "contained"}
                                     size="large"
                                     fullWidth
                                     sx={{
@@ -232,7 +232,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                                     What&apos;s included:
                                 </Typography>
                                 <List sx={{ p: 0 }}>
-                                    {plan?.enabledFeatures.map(
+                                    {plan.enabledFeatures.map(
                                         (feature: string, featureIndex: number) => {
                                             const FeatureIcon = getFeatureIcon(feature);
                                             return (
@@ -291,7 +291,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                                             );
                                         },
                                     )}
-                                    {plan?.disabledFeatures.map(
+                                    {plan.disabledFeatures.map(
                                         (feature: string, featureIndex: number) => {
                                             const FeatureIcon = getFeatureIcon(feature);
                                             return (

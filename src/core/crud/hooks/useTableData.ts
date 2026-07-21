@@ -80,8 +80,8 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     }, []);
 
     const loadMore = useCallback(
-        () => handlePageChange((tableState?.currentPage || 1) + 1),
-        [handlePageChange, tableState?.currentPage],
+        () => handlePageChange((tableState.currentPage || 1) + 1),
+        [handlePageChange, tableState.currentPage],
     );
 
     useEffect(() => {

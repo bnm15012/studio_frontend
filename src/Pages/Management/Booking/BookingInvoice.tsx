@@ -185,19 +185,19 @@ const BookingInvoice = ({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(bd.paymentEntries as Record<string, unknown>[])?.map(
+                                    {(bd.paymentEntries as Record<string, unknown>[]).map(
                                         (paymentEntry: Record<string, unknown>) => (
-                                            <tr key={String(paymentEntry?.id)}>
+                                            <tr key={String(paymentEntry.id)}>
                                                 <td style={tableCellStyle}>
-                                                    {Number(paymentEntry?.amount).toFixed(2)}
+                                                    {Number(paymentEntry.amount).toFixed(2)}
                                                 </td>
                                                 <td style={tableCellStyle}>
                                                     {getLocalDateTime(
-                                                        String(paymentEntry?.paymentDate),
+                                                        String(paymentEntry.paymentDate),
                                                     )}
                                                 </td>
                                                 <td style={tableCellStyle}>
-                                                    {String(paymentEntry?.paymentType)}
+                                                    {String(paymentEntry.paymentType)}
                                                 </td>
                                             </tr>
                                         ),

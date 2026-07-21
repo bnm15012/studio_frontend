@@ -160,14 +160,12 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
                                                                     sx={{
                                                                         color: validationErrors[
                                                                             rowIndex
-                                                                        ]?.[key]
+                                                                        ][key]
                                                                             ? "error.main"
                                                                             : "inherit",
                                                                     }}
                                                                 >
-                                                                    {validationErrors[rowIndex]?.[
-                                                                        key
-                                                                    ]
+                                                                    {validationErrors[rowIndex][key]
                                                                         ? row[key] || "*Required"
                                                                         : row[key]}
                                                                 </TableCell>

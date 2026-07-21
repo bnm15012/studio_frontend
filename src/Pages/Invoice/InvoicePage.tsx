@@ -60,10 +60,10 @@ const InvoicePage: React.FC = () => {
             <BookingInvoice
                 open={true}
                 onClose={() => {}}
-                bookingData={invoice?.booking}
-                studio={invoice?.studio}
-                currentBranch={invoice?.branch}
-                template={invoice?.template}
+                bookingData={invoice.booking}
+                studio={invoice.studio}
+                currentBranch={invoice.branch}
+                template={invoice.template}
             />
         );
     }

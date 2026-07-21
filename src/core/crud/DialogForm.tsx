@@ -33,7 +33,7 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
         ...dialogProps
     } = props;
     const { isMobile } = useUI();
-    const id = Number(data?.[fieldsMeta.primary]) || 0;
+    const id = Number(data[fieldsMeta.primary]) || 0;
     const visibleFields = fields.filter((f) => f.show || f.view);
 
     return (

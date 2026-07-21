@@ -56,7 +56,7 @@ function FieldCell<T extends Entity>({
         );
     }
 
-    const rowId = Number(row?.[Object.keys(row)[0]]) || 0;
+    const rowId = Number(row[Object.keys(row)[0]]) || 0;
 
     return (
         <Field

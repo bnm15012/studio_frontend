@@ -2,7 +2,7 @@ import api from "@/core/utils/api";
 
 const getErrorMessage = (error: unknown, defaultMessage: string): string =>
     error instanceof Error && "response" in error
-        ? (error as { response?: { data?: { status?: { statusMessage?: string } } } }).response
+        ? (error as { response?: { data?: { status?: { statusMessage?: string } } } })?.response
               ?.data?.status?.statusMessage || defaultMessage
         : defaultMessage;
 

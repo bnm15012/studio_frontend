@@ -97,12 +97,12 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
     const membershipStartMonth = useMemo(() => {
-        const d = parseDateTime(activityData?.membershipStartDate || "");
+        const d = parseDateTime(activityData.membershipStartDate || "");
         return d ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date();
     }, [activityData]);
 
     const membershipEndMonth = useMemo(() => {
-        const d = parseDateTime(activityData?.membershipEndDate || "");
+        const d = parseDateTime(activityData.membershipEndDate || "");
         return d ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date();
     }, [activityData]);
 
@@ -126,7 +126,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
             <StyledDialog
                 open={open}
                 onClose={onClose}
-                title={`Student Attendance for activity: ${activityData?.activityName}`}
+                title={`Student Attendance for activity: ${activityData.activityName}`}
                 maxWidth={"sm"}
                 onConfirm={handleSave}
                 confirmText="Save"
@@ -148,15 +148,15 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                     <Box display={"flex"} gap={1}>
                         <QrForm
                             title="Attendance QR"
-                            qrValue={activityData?.activityName + "/" + activityData?.assignmentId}
+                            qrValue={activityData.activityName + "/" + activityData.assignmentId}
                         />
                         <Box>
                             <Typography variant="h6" fontWeight={700}>
-                                {activityData?.activityName}
+                                {activityData.activityName}
                             </Typography>
 
                             <Typography variant="body2" color="text.secondary">
-                                {activityData?.batchName} • {activityData?.batchTime}
+                                {activityData.batchName} • {activityData.batchTime}
                             </Typography>
                         </Box>
                     </Box>
@@ -168,7 +168,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                             </Typography>
 
                             <Typography fontWeight={600}>
-                                {getLocalDateTime(activityData?.membershipStartDate)}
+                                {getLocalDateTime(activityData.membershipStartDate)}
                             </Typography>
                         </Box>
 
@@ -178,7 +178,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                             </Typography>
 
                             <Typography fontWeight={600}>
-                                {getLocalDateTime(activityData?.membershipEndDate)}
+                                {getLocalDateTime(activityData.membershipEndDate)}
                             </Typography>
                         </Box>
 
@@ -187,7 +187,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                                 Membership
                             </Typography>
 
-                            <Typography fontWeight={600}>{activityData?.membershipType}</Typography>
+                            <Typography fontWeight={600}>{activityData.membershipType}</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -274,10 +274,10 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
                             const today = isToday(date);
 
                             const membershipStart = parseDateTime(
-                                activityData?.membershipStartDate || "",
+                                activityData.membershipStartDate || "",
                             );
                             const membershipEnd = parseDateTime(
-                                activityData?.membershipEndDate || "",
+                                activityData.membershipEndDate || "",
                             );
 
                             // remove time part

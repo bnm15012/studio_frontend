@@ -12,7 +12,7 @@ interface ExpenseEntry {
 }
 
 interface PaymentEntry {
-    payeeType?: string;
+    payeeType: string;
     amount: number;
 }
 
@@ -97,7 +97,7 @@ function processMonthlyStudioData(rawData: ReportRawData) {
 
         // Aggregate payment amounts by payee type
         entry.paymentEntries.forEach((payment: PaymentEntry) => {
-            const payeeType = payment.payeeType?.toUpperCase();
+            const payeeType = payment.payeeType.toUpperCase();
             const amount = payment.amount ?? 0;
             if (payeeType) {
                 paymentAmountMap[payeeType] = (paymentAmountMap[payeeType] || 0) + amount;

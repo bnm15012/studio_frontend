@@ -32,31 +32,31 @@ const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipie
                     history.map((row, index) => (
                         <StyledTableRow key={index}>
                             <StyledTableCell sx={{ py: 1 }}>
-                                {String(row?.title ?? "")}
+                                {String(row.title ?? "")}
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 {getLocalDateTime(
-                                    row?.sentDate as string | null | undefined,
+                                    row.sentDate as string | null | undefined,
                                     "DATETIME",
                                 )}
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
-                                {row?.memberType ? "All" : "Few"}
+                                {row.memberType ? "All" : "Few"}
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 <Avatar
                                     sx={{
                                         p: 2,
                                         backgroundColor:
-                                            row?.notificationType === "EMAIL" ? "blue" : "green",
+                                            row.notificationType === "EMAIL" ? "blue" : "green",
                                     }}
                                 >
-                                    {row?.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
+                                    {row.notificationType === "EMAIL" ? <Email /> : <WhatsApp />}
                                 </Avatar>
                             </StyledTableCell>
                             <StyledTableCell sx={{ py: 1 }}>
                                 <IconButton
-                                    disabled={!!row?.memberType}
+                                    disabled={!!row.memberType}
                                     onClick={() => {
                                         onViewRecipients(row.id as string | number);
                                     }}

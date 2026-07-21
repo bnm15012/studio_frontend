@@ -66,7 +66,7 @@ export const reportsAPi = async ({
     } catch (error: unknown) {
         const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
         console.error("report data fetch error:", err);
-        const message = err?.response?.data?.status?.statusMessage || "Failed to fetch report data";
+        const message = err.response?.data?.status?.statusMessage || "Failed to fetch report data";
         return { success: false, message };
     }
 };

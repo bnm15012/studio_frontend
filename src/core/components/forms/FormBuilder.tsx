@@ -211,7 +211,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
             const regex = new RegExp(validation.regex);
 
             if (!regex.test(String(value ?? ""))) {
-                throw Error(validation.message || `Invalid ${label}`);
+                throw Error(validation?.message || `Invalid ${label}`);
             }
         }
     };
@@ -378,7 +378,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                         <FieldContainer>
                                             <Field
                                                 isEdit={
-                                                    field?.editable
+                                                    field.editable
                                                         ? field.editable(formState)
                                                         : true
                                                 }

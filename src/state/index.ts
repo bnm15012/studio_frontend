@@ -54,7 +54,7 @@ const persistConfig = {
     version: 10,
     whitelist: ["auth", "branch"],
     migrate: (state: PersistedState) => {
-        const currentVersion = state?._persist?.version;
+        const currentVersion = state?._persist.version;
         if (currentVersion !== 10) {
             return Promise.resolve(undefined);
         }

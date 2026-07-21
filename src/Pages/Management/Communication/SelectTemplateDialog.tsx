@@ -28,7 +28,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
     const [editableMessage, setEditableMessage] = useState("");
 
     const allTemplates = useAppSelector((state) =>
-        (state.genericTemplate?.items || []).filter(
+        (state.genericTemplate.items || []).filter(
             (template: Record<string, unknown>) =>
                 template.templateType === "COMMUNICATION" && template.id,
         ),
@@ -164,7 +164,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                                     <Typography variant="h6">{template.templateName}</Typography>
                                 </FlexBetween>
                                 <Typography variant="body2" color="text.secondary" mt={1}>
-                                    {template.templateSubject?.substring(0, 20)}...
+                                    {template.templateSubject.substring(0, 20)}...
                                 </Typography>
                             </Box>
                         ))

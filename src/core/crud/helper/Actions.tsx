@@ -2,14 +2,14 @@
 import { ButtonBase, Box, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import React from "react";
-import { ActionItem, Entity } from "../../types";
+import { ActionItem } from "../../types";
 
-interface ActionsProps<T extends Entity> {
+interface ActionsProps<T> {
     actions: ActionItem<T>[];
     row: T | T[];
 }
 
-function Actions<T extends Entity>({ actions, row }: ActionsProps<T>) {
+function Actions<T>({ actions, row }: ActionsProps<T>) {
     const theme = useTheme();
     const visibleActions = actions.filter((a) => !a.hide);
 
@@ -64,7 +64,7 @@ function Actions<T extends Entity>({ actions, row }: ActionsProps<T>) {
                                           sx: {
                                               fontSize: "1.2rem",
                                               color: "inherit",
-                                              ...(icon.props?.sx || {}),
+                                              ...(icon.props.sx || {}),
                                           },
                                       })
                                     : icon

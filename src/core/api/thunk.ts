@@ -163,7 +163,7 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
                         });
 
                         const action =
-                            infinite && params.searchTerm === state?.searchTerm
+                            infinite && params.searchTerm === state.searchTerm
                                 ? actions.appendItems({ data: data as T[], rootId })
                                 : actions.setItems({ data: data as T[], rootId });
 

@@ -13,11 +13,8 @@ export const parseDateTime = (str: string | null | undefined): Date | null => {
 };
 
 // ✅ Format Date → "YYYY-MM-DD HH:mm:ss"
-export const formatDateTime = (date: Date | null | undefined): string | null => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) return null;
-
+export const formatDateTime = (date: Date): string => {
     const pad = (n: number) => String(n).padStart(2, "0");
-
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 };
 
@@ -53,7 +50,7 @@ export const isPast = (dateString: string | null | undefined): boolean => {
 };
 
 // ✅ Current local datetime
-export const getCurrentDateTimeLocal = (): string | null => formatDateTime(new Date());
+export const getCurrentDateTimeLocal = (): string => formatDateTime(new Date());
 
 export const getCurrentDateLocal = (): string => formatDate(new Date(), "YYYY-MM-DD");
 

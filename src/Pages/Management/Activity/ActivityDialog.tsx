@@ -144,7 +144,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
 
         const keys = (formData.batchEntries ?? []).map(
             (b) =>
-                `${b.name?.trim().toLowerCase()}|${b.planType}|${String(formData.activityId ?? "")}|${b.daysPerWeek}`,
+                `${b.name.trim().toLowerCase()}|${b.planType}|${String(formData.activityId ?? "")}|${b.daysPerWeek}`,
         );
         const hasDuplicates = new Set(keys).size !== keys.length;
         if (hasDuplicates) return false;
@@ -160,7 +160,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
             if (isNaN(batch.price ?? 0) || (batch.price ?? 0) < 0) return false;
 
             if (permissions.BATCH) {
-                if (!batch.name?.trim()) return false;
+                if (!batch.name.trim()) return false;
                 if (!batch.startTime || !batch.endTime || batch.endTime < batch.startTime)
                     return false;
             }
@@ -235,7 +235,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                     </Button>
                 </Box>
 
-                {formData.batchEntries?.length === 0 ? (
+                {(formData.batchEntries || []).length === 0 ? (
                     <Typography variant="body2" align="center" color="text.secondary" py={4}>
                         No batches added yet. Click &quot;Add{" "}
                         {permissions.BATCH ? "Batch" : "Membership plan"}&quot; to create your first{" "}
@@ -243,7 +243,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                     </Typography>
                 ) : (
                     <Box display="flex" flexDirection="column" gap={2}>
-                        {formData.batchEntries?.map((batch) => (
+                        {formData.batchEntries.map((batch) => (
                             <Paper key={batch.batchId} variant="outlined" sx={{ p: 2 }}>
                                 <FlexBetween flexDirection={"row-reverse"} mb={2}>
                                     <IconButton
@@ -262,7 +262,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                                                 label="Batch Name"
                                                 placeholder="e.g., Morning Zumba"
                                                 value={batch.name}
-                                                error={!batch.name?.trim()}
+                                                error={!batch.name.trim()}
                                                 onChange={(e) =>
                                                     updateBatch(batch.batchId, {
                                                         name: e.target.value,

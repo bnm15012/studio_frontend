@@ -211,7 +211,7 @@ export const usePdfActions = ({
     const [loading, setLoading] = useState(false);
 
     // Scale factor used for rendering (html2canvas scale)
-    const CANVAS_SCALE = pdfOptions?.html2canvas?.scale ?? 3;
+    const CANVAS_SCALE = pdfOptions.html2canvas?.scale ?? 3;
 
     /**
      * Temporarily resets the preview container's CSS transform so that

@@ -24,7 +24,7 @@ const paymentTypes: paymentType[] = ["CASH", "UPI"];
 const paymentStatusTypes: paymentStatus[] = ["COMPLETED", "PENDING"];
 
 const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> }) => {
-    const value: Payment[] = Array.isArray(data?.paymentEntries) ? data.paymentEntries : [];
+    const value: Payment[] = Array.isArray(data.paymentEntries) ? data.paymentEntries : [];
     const title = field.label || "Payments";
     const paidAmount = value.reduce((acc: number, curr: Payment) => acc + curr.amount, 0);
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
@@ -34,7 +34,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const dispatch = useAppDispatch();
     const [paymentFormData, setPaymentFormData] = useState<Partial<Payment> | undefined>();
 
-    if (!value?.length) {
+    if (!value.length) {
         return (
             <Box sx={{ mt: 1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>

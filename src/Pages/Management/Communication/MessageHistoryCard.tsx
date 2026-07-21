@@ -34,19 +34,19 @@ const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onView
                         >
                             <CardHeader
                                 FieldIcon={Send}
-                                fieldValue={row?.memberType ? "All Recipients" : "Few"}
+                                fieldValue={row.memberType ? "All Recipients" : "Few"}
                                 badgeSx={{ backgroundColor: "" }}
                                 badge={
                                     <Avatar
                                         sx={{
                                             p: 2,
                                             backgroundColor:
-                                                row?.notificationType === "EMAIL"
+                                                row.notificationType === "EMAIL"
                                                     ? theme.palette.info.main
                                                     : theme.palette.success.main,
                                         }}
                                     >
-                                        {row?.notificationType === "EMAIL" ? (
+                                        {row.notificationType === "EMAIL" ? (
                                             <Email />
                                         ) : (
                                             <WhatsApp />
@@ -56,7 +56,7 @@ const MessageHistoryCard: React.FC<MessageHistoryCardProps> = ({ history, onView
                             />
                             <CardChip
                                 label={"Sent Date"}
-                                value={String(row?.sentDate ?? "")}
+                                value={String(row.sentDate ?? "")}
                                 type="DATETIME"
                             />
                         </StyledCardContent>

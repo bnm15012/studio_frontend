@@ -18,7 +18,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ row }) => {
             <CardHeader
                 FieldIcon={IndianRupeeIcon}
                 fieldValue={Number(amount || 0).toLocaleString("en-IN")}
-                enabled={status?.toLowerCase() === "completed"}
+                enabled={status.toLowerCase() === "completed"}
                 badge={status || ""}
             />
             <CardChip

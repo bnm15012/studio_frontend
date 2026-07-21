@@ -79,7 +79,7 @@ const BranchPage = () => {
                     variant="contained"
                     startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
                     onClick={() => {
-                        api.current?.addNewRow?.();
+                        api.current.addNewRow?.();
                     }}
                     sx={{ fontWeight: "bold", padding: ".8rem" }}
                 >

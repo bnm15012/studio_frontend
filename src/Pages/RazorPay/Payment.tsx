@@ -172,9 +172,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                         <strong>End Date:</strong>{" "}
                         {getLocalDateTime(
                             getEndDateBySubscriptionPlan(
-                                (subscriptionPlan?.endDate
-                                    ? subscriptionPlan.endDate!
-                                    : getCurrentDateTimeLocal()) as string,
+                                subscriptionPlan?.endDate || getCurrentDateTimeLocal(),
                                 plan.planType,
                             ),
                         )}

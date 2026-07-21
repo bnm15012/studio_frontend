@@ -139,13 +139,13 @@ const StyledDialog: React.FC<StyledDialogProps> = ({
 
                 {/* Any extra custom buttons */}
                 {actions.map((action) => (
-                    <Tooltip key={action.key} title={action?.tip} sx={{ ml: 1 }}>
+                    <Tooltip key={action.key} title={action.tip} sx={{ ml: 1 }}>
                         <Button
-                            sx={{ cursor: "pointer", ...action?.sx }}
-                            onClick={action?.onClick}
-                            variant={action?.variant || "text"}
-                            color={action?.color || "primary"}
-                            disabled={action?.disabled || false}
+                            sx={{ cursor: "pointer", ...action.sx }}
+                            onClick={action.onClick}
+                            variant={action.variant || "text"}
+                            color={action.color || "primary"}
+                            disabled={action.disabled || false}
                         >
                             {action.component}
                         </Button>
