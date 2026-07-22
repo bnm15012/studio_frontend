@@ -4,7 +4,6 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { getStudentNamesOncePerDay } from "../../Pages/Management/Student/Student.api";
 import { useAppDispatch, useAppSelector } from "../../state";
-import { useAlert } from "@/core/components/feedback/Alert";
 import {
     markAllAsRead,
     markAsRead,
@@ -20,7 +19,6 @@ interface NotificationProps {
 
 const Notification: React.FC<NotificationProps> = ({ branch, token }) => {
     const theme = useTheme();
-    const showAlert = useAlert();
     const dispatch = useAppDispatch();
     const notifications = useAppSelector((state) => state.notifications.items);
     const unreadCount = useAppSelector((state) => state.notifications.unreadCount);
@@ -55,11 +53,10 @@ const Notification: React.FC<NotificationProps> = ({ branch, token }) => {
             dispatch(setNotifications(birthdayNotifications));
         } catch (err: unknown) {
             console.error("Failed to fetch student names:", err);
-            showAlert("Failed to fetch student names", "error");
         } finally {
             setLoading(false);
         }
-    }, [branch.branchId, token, dispatch, showAlert]);
+    }, [branch.branchId, token, dispatch]);
 
     useEffect(() => {
         getBirthDayStudent();

@@ -21,8 +21,8 @@ import ActionBar from "@/core/components/layout/ActionBar.jsx";
 import PaymentList from "./PaymentList.jsx";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle.ts";
 
-const paymentTypes = ["CASH", "UPI"];
-const paymentStatusTypes = ["COMPLETED", "PENDING"];
+const paymentTypes: paymentType[] = ["CASH", "UPI"];
+const paymentStatusTypes: paymentStatus[] = ["COMPLETED", "PENDING"];
 
 const LIMIT = 10;
 
@@ -132,8 +132,8 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 type: "BOOKING",
                 actualAmount: row.totalAmount,
                 amount: row.totalAmount,
-                status: paymentStatusTypes[0] as paymentStatus,
-                paymentType: paymentTypes[0] as paymentType,
+                status: paymentStatusTypes[0],
+                paymentType: paymentTypes[0],
                 branchId: currentBranch.branchId,
                 paymentDate: getCurrentDateTimeLocal() ?? "",
             };

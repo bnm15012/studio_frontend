@@ -24,7 +24,7 @@ const FIELDS: FieldDef<Enquiry>[] = [
         name: "enquiryDate",
         label: "Date",
         show: true,
-        type: "DATE",
+        type: "DATETIME",
         defaultValue: getCurrentDateTimeLocal(),
     },
     { name: "name", label: "Name", show: true },

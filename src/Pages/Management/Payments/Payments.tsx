@@ -43,7 +43,7 @@ const FIELDS: FieldDef<Payment>[] = [
         show: true,
         name: "paymentDate",
         label: "Payment Date",
-        type: "DATE",
+        type: "DATETIME",
         defaultValue: getCurrentDateTimeLocal(),
     },
     {
