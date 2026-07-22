@@ -1,7 +1,6 @@
 /** Table-based list view component using MUI Table, with animated row transitions (framer-motion), pagination, checkboxes for row selection, and field rendering via FieldCell. */
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { TableBody, TableHead, Paper, Pagination, Checkbox } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
 import {
     StyledTable,
@@ -207,6 +206,8 @@ export interface ListViewProps<T extends Record<string, unknown> = Record<string
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
     submitAttempted?: boolean;
+    /** Row click handler — computed once in Views and passed down to avoid duplication. */
+    onClickRow?: (row: T) => void;
 }
 
 function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
@@ -228,14 +229,9 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
     handleSelectRow,
     handleSelectAll,
     submitAttempted,
+    onClickRow,
 }: ListViewProps<T>) {
     const { isMobile } = useUI();
-    const theme = useTheme();
-
-    const onClickRow = useCallback(
-        (row: T) => actions.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
-        [actions],
-    );
 
     const sharedRowProps = {
         fields,
@@ -249,7 +245,6 @@ function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
         handleViewOpen,
         handleSelectRow,
         selectedRows,
-        theme,
         actions,
         submitAttempted,
     };

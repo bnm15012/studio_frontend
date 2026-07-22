@@ -230,6 +230,13 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
         actions: mergedActions,
     });
 
+    /** Shared "open form view for this row" handler — used by both ListView and CardView
+     *  to navigate when the user clicks a row or the "form" action. */
+    const onClickRow = useCallback(
+        (row: T) => mergedActions.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
+        [mergedActions],
+    );
+
     const commonStableProps = useMemo(
         () => ({
             fields: visibleFields,
@@ -245,6 +252,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
             handleCancel,
             handlePageChange,
             addNewRow: showAddButton ? addNewRow : undefined,
+            onClickRow,
         }),
         [
             visibleFields,
@@ -261,6 +269,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
             handleViewOpen,
             showAddButton,
             addNewRow,
+            onClickRow,
         ],
     );
 

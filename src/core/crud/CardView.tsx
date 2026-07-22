@@ -1,5 +1,5 @@
 /** Card-grid view for entity data, rendering each row as an animated MUI Card with field labels, actions, checkboxes, and a select-all bar. */
-import React, { memo, useEffect, useCallback, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Box, Button, Checkbox, Skeleton } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
 import { FieldContainer, FieldLabel } from "../components/fields/StyledField";
@@ -36,6 +36,8 @@ export interface CardViewProps<T extends Record<string, unknown> = Record<string
     isIndeterminate: boolean;
     handleSelectRow: (id: number, checked: boolean) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    /** Row click handler — computed once in Views and passed down to avoid duplication. */
+    onClickRow?: (row: T) => void;
 }
 
 /** Number of skeleton cards to show while initial data is loading. */
@@ -83,6 +85,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
         isIndeterminate,
         handleSelectRow,
         handleSelectAll,
+        onClickRow,
     } = props;
 
     const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -98,11 +101,7 @@ function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
     }, [data.length]);
 
     const visibleFields = fields.filter((f) => f.show);
-    const hasClickRow = actions.some((a) => a.name === "form" && !a.hide);
-    const onClickRow = useCallback(
-        (row: T) => actions.find((a) => a.name === "form" && !a.hide)?.onClick?.(row),
-        [actions],
-    );
+    const hasClickRow = !!onClickRow;
 
     const hasMore = data.length < Number(tableState.totalCount ?? 0);
 
