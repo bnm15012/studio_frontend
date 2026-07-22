@@ -276,7 +276,7 @@ const DashBoard: React.FC = () => {
                             flexDirection={isMobile ? "row" : "column"}
                             width={isMobile ? "100%" : "fit-content"}
                         >
-                            <IncomePill label="This Month" amount={currentMonthIncome} />
+                            <IncomePill label="Current Month" amount={currentMonthIncome} />
                             <Divider
                                 orientation="vertical"
                                 flexItem

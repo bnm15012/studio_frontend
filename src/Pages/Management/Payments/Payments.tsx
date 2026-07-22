@@ -77,7 +77,23 @@ const Expenses: React.FC = () => {
         <FlexBetweenColumn>
             <Box>
                 <Views<Payment>
-                    actionBarProps={{ add: false }}
+                    actionBarProps={{
+                        add: false,
+                        filterOptions: [
+                            { name: "Start Date", key: "startDate", values: [] },
+                            { name: "End Date", key: "endDate", values: [] },
+                            {
+                                name: "Payment Type",
+                                key: "paymentType",
+                                values: PAYMENT_TYPE,
+                            },
+                            {
+                                name: "Payment Status",
+                                key: "paymentStatus",
+                                values: STATUS,
+                            },
+                        ],
+                    }}
                     apiRef={api}
                     actions={[
                         { name: "delete", enabled: () => false, hide: true },
