@@ -175,3 +175,77 @@ export interface ViewsApiRef {
     addNewRow?: () => void;
     refreshData?: () => void;
 }
+
+/**
+ * BaseViewProps — the contract every pluggable view component must satisfy.
+ *
+ * `Views.tsx` computes all of these once and passes them down via
+ * `commonStableProps` + `commonProps`.  Any custom view registered
+ * through `ViewsProps.customView` will receive exactly this shape.
+ *
+ * Usage:
+ * ```tsx
+ * import type { BaseViewProps } from "@/core/types";
+ *
+ * function MyCustomView<T extends Entity>(props: BaseViewProps<T>) {
+ *   const { data, fields, actions, onClickRow, loading } = props;
+ *   // ... your rendering logic
+ * }
+ * ```
+ */
+export interface BaseViewProps<T extends Entity = GenericItem> {
+    // ── Data ───────────────────────────────────────────────────────────────
+    /** The current page / visible slice of entity records. */
+    data: T[];
+    /** Redux / hook table state: currentPage, pageSize, totalCount, recordById, … */
+    tableState: Record<string, unknown>;
+    /** True while a network request is in-flight. */
+    loading?: boolean;
+
+    // ── Fields ────────────────────────────────────────────────────────────
+    /** Visibility-filtered field definitions for this view. */
+    fields: FieldDef<T>[];
+    /** Primary-key and optional root-key metadata. */
+    fieldsMeta: FieldMeta;
+
+    // ── Edit state ────────────────────────────────────────────────────────
+    /**
+     * -1 = nothing being edited
+     *  0 = new (unsaved) row
+     *  positive = ID of the row currently being edited
+     */
+    editingId?: number;
+    /** Whether the user has attempted to submit an invalid form. */
+    submitAttempted?: boolean;
+
+    // ── Handlers ──────────────────────────────────────────────────────────
+    /** Update a single field value for a row. */
+    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
+    /** Persist edits for the given row ID. */
+    handleSave?: (rowId: number) => void | Promise<void>;
+    /** Discard in-progress edits. */
+    handleCancel?: () => void;
+    /** Navigate to a different page of results. */
+    handlePageChange: (page: number) => void;
+    /** Open the detail-view dialog for a row. */
+    handleViewOpen?: (row: T) => void;
+    /**
+     * Navigates into the form view for a row.
+     * Computed once in Views.tsx from the "form" action to avoid duplication.
+     */
+    onClickRow?: (row: T) => void;
+    /** Append a fresh empty row ready for input (only present when showAddButton=true). */
+    addNewRow?: () => void;
+
+    // ── Actions ───────────────────────────────────────────────────────────
+    /** Merged action items (edit / delete / custom) wired by Views.tsx. */
+    actions: ActionItem<T>[];
+
+    // ── Layout hints ──────────────────────────────────────────────────────
+    tableName: string;
+    currentView: ViewMode;
+    /** Enable multi-select / batch-action mode. */
+    multi?: boolean;
+    /** Use IntersectionObserver-based auto-load instead of a "Load more" button. */
+    infiniteScroll?: boolean;
+}

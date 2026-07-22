@@ -11,33 +11,25 @@ import {
 } from "../components/cards/StyledCard";
 import { getNestedValue } from "../../utils/objectHelpers";
 import Actions from "./helper/Actions";
-import { ActionItem, FieldDef, FieldMeta } from "../types";
+import { BaseViewProps, Entity } from "../types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "./components/shared";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
 import { SelectAllBar } from "./components/SelectionToolbar";
 
-export interface CardViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef<T>[];
-    data: T[];
-    fieldsMeta: FieldMeta;
-    loading?: boolean;
-    actions: ActionItem<T>[];
-    handleViewOpen?: (row: T) => void;
-    tableState: Record<string, unknown>;
+export interface CardViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
+    // ── Card-only props ────────────────────────────────────────────────
+    /** Trigger loading the next page of results (infinite scroll or manual). */
     handleLoadMore: () => void | Promise<void>;
+    /** Optional override for the default field-label card layout. */
     CardContentComponent?: React.ComponentType<{ row: T; handleViewOpen?: (row: T) => void }>;
-    multi?: boolean;
-    /** Enable infinite scroll (sentinel-based auto-load). Default: true */
-    infiniteScroll?: boolean;
-    // Selection state lifted to Views
+    // ── Card-only: selection (boolean-based, not event-based like ListView) ─
     selectedRows: number[];
     isAllSelected: boolean;
     isIndeterminate: boolean;
+    /** Boolean-based select handler (card taps, not checkbox change events). */
     handleSelectRow: (id: number, checked: boolean) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    /** Row click handler — computed once in Views and passed down to avoid duplication. */
-    onClickRow?: (row: T) => void;
 }
 
 /** Number of skeleton cards to show while initial data is loading. */
@@ -65,9 +57,7 @@ const CardSkeleton = () =>
         </Box>
     ));
 
-function CardView<T extends Record<string, unknown> = Record<string, unknown>>(
-    props: CardViewProps<T>,
-) {
+function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
     const {
         fields,
         data,

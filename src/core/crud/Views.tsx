@@ -24,6 +24,7 @@ import {
     Entity,
     ViewMode,
     ViewsApiRef,
+    BaseViewProps,
 } from "../types";
 import { useAppDispatch } from "../../state";
 import { useRowSelection } from "./hooks/useRowSelection";
@@ -65,6 +66,25 @@ export interface ViewsProps<T extends Entity> {
     /** Pass ActionBar display options here — api is auto-wired from the internal ref. */
     actionBarProps?: Omit<ActionBarProps, "api">;
     infiniteScroll?: boolean;
+    /**
+     * Plug in a fully custom view component.
+     * It will receive the same `BaseViewProps<T>` that ListView and CardView get,
+     * so it has access to data, fields, actions, handlers, and layout hints.
+     *
+     * The component is rendered when `currentView` is not "LIST" or "CARD".
+     *
+     * Example:
+     * ```tsx
+     * import type { BaseViewProps } from "@/core/types";
+     *
+     * function KanbanView<T extends Entity>(props: BaseViewProps<T>) {
+     *   return <div>{props.data.map(row => ...)}</div>;
+     * }
+     *
+     * <Views ... currentView="KANBAN" customView={KanbanView} />
+     * ```
+     */
+    customView?: React.ComponentType<BaseViewProps<T>>;
 }
 
 function Views<T extends Entity>(props: ViewsProps<T>) {
@@ -91,6 +111,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
         overRideOnChange,
         actionBarProps,
         infiniteScroll = true,
+        customView: CustomView,
     } = props;
 
     const consts = useRef({ primaryKey: fieldsMeta.primary, rootKey: fieldsMeta.root, fields });
@@ -371,7 +392,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                             handleSelectRow={handleSelectRow}
                             handleSelectAll={handleSelectAll}
                         />
-                    ) : (
+                    ) : currentView === "LIST" ? (
                         <ListView<T>
                             {...commonStableProps}
                             {...commonProps}
@@ -381,7 +402,9 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                             handleSelectRow={handleSelectRowEvent}
                             handleSelectAll={handleSelectAll}
                         />
-                    )}
+                    ) : CustomView ? (
+                        <CustomView {...commonStableProps} {...commonProps} />
+                    ) : null}
                 </>
             )}
             {editMode !== "FORM" &&

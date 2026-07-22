@@ -9,7 +9,7 @@ import {
     StyledTableRow,
 } from "../components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { ActionItem, Entity, FieldDef, FieldMeta } from "../types";
+import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps } from "../types";
 import { useUI } from "@/context/UIContext";
 import FieldCell from "./components/FieldCell";
 import { getVisibleFields } from "../utils/fieldHelpers";
@@ -35,7 +35,7 @@ interface DesktopTableProps<T extends Entity> {
     /** -1 = nothing editing, 0 = new row, positive = existing row */
     editingId?: number;
     multi?: boolean;
-    tableState: Record<string, unknown>;
+    tableState: Entity;
     loading?: boolean;
     handleSave?: (rowId: number) => void | Promise<void>;
     handleCancel?: () => void;
@@ -51,7 +51,7 @@ interface DesktopTableProps<T extends Entity> {
 }
 
 // ── Desktop table ──────────────────────────────────────────────────────────
-function DesktopTable<T extends Record<string, unknown> = Record<string, unknown>>({
+function DesktopTable<T extends Entity = Entity>({
     fields,
     data,
     fieldsMeta,
@@ -75,7 +75,7 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
     const isIndeterminate = selectedRows.length > 0 && selectedRows.length < visibleRowIds.length;
 
-    const TableContainerCo = StyledTableContainer as React.ComponentType<Record<string, unknown>>;
+    const TableContainerCo = StyledTableContainer as React.ComponentType<Entity>;
 
     return (
         <TableContainerCo component={Paper}>
@@ -186,31 +186,17 @@ function DesktopTable<T extends Record<string, unknown> = Record<string, unknown
     );
 }
 
-export interface ListViewProps<T extends Record<string, unknown> = Record<string, unknown>> {
-    fields: FieldDef<T>[];
-    data: T[];
-    /** -1 = nothing editing, 0 = new row, positive = existing row */
-    editingId?: number;
-    fieldsMeta: FieldMeta;
-    actions: ActionItem<T>[];
-    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
-    handleSave?: (rowId: number) => void | Promise<void>;
-    loading?: boolean;
-    handleCancel?: () => void;
-    tableState: Record<string, unknown>;
-    handlePageChange: (page: number) => void;
-    handleViewOpen?: (row: T) => void;
-    multi?: boolean;
+export interface ListViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
+    // ── List-only: row selection ────────────────────────────────────────
     selectedRows: number[];
+    /** IDs of all rows currently visible on this page (used for select-all). */
     visibleRowIds: number[];
+    /** Per-row checkbox change event (event-based, for table rows). */
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    submitAttempted?: boolean;
-    /** Row click handler — computed once in Views and passed down to avoid duplication. */
-    onClickRow?: (row: T) => void;
 }
 
-function ListView<T extends Record<string, unknown> = Record<string, unknown>>({
+function ListView<T extends Entity = Entity>({
     fields,
     data,
     editingId,
