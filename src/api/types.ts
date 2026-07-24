@@ -7,6 +7,7 @@ export type genderType = "MALE" | "FEMALE" | "NOT_TO_SAY";
 export type activityStatus = "ACTIVE" | "INACTIVE";
 export type clientType = "GROUP" | "INDIVIDUAL" | "COMPANY";
 export type userRights = "FULL" | "NONE";
+export type bookingStatus = "CONFIRMED" | "CANCELLED" | "COMPLETED";
 export type expenseCategory =
     | "ELECTRICITY"
     | "SALARY"
@@ -171,6 +172,7 @@ export interface Booking extends Entity {
     clientEntry: Partial<Client>;
     totalAmount: number;
     paymentStatus: paymentStatus;
+    state: bookingStatus;
     paidAmount: number;
     dueAmount: number;
     bookingDate: string;

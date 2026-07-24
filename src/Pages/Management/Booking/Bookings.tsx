@@ -7,7 +7,14 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarView from "./Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
-import type { Booking, Client, Payment, paymentStatus, paymentType } from "../../../api/types";
+import type {
+    Booking,
+    Client,
+    Payment,
+    paymentStatus,
+    paymentType,
+    bookingStatus,
+} from "../../../api/types";
 
 import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
 import { useAppUI } from "@/context/UIContext";
@@ -23,6 +30,7 @@ import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle.ts";
 
 const paymentTypes: paymentType[] = ["CASH", "UPI"];
 const paymentStatusTypes: paymentStatus[] = ["COMPLETED", "PENDING"];
+const bookingStatusTypes: bookingStatus[] = ["CONFIRMED", "CANCELLED", "COMPLETED"];
 
 const LIMIT = 10;
 
@@ -178,6 +186,27 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     name: "totalAmount",
                     label: "Total Amount",
                     type: "NUMBER",
+                },
+                {
+                    show: true,
+                    section: "Booking Details",
+                    name: "state",
+                    label: "Booking Status",
+                    isState: true,
+                    colorMap: {
+                        CONFIRMED: "#22c55e",
+                        CANCELLED: "#ef4444",
+                        COMPLETED: "#3b82f6",
+                    },
+                    defaultValue: bookingStatusTypes[0],
+                    // getValue: (value: string) => value && { key: value, value },
+                    // extraProp: {
+                    //     getOptions: async (search: string, page: number, limit: number) =>
+                    //         bookingStatusTypes
+                    //             .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                    //             .slice((page - 1) * limit, page * limit)
+                    //             .map((a) => ({ key: a, value: a })),
+                    // },
                 },
                 {
                     show: true,

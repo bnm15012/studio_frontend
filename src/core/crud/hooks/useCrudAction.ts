@@ -1,5 +1,5 @@
 /** Hook managing all CRUD operations (add, update, field change) with validation, before-save hooks, and Redux dispatch. */
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { validate } from "../utils/validate";
 import { ShowAlertFn, SetLoadingFn, CrudThunks } from "@/core/types";
 import type { AppDispatch } from "@/state";
@@ -68,11 +68,13 @@ export const useCrudAction = <T extends Entity>({
 } => {
     /** -1 = nothing editing, 0 = new row, positive = editing existing */
     const [editingId, setEditingId] = useState<number>(formKey === 0 ? 0 : -1);
+    const editingIdRef = useRef<number>(editingId);
     const [originalRow, setOriginalRow] = useState<T | null>(null);
     const [record, setRecord] = useState<T>({} as T);
     const [submitAttempted, setSubmitAttempted] = useState(false);
 
     const updateEditId = (id: number) => {
+        editingIdRef.current = id;
         setEditingId(id);
     };
 
@@ -83,7 +85,7 @@ export const useCrudAction = <T extends Entity>({
     const handleEdit = useCallback(
         (row: T) => {
             setSubmitAttempted(false);
-            if (editingId >= 0) {
+            if (editingIdRef.current >= 0) {
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
             }
@@ -94,30 +96,31 @@ export const useCrudAction = <T extends Entity>({
             setOriginalRow(original ? ({ ...original } as T) : null);
             updateEditId(rowId);
         },
-        [consts, data, editingId, formKey, record, showAlert],
+        [consts, data, formKey, record, showAlert],
     );
 
     const handleCancel = useCallback(() => {
         setSubmitAttempted(false);
+        const currentEditingId = editingIdRef.current;
         if (formKey === 0) navigate(`/management/${tableName}/`);
         if (formKey !== undefined) {
-            setRecord(editingId === 0 ? ({} as T) : (originalRow ?? ({} as T)));
+            setRecord(currentEditingId === 0 ? ({} as T) : (originalRow ?? ({} as T)));
         } else {
-            if (editingId === 0) {
+            if (currentEditingId === 0) {
                 setData((prev) =>
-                    prev.filter((row) => row[consts.current.primaryKey] !== editingId),
+                    prev.filter((row) => row[consts.current.primaryKey] !== currentEditingId),
                 );
             } else if (originalRow) {
                 setData((prev) =>
                     prev.map((row) =>
-                        row[consts.current.primaryKey] === editingId ? originalRow : row,
+                        row[consts.current.primaryKey] === currentEditingId ? originalRow : row,
                     ),
                 );
             }
         }
         updateEditId(-1);
         setOriginalRow(null);
-    }, [formKey, navigate, tableName, editingId, originalRow, setData, consts]);
+    }, [formKey, navigate, tableName, originalRow, setData, consts]);
 
     const handleSave = useCallback(
         async (id: number) => {
@@ -211,7 +214,7 @@ export const useCrudAction = <T extends Entity>({
 
     const addNewRow = useCallback(() => {
         setSubmitAttempted(false);
-        if (editingId >= 0) {
+        if (formKey !== 0 && editingIdRef.current >= 0) {
             showAlert("Can't Add New while edit", "warning");
             return;
         }
@@ -235,7 +238,7 @@ export const useCrudAction = <T extends Entity>({
         else setData((prev) => [newRow as T, ...prev]);
 
         updateEditId(0);
-    }, [editingId, consts, rootId, formKey, setData, showAlert, updateField]);
+    }, [consts, rootId, formKey, setData, showAlert, updateField]);
 
     return {
         editingId,
