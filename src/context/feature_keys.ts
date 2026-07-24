@@ -1,0 +1,31 @@
+export const FEATURE_KEYS = {
+    // for all
+    CLIENT: "CLIENT",
+    BOOKINGS: "BOOKINGS",
+    INSTRUCTOR: "INSTRUCTOR",
+    STUDENT: "STUDENT",
+    ATTENDANCE: "ATTENDANCE",
+
+    // none
+    WHATSAPP_SERVER: "WHATSAPP_SERVER",
+    PAYMENT_DATE: "PAYMENT_DATE",
+    BATCH: "BATCH",
+    BULK_UPLOAD: "BULK_UPLOAD",
+
+    // by user
+    BRANCH: "BRANCH",
+    ACTIVITY: "ACTIVITY",
+    COMMUNICATION: "COMMUNICATION",
+    PAYMENTS: "PAYMENTS",
+    EXPENSE: "EXPENSE",
+    ANALYSIS: "ANALYSIS",
+    REPORTS: "REPORTS",
+    ENQUIRY: "ENQUIRY",
+    TEMPLATES: "TEMPLATES",
+    PACKAGE: "PACKAGE",
+
+    // temp
+    ENROLMENT: "ENROLMENT",
+} as const;
+
+export type FeatureKey = (typeof FEATURE_KEYS)[keyof typeof FEATURE_KEYS];

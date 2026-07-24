@@ -1,0 +1,114 @@
+import { useAppSelector } from "@/state";
+import { useCallback, useEffect, useState } from "react";
+
+import { useAlert } from "@/core/components/feedback/Alert";
+import { getMessageRecipientsAPI } from "./communication.api";
+import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { User } from "lucide-react";
+import { Close, Done } from "@mui/icons-material";
+
+interface ReceipentsListDialogProps {
+    onClose: () => void;
+    messageId: number | string;
+}
+
+const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, messageId }) => {
+    const showAlert = useAlert();
+    const token = useAppSelector((state) => state.auth.token);
+    const [history, setHistory] = useState<Record<string, unknown>[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const getMessageHistory = useCallback(async () => {
+        try {
+            setLoading(true);
+            const { data, success, message } = await getMessageRecipientsAPI({
+                token,
+                messageId,
+            });
+
+            if (success) {
+                setHistory(data);
+            } else {
+                showAlert(message, "error");
+            }
+        } catch (error: unknown) {
+            console.error(error);
+            showAlert("Failed to fetch message recipients!", "error");
+        } finally {
+            setLoading(false);
+        }
+    }, [showAlert, messageId, token]);
+
+    useEffect(() => {
+        getMessageHistory();
+    }, [getMessageHistory]);
+
+    return (
+        <StyledDialog
+            closeIcon={true}
+            title={"Message Recipients"}
+            open={true}
+            onClose={onClose}
+            fullWidth
+        >
+            <DialogContent style={{ maxHeight: "60vh", overflowY: "auto" }}>
+                {loading ? (
+                    <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
+                        <CircularProgress />
+                    </div>
+                ) : history.length === 0 ? (
+                    <Typography>No recipients found.</Typography>
+                ) : (
+                    <>
+                        {history.map((recipient) => (
+                            <Box
+                                key={String(recipient.id)}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    p: 1.5,
+                                    mb: 1,
+                                    borderRadius: 2,
+                                    bgcolor: "action.hover",
+                                    transition: "background-color 0.2s",
+                                    "&:hover": { bgcolor: "action.selected" },
+                                }}
+                            >
+                                <Avatar
+                                    sx={{
+                                        width: 40,
+                                        height: 40,
+                                        bgcolor: "primary.light",
+                                        color: "primary.main",
+                                    }}
+                                >
+                                    <User size={20} />
+                                </Avatar>
+
+                                <Box sx={{ flex: 1, minWidth: 0 }}>
+                                    <Typography variant="subtitle2" noWrap>
+                                        {String(recipient.name ?? "")}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" noWrap>
+                                        {String(recipient.contact ?? "")}
+                                    </Typography>
+                                </Box>
+                                {recipient.status === "SENT" ? (
+                                    <Done sx={{ color: "success.main", my: "auto", mr: 1 }} />
+                                ) : recipient.status === "PENDING" ? (
+                                    <CircularProgress />
+                                ) : (
+                                    <Close sx={{ color: "error.main", my: "auto", mr: 1 }} />
+                                )}
+                            </Box>
+                        ))}
+                    </>
+                )}
+            </DialogContent>
+        </StyledDialog>
+    );
+};
+
+export default ReceipentsListDialog;

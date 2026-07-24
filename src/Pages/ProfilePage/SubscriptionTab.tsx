@@ -1,0 +1,157 @@
+import { useAppSelector } from "@/state";
+import React, { useEffect, useState } from "react";
+import { Typography, CardContent, Box, Divider, useTheme, Button } from "@mui/material";
+import PaymentIcon from "@mui/icons-material/Payment";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import SubscriptionPopup from "../Auth/SubscriptionPopup";
+
+const SubscriptionTab: React.FC = () => {
+    const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
+    const [openplansPopUp, setopenplansPopUp] = useState(false);
+
+    useEffect(() => {}, [openplansPopUp]);
+
+    if (!subscriptionPlan) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+                <Typography variant="h6" color="textSecondary">
+                    No active subscription found.
+                </Typography>
+            </Box>
+        );
+    }
+
+    const endDate = subscriptionPlan.endDate ? new Date(subscriptionPlan.endDate) : new Date();
+    const today = new Date();
+    const timeDiff = endDate.getTime() - today.getTime();
+    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    return (
+        <Box>
+            <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: "grid", gap: 0.5 }}>
+                    <InfoRow
+                        icon={AssignmentIcon}
+                        label="Plan Type"
+                        value={subscriptionPlan.subscriptionPlan || subscriptionPlan.name || ""}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={EventAvailableIcon}
+                        label="Start Date"
+                        value={
+                            subscriptionPlan.startDate
+                                ? new Date(subscriptionPlan.startDate).toLocaleDateString("en-GB")
+                                : ""
+                        }
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={EventBusyIcon}
+                        label="End Date"
+                        value={endDate.toLocaleDateString("en-GB")}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={CalendarTodayIcon}
+                        label="Status"
+                        value={subscriptionPlan.status || ""}
+                        valueIcon={
+                            subscriptionPlan.status === "ACTIVE" ? CheckCircleIcon : CancelIcon
+                        }
+                        color={subscriptionPlan.status === "ACTIVE" ? "success.main" : "error.main"}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={PriceCheckIcon}
+                        label="Price"
+                        value={`Rs ${subscriptionPlan.price.toFixed(2) || "0.00"}`}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={PaymentIcon}
+                        label="Order ID"
+                        value={subscriptionPlan.orderId || ""}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={PaymentIcon}
+                        label="Payment ID"
+                        value={subscriptionPlan.paymentId || ""}
+                    />
+                    <Divider />
+
+                    <InfoRow
+                        icon={HourglassBottomIcon}
+                        label="Expires in"
+                        value={daysRemaining > 0 ? `${daysRemaining} days` : "Expired"}
+                        color={daysRemaining > 0 ? "warning.main" : "error.main"}
+                    />
+                </Box>
+            </CardContent>
+            <Button
+                fullWidth
+                variant="contained"
+                onClick={() => setopenplansPopUp(!openplansPopUp)}
+            >
+                Extend subscription
+            </Button>
+            {openplansPopUp && (
+                <SubscriptionPopup
+                    popupOn={openplansPopUp}
+                    setPopup={() => setopenplansPopUp(!openplansPopUp)}
+                />
+            )}
+        </Box>
+    );
+};
+
+export default SubscriptionTab;
+
+interface InfoRowProps {
+    icon: React.ElementType;
+    label: string;
+    value: string | number;
+    color?: string;
+    valueIcon?: React.ElementType;
+}
+
+const InfoRow: React.FC<InfoRowProps> = ({
+    icon: Icon,
+    label,
+    value,
+    color,
+    valueIcon: ValueIcon,
+}) => {
+    const theme = useTheme();
+    return (
+        <FlexBetween sx={{ py: 1 }}>
+            <Box display="flex" alignItems="center">
+                <Icon sx={{ mr: 2, color: theme.palette.primary.main }} />
+                <Typography variant="body1" fontWeight="500">
+                    {label}
+                </Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+                {ValueIcon && <ValueIcon sx={{ mr: 1, color: color }} />}
+                <Typography variant="body1" color={color}>
+                    {value}
+                </Typography>
+            </Box>
+        </FlexBetween>
+    );
+};
