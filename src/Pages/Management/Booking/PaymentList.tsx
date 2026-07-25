@@ -155,7 +155,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             name: "status",
                             label: "Status",
                             type: "SELECT",
-                            getValue: (value: paymentStatus) => value && { key: value, value },
+                            getValue: (value: paymentStatus) => ({ key: String(value), value }),
                             extraProp: {
                                 getOptions: async (search: string, page: number, limit: number) =>
                                     ["PENDING", "COMPLETED"]
@@ -170,7 +170,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             name: "paymentType",
                             label: "Payment Category",
                             type: "SELECT",
-                            getValue: (value: paymentType) => value && { key: value, value },
+                            getValue: (value: paymentType) => ({ key: String(value), value }),
                             extraProp: {
                                 getOptions: async (search: string, page: number, limit: number) =>
                                     ["CASH", "UPI"]

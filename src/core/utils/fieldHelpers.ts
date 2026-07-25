@@ -23,7 +23,7 @@ export const resolveFieldValue = <T extends Entity, K extends string & keyof T>(
     field: FieldDef<T, K>,
     row: T,
     isEdit: boolean,
-): React.ReactNode | { key: string; value: T[K] } | T[K] => {
+): React.ReactNode | { key: string | number; value: T[K] } | T[K] => {
     const raw = getNestedValue<T, K>(row, field.name);
     return field.getValue ? field.getValue(raw, row, isEdit) : raw;
 };

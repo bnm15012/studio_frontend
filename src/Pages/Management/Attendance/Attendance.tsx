@@ -95,14 +95,14 @@ const Attendance = () => {
                 name: "membershipStatus",
                 label: "Membership Status",
                 defaultValue: "INACTIVE",
-                getValue: (value: string) => (
+                getValue: (value) => (
                     <Box
                         sx={{
                             color: value === "ACTIVE" ? "green" : "red",
                             fontWeight: "bolder",
                         }}
                     >
-                        {value}
+                        {String(value)}
                     </Box>
                 ),
                 extraProp: { readOnly: true },
@@ -112,7 +112,7 @@ const Attendance = () => {
                 name: "present",
                 label: "Present",
                 type: "CHECK",
-                getValue: (_value: boolean, row: StudentAssignment) => {
+                getValue: (_value, row) => {
                     if (!row.attendanceEntries) return false;
                     return row.attendanceEntries.filter(
                         (entry) => entry.date.split(" ")[0] === date,

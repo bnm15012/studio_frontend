@@ -21,7 +21,6 @@ import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
 import type {
     Activity,
     BatchEntry,
-    genderType,
     Payment,
     paymentStatus,
     paymentType,
@@ -132,7 +131,7 @@ const FIELDS: FieldDef<Student>[] = [
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value: genderType) => value && { key: value, value },
+        getValue: (value) => ({ key: String(value ?? ""), value }),
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -401,15 +400,15 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "membershipType",
                         label: "Membership Type",
                         type: "SELECT",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
-                        getValue: (value: unknown) => value && { value, key: String(value) },
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        getValue: (value: string) => ({ value, key: value }),
                         extraProp: {
                             addValue: false,
                             getOptions: async (
                                 search: string,
                                 page: number,
                                 limit: number,
-                                row: Record<string, unknown>,
+                                row: StudentAssignment,
                             ) => {
                                 const batchEntries = allActivities.find(
                                     (a: Activity) => a.activityType === row["activityName"],
@@ -435,16 +434,16 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "daysPerWeek",
                         label: "Days / week",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
                         type: "SELECT",
-                        getValue: (value: unknown) => value && { value, key: String(value) },
+                        getValue: (value: string) => ({ value, key: value }),
                         extraProp: {
                             addValue: false,
                             getOptions: async (
                                 search: string,
                                 page: number,
                                 limit: number,
-                                row: Record<string, unknown>,
+                                row: StudentAssignment,
                             ) => {
                                 const batchEntries = allActivities
                                     .find((a: Activity) => a.activityType === row["activityName"])
@@ -470,15 +469,15 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "batchName",
                         label: "Batch Name",
                         type: "SELECT",
-                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
-                        getValue: (value: unknown) => value && { value, key: String(value) },
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        getValue: (value: string) => ({ value, key: value }),
                         extraProp: {
                             addValue: false,
                             getOptions: async (
                                 search: string,
                                 page: number,
                                 limit: number,
-                                row: Record<string, unknown>,
+                                row: StudentAssignment,
                             ) => {
                                 const batchEntries = allActivities
                                     .find((a: Activity) => a.activityType === row["activityName"])
@@ -508,15 +507,13 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         show: true,
                         name: "activityAmount",
                         label: "Amount",
-                        getValue: (v: unknown, row: Record<string, unknown>, isEdit: boolean) => {
+                        getValue: (v: number, row: StudentAssignment, isEdit: boolean) => {
                             if (!isEdit) {
-                                const paymentEntry = row.paymentEntry as
-                                    | Record<string, unknown>
-                                    | undefined;
+                                const paymentEntry = row.paymentEntry;
                                 if (!row || !paymentEntry) return null;
                                 return (
                                     <>
-                                        Rs. {String(paymentEntry.amount)}{" "}
+                                        Rs. {paymentEntry.amount}{" "}
                                         {paymentEntry.actualAmount &&
                                             paymentEntry.actualAmount !== paymentEntry.amount && (
                                                 <span
@@ -525,7 +522,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                                         color: "#EF4444",
                                                     }}
                                                 >
-                                                    Rs. {String(paymentEntry.actualAmount)}
+                                                    Rs. {paymentEntry.actualAmount}
                                                 </span>
                                             )}
                                     </>
@@ -574,9 +571,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "paymentEntry.paymentDate",
                         label: "Payment Date",
                         type: "DATE",
-                        editable: (row: Record<string, unknown>) =>
-                            (row?.paymentEntry as Record<string, unknown> | undefined)
-                                ?.paymentStatus !== "COMPLETED",
+                        editable: (row: StudentAssignment) =>
+                            row?.paymentEntry?.paymentStatus !== "COMPLETED",
                         defaultValue: getCurrentDateTimeLocal(),
                     },
                     {

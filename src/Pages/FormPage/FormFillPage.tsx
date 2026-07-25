@@ -6,8 +6,7 @@ import { addEnquiryAPI } from "../../api/enquiry.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import type { FieldDef } from "@/core/types";
 
-import type { Student, Enquiry, genderType } from "@/api/types";
-
+import type { Student, Enquiry } from "@/api/types";
 interface FormDefinition {
     id: string;
     name: string;
@@ -96,7 +95,7 @@ const FormFillPage = () => {
                         label: "Gender",
                         type: "SELECT",
                         validation: { required: true },
-                        getValue: (value: genderType) => (value ? { key: value, value } : null),
+                        getValue: (value) => ({ key: String(value), value }),
                         defaultValue: "MALE",
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>

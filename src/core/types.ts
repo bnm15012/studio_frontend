@@ -67,18 +67,16 @@ export interface ExtraProp<T = GenericItem> {
     disableVars?: boolean;
 }
 
-export interface FieldDef<T = GenericItem, K extends string & keyof T = string & keyof T> {
+/** Shared properties across all field types */
+interface FieldDefBase<T = GenericItem, K extends string & keyof T = string & keyof T> {
     name: K;
     show?: boolean;
     view?: boolean;
-    label?: string;
-    type?: FieldTypes;
+    label: string;
     section?: string;
     defaultValue?: T[K];
-    getValue?(value: T[K], row: T, isEdit: boolean): React.ReactNode | { key: string; value: T[K] };
     setValue?: (value: T[K], row?: T) => void;
     editable?: (row: T) => boolean;
-    extraProp?: ExtraProp<T>;
     validation?: {
         required?: boolean;
         regex?: string | RegExp;
@@ -91,6 +89,68 @@ export interface FieldDef<T = GenericItem, K extends string & keyof T = string &
     api?: unknown;
     viewProps?: unknown;
 }
+
+/**
+ * SELECT field — getOptions is required.
+ *
+ * `V` is the value type passed to `getValue`. It defaults to `T[K]` but since
+ * `T` usually extends `Entity` (i.e. `{ [key: string]: unknown }`), `T[K]`
+ * collapses to `unknown`.  Annotate `V` explicitly on individual fields to get
+ * proper inference:
+ *
+ * ```ts
+ * // inferred as `unknown` — bad
+ * getValue: (value) => ({ key: value, value })
+ *
+ * // explicit V = string — good
+ * getValue: (value: string) => ({ key: value, value })
+ * ```
+ */
+export interface SelectFieldDef<
+    T = GenericItem,
+    K extends string & keyof T = string & keyof T,
+    V = T[K],
+> extends FieldDefBase<T, K> {
+    type: "SELECT";
+    extraProp: ExtraProp<T> & {
+        getOptions: (
+            search: string,
+            page: number,
+            limit: number,
+            row?: T,
+        ) => Promise<SelectOption<T>[]>;
+    };
+    /**
+     * Map the raw field value to a `{ key, value }` pair for the SelectionField.
+     * Annotate the `value` parameter with the actual type (e.g. `string`) to
+     * avoid `unknown`.
+     *
+     * @default (v) => v && { key: v, value: v }
+     */
+    /** @default (v) => v && { key: v, value: v } */
+    getValue?(value: V, row: T, isEdit: boolean): { key: string | number; value: V };
+}
+
+/**
+ * All non-SELECT field types — getOptions is not relevant.
+ *
+ * `V` is the value type passed to `getValue`. Annotate it explicitly when
+ * TypeScript infers `unknown` due to the `Entity` index signature.
+ */
+export interface BaseFieldDef<
+    T = GenericItem,
+    K extends string & keyof T = string & keyof T,
+    V = T[K],
+> extends FieldDefBase<T, K> {
+    /** @default "TEXT" */
+    type?: Exclude<FieldTypes, "SELECT">;
+    extraProp?: Omit<ExtraProp<T>, "getOptions">;
+    getValue?(value: V, row: T, isEdit: boolean): V | React.ReactNode;
+}
+
+export type FieldDef<T = GenericItem, K extends string & keyof T = string & keyof T> =
+    | SelectFieldDef<T, K>
+    | BaseFieldDef<T, K>;
 
 export interface ActionItem<T = GenericItem> {
     name: string;

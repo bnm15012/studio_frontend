@@ -2,7 +2,12 @@ import { useAppSelector } from "@/state";
 import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
-import type { Activity, Instructor } from "../../../api/types";
+import type {
+    Activity,
+    activityStatus,
+    Instructor,
+    InstructorAssignment,
+} from "../../../api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
 import InstructorCard from "./InstructorCard";
@@ -73,9 +78,9 @@ const FIELDS: FieldDef<Instructor>[] = [
         section: "Personal Details",
         name: "instructorStatus",
         label: "Status",
-        getValue: (value: unknown) => (
+        getValue: (value: activityStatus) => (
             <Box sx={{ color: value === "ACTIVE" ? "green" : "red", fontWeight: "bolder" }}>
-                {String(value)}
+                {value}
             </Box>
         ),
         defaultValue: "ACTIVE",
@@ -155,7 +160,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         icon: <FeedIcon />,
                         enabled: true,
                         sx: { color: "primary.main" },
-                        onClick: (row: Record<string, unknown>) => {
+                        onClick: (row: InstructorAssignment) => {
                             setGenerateContractDoc(row);
                         },
                     },
@@ -166,8 +171,8 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value: unknown) => value && { value, key: value },
-                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
+                        getValue: (value: string) => ({ value, key: value }),
+                        editable: (row: InstructorAssignment) => row.assignmentId === 0,
                         extraProp: {
                             getOptions: async (search: string, page: number, limit: number) =>
                                 allActivities
@@ -212,7 +217,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         name: "membershipStatus",
                         label: "Status",
                         defaultValue: "INACTIVE",
-                        getValue: (value: string) => (
+                        getValue: (value: activityStatus) => (
                             <Box
                                 sx={{
                                     color: value === "ACTIVE" ? "green" : "red",

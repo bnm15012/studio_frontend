@@ -30,7 +30,7 @@ const FIELDS: FieldDef<Payment>[] = [
         name: "status",
         label: "Status",
         type: "SELECT",
-        getValue: (value: paymentStatus) => value && { key: value, value },
+        getValue: (value: paymentStatus) => ({ key: value, value }),
         defaultValue: STATUS[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
@@ -51,7 +51,7 @@ const FIELDS: FieldDef<Payment>[] = [
         name: "paymentType",
         label: "Payment Type",
         type: "SELECT",
-        getValue: (value: paymentType) => value && { key: value, value },
+        getValue: (value: paymentType) => ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[1],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>

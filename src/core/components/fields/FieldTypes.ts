@@ -13,4 +13,5 @@ export type FieldTypes =
     | "IMAGE"
     | "CHECK"
     | "EMAIL"
-    | "VIEW";
+    | "VIEW"
+    | "TEXT";

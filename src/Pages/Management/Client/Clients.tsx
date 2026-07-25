@@ -3,7 +3,7 @@ import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import type { Client } from "../../../api/types";
+import type { Client, clientType } from "../../../api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
@@ -30,7 +30,7 @@ const FIELDS: FieldDef<Client>[] = [
         name: "clientType",
         label: "Client Type",
         type: "SELECT",
-        getValue: (value) => (value ? { value, key: String(value) } : null),
+        getValue: (value: clientType) => ({ value, key: value }),
         extraProp: {
             getOptions: async () => clientTypes.map((a) => ({ key: a, value: a })),
         },

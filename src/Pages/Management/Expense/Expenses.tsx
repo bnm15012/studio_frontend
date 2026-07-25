@@ -4,13 +4,13 @@ import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { expenseCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
-import type { Expense, paymentType } from "../../../api/types";
+import type { Expense, expenseCategory, paymentType } from "../../../api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
 import ActionBar from "@/core/components/layout/ActionBar";
 
-const categories = [
+const categories: expenseCategory[] = [
     "ELECTRICITY",
     "SALARY",
     "MAINTENANCE",
@@ -20,7 +20,7 @@ const categories = [
     "OTHER",
 ];
 const LIMIT = 12;
-const PAYMENT_TYPE = ["CASH", "UPI"];
+const PAYMENT_TYPE: paymentType[] = ["CASH", "UPI"];
 const FIELD_META: FieldMeta = {
     primary: "expenseId",
     root: "branchId",
@@ -44,7 +44,8 @@ const FIELDS: FieldDef<Expense>[] = [
         label: "Expense Category",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value: string) => value && { key: value, value },
+        defaultValue: categories[0],
+        getValue: (value: expenseCategory) => ({ key: value, value }),
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>
                 categories
@@ -58,7 +59,7 @@ const FIELDS: FieldDef<Expense>[] = [
         name: "paymentType",
         label: "Payment Type",
         type: "SELECT",
-        getValue: (value: paymentType) => value && { key: value, value },
+        getValue: (value: paymentType) => ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[0],
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>

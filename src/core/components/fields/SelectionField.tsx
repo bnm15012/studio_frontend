@@ -11,7 +11,6 @@ export interface SelectionFieldProps<T> {
     readOnly?: boolean;
     setValue: (val: string | number | SelectOption<T>) => void;
     getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption<T>[]>;
-    addValue?: boolean;
     variant?: "standard" | "outlined" | "filled";
     validation?: { required?: boolean; [key: string]: unknown };
     saveType?: "string" | "object";
@@ -23,7 +22,6 @@ export default function SelectionField<T>({
     readOnly,
     setValue,
     getOptions,
-    addValue = true,
     variant = "standard",
     validation = {},
     saveType = "string",
@@ -49,12 +47,6 @@ export default function SelectionField<T>({
         },
         [getOptions],
     );
-
-    useEffect(() => {
-        if (addValue && value && !options.find((o) => o.key === value.key)) {
-            setOptions((prev) => [...prev, value]);
-        }
-    }, [value, options, addValue]);
 
     useEffect(() => {
         if (searchTerm) fetchOptions(searchTerm);
