@@ -45,7 +45,7 @@ export interface ViewsProps<T extends Entity> {
     /** 0 means "no root context yet" — fetch will be skipped until non-zero */
     rootId: number;
     tableCruds: CrudThunks<T>;
-    fields: FieldDef<T, string & keyof T>[];
+    fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;
     apiRef?: React.MutableRefObject<ViewsApiRef>;
     dialogProps?: Record<string, unknown>;

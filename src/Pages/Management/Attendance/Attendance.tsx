@@ -15,7 +15,7 @@ import MarkPresentDialog from "../Student/MarkPresent";
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
-import type { AttendanceEntry, StudentAssignment } from "../../../api/types";
+import type { activityStatus, AttendanceEntry, StudentAssignment } from "../../../api/types";
 import type { FieldDef, FieldMeta } from "@/core/types";
 
 const LIMIT = 50;
@@ -95,7 +95,7 @@ const Attendance = () => {
                 name: "membershipStatus",
                 label: "Membership Status",
                 defaultValue: "INACTIVE",
-                getValue: (value) => (
+                getValue: (value: activityStatus) => (
                     <Box
                         sx={{
                             color: value === "ACTIVE" ? "green" : "red",

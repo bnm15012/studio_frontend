@@ -9,7 +9,7 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "../components/cards/StyledCard";
-import { getNestedValue } from "../../utils/objectHelpers";
+import { resolveFieldValue } from "../utils/fieldHelpers";
 import Actions from "./helper/Actions";
 import { BaseViewProps, Entity } from "../types";
 import { AnimatePresence } from "framer-motion";
@@ -229,34 +229,26 @@ function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
                                                                 <FieldLabel>
                                                                     {field.label}
                                                                 </FieldLabel>
-                                                                {field.getValue
-                                                                    ? (() => {
-                                                                          const resolved =
-                                                                              field.getValue(
-                                                                                  getNestedValue(
-                                                                                      row,
-                                                                                      field.name,
-                                                                                  ),
-                                                                                  row,
-                                                                                  false,
-                                                                              );
-                                                                          return (
-                                                                              resolved &&
-                                                                              typeof resolved ===
-                                                                                  "object" &&
-                                                                              "value" in resolved
-                                                                                  ? (
-                                                                                        resolved as {
-                                                                                            value: unknown;
-                                                                                        }
-                                                                                    ).value
-                                                                                  : resolved
-                                                                          ) as React.ReactNode;
-                                                                      })()
-                                                                    : (getNestedValue(
-                                                                          row,
-                                                                          field.name,
-                                                                      ) as React.ReactNode)}
+                                                                {(() => {
+                                                                    const resolved =
+                                                                        resolveFieldValue(
+                                                                            field,
+                                                                            row,
+                                                                            false,
+                                                                        );
+                                                                    return (
+                                                                        resolved &&
+                                                                        typeof resolved ===
+                                                                            "object" &&
+                                                                        "value" in resolved
+                                                                            ? (
+                                                                                  resolved as {
+                                                                                      value: React.ReactNode;
+                                                                                  }
+                                                                              ).value
+                                                                            : resolved
+                                                                    ) as React.ReactNode;
+                                                                })()}
                                                             </FieldContainer>
                                                         ))}
                                                     </>

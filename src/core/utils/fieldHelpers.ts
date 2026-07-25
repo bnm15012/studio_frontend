@@ -1,5 +1,5 @@
 import { getNestedValue } from "@/utils/objectHelpers";
-import { FieldDef, ExtraProp, Entity } from "@/core/types";
+import { FieldDef, ExtraProp, Entity, KnownKeys } from "@/core/types";
 
 /** Field utility functions: getVisibleFields, resolveFieldValue, bindGetOptions, isFieldEditable for form/view rendering.
 
@@ -19,13 +19,24 @@ export const getVisibleFields = <T extends Entity>(fields: FieldDef<T>[]): Field
  * @param isEdit - editing mode flag
  * @returns resolved value
  */
-export const resolveFieldValue = <T extends Entity, K extends string & keyof T>(
-    field: FieldDef<T, K>,
+export const resolveFieldValue = <
+    T extends Entity,
+    K extends KnownKeys<T> & string = KnownKeys<T> & string,
+>(
+    field: FieldDef<T>,
     row: T,
     isEdit: boolean,
 ): React.ReactNode | { key: string | number; value: T[K] } | T[K] => {
     const raw = getNestedValue<T, K>(row, field.name);
-    return field.getValue ? field.getValue(raw, row, isEdit) : raw;
+    return field.getValue
+        ? (
+              field.getValue as (
+                  val: T[K],
+                  r: T,
+                  edit: boolean,
+              ) => React.ReactNode | { key: string | number; value: T[K] } | T[K]
+          )(raw, row, isEdit)
+        : raw;
 };
 
 /**
@@ -42,6 +53,7 @@ export const isFieldEditable = <T extends Entity>(
     isEditing: boolean,
 ): boolean => {
     if (!isEditing) return false;
+    if (!row || typeof row !== "object") return false;
     return field.editable ? field.editable(row) : true;
 };
 

@@ -1,7 +1,6 @@
 /** Central type definitions used across the core layer — AppDispatch, Entity, SelectOption, FieldDef, ActionItem, and Redux thunk types. */
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
-import { FieldTypes } from "./components/fields/FieldTypes";
 import { Entity, FilterKeys } from "./state/stateTypes";
 import { RootState } from "@/state";
 export type { Entity, FilterKeys };
@@ -43,6 +42,102 @@ export type SetLoadingFn = (loading: boolean) => void;
 /** Redux thunk action type — a function that receives dispatch and getState */
 export type ThunkAction = (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Utility: extract only explicitly declared (non-index-signature) keys of T
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type KnownKeys<T> = keyof {
+    [K in keyof T as string extends K ? never : K]: T[K];
+} &
+    string;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Per-type ExtraProp interfaces
+// Each field type only accepts the props that are relevant to it.
+// TypeScript's excess property checking will reject invalid props at definition sites.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** ExtraProp for SELECT fields. `getOptions` is REQUIRED. */
+export interface SelectExtraProp<T = GenericItem> {
+    getOptions: (
+        search: string,
+        page: number,
+        limit: number,
+        row?: T,
+    ) => Promise<SelectOption<T>[]>;
+    readOnly?: boolean;
+    addValue?: boolean;
+    saveType?: string;
+    variant?: string;
+}
+
+/** ExtraProp for TEXT / EMAIL fields. */
+export interface TextExtraProp {
+    readOnly?: boolean;
+    variant?: string;
+    multiline?: boolean;
+}
+
+/** ExtraProp for TEXTAREA fields. */
+export interface TextareaExtraProp {
+    readOnly?: boolean;
+    rows?: number;
+    variant?: string;
+}
+
+/** ExtraProp for NUMBER fields. */
+export interface NumberExtraProp {
+    readOnly?: boolean;
+    min?: string | number;
+    max?: string | number;
+    variant?: string;
+}
+
+/** ExtraProp for DATE / DATETIME fields. */
+export interface DateExtraProp {
+    readOnly?: boolean;
+    includeCurrentTime?: boolean;
+}
+
+/** ExtraProp for BOOL fields. */
+export interface BoolExtraProp {
+    readOnly?: boolean;
+}
+
+/** ExtraProp for CHECK fields. */
+export interface CheckExtraProp {
+    readOnly?: boolean;
+}
+
+/** ExtraProp for IMAGE / IMAGE_DIALOG fields. */
+export interface ImageExtraProp {
+    size?: string | number;
+    defaultImage?: string;
+    readOnly?: boolean;
+}
+
+/** ExtraProp for EDITOR fields. */
+export interface EditorExtraProp {
+    readOnly?: boolean;
+    rows?: number;
+    variables?: unknown;
+    disableVars?: boolean;
+    variant?: string;
+    multiline?: boolean;
+}
+
+/** ExtraProp for CUSTOM fields. `CustomComponent` is REQUIRED. */
+export interface CustomExtraProp {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    CustomComponent: React.ComponentType<any>;
+    readOnly?: boolean;
+}
+
+/**
+ * Superset object containing all possible extraProp fields.
+ * Used by internal UI components/renderers (Field.tsx, fieldHelpers.ts)
+ * so they can access property fields without manual union checks.
+ */
 export interface ExtraProp<T = GenericItem> {
     min?: string | number;
     max?: string | number;
@@ -67,90 +162,279 @@ export interface ExtraProp<T = GenericItem> {
     disableVars?: boolean;
 }
 
-/** Shared properties across all field types */
-interface FieldDefBase<T = GenericItem, K extends string & keyof T = string & keyof T> {
+export type AnyExtraProp<T = GenericItem> = ExtraProp<T>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Common base interfaces
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface FieldDefCommon<T, K extends string> {
     name: K;
+    label: string;
     show?: boolean;
     view?: boolean;
-    label: string;
     section?: string;
-    defaultValue?: T[K];
-    setValue?: (value: T[K], row?: T) => void;
     editable?: (row: T) => boolean;
+    setValue?: (value: T[keyof T & string], row?: T) => void;
     validation?: {
         required?: boolean;
         regex?: string | RegExp;
         message?: string;
     };
+    api?: unknown;
+    viewProps?: unknown;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
     }>;
+}
+
+interface FieldDefTyped<T, K extends KnownKeys<T> & string> extends FieldDefCommon<T, K> {
+    defaultValue?: T[K];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Per-type FieldDef interfaces for known keys K in KnownKeys<T>
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SelectFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "SELECT";
+    extraProp: SelectExtraProp<T>;
+    getValue?(value: T[K], row: T, isEdit: boolean): { key: string | number; value: T[K] };
+}
+
+export interface TextFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type?: "TEXT";
+    extraProp?: TextExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface TextareaFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "TEXTAREA";
+    extraProp?: TextareaExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface NumberFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "NUMBER";
+    extraProp?: NumberExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface DateFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "DATE";
+    extraProp?: DateExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface DatetimeFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "DATETIME";
+    extraProp?: DateExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface BoolFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "BOOL";
+    extraProp?: BoolExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface CheckFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "CHECK";
+    extraProp?: CheckExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface ImageFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "IMAGE";
+    extraProp?: ImageExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface ImageDialogFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<
+    T,
+    K
+> {
+    type: "IMAGE_DIALOG";
+    extraProp?: ImageExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface EmailFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "EMAIL";
+    extraProp?: TextExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface EditorFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "EDITOR";
+    extraProp?: EditorExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface CustomFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "CUSTOM";
+    extraProp: CustomExtraProp;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface ViewFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "VIEW";
+    extraProp?: Record<string, unknown>;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+export interface ComponentFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "COMPONENT";
+    extraProp?: Record<string, unknown>;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
+type FieldDefForKey<T, K extends KnownKeys<T> & string> =
+    | SelectFieldDef<T, K>
+    | TextFieldDef<T, K>
+    | TextareaFieldDef<T, K>
+    | NumberFieldDef<T, K>
+    | DateFieldDef<T, K>
+    | DatetimeFieldDef<T, K>
+    | BoolFieldDef<T, K>
+    | CheckFieldDef<T, K>
+    | ImageFieldDef<T, K>
+    | ImageDialogFieldDef<T, K>
+    | EmailFieldDef<T, K>
+    | EditorFieldDef<T, K>
+    | CustomFieldDef<T, K>
+    | ViewFieldDef<T, K>
+    | ComponentFieldDef<T, K>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LooseFieldDef: for arbitrary string field names (e.g. "paymentEntry.paymentDate")
+// Discriminated on `type` so extraProp rules still apply strictly!
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface LooseFieldCommon<T> {
+    name: string;
+    label: string;
+    show?: boolean;
+    view?: boolean;
+    section?: string;
+    defaultValue?: unknown;
+    editable?: (row: T) => boolean;
+    setValue?: (value: unknown, row?: T) => void;
+    validation?: {
+        required?: boolean;
+        regex?: string | RegExp;
+        message?: string;
+    };
     api?: unknown;
     viewProps?: unknown;
+    CustomComponent?: React.ComponentType<{
+        data: T;
+        field: FieldDef<T>;
+    }>;
 }
 
-/**
- * SELECT field — getOptions is required.
- *
- * `V` is the value type passed to `getValue`. It defaults to `T[K]` but since
- * `T` usually extends `Entity` (i.e. `{ [key: string]: unknown }`), `T[K]`
- * collapses to `unknown`.  Annotate `V` explicitly on individual fields to get
- * proper inference:
- *
- * ```ts
- * // inferred as `unknown` — bad
- * getValue: (value) => ({ key: value, value })
- *
- * // explicit V = string — good
- * getValue: (value: string) => ({ key: value, value })
- * ```
- */
-export interface SelectFieldDef<
-    T = GenericItem,
-    K extends string & keyof T = string & keyof T,
-    V = T[K],
-> extends FieldDefBase<T, K> {
-    type: "SELECT";
-    extraProp: ExtraProp<T> & {
-        getOptions: (
-            search: string,
-            page: number,
-            limit: number,
-            row?: T,
-        ) => Promise<SelectOption<T>[]>;
-    };
-    /**
-     * Map the raw field value to a `{ key, value }` pair for the SelectionField.
-     * Annotate the `value` parameter with the actual type (e.g. `string`) to
-     * avoid `unknown`.
-     *
-     * @default (v) => v && { key: v, value: v }
-     */
-    /** @default (v) => v && { key: v, value: v } */
-    getValue?(value: V, row: T, isEdit: boolean): { key: string | number; value: V };
-}
+export type LooseFieldDef<T> =
+    | ({
+          type: "SELECT";
+          extraProp: SelectExtraProp<T>;
+          getValue?(
+              value: unknown,
+              row: T,
+              isEdit: boolean,
+          ): { key: string | number; value: unknown };
+      } & LooseFieldCommon<T>)
+    | ({
+          type?: "TEXT";
+          extraProp?: TextExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "TEXTAREA";
+          extraProp?: TextareaExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "NUMBER";
+          extraProp?: NumberExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "DATE";
+          extraProp?: DateExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "DATETIME";
+          extraProp?: DateExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "BOOL";
+          extraProp?: BoolExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "CHECK";
+          extraProp?: CheckExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "IMAGE";
+          extraProp?: ImageExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "IMAGE_DIALOG";
+          extraProp?: ImageExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "EMAIL";
+          extraProp?: TextExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "EDITOR";
+          extraProp?: EditorExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "CUSTOM";
+          extraProp: CustomExtraProp;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "VIEW";
+          extraProp?: Record<string, unknown>;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "COMPONENT";
+          extraProp?: Record<string, unknown>;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>);
 
-/**
- * All non-SELECT field types — getOptions is not relevant.
- *
- * `V` is the value type passed to `getValue`. Annotate it explicitly when
- * TypeScript infers `unknown` due to the `Entity` index signature.
- */
-export interface BaseFieldDef<
-    T = GenericItem,
-    K extends string & keyof T = string & keyof T,
-    V = T[K],
-> extends FieldDefBase<T, K> {
-    /** @default "TEXT" */
-    type?: Exclude<FieldTypes, "SELECT">;
-    extraProp?: Omit<ExtraProp<T>, "getOptions">;
-    getValue?(value: V, row: T, isEdit: boolean): V | React.ReactNode;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// FieldDef<T>: Main union type
+// ─────────────────────────────────────────────────────────────────────────────
 
-export type FieldDef<T = GenericItem, K extends string & keyof T = string & keyof T> =
-    | SelectFieldDef<T, K>
-    | BaseFieldDef<T, K>;
+export type FieldDef<T = GenericItem> = [KnownKeys<T>] extends [never]
+    ? LooseFieldDef<T>
+    : { [K in KnownKeys<T>]: FieldDefForKey<T, K> }[KnownKeys<T>] | LooseFieldDef<T>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// defineField<T>() helper
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const defineField =
+    <T>() =>
+    <K extends KnownKeys<T> & string>(field: FieldDefForKey<T, K>): FieldDefForKey<T, K> =>
+        field;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Remaining types
+// ─────────────────────────────────────────────────────────────────────────────
 
 export interface ActionItem<T = GenericItem> {
     name: string;
@@ -194,7 +478,6 @@ export interface CrudThunks<T = GenericItem> {
         showAlert: ShowAlertFn,
         setLoading: SetLoadingFn,
     ) => (dispatch: AppDispatch, getState: () => RootState) => Promise<void>;
-    /** id=0 means "nothing selected" — callers must guard before calling remove */
     remove: (
         id: number,
         token: string,
@@ -236,76 +519,24 @@ export interface ViewsApiRef {
     refreshData?: () => void;
 }
 
-/**
- * BaseViewProps — the contract every pluggable view component must satisfy.
- *
- * `Views.tsx` computes all of these once and passes them down via
- * `commonStableProps` + `commonProps`.  Any custom view registered
- * through `ViewsProps.customView` will receive exactly this shape.
- *
- * Usage:
- * ```tsx
- * import type { BaseViewProps } from "@/core/types";
- *
- * function MyCustomView<T extends Entity>(props: BaseViewProps<T>) {
- *   const { data, fields, actions, onClickRow, loading } = props;
- *   // ... your rendering logic
- * }
- * ```
- */
 export interface BaseViewProps<T extends Entity = GenericItem> {
-    // ── Data ───────────────────────────────────────────────────────────────
-    /** The current page / visible slice of entity records. */
     data: T[];
-    /** Redux / hook table state: currentPage, pageSize, totalCount, recordById, … */
     tableState: Record<string, unknown>;
-    /** True while a network request is in-flight. */
     loading?: boolean;
-
-    // ── Fields ────────────────────────────────────────────────────────────
-    /** Visibility-filtered field definitions for this view. */
     fields: FieldDef<T>[];
-    /** Primary-key and optional root-key metadata. */
     fieldsMeta: FieldMeta;
-
-    // ── Edit state ────────────────────────────────────────────────────────
-    /**
-     * -1 = nothing being edited
-     *  0 = new (unsaved) row
-     *  positive = ID of the row currently being edited
-     */
     editingId?: number;
-    /** Whether the user has attempted to submit an invalid form. */
     submitAttempted?: boolean;
-
-    // ── Handlers ──────────────────────────────────────────────────────────
-    /** Update a single field value for a row. */
     handleChange: (value: unknown, rowId: number, fieldName: string) => void;
-    /** Persist edits for the given row ID. */
     handleSave?: (rowId: number) => void | Promise<void>;
-    /** Discard in-progress edits. */
     handleCancel?: () => void;
-    /** Navigate to a different page of results. */
     handlePageChange: (page: number) => void;
-    /** Open the detail-view dialog for a row. */
     handleViewOpen?: (row: T) => void;
-    /**
-     * Navigates into the form view for a row.
-     * Computed once in Views.tsx from the "form" action to avoid duplication.
-     */
     onClickRow?: (row: T) => void;
-    /** Append a fresh empty row ready for input (only present when showAddButton=true). */
     addNewRow?: () => void;
-
-    // ── Actions ───────────────────────────────────────────────────────────
-    /** Merged action items (edit / delete / custom) wired by Views.tsx. */
     actions: ActionItem<T>[];
-
-    // ── Layout hints ──────────────────────────────────────────────────────
     tableName: string;
     currentView: ViewMode;
-    /** Enable multi-select / batch-action mode. */
     multi?: boolean;
-    /** Use IntersectionObserver-based auto-load instead of a "Load more" button. */
     infiniteScroll?: boolean;
 }

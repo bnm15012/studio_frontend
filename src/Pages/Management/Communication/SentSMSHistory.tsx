@@ -80,8 +80,8 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
             )}
             <FlexBetween p={2} flexDirection={"row-reverse"}>
                 <Pagination
-                    count={totalPage ?? 0}
-                    page={page ?? 0}
+                    count={Math.max(1, totalPage || 1)}
+                    page={Math.max(1, page || 1)}
                     onChange={handlePageChange}
                     color="primary"
                     size="small"

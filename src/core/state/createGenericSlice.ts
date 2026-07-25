@@ -23,7 +23,7 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
         filterKeys: {},
         totalCount: 0,
         totalPages: 0,
-        currentPage: 0,
+        currentPage: 1,
         pageSize: 0,
         ...extraState,
     } as S;

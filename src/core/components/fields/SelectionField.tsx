@@ -36,7 +36,7 @@ export default function SelectionField<T>({
         async (search = "", limit = 5) => {
             try {
                 setLoading(true);
-                const result = await getOptions(search, 0, limit);
+                const result = await getOptions(search, 1, limit);
                 setOptions(result);
             } catch (err: unknown) {
                 console.error("Error fetching options", err);

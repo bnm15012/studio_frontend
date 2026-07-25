@@ -122,8 +122,8 @@ const UploadJobHistory = () => {
 
             <Box display="flex" justifyContent="right" mt={2}>
                 <Pagination
-                    count={totalPage ?? 0}
-                    page={page ?? 0}
+                    count={Math.max(1, totalPage || 1)}
+                    page={Math.max(1, page || 1)}
                     onChange={handleChangePage}
                     color="primary"
                 />

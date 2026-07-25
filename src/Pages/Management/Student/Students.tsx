@@ -20,7 +20,9 @@ import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
 import type {
     Activity,
+    activityStatus,
     BatchEntry,
+    genderType,
     Payment,
     paymentStatus,
     paymentType,
@@ -91,7 +93,7 @@ const FIELDS: FieldDef<Student>[] = [
         name: "age",
         label: "Age",
         type: "NUMBER",
-        getValue: (_value, row) => {
+        getValue: (_value: number | undefined, row: Student) => {
             if (!row.dob) return null;
 
             const dob = new Date(String(row.dob));
@@ -111,7 +113,7 @@ const FIELDS: FieldDef<Student>[] = [
         section: "Personal Details",
         name: "membershipStatus",
         label: "Status",
-        getValue: (value) => (
+        getValue: (value: activityStatus) => (
             <Box
                 sx={{
                     color: value === "ACTIVE" ? "green" : "red",
@@ -131,7 +133,7 @@ const FIELDS: FieldDef<Student>[] = [
         label: "Gender",
         type: "SELECT",
         validation: { required: true },
-        getValue: (value) => ({ key: String(value ?? ""), value }),
+        getValue: (value: genderType) => ({ key: String(value ?? ""), value }),
         defaultValue: "MALE",
         extraProp: {
             getOptions: async (search: string, page: number, limit: number) =>

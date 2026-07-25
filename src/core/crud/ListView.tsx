@@ -236,8 +236,9 @@ function ListView<T extends Entity = Entity>({
     };
 
     const totalCount = Number(tableState.totalCount ?? 0);
-    const pageSize = Number(tableState.pageSize ?? 10);
-    const pageCount = Math.ceil(totalCount / pageSize) || 0;
+    const pageSize = Number(tableState.pageSize ?? 10) || 10;
+    const pageCount = Math.max(1, Math.ceil(totalCount / pageSize)) || 1;
+    const currentPage = Math.max(1, Number(tableState.currentPage ?? 1) || 1);
 
     return (
         <>
@@ -253,9 +254,9 @@ function ListView<T extends Entity = Entity>({
             {/* ── Pagination ── */}
             <FlexBetween m={1} flexDirection={"row-reverse"} sx={{ flexWrap: "wrap", gap: 1 }}>
                 <Pagination
-                    page={Number(tableState.currentPage ?? 0)}
+                    page={currentPage}
                     count={pageCount}
-                    onChange={(e, p) => handlePageChange(p)}
+                    onChange={(e, p) => handlePageChange(Math.max(1, p))}
                     color="primary"
                     shape="rounded"
                     size={isMobile ? "small" : "medium"}

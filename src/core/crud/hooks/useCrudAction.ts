@@ -87,13 +87,14 @@ export const useCrudAction = <T extends Entity>({
                 showAlert("Can't Edit New while edit/add", "warning");
                 return;
             }
-            const original = data.find(
-                (d) => d[consts.current.primaryKey] === row[consts.current.primaryKey],
-            );
+            const primaryKey = consts.current.primaryKey;
+            const rowId = Number(row?.[primaryKey]) || (formKey !== undefined ? formKey : 0);
+            const original =
+                formKey !== undefined ? record : data.find((d) => d[primaryKey] === rowId);
             setOriginalRow(original ? ({ ...original } as T) : null);
-            updateEditId(Number(row[consts.current.primaryKey]) || 0);
+            updateEditId(rowId);
         },
-        [consts, data, editingId, showAlert],
+        [consts, data, editingId, formKey, record, showAlert],
     );
 
     const handleCancel = useCallback(() => {
@@ -122,23 +123,23 @@ export const useCrudAction = <T extends Entity>({
         async (id: number) => {
             setSubmitAttempted(true);
             try {
+                const primaryKey = consts.current.primaryKey;
+                const targetId = id || (formKey !== undefined ? formKey : 0);
                 const newRow =
-                    formKey !== undefined
-                        ? record
-                        : data.find((e) => e[consts.current.primaryKey] === id);
+                    formKey !== undefined ? record : data.find((e) => e[primaryKey] === targetId);
                 if (!newRow) return;
                 validate(newRow, consts.current.fields);
-                if (id === 0) {
+                if (targetId === 0) {
                     const processedRow = await beforeAdd(newRow);
-                    const { [consts.current.primaryKey]: _rowId, ...withoutId } = processedRow;
+                    const { [primaryKey]: _rowId, ...withoutId } = processedRow;
                     dispatch(
                         tableCruds.add(withoutId as Partial<T>, token, showAlert, setLoading, true),
                     );
-                    setData((prev) => prev.filter((row) => row[consts.current.primaryKey] !== id));
+                    setData((prev) => prev.filter((row) => row[primaryKey] !== targetId));
                 } else {
                     dispatch(
                         tableCruds.update(
-                            id,
+                            targetId,
                             await beforeUpdate(newRow),
                             token,
                             showAlert,
