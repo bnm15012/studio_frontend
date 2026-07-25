@@ -1,6 +1,6 @@
 import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { IconButton, Popover } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -31,7 +31,7 @@ const FIELD_META: FieldMeta = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const Bookings = ({ ID }: { ID?: number }) => {
     const { isMobile, token, studio, currentBranch } = useAppUI();

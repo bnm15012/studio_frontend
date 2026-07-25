@@ -135,13 +135,12 @@ const FIELDS: FieldDef<Student>[] = [
         validation: { required: true },
         getValue: (value: genderType) => ({ key: String(value ?? ""), value }),
         defaultValue: "MALE",
-        extraProp: {
-            getOptions: async (search: string, page: number, limit: number) =>
-                ["MALE", "FEMALE", "NOT_TO_SAY"]
-                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                    .slice(page * limit, (page + 1) * limit)
-                    .map((a) => ({ key: a, value: a })),
-        },
+        getOptions: async (search: string, page: number, limit: number) =>
+            ["MALE", "FEMALE", "NOT_TO_SAY"]
+                .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                .slice((page - 1) * limit, page * limit)
+
+                .map((a) => ({ key: a, value: a })),
     },
     {
         show: false,
@@ -381,20 +380,19 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         type: "SELECT",
                         getValue: (value: string) => value && { value, key: String(value) },
                         editable: (row: Record<string, unknown>) => row.assignmentId === 0,
-                        extraProp: {
-                            getOptions: async (search: string, page: number, limit: number) =>
-                                allActivities
-                                    .filter((a: Activity) =>
-                                        (a.activityType as string)
-                                            .toLowerCase()
-                                            .includes(search.toLowerCase()),
-                                    )
-                                    .slice(page * limit, (page + 1) * limit)
-                                    .map((a: Activity) => ({
-                                        key: a.activityType,
-                                        value: a.activityType,
-                                    })),
-                        },
+                        getOptions: async (search: string, page: number, limit: number) =>
+                            allActivities
+                                .filter((a: Activity) =>
+                                    (a.activityType as string)
+                                        .toLowerCase()
+                                        .includes(search.toLowerCase()),
+                                )
+                                .slice((page - 1) * limit, page * limit)
+                                .map((a: Activity) => ({
+                                    key: a.activityType,
+                                    value: a.activityType,
+                                })),
+
                         validation: { required: true },
                     },
                     {
@@ -426,7 +424,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                             .map((b: BatchEntry) => b.planType),
                                     ),
                                 ]
-                                    .slice(page * limit, (page + 1) * limit)
+                                    .slice((page - 1) * limit, page * limit)
+
                                     .map((a: unknown) => ({ key: a, value: a }));
                             },
                         },
@@ -439,30 +438,27 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         editable: (row: StudentAssignment) => row.assignmentId === 0,
                         type: "SELECT",
                         getValue: (value: string) => ({ value, key: value }),
-                        extraProp: {
-                            addValue: false,
-                            getOptions: async (
-                                search: string,
-                                page: number,
-                                limit: number,
-                                row: StudentAssignment,
-                            ) => {
-                                const batchEntries = allActivities
-                                    .find((a: Activity) => a.activityType === row["activityName"])
-                                    ?.batchEntries?.filter(
-                                        (b: BatchEntry) => b.planType === row["membershipType"],
-                                    );
-                                return [
-                                    ...new Set(
-                                        (batchEntries as BatchEntry[] | undefined)?.map(
-                                            (b: BatchEntry) => b.daysPerWeek,
-                                        ),
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities
+                                .find((a: Activity) => a.activityType === row["activityName"])
+                                ?.batchEntries?.filter(
+                                    (b: BatchEntry) => b.planType === row["membershipType"],
+                                );
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)?.map(
+                                        (b: BatchEntry) => b.daysPerWeek,
                                     ),
-                                ].map((a: unknown) => ({
-                                    key: a,
-                                    value: a,
-                                }));
-                            },
+                                ),
+                            ].map((a: unknown) => ({
+                                key: a,
+                                value: a,
+                            }));
                         },
                         validation: { required: true },
                     },
@@ -473,35 +469,33 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         type: "SELECT",
                         editable: (row: StudentAssignment) => row.assignmentId === 0,
                         getValue: (value: string) => ({ value, key: value }),
-                        extraProp: {
-                            addValue: false,
-                            getOptions: async (
-                                search: string,
-                                page: number,
-                                limit: number,
-                                row: StudentAssignment,
-                            ) => {
-                                const batchEntries = allActivities
-                                    .find((a: Activity) => a.activityType === row["activityName"])
-                                    ?.batchEntries?.filter(
-                                        (b: BatchEntry) =>
-                                            b.planType === row["membershipType"] &&
-                                            b.daysPerWeek === row["daysPerWeek"],
-                                    );
-                                return [
-                                    ...new Set(
-                                        (batchEntries as BatchEntry[] | undefined)
-                                            ?.filter((b: BatchEntry) =>
-                                                (b.name as string)
-                                                    .toLowerCase()
-                                                    .includes(search.toLowerCase()),
-                                            )
-                                            .map((b: BatchEntry) => b.name),
-                                    ),
-                                ]
-                                    .slice(page * limit, (page + 1) * limit)
-                                    .map((a: unknown) => ({ key: a, value: a }));
-                            },
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities
+                                .find((a: Activity) => a.activityType === row["activityName"])
+                                ?.batchEntries?.filter(
+                                    (b: BatchEntry) =>
+                                        b.planType === row["membershipType"] &&
+                                        b.daysPerWeek === row["daysPerWeek"],
+                                );
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)
+                                        ?.filter((b: BatchEntry) =>
+                                            (b.name as string)
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        )
+                                        .map((b: BatchEntry) => b.name),
+                                ),
+                            ]
+                                .slice((page - 1) * limit, page * limit)
+
+                                .map((a: unknown) => ({ key: a, value: a }));
                         },
                         validation: { required: true },
                     },

@@ -2,7 +2,7 @@ import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
 import type { GenericTemplate } from "../../../api/types";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useAppUI } from "@/context/UIContext";
@@ -71,9 +71,9 @@ const FIELDS: FieldDef<GenericTemplate>[] = [
         label: "Template Type",
         type: "SELECT",
         getValue: (value: string) => ({ key: value, value }),
+        getOptions: async () => [...templateTypes].map((type) => ({ key: type, value: type })),
         extraProp: {
             variant: "outlined",
-            getOptions: async () => [...templateTypes].map((type) => ({ key: type, value: type })),
         },
     },
     {
@@ -109,7 +109,7 @@ const FIELDS: FieldDef<GenericTemplate>[] = [
     },
 ];
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const TemplatesPage: React.FC = () => {
     const { isMobile, studio } = useAppUI();

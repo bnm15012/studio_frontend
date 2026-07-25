@@ -15,15 +15,15 @@ import MarkPresentDialog from "../Student/MarkPresent";
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import { CalendarMonth, Class, AccessTime } from "@mui/icons-material";
-import type { activityStatus, AttendanceEntry, StudentAssignment } from "../../../api/types";
-import type { FieldDef, FieldMeta } from "@/core/types";
+import type { activityStatus, AttendanceEntry, StudentAssignment } from "@/api/types";
+import type { FieldDef, FieldMeta, ViewMode } from "@/core/types";
 
 const LIMIT = 50;
 const FIELD_META: FieldMeta = {
     primary: "assignmentId",
     root: "branchId",
 };
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const Attendance = () => {
     const { permissions, isMobile, token, currentBranch } = useAppUI();

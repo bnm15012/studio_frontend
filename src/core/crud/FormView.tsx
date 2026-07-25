@@ -80,7 +80,7 @@ export interface FormViewProps<T extends Entity> {
     loading: boolean;
     tableName: string;
     /** -1 = not editing, 0 = new, positive = editing existing */
-    editingId?: number;
+    editingId: number;
     handleChange: (value: unknown, formKey: number, fieldName: string) => void;
     handleSave: (formKey: number) => void;
     handleCancel: () => void;
@@ -296,10 +296,7 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                                             handleChange(v, formKey, field.name)
                                                         }
                                                         type={field.type}
-                                                        extraProp={bindGetOptions(
-                                                            field.extraProp ?? {},
-                                                            data,
-                                                        )}
+                                                        extraProp={bindGetOptions(field, data)}
                                                         validation={
                                                             field.validation as Record<
                                                                 string,

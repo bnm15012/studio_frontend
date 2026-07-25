@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { clientCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Client, clientType } from "../../../api/types";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
 import ActionBar from "@/core/components/layout/ActionBar";
@@ -18,7 +18,7 @@ const FIELD_META: FieldMeta = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const FIELDS: FieldDef<Client>[] = [
     { show: true, name: "groupName", label: "Group Name" },
@@ -31,9 +31,7 @@ const FIELDS: FieldDef<Client>[] = [
         label: "Client Type",
         type: "SELECT",
         getValue: (value: clientType) => ({ value, key: value }),
-        extraProp: {
-            getOptions: async () => clientTypes.map((a) => ({ key: a, value: a })),
-        },
+        getOptions: async () => clientTypes.map((a) => ({ key: a, value: a })),
     },
     { show: true, name: "notes", label: "Notes" },
 ];

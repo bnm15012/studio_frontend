@@ -64,7 +64,7 @@ function FieldCell<T extends Entity>({
             value={resolveFieldValue(field, row, isEdit)}
             setValue={(v) => handleChange?.(v, rowId, field.name)}
             type={field.type}
-            extraProp={bindGetOptions(field.extraProp ?? {}, row)}
+            extraProp={bindGetOptions(field, row)}
             validation={field.validation as Record<string, unknown>}
             submitAttempted={submitAttempted}
         />

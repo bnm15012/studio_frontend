@@ -387,10 +387,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                                     handleChange(field.name, v);
                                                 }}
                                                 type={field.type}
-                                                extraProp={bindGetOptions(
-                                                    field.extraProp,
-                                                    formState,
-                                                )}
+                                                extraProp={bindGetOptions(field, formState)}
                                                 validation={
                                                     field.validation as
                                                         | Record<string, unknown>

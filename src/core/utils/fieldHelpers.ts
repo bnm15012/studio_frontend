@@ -59,20 +59,31 @@ export const isFieldEditable = <T extends Entity>(
 
 /**
  * Returns a patched extraProp object where getOptions is row-bound.
+ * Supports both top-level field.getOptions and extraProp.getOptions.
  *
- * @param extraProp - original field.extraProp
- * @param row       - current data row
+ * @param fieldOrExtraProp - field definition or extraProp object
+ * @param row              - current data row
  * @returns patched extraProp object
  */
 export const bindGetOptions = <T extends Entity>(
-    extraProp: ExtraProp<T> | undefined,
+    fieldOrExtraProp: FieldDef<T> | ExtraProp<T> | undefined,
     row: T,
 ): ExtraProp<T> => {
-    if (!extraProp?.getOptions) return extraProp ?? {};
+    if (!fieldOrExtraProp) return {};
+    const getOptions =
+        "getOptions" in fieldOrExtraProp && typeof fieldOrExtraProp.getOptions === "function"
+            ? fieldOrExtraProp.getOptions
+            : (fieldOrExtraProp as ExtraProp<T>).getOptions;
+
+    const extraProp =
+        ("extraProp" in fieldOrExtraProp ? fieldOrExtraProp.extraProp : fieldOrExtraProp) ?? {};
+
+    if (!getOptions) return extraProp as ExtraProp<T>;
+
     return {
         ...extraProp,
         getOptions: async (search: string, page: number, limit: number) =>
-            extraProp?.getOptions!(search, page, limit, row),
+            getOptions(search, page, limit, row),
     };
 };
 

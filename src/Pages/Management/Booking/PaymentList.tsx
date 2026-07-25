@@ -156,30 +156,24 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             label: "Status",
                             type: "SELECT",
                             getValue: (value: paymentStatus) => ({ key: String(value), value }),
-                            extraProp: {
-                                getOptions: async (search: string, page: number, limit: number) =>
-                                    ["PENDING", "COMPLETED"]
-                                        .filter((a) =>
-                                            a.toLowerCase().includes(search.toLowerCase()),
-                                        )
-                                        .slice(page * limit, (page + 1) * limit)
-                                        .map((a) => ({ key: a, value: a })),
-                            },
+                            getOptions: async (search: string, page: number, limit: number) =>
+                                ["PENDING", "COMPLETED"]
+                                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                    .slice((page - 1) * limit, page * limit)
+
+                                    .map((a) => ({ key: a, value: a })),
                         },
                         {
                             name: "paymentType",
                             label: "Payment Category",
                             type: "SELECT",
                             getValue: (value: paymentType) => ({ key: String(value), value }),
-                            extraProp: {
-                                getOptions: async (search: string, page: number, limit: number) =>
-                                    ["CASH", "UPI"]
-                                        .filter((a) =>
-                                            a.toLowerCase().includes(search.toLowerCase()),
-                                        )
-                                        .slice(page * limit, (page + 1) * limit)
-                                        .map((a) => ({ key: a, value: a })),
-                            },
+                            getOptions: async (search: string, page: number, limit: number) =>
+                                ["CASH", "UPI"]
+                                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                    .slice((page - 1) * limit, page * limit)
+
+                                    .map((a) => ({ key: a, value: a })),
                         },
                     ]}
                     handleChange={(value, _, fieldName) => {

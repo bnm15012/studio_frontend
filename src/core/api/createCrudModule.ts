@@ -5,7 +5,13 @@ import { createCrudThunks, CrudThunksOptions } from "./thunk";
 import { Entity } from "../types";
 import { GenericState } from "../state/stateTypes";
 import { CrudThunks } from "../types";
-import { ActionCreatorWithPayload, ActionCreatorWithoutPayload, Reducer } from "@reduxjs/toolkit";
+import {
+    ActionCreatorWithPayload,
+    ActionCreatorWithoutPayload,
+    Reducer,
+    PayloadAction,
+    SliceCaseReducers,
+} from "@reduxjs/toolkit";
 
 /** Strongly typed action creators from the generic slice. */
 export interface GenericSliceActions<T extends Entity> {
@@ -27,6 +33,17 @@ export interface GenericSliceActions<T extends Entity> {
     clearData: ActionCreatorWithoutPayload;
 }
 
+/** Infer ActionCreators from extraReducers map */
+export type InferExtraActions<R> = {
+    [K in keyof R]: R[K] extends (state: never, action: PayloadAction<infer P>) => void
+        ? ActionCreatorWithPayload<P>
+        : R[K] extends (state: never, action: infer A) => void
+          ? A extends { payload: infer P }
+              ? ActionCreatorWithPayload<P>
+              : ActionCreatorWithoutPayload
+          : ActionCreatorWithoutPayload;
+};
+
 /** Shape of the opts object passed into the extraCruds factory. */
 export interface ExtraCrudsOpts<T extends Entity> {
     actions: GenericSliceActions<T>;
@@ -38,12 +55,13 @@ export interface CreateCrudModuleOptions<
     T extends Entity,
     S extends GenericState<T>,
     E extends Record<string, unknown> = Record<string, never>,
+    R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
 > {
     route: string;
     idKey?: string;
     extraCruds?: (opts: ExtraCrudsOpts<T>) => E;
     extraState?: Partial<S>;
-    extraReducers?: Record<string, unknown>;
+    extraReducers?: R;
 }
 
 /** The complete return type of createCrudModule. */
@@ -51,21 +69,25 @@ export type CrudModule<
     T extends Entity,
     S extends GenericState<T> = GenericState<T>,
     E extends Record<string, unknown> = Record<string, never>,
+    R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
 > = CrudThunks<T> &
     E & {
-        actions: GenericSliceActions<T>;
+        actions: GenericSliceActions<T> & InferExtraActions<R>;
         initialState: S;
         reducer: Reducer<S>;
         removeAll: ActionCreatorWithoutPayload;
     };
 
 export function createCrudModule<T extends Entity, S extends GenericState<T> = GenericState<T>>() {
-    return <E extends Record<string, unknown> = Record<string, never>>(
-        options: CreateCrudModuleOptions<T, S, E>,
-    ): CrudModule<T, S, E> => {
-        const { route, idKey = "id", extraCruds, extraState, extraReducers = {} } = options;
+    return <
+        E extends Record<string, unknown> = Record<string, never>,
+        R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
+    >(
+        options: CreateCrudModuleOptions<T, S, E, R>,
+    ): CrudModule<T, S, E, R> => {
+        const { route, idKey = "id", extraCruds, extraState, extraReducers = {} as R } = options;
 
-        const { actions, getInitialState, reducer } = createGenericSlice<T, S>({
+        const { actions, getInitialState, reducer } = createGenericSlice<T, S, R>({
             name: route,
             idKey,
             extraState,
@@ -73,7 +95,7 @@ export function createCrudModule<T extends Entity, S extends GenericState<T> = G
         });
 
         const baseCrud = {
-            actions: actions as unknown as GenericSliceActions<T>,
+            actions: actions as unknown as GenericSliceActions<T> & InferExtraActions<R>,
             initialState: getInitialState(),
             reducer,
             removeAll: actions.clearData,
@@ -91,6 +113,6 @@ export function createCrudModule<T extends Entity, S extends GenericState<T> = G
                 getHeader,
                 route,
             }) ?? {}),
-        } as CrudModule<T, S, E>;
+        } as CrudModule<T, S, E, R>;
     };
 }

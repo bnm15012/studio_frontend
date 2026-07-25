@@ -80,7 +80,7 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
                                     )
                                 }
                                 type={field.type}
-                                extraProp={bindGetOptions(field.extraProp ?? {}, data)}
+                                extraProp={bindGetOptions(field, data)}
                                 validation={field.validation as Record<string, unknown>}
                                 submitAttempted={submitAttempted}
                             />

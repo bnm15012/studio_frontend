@@ -173,20 +173,17 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                         type: "SELECT",
                         getValue: (value: string) => ({ value, key: value }),
                         editable: (row: InstructorAssignment) => row.assignmentId === 0,
-                        extraProp: {
-                            getOptions: async (search: string, page: number, limit: number) =>
-                                allActivities
-                                    .filter((a: Activity) =>
-                                        a
-                                            .activityType!.toLowerCase()
-                                            .includes(search.toLowerCase()),
-                                    )
-                                    .slice(page * limit, (page + 1) * limit)
-                                    .map((a: Activity) => ({
-                                        key: a.activityType,
-                                        value: a.activityType,
-                                    })),
-                        },
+                        getOptions: async (search: string, page: number, limit: number) =>
+                            allActivities
+                                .filter((a: Activity) =>
+                                    a.activityType!.toLowerCase().includes(search.toLowerCase()),
+                                )
+                                .slice((page - 1) * limit, page * limit)
+
+                                .map((a: Activity) => ({
+                                    key: a.activityType,
+                                    value: a.activityType,
+                                })),
                         validation: { required: true },
                     },
                     {

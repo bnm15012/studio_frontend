@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { enquiryCruds } from "../../../api/all.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Views from "@/core/crud/Views";
@@ -17,7 +17,7 @@ const FIELD_META: FieldMeta = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const FIELDS: FieldDef<Enquiry>[] = [
     {

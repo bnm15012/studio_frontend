@@ -21,7 +21,7 @@ interface ViewFieldItem {
 interface ViewTabsProps {
     viewFields: ViewFieldItem[];
     /** -1 = not editing, 0 = new row, positive = editing existing */
-    editingId?: number;
+    editingId: number;
     /** 0 = new record, positive = existing id */
     formKey?: number;
     currentView?: ViewMode;
@@ -52,10 +52,11 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     ))}
                 </Tabs>
 
-                {editingId !== undefined && editingId >= 0 && hasAddNewRow && (
+                {hasAddNewRow && (
                     <Button
+                        disabled={editingId > 0}
                         variant="contained"
-                        onClick={() => currentViewField.api?.current?.addNewRow?.(editingId)}
+                        onClick={() => currentViewField.api?.current?.addNewRow?.()}
                         sx={{ ml: 1 }}
                     >
                         <Add sx={{ color: "white" }} />

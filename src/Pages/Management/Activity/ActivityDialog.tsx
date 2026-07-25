@@ -197,7 +197,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                                         .filter((a) =>
                                             a.toLowerCase().includes(search.toLowerCase()),
                                         )
-                                        .slice(page * limit, (page + 1) * limit)
+                                        .slice((page - 1) * limit, page * limit)
                                         .map((a) => ({ key: a, value: a })),
                             }}
                             setValue={(value: unknown) =>

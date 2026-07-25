@@ -57,24 +57,28 @@ export type KnownKeys<T> = keyof {
 // TypeScript's excess property checking will reject invalid props at definition sites.
 // ─────────────────────────────────────────────────────────────────────────────
 
+export type FieldVariant = "standard" | "outlined" | "filled";
+
+export interface CustomComponentProps {
+    value?: unknown;
+    setValue?: (val: unknown) => void;
+    label?: string;
+    isEdit?: boolean;
+    [key: string]: unknown;
+}
+
 /** ExtraProp for SELECT fields. `getOptions` is REQUIRED. */
-export interface SelectExtraProp<T = GenericItem> {
-    getOptions: (
-        search: string,
-        page: number,
-        limit: number,
-        row?: T,
-    ) => Promise<SelectOption<T>[]>;
+export interface SelectExtraProp {
     readOnly?: boolean;
     addValue?: boolean;
-    saveType?: string;
-    variant?: string;
+    saveType?: "string" | "object";
+    variant?: FieldVariant;
 }
 
 /** ExtraProp for TEXT / EMAIL fields. */
 export interface TextExtraProp {
     readOnly?: boolean;
-    variant?: string;
+    variant?: FieldVariant;
     multiline?: boolean;
 }
 
@@ -82,7 +86,7 @@ export interface TextExtraProp {
 export interface TextareaExtraProp {
     readOnly?: boolean;
     rows?: number;
-    variant?: string;
+    variant?: FieldVariant;
 }
 
 /** ExtraProp for NUMBER fields. */
@@ -90,7 +94,7 @@ export interface NumberExtraProp {
     readOnly?: boolean;
     min?: string | number;
     max?: string | number;
-    variant?: string;
+    variant?: FieldVariant;
 }
 
 /** ExtraProp for DATE / DATETIME fields. */
@@ -120,9 +124,9 @@ export interface ImageExtraProp {
 export interface EditorExtraProp {
     readOnly?: boolean;
     rows?: number;
-    variables?: unknown;
+    variables?: Record<string, unknown>;
     disableVars?: boolean;
-    variant?: string;
+    variant?: FieldVariant;
     multiline?: boolean;
 }
 
@@ -152,11 +156,11 @@ export interface ExtraProp<T = GenericItem> {
     CustomComponent?: React.ComponentType<any>;
     readOnly?: boolean;
     addValue?: boolean;
-    saveType?: string;
+    saveType?: "string" | "object";
     size?: string | number;
-    variant?: string;
+    variant?: FieldVariant;
     includeCurrentTime?: boolean;
-    variables?: unknown;
+    variables?: Record<string, unknown>;
     multiline?: boolean;
     defaultImage?: string;
     disableVars?: boolean;
@@ -199,7 +203,13 @@ interface FieldDefTyped<T, K extends KnownKeys<T> & string> extends FieldDefComm
 
 export interface SelectFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
     type: "SELECT";
-    extraProp: SelectExtraProp<T>;
+    getOptions: (
+        search: string,
+        page: number,
+        limit: number,
+        row?: T,
+    ) => Promise<SelectOption<T>[]>;
+    extraProp: SelectExtraProp;
     getValue?(value: T[K], row: T, isEdit: boolean): { key: string | number; value: T[K] };
 }
 
@@ -337,7 +347,13 @@ interface LooseFieldCommon<T> {
 export type LooseFieldDef<T> =
     | ({
           type: "SELECT";
-          extraProp: SelectExtraProp<T>;
+          getOptions: (
+              search: string,
+              page: number,
+              limit: number,
+              row?: T,
+          ) => Promise<SelectOption<T>[]>;
+          extraProp?: SelectExtraProp;
           getValue?(
               value: unknown,
               row: T,

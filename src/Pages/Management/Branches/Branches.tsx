@@ -5,16 +5,11 @@ import { Box } from "@mui/material";
 import { branchCruds } from "../../../api/all.api";
 import type { Branch } from "../../../api/types";
 import Views from "@/core/crud/Views";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import BranchCardView from "./BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
-import ActionBar from "@/core/components/layout/ActionBar";
-
-interface BranchActions {
-    setSelectedBranch: (branch: Branch) => { type: string; payload: Branch };
-}
 
 const LIMIT = 12;
 
@@ -23,7 +18,7 @@ const FIELD_META: FieldMeta = {
     root: "studioId",
 };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const FIELDS: FieldDef<Branch>[] = [
     { show: true, name: "name", label: "Name" },
@@ -43,9 +38,9 @@ const Branches = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar search={false} api={api} addBtnText={"New Branch"} refresh={false} />
             <Box>
                 <Views<Branch>
+                    actionBarProps={{ search: false, addBtnText: "New Branch", refresh: false }}
                     tableName={"branch"}
                     tableCruds={branchCruds}
                     actions={[
@@ -56,11 +51,7 @@ const Branches = () => {
                             enabled: (row) => !!row.isActive,
                             sx: { color: "primary.main" },
                             onClick: (row) => {
-                                dispatch(
-                                    (
-                                        branchCruds.actions as unknown as BranchActions
-                                    ).setSelectedBranch(row as Branch),
-                                );
+                                dispatch(branchCruds.actions.setSelectedBranch(row));
                                 navigate(`/management/branch/${row.branchId}`);
                             },
                         },

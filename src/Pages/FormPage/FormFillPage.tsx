@@ -97,13 +97,11 @@ const FormFillPage = () => {
                         validation: { required: true },
                         getValue: (value) => ({ key: String(value), value }),
                         defaultValue: "MALE",
-                        extraProp: {
-                            getOptions: async (search: string, page: number, limit: number) =>
-                                ["MALE", "FEMALE", "NOT_TO_SAY"]
-                                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                                    .slice(page * limit, (page + 1) * limit)
-                                    .map((a) => ({ key: a, value: a })),
-                        },
+                        getOptions: async (search: string, page: number, limit: number) =>
+                            ["MALE", "FEMALE", "NOT_TO_SAY"]
+                                .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                                .slice((page - 1) * limit, page * limit)
+                                .map((a) => ({ key: a, value: a })),
                     },
                     // ...(permissions.ENROLMENT ?
                     //     [{ name: "parentName", section: "Parent Info", label: "Parent Name", validation: { required: true } },

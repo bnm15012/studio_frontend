@@ -13,7 +13,7 @@ import UserCard from "./ManagerUser/UserCard";
 import UserAccessButton from "./ManagerUser/UserAccessButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
@@ -22,7 +22,7 @@ const FIELD_META: FieldMeta = {
     root: "branchId",
 };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const FIELDS: FieldDef<User>[] = [
     { show: true, name: "userName", label: "User Name" },

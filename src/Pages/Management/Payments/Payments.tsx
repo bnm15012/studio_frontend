@@ -5,7 +5,7 @@ import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import { paymentCruds } from "../../../api/all.api";
 import Views from "@/core/crud/Views";
 import type { Payment, paymentStatus, paymentType } from "../../../api/types";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import PaymentCard from "./PaymentCardView";
 
@@ -15,7 +15,7 @@ const STATUS = ["PENDING", "COMPLETED"];
 
 const FIELD_META: FieldMeta = { primary: "id", root: "branchId" };
 
-const VIEWS = ["LIST", "CARD"] as const;
+const VIEWS: ViewMode[] = ["LIST", "CARD"];
 
 const FIELDS: FieldDef<Payment>[] = [
     { show: true, name: "payeeType", label: "Payee Type", extraProp: { readOnly: true } },
@@ -32,12 +32,11 @@ const FIELDS: FieldDef<Payment>[] = [
         type: "SELECT",
         getValue: (value: paymentStatus) => ({ key: value, value }),
         defaultValue: STATUS[1],
-        extraProp: {
-            getOptions: async (search: string, page: number, limit: number) =>
-                STATUS.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                    .slice(page * limit, (page + 1) * limit)
-                    .map((a) => ({ key: a, value: a })),
-        },
+        getOptions: async (search: string, page: number, limit: number) =>
+            STATUS.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                .slice((page - 1) * limit, page * limit)
+
+                .map((a) => ({ key: a, value: a })),
     },
     {
         show: true,
@@ -53,12 +52,11 @@ const FIELDS: FieldDef<Payment>[] = [
         type: "SELECT",
         getValue: (value: paymentType) => ({ key: value, value }),
         defaultValue: PAYMENT_TYPE[1],
-        extraProp: {
-            getOptions: async (search: string, page: number, limit: number) =>
-                PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                    .slice(page * limit, (page + 1) * limit)
-                    .map((a) => ({ key: a, value: a })),
-        },
+        getOptions: async (search: string, page: number, limit: number) =>
+            PAYMENT_TYPE.filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                .slice((page - 1) * limit, page * limit)
+
+                .map((a) => ({ key: a, value: a })),
     },
     {
         show: true,

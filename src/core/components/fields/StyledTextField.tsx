@@ -9,6 +9,7 @@ export interface ValidationRules {
     message?: string;
     minLength?: number;
     maxLength?: number;
+    [key: string]: unknown;
 }
 
 export interface StyledTextFieldProps {

@@ -1,20 +1,23 @@
 /** Factory that creates a Redux Toolkit slice with generic CRUD reducers (setItems, addItem, updateItem, removeItem, etc.) for any entity type. */
-import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, Draft, PayloadAction, SliceCaseReducers } from "@reduxjs/toolkit";
 import { Entity, GenericState } from "./stateTypes";
 
-export interface CreateGenericSliceOptions<T extends Entity, S extends GenericState<T>> {
+export interface CreateGenericSliceOptions<
+    T extends Entity,
+    S extends GenericState<T>,
+    R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
+> {
     name: string;
     idKey?: string;
     extraState?: Partial<S>;
-    extraReducers?: Record<string, unknown>;
+    extraReducers?: R;
 }
 
-export function createGenericSlice<T extends Entity, S extends GenericState<T>>({
-    name,
-    idKey = "id",
-    extraState,
-    extraReducers = {},
-}: CreateGenericSliceOptions<T, S>) {
+export function createGenericSlice<
+    T extends Entity,
+    S extends GenericState<T>,
+    R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
+>({ name, idKey = "id", extraState, extraReducers = {} as R }: CreateGenericSliceOptions<T, S, R>) {
     const initialState: S = {
         rootId: 0,
         items: [] as T[],
@@ -59,7 +62,7 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
                 state.searchTerm = payload.searchTerm ?? "";
                 state.filterKeys = payload.filterKeys ?? {};
                 state.pageSize = payload.pageSize;
-                state.totalPages = Math.ceil(payload.totalCount / (payload.pageSize ?? 1));
+                state.totalPages = Math.ceil(payload.totalCount / (payload.pageSize || 1));
             },
 
             addItem(state, { payload }: PayloadAction<T>) {
@@ -67,7 +70,7 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
             },
 
             prependItem(state, { payload }: PayloadAction<T>) {
-                state.items = [payload as Draft<T>, ...state.items];
+                state.items.unshift(payload as Draft<T>);
             },
 
             appendItems(
@@ -76,26 +79,25 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
                     payload: { data, rootId },
                 }: PayloadAction<{ data: T[]; rootId: string | number }>,
             ) {
-                if (state.rootId !== rootId) {
-                    state.rootId = rootId;
-                    state.items = [];
-                }
-                const existingIds = new Set(state.items.map((item) => (item as Entity)[idKey]));
-                const newItems = data.filter((item) => !existingIds.has((item as Entity)[idKey]));
-                state.items.push(...(newItems as Draft<T[]>));
+                state.rootId = rootId;
+                state.items = [...state.items, ...(data as Draft<T[]>)];
             },
 
             updateItem(
                 state,
                 action: PayloadAction<T | { predicate: (item: T) => boolean; data: Partial<T> }>,
             ) {
-                if ("predicate" in action.payload) {
-                    const payload = action.payload as {
+                if (
+                    action.payload &&
+                    typeof action.payload === "object" &&
+                    "predicate" in action.payload
+                ) {
+                    const { predicate, data } = action.payload as {
                         predicate: (item: T) => boolean;
                         data: Partial<T>;
                     };
                     state.items = state.items.map((item) =>
-                        payload.predicate(item as T) ? Object.assign({}, item, payload.data) : item,
+                        predicate(item as T) ? { ...item, ...data } : item,
                     ) as Draft<T[]>;
                 } else {
                     const payload = action.payload as T;
@@ -155,7 +157,7 @@ export function createGenericSlice<T extends Entity, S extends GenericState<T>>(
                 return initialState;
             },
 
-            ...extraReducers,
+            ...(extraReducers as SliceCaseReducers<S>),
         },
     });
 
