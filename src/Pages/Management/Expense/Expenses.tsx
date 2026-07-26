@@ -8,7 +8,6 @@ import type { Expense, expenseCategory, paymentType } from "../../../api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ExpenseCardContent from "./ExpenseCardView";
-import ActionBar from "@/core/components/layout/ActionBar";
 
 const categories: expenseCategory[] = [
     "ELECTRICITY",
@@ -82,9 +81,9 @@ const Expenses: React.FC = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar api={api} />
             <Box>
                 <Views<Expense>
+                    actionBarProps={{}}
                     tableName={"expenses"}
                     tableCruds={expenseCruds}
                     size={LIMIT}

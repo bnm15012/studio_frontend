@@ -27,7 +27,6 @@ import { getCLientByNamesAPI } from "../Client/client.api.js";
 import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
 import BookingInvoice from "./BookingInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import ActionBar from "@/core/components/layout/ActionBar.jsx";
 import PaymentList from "./PaymentList.jsx";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle.ts";
 
@@ -126,7 +125,13 @@ const Bookings = ({ ID }: { ID?: number }) => {
     );
 
     const beforeUpdate = useCallback(async (row: Booking) => {
-        const modifiedData = { ...row };
+        const {
+            paymentStatus: _paymentStatus,
+            dueAmount: _dueAmount,
+            paidAmount: _paidAmount,
+            ...rest
+        } = row;
+        const modifiedData: Booking = { ...rest } as Booking;
         const clientEntry = modifiedData.clientEntry;
         if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
             const entry = clientEntry as { key?: number; clientId?: number };
@@ -137,7 +142,12 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     const beforeAdd = useCallback(
         async (row: Booking): Promise<Booking> => {
-            const { paymentStatus: _, ...rest } = row;
+            const {
+                paymentStatus: _paymentStatus,
+                dueAmount: _dueAmount,
+                paidAmount: _paidAmount,
+                ...rest
+            } = row;
             const modifiedData: Booking = { ...rest } as Booking;
             const clientEntry = modifiedData.clientEntry;
 
@@ -348,18 +358,19 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     return (
         <FlexBetweenColumn>
-            {!ID && (
-                <ActionBar api={api} tableName={"booking"}>
-                    <IconButton
-                        onClick={(e) => setCalendarAnchor(e.currentTarget)}
-                        sx={iconBtnFilledSx}
-                        ref={calendarButtonRef}
-                    >
-                        <CalendarMonthIcon sx={{ padding: 0, margin: "auto" }} />
-                    </IconButton>
-                </ActionBar>
-            )}
             <Views<Booking>
+                actionBarProps={{
+                    tableName: "booking",
+                    children: (
+                        <IconButton
+                            onClick={(e) => setCalendarAnchor(e.currentTarget)}
+                            sx={iconBtnFilledSx}
+                            ref={calendarButtonRef}
+                        >
+                            <CalendarMonthIcon sx={{ padding: 0, margin: "auto" }} />
+                        </IconButton>
+                    ),
+                }}
                 formKey={ID}
                 apiRef={api}
                 tableName={"booking"}

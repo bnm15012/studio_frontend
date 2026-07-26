@@ -7,7 +7,6 @@ import { genericTemplateCruds } from "../../../api/all.api";
 import TemplateCard from "./TemplateCard";
 import { useAppUI } from "@/context/UIContext";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
-import ActionBar from "@/core/components/layout/ActionBar";
 
 const templateTypes = new Set<string>(["COMMUNICATION", "BOOKING"]);
 
@@ -122,8 +121,8 @@ const TemplatesPage: React.FC = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar api={api} />
             <Views<GenericTemplate>
+                actionBarProps={{}}
                 size={5}
                 tableName={"genericTemplate"}
                 tableCruds={genericTemplateCruds}

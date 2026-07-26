@@ -3,7 +3,6 @@ import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type { MembershipPackage } from "../../../api/types";
-import ActionBar from "@/core/components/layout/ActionBar";
 import { membershipPackageCruds } from "../../../api/all.api";
 import { useAppUI } from "@/context/UIContext";
 import type { FieldMeta, ViewsApiRef } from "@/core/types";
@@ -27,9 +26,9 @@ const MembershipType: React.FC = () => {
     const { studio } = useAppUI();
     return (
         <FlexBetweenColumn>
-            <ActionBar search={false} api={api} addBtnText={"New Package"} />
             <Box>
                 <Views<MembershipPackage>
+                    actionBarProps={{ search: false, addBtnText: "New Package" }}
                     tableName={"membershipPackages"}
                     tableCruds={membershipPackageCruds}
                     size={LIMIT}

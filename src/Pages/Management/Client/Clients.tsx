@@ -7,7 +7,6 @@ import type { Client, clientType } from "../../../api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import ClientCardComponent from "./ClientCardComponent";
-import ActionBar from "@/core/components/layout/ActionBar";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 
@@ -42,9 +41,9 @@ const Clients: React.FC = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar api={api} />
             <Box>
                 <Views<Client>
+                    actionBarProps={{}}
                     tableName={"clients"}
                     tableCruds={clientCruds}
                     size={LIMIT}

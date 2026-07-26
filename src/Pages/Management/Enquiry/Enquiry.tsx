@@ -8,7 +8,6 @@ import Views from "@/core/crud/Views";
 import type { Enquiry } from "../../../api/types";
 import { useAppUI } from "@/context/UIContext";
 import EnquiryCardComponent from "./EnquiryCardComponent";
-import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 12;
 
@@ -38,9 +37,9 @@ const Enquiry: React.FC = () => {
 
     return (
         <FlexBetweenColumn>
-            <ActionBar api={api} qrProps={{ link: "enquiry-form" }} />
             <Box>
                 <Views<Enquiry>
+                    actionBarProps={{ qrProps: { link: "enquiry-form" } }}
                     tableName={"enquiries"}
                     tableCruds={enquiryCruds}
                     size={LIMIT}

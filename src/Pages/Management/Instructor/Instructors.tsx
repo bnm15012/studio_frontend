@@ -18,7 +18,6 @@ import InstructorContract from "./Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
-import ActionBar from "@/core/components/layout/ActionBar";
 
 const LIMIT = 12;
 
@@ -241,14 +240,11 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
 
     return (
         <FlexBetweenColumn>
-            {!ID && (
-                <ActionBar
-                    api={apiInstructor}
-                    filterOptions={filterOptions}
-                    tableName={"instructors"}
-                />
-            )}
             <Views<Instructor>
+                actionBarProps={{
+                    filterOptions,
+                    tableName: "instructors",
+                }}
                 formKey={ID}
                 apiRef={apiInstructor}
                 tableName={"instructors"}
