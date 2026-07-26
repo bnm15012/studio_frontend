@@ -2,8 +2,11 @@ import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
-import { IconButton, Popover } from "@mui/material";
+import { IconButton, Popover, DialogContentText } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import CalendarView from "./Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
@@ -49,6 +52,12 @@ const Bookings = ({ ID }: { ID?: number }) => {
     const [calendarAnchor, setCalendarAnchor] = useState<HTMLButtonElement | null>(null);
     const calendarButtonRef = useRef(null);
     const [showInvoice, setShowInvoice] = useState<Booking | null>(null);
+    const [confirmStateDialog, setConfirmStateDialog] = useState<{
+        row: Booking;
+        newState: bookingStatus;
+        title: string;
+        message: string;
+    } | null>(null);
     const api = useRef<ViewsApiRef>({});
     const templates = useAppSelector((state) => state.genericTemplate.items);
 
@@ -161,6 +170,52 @@ const Bookings = ({ ID }: { ID?: number }) => {
         [awaitForDialog, currentBranch.branchId],
     );
 
+    const actions = useMemo(
+        () => [
+            {
+                name: "Complete",
+                help: "Mark as Completed",
+                icon: <CheckCircleIcon />,
+                sx: { color: "success.main" },
+                hide: (row: Booking) => row.state === "COMPLETED",
+                onClick: (row: Booking) => {
+                    setConfirmStateDialog({
+                        row,
+                        newState: "COMPLETED",
+                        title: "Confirm Booking Completion",
+                        message: `Are you sure you want to mark booking "${row.purpose || row.id}" as COMPLETED?`,
+                    });
+                },
+            },
+            {
+                name: "Cancel",
+                help: "Cancel Booking",
+                icon: <CancelIcon />,
+                sx: { color: "error.main" },
+                hide: (row: Booking) => row.state === "CANCELLED",
+                onClick: (row: Booking) => {
+                    setConfirmStateDialog({
+                        row,
+                        newState: "CANCELLED",
+                        title: "Confirm Booking Cancellation",
+                        message: `Are you sure you want to CANCEL booking "${row.purpose || row.id}"?`,
+                    });
+                },
+            },
+            {
+                name: "Document",
+                help: "View Invoice",
+                icon: <ReceiptIcon />,
+                enabled: true,
+                sx: { color: "primary.main" },
+                onClick: (row: Booking) => {
+                    setShowInvoice(row);
+                },
+            },
+        ],
+        [],
+    );
+
     const FIELDS = useMemo(
         () =>
             [
@@ -192,21 +247,13 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     section: "Booking Details",
                     name: "state",
                     label: "Booking Status",
-                    isState: true,
+                    type: "STATE",
                     colorMap: {
                         CONFIRMED: "#22c55e",
                         CANCELLED: "#ef4444",
                         COMPLETED: "#3b82f6",
                     },
                     defaultValue: bookingStatusTypes[0],
-                    // getValue: (value: string) => value && { key: value, value },
-                    // extraProp: {
-                    //     getOptions: async (search: string, page: number, limit: number) =>
-                    //         bookingStatusTypes
-                    //             .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                    //             .slice((page - 1) * limit, page * limit)
-                    //             .map((a) => ({ key: a, value: a })),
-                    // },
                 },
                 {
                     show: true,
@@ -322,17 +369,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 beforeUpdate={beforeUpdate}
                 key={"booking"}
                 fields={FIELDS}
-                actions={[
-                    {
-                        name: "Document",
-                        icon: <ReceiptIcon />,
-                        enabled: true,
-                        sx: { color: "primary.main" },
-                        onClick: (row: Booking) => {
-                            setShowInvoice(row);
-                        },
-                    },
-                ]}
+                actions={actions}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
                 currentView={VIEWS[!isMobile ? 0 : 1]}
@@ -375,6 +412,46 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     onClose={() => setShowInvoice(null)}
                     bookingData={showInvoice}
                 />
+            )}
+            {confirmStateDialog && (
+                <StyledDialog
+                    open={Boolean(confirmStateDialog)}
+                    onClose={() => setConfirmStateDialog(null)}
+                    title={confirmStateDialog.title}
+                    titleBgColor={confirmStateDialog.newState === "COMPLETED" ? "success" : "error"}
+                    confirmText={
+                        confirmStateDialog.newState === "COMPLETED"
+                            ? "Mark Complete"
+                            : "Cancel Booking"
+                    }
+                    onConfirm={async () => {
+                        const { row, newState } = confirmStateDialog;
+                        setConfirmStateDialog(null);
+                        try {
+                            const updatedRow = await beforeUpdate({ ...row, state: newState });
+                            dispatch(
+                                bookingCruds.update(
+                                    Number(row.id),
+                                    updatedRow,
+                                    token,
+                                    showAlert,
+                                    () => {},
+                                ),
+                            );
+                        } catch (err) {
+                            showAlert(
+                                err instanceof Error
+                                    ? err.message
+                                    : "Failed to update booking status",
+                                "error",
+                            );
+                        }
+                    }}
+                >
+                    <DialogContentText sx={{ textAlign: "center", py: 1 }}>
+                        {confirmStateDialog.message}
+                    </DialogContentText>
+                </StyledDialog>
             )}
         </FlexBetweenColumn>
     );

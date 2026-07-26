@@ -109,8 +109,8 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
     const { isMobile } = useUI();
     const theme = useTheme();
 
-    // Pick up the field marked as isState, if any
-    const stateField = fields.find((f) => f.isState);
+    // Pick up the field marked as STATE or isState, if any
+    const stateField = fields.find((f) => f.type === "STATE" || f.isState);
     const stateValue = stateField ? String(data?.[stateField.name] ?? "") : "";
     const stateColor = stateField?.colorMap?.[stateValue] ?? theme.palette.text.secondary;
 

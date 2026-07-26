@@ -164,6 +164,7 @@ export interface ExtraProp<T = GenericItem> {
     multiline?: boolean;
     defaultImage?: string;
     disableVars?: boolean;
+    colorMap?: Record<string, string>;
 }
 
 export type AnyExtraProp<T = GenericItem> = ExtraProp<T>;
@@ -191,6 +192,14 @@ interface FieldDefCommon<T, K extends string> {
         data: T;
         field: FieldDef<T>;
     }>;
+    /** When true, this field is treated as the entity's primary status/state.
+     *  FormView will display its value as a color-coded chip in the sticky header.
+     */
+    isState?: boolean;
+    /** Maps each possible state value to a color string (hex / CSS variable / theme token).
+     *  Used together with `isState`. Falls back to theme.palette.text.secondary for unknown values.
+     */
+    colorMap?: Record<string, string>;
 }
 
 interface FieldDefTyped<T, K extends KnownKeys<T> & string> extends FieldDefCommon<T, K> {
@@ -300,6 +309,20 @@ export interface ComponentFieldDef<T, K extends KnownKeys<T> & string> extends F
     getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
 }
 
+export interface StateFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
+    type: "STATE";
+    /** When true, this field is treated as the entity's primary status/state.
+     *  FormView will display its value as a color-coded chip in the sticky header.
+     */
+    isState?: boolean;
+    /** Maps each possible state value to a color string (hex / CSS variable / theme token).
+     *  Used together with `isState`. Falls back to theme.palette.text.secondary for unknown values.
+     */
+    colorMap?: Record<string, string>;
+    extraProp?: Record<string, unknown>;
+    getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
+}
+
 type FieldDefForKey<T, K extends KnownKeys<T> & string> =
     | SelectFieldDef<T, K>
     | TextFieldDef<T, K>
@@ -315,7 +338,8 @@ type FieldDefForKey<T, K extends KnownKeys<T> & string> =
     | EditorFieldDef<T, K>
     | CustomFieldDef<T, K>
     | ViewFieldDef<T, K>
-    | ComponentFieldDef<T, K>;
+    | ComponentFieldDef<T, K>
+    | StateFieldDef<T, K>;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LooseFieldDef: for arbitrary string field names (e.g. "paymentEntry.paymentDate")
@@ -437,6 +461,13 @@ export type LooseFieldDef<T> =
           type: "COMPONENT";
           extraProp?: Record<string, unknown>;
           getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+      } & LooseFieldCommon<T>)
+    | ({
+          type: "STATE";
+          isState?: boolean;
+          colorMap?: Record<string, string>;
+          extraProp?: Record<string, unknown>;
+          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
       } & LooseFieldCommon<T>);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -468,7 +499,7 @@ export interface ActionItem<T = GenericItem> {
         color?: string;
         [key: string]: unknown;
     };
-    hide?: boolean;
+    hide?: boolean | ((row: T) => boolean);
     enabled?: boolean | ((row: T) => boolean);
     multi?: boolean;
     help?: string;

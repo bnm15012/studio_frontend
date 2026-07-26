@@ -109,7 +109,9 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             paymentType: paymentTypes[0],
                         });
                     }}
-                    disabled={(data.totalAmount as number) === paidAmount}
+                    disabled={
+                        (data.totalAmount as number) === paidAmount && data.state !== "CANCELLED"
+                    }
                     variant="contained"
                     size="small"
                 >

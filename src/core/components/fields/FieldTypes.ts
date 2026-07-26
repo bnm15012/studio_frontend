@@ -14,4 +14,5 @@ export type FieldTypes =
     | "CHECK"
     | "EMAIL"
     | "VIEW"
-    | "TEXT";
+    | "TEXT"
+    | "STATE";
