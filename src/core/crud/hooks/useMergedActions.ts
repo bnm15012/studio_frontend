@@ -12,10 +12,12 @@ export const useMergedActions = <T extends Record<string, unknown> = Record<stri
         const defaults = defaultActions<T>(args);
         const defaultNames = new Set(defaults.map((d) => d.name));
 
-        const merged = defaults.map((def) => {
+        const customActions = actions.filter((a) => !defaultNames.has(a.name));
+        const mergedDefaults = defaults.map((def) => {
             const override = actions.find((a) => a.name === def.name);
             return override ? { ...def, ...override } : def;
         });
 
-        return [...merged, ...actions.filter((a) => !defaultNames.has(a.name))];
+        // Place custom domain actions first so they get priority display inline over fallback CRUD actions
+        return [...customActions, ...mergedDefaults];
     }, [args, actions]);

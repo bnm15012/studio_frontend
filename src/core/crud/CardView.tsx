@@ -14,7 +14,7 @@ import Actions from "@/core/crud/helper/Actions";
 import { BaseViewProps, Entity } from "@/core/types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "@/core/crud/components/shared";
-import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
+import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { SelectAllBar } from "@/core/crud/components/SelectionToolbar";
 
 export interface CardViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
@@ -182,98 +182,104 @@ function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
                                             }),
                                         }}
                                     >
-                                        <FlexBetween sx={{ width: "100%", alignItems: "stretch" }}>
-                                            {/* Selection */}
-                                            {multi && (
-                                                <Box
-                                                    sx={{
-                                                        width: 30,
-                                                        flexShrink: 0,
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        pl: 1.5,
-                                                        pr: 0.5,
-                                                        backgroundColor: isItemSelected
-                                                            ? alpha(
-                                                                  theme.palette.primary.main,
-                                                                  0.03,
-                                                              )
-                                                            : "transparent",
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        color="primary"
-                                                        checked={isItemSelected}
-                                                        onChange={(e) =>
-                                                            handleSelectRow(rowId, e.target.checked)
-                                                        }
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        size="small"
-                                                        sx={{ p: 0.5 }}
-                                                    />
-                                                </Box>
-                                            )}
-
-                                            {/* Content */}
-                                            <StyledCardContent sx={{ flex: 1, minWidth: 0 }}>
-                                                {CardContentComponent ? (
-                                                    <CardContentComponent
-                                                        row={row}
-                                                        {...{ handleViewOpen }}
-                                                    />
-                                                ) : (
-                                                    <>
-                                                        {visibleFields.map((field) => (
-                                                            <FieldContainer key={field.name}>
-                                                                <FieldLabel>
-                                                                    {field.label}
-                                                                </FieldLabel>
-                                                                {(() => {
-                                                                    const resolved =
-                                                                        resolveFieldValue(
-                                                                            field,
-                                                                            row,
-                                                                            false,
-                                                                        );
-                                                                    return (
-                                                                        resolved &&
-                                                                        typeof resolved ===
-                                                                            "object" &&
-                                                                        "value" in resolved
-                                                                            ? (
-                                                                                  resolved as {
-                                                                                      value: React.ReactNode;
-                                                                                  }
-                                                                              ).value
-                                                                            : resolved
-                                                                    ) as React.ReactNode;
-                                                                })()}
-                                                            </FieldContainer>
-                                                        ))}
-                                                    </>
-                                                )}
-                                            </StyledCardContent>
-
-                                            {/* Actions */}
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                width: "100%",
+                                                height: "100%",
+                                            }}
+                                        >
                                             <Box
                                                 sx={{
-                                                    width: 35,
-                                                    flexShrink: 0,
                                                     display: "flex",
-                                                    justifyContent: "center",
+                                                    width: "100%",
+                                                    alignItems: "flex-start",
+                                                    flex: 1,
                                                 }}
                                             >
-                                                <StyledCardActions>
-                                                    <Actions
-                                                        actions={actions.filter(
-                                                            (a) => a.name !== "form",
-                                                        )}
-                                                        row={row}
-                                                    />
-                                                </StyledCardActions>
+                                                {/* Selection */}
+                                                {multi && (
+                                                    <Box
+                                                        sx={{
+                                                            width: 30,
+                                                            flexShrink: 0,
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            pl: 1.5,
+                                                            pt: 1.5,
+                                                            pr: 0.5,
+                                                        }}
+                                                    >
+                                                        <Checkbox
+                                                            color="primary"
+                                                            checked={isItemSelected}
+                                                            onChange={(e) =>
+                                                                handleSelectRow(
+                                                                    rowId,
+                                                                    e.target.checked,
+                                                                )
+                                                            }
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            size="small"
+                                                            sx={{ p: 0.5 }}
+                                                        />
+                                                    </Box>
+                                                )}
+
+                                                {/* Content */}
+                                                <StyledCardContent sx={{ flex: 1, minWidth: 0 }}>
+                                                    {CardContentComponent ? (
+                                                        <CardContentComponent
+                                                            row={row}
+                                                            {...{ handleViewOpen }}
+                                                        />
+                                                    ) : (
+                                                        <>
+                                                            {visibleFields.map((field) => (
+                                                                <FieldContainer key={field.name}>
+                                                                    <FieldLabel>
+                                                                        {field.label}
+                                                                    </FieldLabel>
+                                                                    {(() => {
+                                                                        const resolved =
+                                                                            resolveFieldValue(
+                                                                                field,
+                                                                                row,
+                                                                                false,
+                                                                            );
+                                                                        return (
+                                                                            resolved &&
+                                                                            typeof resolved ===
+                                                                                "object" &&
+                                                                            "value" in resolved
+                                                                                ? (
+                                                                                      resolved as {
+                                                                                          value: React.ReactNode;
+                                                                                      }
+                                                                                  ).value
+                                                                                : resolved
+                                                                        ) as React.ReactNode;
+                                                                    })()}
+                                                                </FieldContainer>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                </StyledCardContent>
                                             </Box>
-                                        </FlexBetween>
+
+                                            {/* Horizontal Card Actions Footer */}
+                                            <StyledCardActions onClick={(e) => e.stopPropagation()}>
+                                                <Actions
+                                                    actions={actions.filter(
+                                                        (a) => a.name !== "form",
+                                                    )}
+                                                    row={row}
+                                                    maxVisible={4}
+                                                />
+                                            </StyledCardActions>
+                                        </Box>
                                     </StyledMotionCard>
                                 );
                             })

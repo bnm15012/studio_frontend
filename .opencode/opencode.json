@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "references": {
+    "core": {
+      "path": "src/core",
+      "description": "Shared core library: CRUD framework, components, hooks, utils, state, API layer"
+    }
+  }
+}

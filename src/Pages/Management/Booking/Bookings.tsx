@@ -2,10 +2,12 @@ import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
-import { IconButton, Popover, DialogContentText } from "@mui/material";
+import { IconButton, Popover, DialogContentText, Chip } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import CalendarView from "@/Pages/Management/Booking/Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
@@ -26,7 +28,6 @@ import { useAlert } from "@/core/components/feedback/Alert.jsx";
 import { getCLientByNamesAPI } from "@/Pages/Management/Client/client.api.js";
 import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog.jsx";
 import BookingInvoice from "@/Pages/Management/Booking/BookingInvoice.jsx";
-import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentList from "@/Pages/Management/Booking/PaymentList.jsx";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle.ts";
 
@@ -279,12 +280,33 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                     .map((p) => p.amount as number)
                                     .reduce((a: number, b: number) => a + b, 0)) ||
                                 0);
+                        let label: string;
+                        let color: string;
                         if (dueAmount === 0) {
-                            return "COMPLETED";
+                            label = "PAID";
+                            color = "#22c55e";
                         } else if (dueAmount > 0 && dueAmount != (row.totalAmount as number)) {
-                            return "PARTIALLY PAID";
+                            label = "PARTIAL";
+                            color = "#f59e0b";
+                        } else {
+                            label = "PENDING";
+                            color = "#ef4444";
                         }
-                        return "PENDING";
+                        return (
+                            <Chip
+                                size="small"
+                                label={label}
+                                sx={{
+                                    height: 22,
+                                    fontSize: 10.5,
+                                    fontWeight: 800,
+                                    letterSpacing: 0.4,
+                                    color,
+                                    backgroundColor: alpha(color, 0.1),
+                                    border: `1.5px solid ${alpha(color, 0.3)}`,
+                                }}
+                            />
+                        );
                     },
                     extraProp: { readOnly: true },
                 },

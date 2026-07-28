@@ -30,11 +30,14 @@ export const StyledCardContent = styled(CardContent)(({ theme }) => ({
 
 export const StyledCardActions = styled(CardActions)(({ theme }) => ({
     position: "relative",
-    justifyContent: "space-evenly",
-    flexDirection: "column",
-    background: theme.palette.background.paper,
-    padding: theme.spacing(0.5, 0.5),
-    borderTop: `1px solid ${alpha(theme.palette.divider, 0.15)}`,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: theme.spacing(0.75),
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(0.75, 1.5),
+    borderTop: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
     minHeight: 44,
 }));
 
