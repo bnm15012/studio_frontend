@@ -1,5 +1,5 @@
 import React from "react";
-import ContactForm from "./ContactForm";
+import ContactForm from "@/Pages/ContactUs/ContactForm";
 import {
     Box,
     Typography,

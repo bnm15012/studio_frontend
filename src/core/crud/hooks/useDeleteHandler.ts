@@ -1,7 +1,7 @@
 /** Hook encapsulating the delete flow: dispatches delete thunk, shows alerts, handles navigation after deletion. */
 import { useCallback, useState } from "react";
-import { ShowAlertFn, SetLoadingFn, CrudThunks, Entity } from "../../types";
-import type { AppDispatch } from "../../../state";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, Entity } from "@/core/types";
+import type { AppDispatch } from "@/state";
 
 interface UseDeleteHandlerProps<T extends Entity> {
     tableCruds: CrudThunks<T>;

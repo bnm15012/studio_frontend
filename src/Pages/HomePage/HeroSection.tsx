@@ -18,7 +18,7 @@ import {
     TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 import { useState, useEffect } from "react";
-import { openDialog } from "../../state/dialogSlice";
+import { openDialog } from "@/state/dialogSlice";
 import { useAppDispatch } from "@/state";
 
 export function HeroSection() {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { studentsAssignmentsCruds } from "../../api/all.api";
-import StudentInvoice from "../Management/Student/StudentInvoice";
+import { studentsAssignmentsCruds } from "@/api/all.api";
+import StudentInvoice from "@/Pages/Management/Student/StudentInvoice";
 import Loading from "@/core/components/loading/Loading";
-import BookingInvoice from "../Management/Booking/BookingInvoice";
+import BookingInvoice from "@/Pages/Management/Booking/BookingInvoice";
 import { Box } from "@mui/material";
 import { Booking, Branch, GenericTemplate, Student, StudentAssignment, Studio } from "@/api/types";
 

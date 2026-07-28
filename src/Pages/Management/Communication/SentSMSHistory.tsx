@@ -1,14 +1,14 @@
 import { Pagination } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
-import { getMessageHistoryAPI } from "./communication.api";
+import { getMessageHistoryAPI } from "@/Pages/Management/Communication/communication.api";
 import Loading from "@/core/components/loading/Loading";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 
-import HistoryMessageTable from "./HistoryMessageTable";
-import MessageHistoryCard from "./MessageHistoryCard";
-import ReceipentsListDialog from "./ReceipentsListDialog";
+import HistoryMessageTable from "@/Pages/Management/Communication/HistoryMessageTable";
+import MessageHistoryCard from "@/Pages/Management/Communication/MessageHistoryCard";
+import ReceipentsListDialog from "@/Pages/Management/Communication/ReceipentsListDialog";
 
 interface SentSMSHistoryProps {
     newHistory?: Record<string, unknown>[] | Record<string, unknown>;

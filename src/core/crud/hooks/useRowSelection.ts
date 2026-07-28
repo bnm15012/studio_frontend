@@ -1,6 +1,6 @@
 /** Hook managing multi-row selection state: selected IDs, select-all, indeterminate state, and bulk action filtering. */
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { ActionItem, Entity } from "../../types";
+import { ActionItem, Entity } from "@/core/types";
 
 interface UseRowSelectionOptions<T extends Record<string, unknown>> {
     data: T[];

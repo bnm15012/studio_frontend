@@ -1,13 +1,13 @@
 import { useAppDispatch } from "@/state";
 import { useRef } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import { branchCruds } from "../../../api/all.api";
-import type { Branch } from "../../../api/types";
+import { branchCruds } from "@/api/all.api";
+import type { Branch } from "@/api/types";
 import Views from "@/core/crud/Views";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
-import BranchCardView from "./BranchCardView";
+import BranchCardView from "@/Pages/Management/Branches/BranchCardView";
 import GroupIcon from "@mui/icons-material/Group";
 import { useNavigate } from "react-router-dom";
 

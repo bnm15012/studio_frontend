@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import { clientCruds } from "../../../api/all.api";
+import { clientCruds } from "@/api/all.api";
 import Views from "@/core/crud/Views";
-import type { Client, clientType } from "../../../api/types";
+import type { Client, clientType } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
-import ClientCardComponent from "./ClientCardComponent";
+import ClientCardComponent from "@/Pages/Management/Client/ClientCardComponent";
 
 const clientTypes = ["GROUP", "INDIVIDUAL", "COMPANY"];
 

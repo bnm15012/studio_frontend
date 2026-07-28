@@ -1,5 +1,5 @@
 /** Image upload API call using FormData and multipart POST to /uploadImage/:dirName. */
-import api from "../utils/api";
+import api from "@/core/utils/api";
 
 export interface UploadImageResponse {
     success: boolean;

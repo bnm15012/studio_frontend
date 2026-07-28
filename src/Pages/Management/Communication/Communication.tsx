@@ -15,17 +15,17 @@ import {
     useTheme,
 } from "@mui/material";
 import MultiSelectDialog from "@/core/components/dialogs/MultiSelectDialog";
-import { getStudentNamesAPI } from "../Student/Student.api";
+import { getStudentNamesAPI } from "@/Pages/Management/Student/Student.api";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
-import { getInstructorNamesAPI } from "../Instructor/Instructor.api";
-import SentSMSHistory from "./SentSMSHistory";
-import { sendMessageApi } from "./communication.api";
-import { getAllTemplatesAPI } from "../TemplatesPage/Template.api";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
+import { getInstructorNamesAPI } from "@/Pages/Management/Instructor/Instructor.api";
+import SentSMSHistory from "@/Pages/Management/Communication/SentSMSHistory";
+import { sendMessageApi } from "@/Pages/Management/Communication/communication.api";
+import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAppUI } from "@/context/UIContext";
-import type { GenericTemplate } from "../../../api/types";
+import type { GenericTemplate } from "@/api/types";
 import type { GenericItem } from "@/core/types";
 
 const MAIL_TYPE = ["EMAIL"];

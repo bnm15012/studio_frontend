@@ -1,6 +1,6 @@
 /** Factory that creates a Redux Toolkit slice with generic CRUD reducers (setItems, addItem, updateItem, removeItem, etc.) for any entity type. */
 import { createSlice, Draft, PayloadAction, SliceCaseReducers } from "@reduxjs/toolkit";
-import { Entity, GenericState } from "./stateTypes";
+import { Entity, GenericState } from "@/core/state/stateTypes";
 
 export interface CreateGenericSliceOptions<
     T extends Entity,

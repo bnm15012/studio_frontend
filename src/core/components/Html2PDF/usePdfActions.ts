@@ -1,8 +1,8 @@
 /** Hook encapsulating PDF actions: download, print, send email, send WhatsApp using html2pdf.js and a messaging API. */
 // src/hooks/usePdfActions.ts
 import { useState } from "react";
-import { useAlert } from "../feedback/Alert";
-import { sendMessageApi } from "../../../Pages/Management/Communication/communication.api";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { sendMessageApi } from "@/Pages/Management/Communication/communication.api";
 import { useAppUI } from "@/context/UIContext";
 
 // ---------------------------------------------------------------------------

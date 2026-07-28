@@ -1,13 +1,13 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useState } from "react";
 import Loading from "@/core/components/loading/Loading";
-import UserWidgets from "./Widgets/UserWidgets";
+import UserWidgets from "@/Pages/ProfilePage/Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
-import ChangePassword from "./ChangePassword";
-import SubscriptionTab from "./SubscriptionTab";
-import SettingsTab from "./SettingsTab";
-import CommunicationConfigs from "./CommunicationConfigs";
-import { clearAllDialogs, dialogOnTop } from "../../state/dialogSlice";
+import ChangePassword from "@/Pages/ProfilePage/ChangePassword";
+import SubscriptionTab from "@/Pages/ProfilePage/SubscriptionTab";
+import SettingsTab from "@/Pages/ProfilePage/SettingsTab";
+import CommunicationConfigs from "@/Pages/ProfilePage/CommunicationConfigs";
+import { clearAllDialogs, dialogOnTop } from "@/state/dialogSlice";
 import { useAppUI } from "@/context/UIContext";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 

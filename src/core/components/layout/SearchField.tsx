@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { TextField, IconButton } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { SearchIcon } from "lucide-react";
-import Filter from "../fields/Filter";
-import { FilterOption } from "../fields/Filter";
-import { iconBtnFilledSx } from "./ActionButtonStyle";
-import { FlexBetween } from "./FlexBox";
+import Filter from "@/core/components/fields/Filter";
+import { FilterOption } from "@/core/components/fields/Filter";
+import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { FilterKeys } from "@/core/types";
 
 const StyledSearchField = styled(FlexBetween)(({ theme }) => ({

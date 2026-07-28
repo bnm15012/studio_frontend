@@ -3,7 +3,7 @@ import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { Chip, Stack, Typography, Box, useTheme } from "@mui/material";
 
-import { membershipTypeColors } from "./Activities.constants";
+import { membershipTypeColors } from "@/Pages/Management/Activity/Activities.constants";
 import { useAppUI } from "@/context/UIContext";
 import { alpha } from "@mui/material/styles";
 

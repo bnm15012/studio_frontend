@@ -8,11 +8,11 @@ import {
     instructorsCruds,
     membershipPackageCruds,
     paymentCruds,
-} from "../api/all.api";
-import { clearAnalysisState } from "./analysisSlice";
-import { clearAuthState, setAuthLoading } from "./authSlice";
-import { clearAllDialogs } from "./dialogSlice";
-import { AppDispatch } from "./index";
+} from "@/api/all.api";
+import { clearAnalysisState } from "@/state/analysisSlice";
+import { clearAuthState, setAuthLoading } from "@/state/authSlice";
+import { clearAllDialogs } from "@/state/dialogSlice";
+import { AppDispatch } from "@/state/index";
 
 /**
  * Logs the user out and clears auth + branch state.

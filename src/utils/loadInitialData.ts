@@ -1,5 +1,5 @@
-import { activityCruds, membershipPackageCruds } from "../api/all.api";
-import { AppDispatch, RootState } from "../state";
+import { activityCruds, membershipPackageCruds } from "@/api/all.api";
+import { AppDispatch, RootState } from "@/state";
 
 /**
  * Loads data that is needed immediately after a branch is selected:

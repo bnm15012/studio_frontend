@@ -1,6 +1,6 @@
 import React from "react";
-import { useAppSelector, useAppDispatch } from "../../state";
-import { toggleMode } from "../../state/authSlice";
+import { useAppSelector, useAppDispatch } from "@/state";
+import { toggleMode } from "@/state/authSlice";
 import { IconButton, Tooltip, useTheme } from "@mui/material";
 import { LightMode, DarkMode } from "@mui/icons-material";
 

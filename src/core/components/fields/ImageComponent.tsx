@@ -1,8 +1,8 @@
 /** A container wrapper around FileDropZone that handles authentication, upload API calls, alerts, and image preview display. */
 import React, { useEffect, useState } from "react";
-import { useAlert } from "../feedback/Alert";
-import { uploadImageApiCall } from "../../api/uploadImg.api";
-import FileDropZone from "./FileDropZone";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { uploadImageApiCall } from "@/core/api/uploadImg.api";
+import FileDropZone from "@/core/components/fields/FileDropZone";
 import { useAppSelector } from "@/state";
 
 /**

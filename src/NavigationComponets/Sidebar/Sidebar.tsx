@@ -20,7 +20,7 @@ import AnalyticsIcon from "@mui/icons-material/Analytics";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SidebarItem, { SidebarRoute } from "./SidebarItem";
+import SidebarItem, { SidebarRoute } from "@/NavigationComponets/Sidebar/SidebarItem";
 import { useAppUI } from "@/context/UIContext";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Close, GridView } from "@mui/icons-material";

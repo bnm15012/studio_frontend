@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import { useEffect, useState } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { genericTemplateCruds } from "../../../api/all.api";
+import { genericTemplateCruds } from "@/api/all.api";
 import Loading from "@/core/components/loading/Loading";
-import { sendWhatsAppMessage } from "./communication.api";
+import { sendWhatsAppMessage } from "@/Pages/Management/Communication/communication.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { Box, TextField, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";

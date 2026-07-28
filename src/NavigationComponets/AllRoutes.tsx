@@ -1,32 +1,32 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { AppUIProvider, NonAuthUIProvider } from "../context/UIContext";
+import { AppUIProvider, NonAuthUIProvider } from "@/context/UIContext";
 import Loading from "@/core/components/loading/Loading";
 import { useAppSelector } from "@/state";
 
 import HomePage from "@/Pages/HomePage/HomePage";
 
-const PageNotFound = lazy(() => import("../Pages/Error/PageNotFound"));
-const DashBoard = lazy(() => import("../Pages/DashBoard/DashBoard"));
-const Management = lazy(() => import("../Pages/Management/Management"));
-const Analysis = lazy(() => import("../Pages/Analysis/Analysis"));
-const ProfilePage = lazy(() => import("../Pages/ProfilePage/ProfilePage"));
+const PageNotFound = lazy(() => import("@/Pages/Error/PageNotFound"));
+const DashBoard = lazy(() => import("@/Pages/DashBoard/DashBoard"));
+const Management = lazy(() => import("@/Pages/Management/Management"));
+const Analysis = lazy(() => import("@/Pages/Analysis/Analysis"));
+const ProfilePage = lazy(() => import("@/Pages/ProfilePage/ProfilePage"));
 
-const AboutUsPage = lazy(() => import("../Pages/AboutUs/AboutUsPage"));
-const ContactUsPage = lazy(() => import("../Pages/ContactUs/ContactUs"));
-const PrivacyPolicyPage = lazy(() => import("../Pages/PrivacyPolicy/PrivacyPolicyPage"));
-const TermsConditionPage = lazy(() => import("../Pages/TermsCondition/TermsConditionPage"));
+const AboutUsPage = lazy(() => import("@/Pages/AboutUs/AboutUsPage"));
+const ContactUsPage = lazy(() => import("@/Pages/ContactUs/ContactUs"));
+const PrivacyPolicyPage = lazy(() => import("@/Pages/PrivacyPolicy/PrivacyPolicyPage"));
+const TermsConditionPage = lazy(() => import("@/Pages/TermsCondition/TermsConditionPage"));
 const CancellationRefundPolicy = lazy(
-    () => import("../Pages/CancellationRefundPolicy/CancellationRefundPolicy"),
+    () => import("@/Pages/CancellationRefundPolicy/CancellationRefundPolicy"),
 );
-const FormFillPage = lazy(() => import("../Pages/FormPage/FormFillPage"));
-const InvoicePage = lazy(() => import("../Pages/Invoice/InvoicePage"));
+const FormFillPage = lazy(() => import("@/Pages/FormPage/FormFillPage"));
+const InvoicePage = lazy(() => import("@/Pages/Invoice/InvoicePage"));
 
-import LoginDialog from "../Pages/Auth/LoginDialog";
-import SignupDialog from "../Pages/Auth/SignupDialog";
-import ForgotPassword from "../Pages/Auth/ForgotPassword";
-import SubscriptionPopup from "../Pages/Auth/SubscriptionPopup";
-import HashRedirect from "./HashRedirect";
+import LoginDialog from "@/Pages/Auth/LoginDialog";
+import SignupDialog from "@/Pages/Auth/SignupDialog";
+import ForgotPassword from "@/Pages/Auth/ForgotPassword";
+import SubscriptionPopup from "@/Pages/Auth/SubscriptionPopup";
+import HashRedirect from "@/NavigationComponets/HashRedirect";
 import ServerErrorDialog from "@/core/components/dialogs/ServerErrorDialog";
 import AuthTransitionOverlay from "@/core/components/loading/AuthTransitionOverlay";
 

@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import { paymentCruds } from "../../../api/all.api";
+import { paymentCruds } from "@/api/all.api";
 import Views from "@/core/crud/Views";
-import type { Payment, paymentStatus, paymentType } from "../../../api/types";
+import type { Payment, paymentStatus, paymentType } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
-import PaymentCard from "./PaymentCardView";
+import PaymentCard from "@/Pages/Management/Payments/PaymentCardView";
 
 const PAYMENT_TYPE = ["UPI", "CASH"];
 const LIMIT = 12;

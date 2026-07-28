@@ -23,13 +23,13 @@ import {
     Typography,
 } from "@mui/material";
 import ViewColumnIcon from "@mui/icons-material/ViewColumn";
-import { iconBtnFilledSx } from "./ActionButtonStyle";
+import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 import {
     ColumnVisibilityButtonProps,
     ColumnVisibilityMap,
     getStoredVisibility,
     storeVisibility,
-} from "./columnVisibilityHelper";
+} from "@/core/components/layout/columnVisibilityHelper";
 import { Entity } from "@/core/types";
 
 // ── Component ─────────────────────────────────────────────────────────────────

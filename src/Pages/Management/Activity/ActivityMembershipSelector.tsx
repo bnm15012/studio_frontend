@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Select, MenuItem, FormControl, TableCell } from "@mui/material";
 
 import { useAppUI } from "@/context/UIContext";
-import type { Activity, BatchEntry } from "../../../api/types";
+import type { Activity, BatchEntry } from "@/api/types";
 
 interface ActivityMembershipSelectorProps {
     onSelect: (...args: unknown[]) => void;

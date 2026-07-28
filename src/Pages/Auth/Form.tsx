@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useAppDispatch } from "@/state";
-import { closeLastDialog, openDialog } from "../../state/dialogSlice.js";
-import FormFields from "./FormFields";
-import type { FormFieldsValues } from "./FormFields";
-import { loginApiCall, registerApiCall } from "./auth.api";
+import { closeLastDialog, openDialog } from "@/state/dialogSlice.js";
+import FormFields from "@/Pages/Auth/FormFields";
+import type { FormFieldsValues } from "@/Pages/Auth/FormFields";
+import { loginApiCall, registerApiCall } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
 import { User } from "@/api/types.js";

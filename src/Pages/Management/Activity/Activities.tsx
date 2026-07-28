@@ -13,12 +13,12 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { activityCruds } from "../../../api/all.api";
-import ActivityCard from "./ActivityCard";
-import ActivityDialog, { type ActivityFormData } from "./ActivityDialog";
+import { activityCruds } from "@/api/all.api";
+import ActivityCard from "@/Pages/Management/Activity/ActivityCard";
+import ActivityDialog, { type ActivityFormData } from "@/Pages/Management/Activity/ActivityDialog";
 import { useAppUI } from "@/context/UIContext";
-import { sortMembershipPlans } from "./Activity.util";
-import type { Activity, BatchEntry } from "../../../api/types";
+import { sortMembershipPlans } from "@/Pages/Management/Activity/Activity.util";
+import type { Activity, BatchEntry } from "@/api/types";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 

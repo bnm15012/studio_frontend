@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
-import { useAppSelector } from "../state";
+import { useAppSelector } from "@/state";
 import { useFeatureFlags } from "@/core/hooks/useFeatureFlags";
-import { FEATURE_KEYS } from "./feature_keys";
+import { FEATURE_KEYS } from "@/context/feature_keys";
 
 import { createUIContext } from "@/core/context/UIContext";
 import { Branch, Studio, User } from "@/api/types";

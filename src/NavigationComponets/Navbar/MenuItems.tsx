@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, styled, useTheme } from "@mui/material";
-import { useAppSelector } from "../../state";
+import { useAppSelector } from "@/state";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface MenuItemsProps {

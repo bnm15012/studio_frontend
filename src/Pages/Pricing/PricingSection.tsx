@@ -16,7 +16,7 @@ import {
     Close as CloseIcon,
     Remove as RemoveIcon,
 } from "@mui/icons-material";
-import PricingPlanCards from "./PricingPlanCards";
+import PricingPlanCards from "@/Pages/Pricing/PricingPlanCards";
 
 interface ComparisonRow {
     feature: string;

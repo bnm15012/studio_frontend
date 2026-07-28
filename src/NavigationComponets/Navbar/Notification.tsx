@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Badge, CircularProgress, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import { getStudentNamesOncePerDay } from "../../Pages/Management/Student/Student.api";
-import { useAppDispatch, useAppSelector } from "../../state";
+import { getStudentNamesOncePerDay } from "@/Pages/Management/Student/Student.api";
+import { useAppDispatch, useAppSelector } from "@/state";
 import {
     markAllAsRead,
     markAsRead,
     setNotifications,
     NotificationItem,
-} from "../../state/notificationSlice";
+} from "@/state/notificationSlice";
 import { Branch } from "@/api/types";
 
 interface NotificationProps {

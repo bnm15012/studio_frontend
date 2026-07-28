@@ -1,5 +1,5 @@
 import { Activity } from "@/api/types";
-import { validMembershipTypes } from "./Activities.constants";
+import { validMembershipTypes } from "@/Pages/Management/Activity/Activities.constants";
 
 export function sortMembershipPlans(activity: Activity) {
     if (

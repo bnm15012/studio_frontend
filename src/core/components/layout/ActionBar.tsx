@@ -1,19 +1,19 @@
 /** Action bar with search field, filter, QR code, refresh, and add buttons — the top toolbar for list views. */
 import React, { useState } from "react";
-import { FlexBetween } from "./FlexBox";
-import SearchField from "./SearchField";
-import { usePageSearch } from "../../hooks/useSearch";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import SearchField from "@/core/components/layout/SearchField";
+import { usePageSearch } from "@/core/hooks/useSearch";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import QrForm from "../forms/QrForm";
+import QrForm from "@/core/components/forms/QrForm";
 import { Box, IconButton, Slide, Tooltip, useTheme } from "@mui/material";
 import { Add, Search as SearchIcon, Close as CloseIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useUI } from "@/context/UIContext";
-import { FilterOption } from "../fields/Filter";
-import { QrFormProps } from "../forms/QrForm";
-import { iconBtnFilledSx, iconBtnSx } from "./ActionButtonStyle";
-import ColumnVisibilityButton from "./ColumnVisibilityButton";
-import { ColumnVisibilityButtonProps } from "./columnVisibilityHelper";
+import { FilterOption } from "@/core/components/fields/Filter";
+import { QrFormProps } from "@/core/components/forms/QrForm";
+import { iconBtnFilledSx, iconBtnSx } from "@/core/components/layout/ActionButtonStyle";
+import ColumnVisibilityButton from "@/core/components/layout/ColumnVisibilityButton";
+import { ColumnVisibilityButtonProps } from "@/core/components/layout/columnVisibilityHelper";
 
 import { Entity } from "@/core/types";
 

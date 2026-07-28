@@ -1,10 +1,10 @@
-import Form from "./Form";
+import Form from "@/Pages/Auth/Form";
 import { Dialog, Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import WidgetWrapper from "@/core/components/layout/WidgetWrapper";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAppDispatch } from "@/state";
-import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
+import { closeLastDialog, isDialogOnTop } from "@/state/dialogSlice";
 import { useAppSelector } from "@/state";
 
 const LoginDialog = () => {

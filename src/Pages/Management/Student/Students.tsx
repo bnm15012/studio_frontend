@@ -3,21 +3,21 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
-import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
-import StudentCard from "./StudentCard";
+import { studentsCruds, studentsAssignmentsCruds } from "@/api/all.api";
+import StudentCard from "@/Pages/Management/Student/StudentCard";
 import { useAppUI } from "@/context/UIContext";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import StudentInvoice from "./StudentInvoice";
+import StudentInvoice from "@/Pages/Management/Student/StudentInvoice";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import PaymentEntryDialog from "../Payments/PaymentEntryDialog";
-import StudentAssignActivityCard from "./StudentAssignActivityCard";
-import { getEndDateBySubscriptionPlan } from "../../../utils/SubscriptionPlanUtil";
+import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog";
+import StudentAssignActivityCard from "@/Pages/Management/Student/StudentAssignActivityCard";
+import { getEndDateBySubscriptionPlan } from "@/utils/SubscriptionPlanUtil";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import StudentAttendence from "./StudentAttendence";
-import OtherInfo from "./OtherInfo";
+import StudentAttendence from "@/Pages/Management/Student/StudentAttendence";
+import OtherInfo from "@/Pages/Management/Student/OtherInfo";
 import { WhatsApp } from "@mui/icons-material";
-import SelectTemplateDialog from "../Communication/SelectTemplateDialog";
+import SelectTemplateDialog from "@/Pages/Management/Communication/SelectTemplateDialog";
 import type {
     Activity,
     activityStatus,

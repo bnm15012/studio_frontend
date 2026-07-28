@@ -4,7 +4,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import Loading from "@/core/components/loading/Loading";
-import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
+import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";

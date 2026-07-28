@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import MenuItems from "./MenuItems";
+import MenuItems from "@/NavigationComponets/Navbar/MenuItems";
 import ImageComponent from "@/core/components/fields/ImageComponent";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import AuthButtons from "./AuthButtons";
+import AuthButtons from "@/NavigationComponets/Navbar/AuthButtons";
 import { useUI } from "@/context/UIContext";
 
 export interface NavbarProps {

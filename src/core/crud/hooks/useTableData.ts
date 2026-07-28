@@ -1,8 +1,8 @@
 /** Hook that fetches and manages table data via Redux dispatch, handling pagination, search, filtering, and caching through CrudThunks. */
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../state";
-import { usePageSearch } from "../../hooks/useSearch";
-import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "../../types";
+import { useAppDispatch, useAppSelector } from "@/state";
+import { usePageSearch } from "@/core/hooks/useSearch";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "@/core/types";
 
 export interface UseTableDataParams<T extends Record<string, unknown> = Record<string, unknown>> {
     tableCruds: CrudThunks<T>;

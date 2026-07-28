@@ -2,8 +2,8 @@
 import React from "react";
 import { Chip, Box, Typography, Avatar, useTheme, SxProps, Theme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { FlexBetween } from "../layout/FlexBox";
-import Field from "../fields/Field";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import Field from "@/core/components/fields/Field";
 import PersonIcon from "@mui/icons-material/Person";
 
 const getBadgeStyles = (badge: React.ReactNode, enabled: boolean | undefined, theme: Theme) => {

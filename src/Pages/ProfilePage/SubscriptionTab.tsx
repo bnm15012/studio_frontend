@@ -11,7 +11,7 @@ import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import SubscriptionPopup from "../Auth/SubscriptionPopup";
+import SubscriptionPopup from "@/Pages/Auth/SubscriptionPopup";
 
 const SubscriptionTab: React.FC = () => {
     const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);

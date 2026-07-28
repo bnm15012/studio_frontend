@@ -4,7 +4,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useAppDispatch } from "@/state";
-import { openDialog } from "../../state/dialogSlice";
+import { openDialog } from "@/state/dialogSlice";
 
 const images = [
     {

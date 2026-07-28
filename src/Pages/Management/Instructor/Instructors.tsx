@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/state";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type {
@@ -7,17 +7,17 @@ import type {
     activityStatus,
     Instructor,
     InstructorAssignment,
-} from "../../../api/types";
+} from "@/api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
-import { instructorsAssignmentsCruds, instructorsCruds } from "../../../api/all.api";
-import InstructorCard from "./InstructorCard";
+import { instructorsAssignmentsCruds, instructorsCruds } from "@/api/all.api";
+import InstructorCard from "@/Pages/Management/Instructor/InstructorCard";
 import { useAppUI } from "@/context/UIContext";
 
 import FeedIcon from "@mui/icons-material/Feed";
-import InstructorContract from "./Activity/IntructorContract";
+import InstructorContract from "@/Pages/Management/Instructor/Activity/IntructorContract";
 import { useMemo, useRef, useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import InstructorAssignedActivityCard from "./InstructorAssignedActivityCard";
+import InstructorAssignedActivityCard from "@/Pages/Management/Instructor/InstructorAssignedActivityCard";
 
 const LIMIT = 12;
 

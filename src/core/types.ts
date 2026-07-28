@@ -1,7 +1,7 @@
 /** Central type definitions used across the core layer — AppDispatch, Entity, SelectOption, FieldDef, ActionItem, and Redux thunk types. */
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
-import { Entity, FilterKeys } from "./state/stateTypes";
+import { Entity, FilterKeys } from "@/core/state/stateTypes";
 import { RootState } from "@/state";
 export type { Entity, FilterKeys };
 

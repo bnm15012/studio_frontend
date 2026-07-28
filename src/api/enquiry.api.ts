@@ -1,6 +1,6 @@
 import api from "@/core/utils/api";
 import { getApiMessage } from "@/core/api/helper";
-import { Enquiry } from "./types";
+import { Enquiry } from "@/api/types";
 
 export interface EnquiryAPIParams {
     newData: Partial<Enquiry>;

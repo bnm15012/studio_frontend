@@ -1,6 +1,6 @@
 /** Full-page form view for editing an entity, with a sticky save bar, back navigation, field rendering, view tabs, action bar, and mobile/desktop layouts. */
 import { useTheme } from "@mui/material/styles";
-import { FlexBetween, FlexBetweenColumn, FlexEvenly } from "../components/layout/FlexBox";
+import { FlexBetween, FlexBetweenColumn, FlexEvenly } from "@/core/components/layout/FlexBox";
 import {
     IconButton,
     Typography,
@@ -18,17 +18,17 @@ import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import { CloudUpload } from "@mui/icons-material";
 import SegmentIcon from "@mui/icons-material/Segment";
 import { useNavigate } from "react-router-dom";
-import Field from "../components/fields/Field";
-import { getNestedValue } from "../utils/objectHelpers";
-import { FieldLabel } from "../components/fields/StyledField";
-import { resolveFieldValue, bindGetOptions, isFieldEditable } from "../utils/fieldHelpers";
+import Field from "@/core/components/fields/Field";
+import { getNestedValue } from "@/core/utils/objectHelpers";
+import { FieldLabel } from "@/core/components/fields/StyledField";
+import { resolveFieldValue, bindGetOptions, isFieldEditable } from "@/core/utils/fieldHelpers";
 import { useUI } from "@/context/UIContext";
-import { StyledFieldContainer, StyledFieldItem } from "./FormComponents";
+import { StyledFieldContainer, StyledFieldItem } from "@/core/crud/FormComponents";
 import React, { memo } from "react";
-import ViewTabs from "./ViewTabs";
-import Actions from "./helper/Actions";
-import { ActionItem, Entity, FieldDef, ViewMode } from "../types";
-import { FadeIn } from "./components/shared";
+import ViewTabs from "@/core/crud/ViewTabs";
+import Actions from "@/core/crud/helper/Actions";
+import { ActionItem, Entity, FieldDef, ViewMode } from "@/core/types";
+import { FadeIn } from "@/core/crud/components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
 interface FormSkeletonProps {

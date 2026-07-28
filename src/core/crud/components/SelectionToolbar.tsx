@@ -2,9 +2,9 @@
 import React from "react";
 import { Toolbar, Checkbox, Box, Typography, Chip } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { ActionItem, Entity } from "../../types";
-import Actions from "../helper/Actions";
-import { FlexEvenly } from "../../components/layout/FlexBox";
+import { ActionItem, Entity } from "@/core/types";
+import Actions from "@/core/crud/helper/Actions";
+import { FlexEvenly } from "@/core/components/layout/FlexBox";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SelectionToolbar

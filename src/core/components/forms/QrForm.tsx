@@ -3,9 +3,9 @@ import React, { useState, useRef } from "react";
 import { Typography, Box, IconButton } from "@mui/material";
 import QRCode from "react-qr-code";
 import { PrinterIcon, QrCodeIcon } from "lucide-react";
-import StyledDialog from "../dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useAppUI } from "@/context/UIContext";
-import { iconBtnFilledSx } from "../layout/ActionButtonStyle";
+import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 
 interface Html2PdfInstance {
     set: (opts: Record<string, unknown>) => Html2PdfInstance;

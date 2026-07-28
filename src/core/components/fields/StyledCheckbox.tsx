@@ -1,7 +1,7 @@
 /** Simple checkbox with label, supporting read-only mode. */
 import React from "react";
 import { Checkbox, Typography } from "@mui/material";
-import { FlexBetween } from "../layout/FlexBox";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 export interface StyledCheckboxProps {
     label?: string;

@@ -1,12 +1,12 @@
 /** Dynamic form builder that renders fields from a FieldDef[] config with submit/cancel buttons, validation, and styled layout. */
 import React, { useEffect, useState } from "react";
-import { useAlert } from "../feedback/Alert";
+import { useAlert } from "@/core/components/feedback/Alert";
 import { styled, useTheme } from "@mui/material/styles";
 import { Box, Typography, Button, Paper, Grid, Divider } from "@mui/material";
-import Field from "../fields/Field";
+import Field from "@/core/components/fields/Field";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
-import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
+import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
 import { FieldDef } from "@/core/types";
 
 // ==============================

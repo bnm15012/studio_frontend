@@ -1,6 +1,6 @@
 /** Hook managing all CRUD operations (add, update, field change) with validation, before-save hooks, and Redux dispatch. */
 import { useState, useCallback, useEffect, useRef } from "react";
-import { validate } from "../utils/validate";
+import { validate } from "@/core/crud/utils/validate";
 import { ShowAlertFn, SetLoadingFn, CrudThunks } from "@/core/types";
 import type { AppDispatch } from "@/state";
 import type { Entity, FieldDef } from "@/core/types";

@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState, useEffect } from "react";
 import { Switch, Box, Button, Typography } from "@mui/material";
-import { updateStudio } from "../Auth/auth.api";
+import { updateStudio } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { setSettings, Setting } from "../../state/authSlice";
+import { setSettings, Setting } from "@/state/authSlice";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 

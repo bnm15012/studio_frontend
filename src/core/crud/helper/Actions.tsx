@@ -2,7 +2,7 @@
 import { ButtonBase, Box, Tooltip, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import React from "react";
-import { ActionItem } from "../../types";
+import { ActionItem } from "@/core/types";
 
 interface ActionsProps<T> {
     actions: ActionItem<T>[];

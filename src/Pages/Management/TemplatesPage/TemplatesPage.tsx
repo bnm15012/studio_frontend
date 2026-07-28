@@ -1,10 +1,10 @@
 import { useAppSelector } from "@/state";
 import React, { useRef } from "react";
 import Views from "@/core/crud/Views";
-import type { GenericTemplate } from "../../../api/types";
+import type { GenericTemplate } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
-import { genericTemplateCruds } from "../../../api/all.api";
-import TemplateCard from "./TemplateCard";
+import { genericTemplateCruds } from "@/api/all.api";
+import TemplateCard from "@/Pages/Management/TemplatesPage/TemplateCard";
 import { useAppUI } from "@/context/UIContext";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 

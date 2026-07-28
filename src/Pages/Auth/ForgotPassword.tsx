@@ -13,11 +13,11 @@ import { useAppDispatch, useAppSelector } from "@/state";
 import { useState } from "react";
 import { FlexBetween, FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
 import Loading from "@/core/components/loading/Loading";
-import { changePasswordApiCall, sendOTPRequest } from "./auth.api";
+import { changePasswordApiCall, sendOTPRequest } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import CloseIcon from "@mui/icons-material/Close";
 import { validatePassword } from "@/core/utils/validationConstraints";
-import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
+import { closeLastDialog, isDialogOnTop } from "@/state/dialogSlice";
 
 const ForgotPassword = () => {
     const showAlert = useAlert();

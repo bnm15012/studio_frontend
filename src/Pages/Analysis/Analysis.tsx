@@ -26,7 +26,7 @@ import {
     Filler,
 } from "chart.js";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
-import { fetchReportData } from "./analysis.api";
+import { fetchReportData } from "@/Pages/Analysis/analysis.api";
 import Loading from "@/core/components/loading/Loading";
 import { useAppDispatch } from "@/state";
 import { setAnalysisData } from "@/state/analysisSlice";

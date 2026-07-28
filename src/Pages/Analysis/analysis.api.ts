@@ -52,8 +52,8 @@ export const fetchReportData = async ({
         const message =
             error instanceof Error && "response" in error
                 ? (error as { response?: { data?: { status?: { statusMessage?: string } } } })
-                      .response?.data?.status?.statusMessage || "Failed to fetch dashboard data"
-                : "Failed to fetch dashboard data";
+                      .response?.data?.status?.statusMessage || "Failed to fetch report data"
+                : "Failed to fetch report data";
         return { success: false, message };
     }
 };

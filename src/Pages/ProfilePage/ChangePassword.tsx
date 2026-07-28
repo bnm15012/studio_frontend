@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { updateProfile } from "../Auth/auth.api";
+import { updateProfile } from "@/Pages/Auth/auth.api";
 import { validatePassword } from "@/core/utils/validationConstraints";
-import { closeLastDialog } from "../../state/dialogSlice";
+import { closeLastDialog } from "@/state/dialogSlice";
 import type { User } from "@/api/types";
 
 interface ChangePasswordProps {

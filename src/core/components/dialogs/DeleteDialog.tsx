@@ -1,7 +1,7 @@
 /** Confirmation dialog for delete operations with a red "Confirm Deletion" title. */
 import React from "react";
 import { DialogContentText } from "@mui/material";
-import StyledDialog from "./StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface DeleteDialogProps {
     open: boolean;

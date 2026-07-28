@@ -5,10 +5,10 @@ import type { PersistedState } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "redux";
 
-import authSlice from "./authSlice";
-import dialogSlice from "./dialogSlice";
-import notificationSlice from "./notificationSlice";
-import analysisSlice from "./analysisSlice";
+import authSlice from "@/state/authSlice";
+import dialogSlice from "@/state/dialogSlice";
+import notificationSlice from "@/state/notificationSlice";
+import analysisSlice from "@/state/analysisSlice";
 
 import {
     activityCruds,
@@ -25,7 +25,7 @@ import {
     studentsAssignmentsCruds,
     studentsCruds,
     usersCruds,
-} from "../api/all.api";
+} from "@/api/all.api";
 
 const rootReducer = combineReducers({
     auth: authSlice,

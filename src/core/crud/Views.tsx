@@ -1,20 +1,20 @@
 /** Main orchestration component that wires together ListView, CardView, DialogForm, FormView, DeleteDialog, and the action bar for a full CRUD interface. */
-import DialogForm from "./DialogForm";
-import FormView from "./FormView";
-import ListView from "./ListView";
-import CardView from "./CardView";
-import StyledDialog from "../components/dialogs/StyledDialog";
-import DeleteDialog from "../components/dialogs/DeleteDialog";
-import { useAlert } from "../components/feedback/Alert";
+import DialogForm from "@/core/crud/DialogForm";
+import FormView from "@/core/crud/FormView";
+import ListView from "@/core/crud/ListView";
+import CardView from "@/core/crud/CardView";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
+import { useAlert } from "@/core/components/feedback/Alert";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Typography, Box, Paper, CircularProgress } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { useMergedActions } from "./hooks/useMergedActions";
-import { useCrudAction } from "./hooks/useCrudAction";
-import { useTableData } from "./hooks/useTableData";
-import { useDeleteHandler } from "./hooks/useDeleteHandler";
-import { FlexEvenly } from "../components/layout/FlexBox";
+import { useMergedActions } from "@/core/crud/hooks/useMergedActions";
+import { useCrudAction } from "@/core/crud/hooks/useCrudAction";
+import { useTableData } from "@/core/crud/hooks/useTableData";
+import { useDeleteHandler } from "@/core/crud/hooks/useDeleteHandler";
+import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 import {
     FieldDef,
@@ -25,16 +25,16 @@ import {
     ViewMode,
     ViewsApiRef,
     BaseViewProps,
-} from "../types";
-import { useAppDispatch } from "../../state";
-import { useRowSelection } from "./hooks/useRowSelection";
-import { SelectionToolbar } from "./components/SelectionToolbar";
-import ActionBar, { ActionBarProps } from "../components/layout/ActionBar";
+} from "@/core/types";
+import { useAppDispatch } from "@/state";
+import { useRowSelection } from "@/core/crud/hooks/useRowSelection";
+import { SelectionToolbar } from "@/core/crud/components/SelectionToolbar";
+import ActionBar, { ActionBarProps } from "@/core/components/layout/ActionBar";
 import {
     applyVisibility,
     ColumnVisibilityMap,
     getStoredVisibility,
-} from "../components/layout/columnVisibilityHelper";
+} from "@/core/components/layout/columnVisibilityHelper";
 
 export interface ViewsProps<T extends Entity> {
     /** 0 = new record, positive integer = existing record id, undefined = list mode */

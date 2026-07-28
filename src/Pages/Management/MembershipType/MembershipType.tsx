@@ -2,8 +2,8 @@ import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
-import type { MembershipPackage } from "../../../api/types";
-import { membershipPackageCruds } from "../../../api/all.api";
+import type { MembershipPackage } from "@/api/types";
+import { membershipPackageCruds } from "@/api/all.api";
 import { useAppUI } from "@/context/UIContext";
 import type { FieldMeta, ViewsApiRef } from "@/core/types";
 

@@ -25,8 +25,8 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 import { useAppSelector } from "@/state";
-import { themeSettings } from "./theme";
-import { useThemeMode } from "./ThemeHook";
+import { themeSettings } from "@/core/utils/theme/theme";
+import { useThemeMode } from "@/core/utils/theme/ThemeHook";
 
 /**
  * Drop-in replacement for the manual ThemeProvider + CssBaseline wiring.

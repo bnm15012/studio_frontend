@@ -16,7 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import { validActivityTypes, validMembershipTypes } from "./Activities.constants";
+import { validActivityTypes, validMembershipTypes } from "@/Pages/Management/Activity/Activities.constants";
 
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
@@ -24,8 +24,8 @@ import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
-import { membershipPackageCruds } from "../../../api/all.api";
-import type { Activity } from "../../../api/types";
+import { membershipPackageCruds } from "@/api/all.api";
+import type { Activity } from "@/api/types";
 
 interface BatchFormData {
     batchId: string | number;

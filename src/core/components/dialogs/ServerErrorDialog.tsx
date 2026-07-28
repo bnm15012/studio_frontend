@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { DialogContent } from "@mui/material";
-import StyledDialog from "./StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 const ServerErrorDialog: React.FC = () => {
     const [serverDown, setServerDown] = useState<boolean>(false);

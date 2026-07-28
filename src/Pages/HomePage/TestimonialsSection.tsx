@@ -1,6 +1,6 @@
 import { Box, Typography, Container, Card, CardContent, Avatar, Rating, Chip } from "@mui/material";
 import { Star as StarIcon, FormatQuote as QuoteIcon } from "@mui/icons-material";
-import TrustedPartners from "./TrustedPartners";
+import TrustedPartners from "@/Pages/HomePage/TrustedPartners";
 
 function TestimonialsSection() {
     const testimonials = [

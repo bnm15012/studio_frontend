@@ -1,9 +1,9 @@
-import Form from "./Form";
+import Form from "@/Pages/Auth/Form";
 import { useMediaQuery, Dialog, Box, IconButton } from "@mui/material";
 import WidgetWrapper from "@/core/components/layout/WidgetWrapper";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import CloseIcon from "@mui/icons-material/Close";
-import { closeLastDialog, isDialogOnTop } from "../../state/dialogSlice";
+import { closeLastDialog, isDialogOnTop } from "@/state/dialogSlice";
 import { useAppDispatch, useAppSelector } from "@/state";
 
 const SignupDialog = () => {

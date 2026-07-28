@@ -1,9 +1,9 @@
 /** Multi-select dialog with infinite-scroll option loading, checkbox selection, and save/cancel. */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
-import StyledDialog from "./StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
-import { GenericItem } from "../../types";
+import { GenericItem } from "@/core/types";
 
 interface MultiSelectDialogProps<T extends GenericItem = GenericItem> {
     open: boolean;

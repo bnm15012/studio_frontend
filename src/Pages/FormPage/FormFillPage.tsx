@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import FormBuilder from "@/core/components/forms/FormBuilder";
-import { addStudentAPI } from "../Management/Student/Student.api";
+import { addStudentAPI } from "@/Pages/Management/Student/Student.api";
 import { useEffect, useMemo } from "react";
-import { addEnquiryAPI } from "../../api/enquiry.api";
+import { addEnquiryAPI } from "@/api/enquiry.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import type { FieldDef } from "@/core/types";
 

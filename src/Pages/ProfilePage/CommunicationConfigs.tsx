@@ -5,7 +5,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { Divider, IconButton, Typography, Tooltip, Box } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Field from "@/core/components/fields/Field";
-import { updateStudio } from "../Auth/auth.api";
+import { updateStudio } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
 import { useAppUI } from "@/context/UIContext";

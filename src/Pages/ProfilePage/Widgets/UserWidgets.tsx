@@ -9,7 +9,7 @@ import {
     Save as SaveIcon,
 } from "@mui/icons-material";
 import { Percent } from "lucide-react";
-import { updateProfile, updateStudio } from "../../Auth/auth.api";
+import { updateProfile, updateStudio } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useAppUI } from "@/context/UIContext";
 import ImageComponent from "@/core/components/fields/ImageComponent";

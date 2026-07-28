@@ -2,20 +2,20 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Box, Button, Checkbox, Skeleton } from "@mui/material";
 import { useTheme, alpha } from "@mui/material/styles";
-import { FieldContainer, FieldLabel } from "../components/fields/StyledField";
+import { FieldContainer, FieldLabel } from "@/core/components/fields/StyledField";
 import {
     StyledMotionCard,
     StyledCardActions,
     StyledCardContainer,
     StyledCardContent,
-} from "../components/cards/StyledCard";
-import { resolveFieldValue } from "../utils/fieldHelpers";
-import Actions from "./helper/Actions";
-import { BaseViewProps, Entity } from "../types";
+} from "@/core/components/cards/StyledCard";
+import { resolveFieldValue } from "@/core/utils/fieldHelpers";
+import Actions from "@/core/crud/helper/Actions";
+import { BaseViewProps, Entity } from "@/core/types";
 import { AnimatePresence } from "framer-motion";
-import { FadeIn, EmptyState } from "./components/shared";
-import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { SelectAllBar } from "./components/SelectionToolbar";
+import { FadeIn, EmptyState } from "@/core/crud/components/shared";
+import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
+import { SelectAllBar } from "@/core/crud/components/SelectionToolbar";
 
 export interface CardViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
     // ── Card-only props ────────────────────────────────────────────────

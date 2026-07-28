@@ -8,7 +8,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useAppUI } from "@/context/UIContext";
-import { studentsAssignmentsCruds } from "../../../api/all.api";
+import { studentsAssignmentsCruds } from "@/api/all.api";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 
 const MarkPresentDialog: React.FC = () => {

@@ -1,8 +1,8 @@
 /** Simple dialog wrapper that shows a "SHOW MORE" button and opens a StyledDialog with children content. */
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { FlexBetween } from "../components/layout/FlexBox";
-import StyledDialog from "../components/dialogs/StyledDialog";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface ShowMoreDialogProps {
     children?: React.ReactNode;

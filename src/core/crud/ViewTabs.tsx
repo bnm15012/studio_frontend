@@ -1,10 +1,10 @@
 /** Tabbed view component allowing switching between multiple Views instances (e.g., different sub-tables) with an "Add" button. */
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Button } from "@mui/material";
-import { FlexBetween } from "../components/layout/FlexBox";
-import Views, { type ViewsProps } from "./Views";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import Views, { type ViewsProps } from "@/core/crud/Views";
 import { Add } from "@mui/icons-material";
-import type { Entity, ViewMode } from "../types";
+import type { Entity, ViewMode } from "@/core/types";
 
 interface ViewFieldApi {
     current?: {

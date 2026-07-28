@@ -7,7 +7,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import CalendarView from "./Calendar/CalendarView.tsx";
+import CalendarView from "@/Pages/Management/Booking/Calendar/CalendarView.tsx";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil.js";
 import Views from "@/core/crud/Views.jsx";
 import type {
@@ -17,17 +17,17 @@ import type {
     paymentStatus,
     paymentType,
     bookingStatus,
-} from "../../../api/types";
+} from "@/api/types";
 
-import { bookingCruds, genericTemplateCruds } from "../../../api/all.api.js";
+import { bookingCruds, genericTemplateCruds } from "@/api/all.api.js";
 import { useAppUI } from "@/context/UIContext";
-import BookingCard from "./BookingCard.jsx";
+import BookingCard from "@/Pages/Management/Booking/BookingCard.jsx";
 import { useAlert } from "@/core/components/feedback/Alert.jsx";
-import { getCLientByNamesAPI } from "../Client/client.api.js";
-import PaymentEntryDialog from "../Payments/PaymentEntryDialog.jsx";
-import BookingInvoice from "./BookingInvoice.jsx";
+import { getCLientByNamesAPI } from "@/Pages/Management/Client/client.api.js";
+import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog.jsx";
+import BookingInvoice from "@/Pages/Management/Booking/BookingInvoice.jsx";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import PaymentList from "./PaymentList.jsx";
+import PaymentList from "@/Pages/Management/Booking/PaymentList.jsx";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle.ts";
 
 const paymentTypes: paymentType[] = ["CASH", "UPI"];

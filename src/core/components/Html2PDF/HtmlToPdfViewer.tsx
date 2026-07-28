@@ -1,9 +1,9 @@
 /** Main PDF viewer/generator component: renders HTML content, paginates to A4, and exposes download/print/email/WhatsApp actions via ref. */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { ConfirmationDialog } from "./ConfirmationDialog";
-import Loading from "../loading/Loading";
-import { usePdfActions, type WhatsAppPayload, type SendFilePayload } from "./usePdfActions";
-import { paginate } from "./html2pdf.util";
+import { ConfirmationDialog } from "@/core/components/Html2PDF/ConfirmationDialog";
+import Loading from "@/core/components/loading/Loading";
+import { usePdfActions, type WhatsAppPayload, type SendFilePayload } from "@/core/components/Html2PDF/usePdfActions";
+import { paginate } from "@/core/components/Html2PDF/html2pdf.util";
 import "./html2pdf.css";
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

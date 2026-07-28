@@ -1,6 +1,6 @@
 import Field from "@/core/components/fields/Field";
 import ContactSection from "@/core/components/cards/ContactSection";
-import UserAccessButton from "./UserAccessButton";
+import UserAccessButton from "@/Pages/Management/Branches/ManagerUser/UserAccessButton";
 
 import CardHeader from "@/core/components/cards/CardHeader";
 import { Box } from "@mui/material";

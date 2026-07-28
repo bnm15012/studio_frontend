@@ -1,6 +1,6 @@
-import UserProfileDropdown from "./UserProfileDropDown";
-import BranchesDropdown from "./BranchesDropdown";
-import Notification from "./Notification";
+import UserProfileDropdown from "@/NavigationComponets/Navbar/UserProfileDropDown";
+import BranchesDropdown from "@/NavigationComponets/Navbar/BranchesDropdown";
+import Notification from "@/NavigationComponets/Navbar/Notification";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 // import { ThemeToggleButton } from "@/core/utils/theme/ThemeProvider";

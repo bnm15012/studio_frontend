@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "@/core/components/tables/StyledTableComponents";
-import { getBulkUploadJobsAPI } from "./BulkUploadJobs.api";
+import { getBulkUploadJobsAPI } from "@/Pages/Management/BulkUploadJobs/BulkUploadJobs.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
 import { getLocalDateTime } from "@/core/utils/DateUtil";

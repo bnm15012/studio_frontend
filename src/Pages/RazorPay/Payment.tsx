@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { DialogContent, Typography, Box, Divider } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { createOrder, PaymentDetails, verifyPayment } from "./RazorPay.api";
-import { setSubscriptionPlan } from "../../state/authSlice";
-import { getEndDateBySubscriptionPlan } from "../../utils/SubscriptionPlanUtil";
+import { createOrder, PaymentDetails, verifyPayment } from "@/Pages/RazorPay/RazorPay.api";
+import { setSubscriptionPlan } from "@/state/authSlice";
+import { getEndDateBySubscriptionPlan } from "@/utils/SubscriptionPlanUtil";
 import { getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useAppDispatch, useAppSelector } from "@/state";

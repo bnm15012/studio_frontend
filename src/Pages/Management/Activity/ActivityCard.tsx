@@ -17,10 +17,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
-import { getIcon } from "./Activities.constants";
+import { getIcon } from "@/Pages/Management/Activity/Activities.constants";
 import { useState } from "react";
-import ShowMoreBatches from "./ShowMoreBatches";
-import ActivityBatchCard from "./ActivityBatchCard";
+import ShowMoreBatches from "@/Pages/Management/Activity/ShowMoreBatches";
+import ActivityBatchCard from "@/Pages/Management/Activity/ActivityBatchCard";
 import { useAppUI } from "@/context/UIContext";
 import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
 import { colorTokens } from "@/core/utils/theme/theme";

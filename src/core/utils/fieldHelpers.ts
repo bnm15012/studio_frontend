@@ -1,4 +1,4 @@
-import { getNestedValue } from "./objectHelpers";
+import { getNestedValue } from "@/core/utils/objectHelpers";
 import { FieldDef, ExtraProp, Entity, KnownKeys } from "@/core/types";
 
 /** Field utility functions: getVisibleFields, resolveFieldValue, bindGetOptions, isFieldEditable for form/view rendering.

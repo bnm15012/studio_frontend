@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
-import UserAccessDialog from "./UserAccessDialog";
+import UserAccessDialog from "@/Pages/Management/Branches/ManagerUser/UserAccessDialog";
 
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { userRights } from "@/api/types";

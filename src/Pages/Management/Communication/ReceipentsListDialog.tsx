@@ -2,7 +2,7 @@ import { useAppSelector } from "@/state";
 import { useCallback, useEffect, useState } from "react";
 
 import { useAlert } from "@/core/components/feedback/Alert";
-import { getMessageRecipientsAPI } from "./communication.api";
+import { getMessageRecipientsAPI } from "@/Pages/Management/Communication/communication.api";
 import { DialogContent, CircularProgress, Box, Typography, Avatar } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { User } from "lucide-react";

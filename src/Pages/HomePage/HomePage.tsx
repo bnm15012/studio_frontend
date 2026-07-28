@@ -1,12 +1,12 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Box } from "@mui/material";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
-import { HeroSection } from "./HeroSection";
-const TestimonialsSection = lazy(() => import("./TestimonialsSection"));
-const FeaturesSection = lazy(() => import("./FeaturesSection"));
-const DashboardPreview = lazy(() => import("./DashboardPreview"));
-const PricingSection = lazy(() => import("../Pricing/PricingSection"));
-const DemoVideoSection = lazy(() => import("./DemoVideoSection"));
+import { HeroSection } from "@/Pages/HomePage/HeroSection";
+const TestimonialsSection = lazy(() => import("@/Pages/HomePage/TestimonialsSection"));
+const FeaturesSection = lazy(() => import("@/Pages/HomePage/FeaturesSection"));
+const DashboardPreview = lazy(() => import("@/Pages/HomePage/DashboardPreview"));
+const PricingSection = lazy(() => import("@/Pages/Pricing/PricingSection"));
+const DemoVideoSection = lazy(() => import("@/Pages/HomePage/DemoVideoSection"));
 const Footer = lazy(() => import("@/core/components/Footer"));
 
 const HomePage = () => {

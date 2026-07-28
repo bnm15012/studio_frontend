@@ -1,10 +1,10 @@
 /** Dialog for viewing/uploading an image with an ImageComponent and edit/upload button. */
 import React, { useState } from "react";
 import { DialogContent, Button, IconButton } from "@mui/material";
-import StyledDialog from "../components/dialogs/StyledDialog";
-import ImageComponent from "../components/fields/ImageComponent";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import ImageComponent from "@/core/components/fields/ImageComponent";
 import { Upload } from "lucide-react";
-import { FlexEvenly } from "../components/layout/FlexBox";
+import { FlexEvenly } from "@/core/components/layout/FlexBox";
 
 export interface ImageDialogProps {
     image?: string | null;

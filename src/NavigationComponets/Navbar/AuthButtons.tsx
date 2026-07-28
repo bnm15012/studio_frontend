@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, IconButton, Tooltip, useTheme } from "@mui/material";
 import { UserRound } from "lucide-react";
-import { useAppDispatch } from "../../state";
-import { openDialog } from "../../state/dialogSlice";
+import { useAppDispatch } from "@/state";
+import { openDialog } from "@/state/dialogSlice";
 
 interface AuthButtonsProps {
     isNonMobileScreens: boolean;

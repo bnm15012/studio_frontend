@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
-import { useAppSelector, useAppDispatch } from "../../state";
+import { useAppSelector, useAppDispatch } from "@/state";
 import { useNavigate } from "react-router-dom";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { branchCruds } from "../../api/all.api";
-import { clearAllstate } from "../../state/thunks";
-import { loadInitialDataAPI } from "../../utils/loadInitialData";
+import { branchCruds } from "@/api/all.api";
+import { clearAllstate } from "@/state/thunks";
+import { loadInitialDataAPI } from "@/utils/loadInitialData";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import { useAppUI } from "@/context/UIContext";

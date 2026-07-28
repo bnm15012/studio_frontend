@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
-import { FlexBetweenColumn } from "../../../core/components/layout/FlexBox";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAlert } from "@/core/components/feedback/Alert";
 import Loading from "@/core/components/loading/Loading";
-import UploadData from "./UploadData";
-import { generatePresignUrl, uploadToS3 } from "../../../api/s3.api";
-import { createBulkUploadJobAPI } from "./BulkUploadJobs.api";
-import UploadJobHistory from "./UploadJobHistory";
+import UploadData from "@/Pages/Management/BulkUploadJobs/UploadData";
+import { generatePresignUrl, uploadToS3 } from "@/api/s3.api";
+import { createBulkUploadJobAPI } from "@/Pages/Management/BulkUploadJobs/BulkUploadJobs.api";
+import UploadJobHistory from "@/Pages/Management/BulkUploadJobs/UploadJobHistory";
 import { useAppUI } from "@/context/UIContext";
 
 const BulkUploadJobs = () => {

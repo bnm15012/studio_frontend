@@ -17,10 +17,10 @@ import {
 } from "@mui/material";
 import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
 import { Check as CheckIcon, Close } from "@mui/icons-material";
-import { getAllPlans } from "./plans.api";
+import { getAllPlans } from "@/Pages/Pricing/plans.api";
 import PaymentDialog from "@/Pages/RazorPay/Payment";
 import Loading from "@/core/components/loading/Loading";
-import { openDialog } from "../../state/dialogSlice";
+import { openDialog } from "@/state/dialogSlice";
 import { alpha } from "@mui/material/styles";
 import { PlanItem } from "@/Pages/RazorPay/Payment";
 

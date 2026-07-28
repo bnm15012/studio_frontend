@@ -1,10 +1,10 @@
 /** Axios instance configured with base URL, auth interceptor, token refresh logic (401 handling with retry), and automatic logout on refresh failure. */
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { AnyAction } from "@reduxjs/toolkit";
-import { store, RootState } from "../../state";
-import { setToken } from "../../state/authSlice";
-import { logoutUser } from "../../state/thunks";
-import { installRateLimitInterceptor, wrapGetWithDedupe } from "../api/apiGuard";
+import { store, RootState } from "@/state";
+import { setToken } from "@/state/authSlice";
+import { logoutUser } from "@/state/thunks";
+import { installRateLimitInterceptor, wrapGetWithDedupe } from "@/core/api/apiGuard";
 
 interface CustomRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;

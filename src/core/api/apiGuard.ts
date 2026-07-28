@@ -13,7 +13,7 @@
  * Usage:
  *   Install both layers on the Axios instance in api.ts:
  *
- *   import { installDedupeInterceptor, installRateLimitInterceptor } from "./apiGuard";
+ *   import { installDedupeInterceptor, installRateLimitInterceptor } from "@/core/api/apiGuard";
  *   installDedupeInterceptor(api);
  *   installRateLimitInterceptor(api);
  */

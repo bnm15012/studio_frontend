@@ -1,8 +1,8 @@
 /** Single source of truth for rendering a field in table/card/dialog contexts, handling view/edit/read-only modes. */
 import { Button } from "@mui/material";
-import Field from "../../components/fields/Field";
-import { resolveFieldValue, bindGetOptions } from "../../utils/fieldHelpers";
-import { Entity, FieldDef } from "../../types";
+import Field from "@/core/components/fields/Field";
+import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
+import { Entity, FieldDef } from "@/core/types";
 
 /**
  * FieldCell

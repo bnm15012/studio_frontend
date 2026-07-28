@@ -1,4 +1,4 @@
-import ActivityBatchCard from "./ActivityBatchCard";
+import ActivityBatchCard from "@/Pages/Management/Activity/ActivityBatchCard";
 import { DialogContent } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import StyledDialog from "@/core/components/dialogs/StyledDialog"; // adjust path as needed

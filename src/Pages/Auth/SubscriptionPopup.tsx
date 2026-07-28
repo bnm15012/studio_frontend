@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/state";
 import React, { useState, useEffect } from "react";
 import { DialogContent, Box } from "@mui/material";
-import PricingPlanCards from "../Pricing/PricingPlanCards";
+import PricingPlanCards from "@/Pages/Pricing/PricingPlanCards";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import type { Studio } from "@/api/types";
 

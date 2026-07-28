@@ -7,15 +7,15 @@ import {
     StyledTableCell,
     StyledTableContainer,
     StyledTableRow,
-} from "../components/tables/StyledTableComponents";
-import { FlexBetween, FlexEvenly } from "../components/layout/FlexBox";
-import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps } from "../types";
+} from "@/core/components/tables/StyledTableComponents";
+import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
+import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps } from "@/core/types";
 import { useUI } from "@/context/UIContext";
-import FieldCell from "./components/FieldCell";
-import { getVisibleFields } from "../utils/fieldHelpers";
+import FieldCell from "@/core/crud/components/FieldCell";
+import { getVisibleFields } from "@/core/utils/fieldHelpers";
 import { AnimatePresence } from "framer-motion";
-import { RowActions, EmptyState } from "./components/shared";
-import { getRowNumber } from "./components/getRowNumber";
+import { RowActions, EmptyState } from "@/core/crud/components/shared";
+import { getRowNumber } from "@/core/crud/components/getRowNumber";
 
 // ── Shared motion variants ─────────────────────────────────────────────────
 const rowVariants = {

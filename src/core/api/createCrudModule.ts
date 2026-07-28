@@ -1,10 +1,10 @@
 /** Factory that assembles a complete CRUD module — creates a Redux slice + thunks + helper functions for a given API route. */
-import { createGenericSlice } from "../state/createGenericSlice";
-import { getHeader } from "./helper";
-import { createCrudThunks, CrudThunksOptions } from "./thunk";
-import { Entity } from "../types";
-import { GenericState } from "../state/stateTypes";
-import { CrudThunks } from "../types";
+import { createGenericSlice } from "@/core/state/createGenericSlice";
+import { getHeader } from "@/core/api/helper";
+import { createCrudThunks, CrudThunksOptions } from "@/core/api/thunk";
+import { Entity } from "@/core/types";
+import { GenericState } from "@/core/state/stateTypes";
+import { CrudThunks } from "@/core/types";
 import {
     ActionCreatorWithPayload,
     ActionCreatorWithoutPayload,

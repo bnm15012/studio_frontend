@@ -1,7 +1,7 @@
 /** Confirmation dialog for email/mobile input before sending a PDF, with validation error display. */
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import StyledDialog from "../dialogs/StyledDialog";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
 interface ConfirmationDialogProps {
     type: "email" | "mobile" | string;

@@ -1,6 +1,6 @@
 import { Box, Typography, Container, Card, CardContent, Stack, Chip, Button } from "@mui/material";
 import { BarChart as BarChartIcon, ArrowForward as ArrowForwardIcon } from "@mui/icons-material";
-import { featurePageContent } from "./data";
+import { featurePageContent } from "@/Pages/HomePage/data";
 
 function FeaturesSection() {
     return (

@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import { expenseCruds } from "../../../api/all.api";
+import { expenseCruds } from "@/api/all.api";
 import Views from "@/core/crud/Views";
-import type { Expense, expenseCategory, paymentType } from "../../../api/types";
+import type { Expense, expenseCategory, paymentType } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
-import ExpenseCardContent from "./ExpenseCardView";
+import ExpenseCardContent from "@/Pages/Management/Expense/ExpenseCardView";
 
 const categories: expenseCategory[] = [
     "ELECTRICITY",

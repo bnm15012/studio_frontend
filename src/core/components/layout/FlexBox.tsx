@@ -5,7 +5,7 @@
  * into a single import. Individual files remain for backwards compatibility.
  *
  * Usage:
- *   import { FlexBetween, FlexEvenly, FlexBetweenColumn, FlexEvenlyColumn } from "../FlexBox";
+ *   import { FlexBetween, FlexEvenly, FlexBetweenColumn, FlexEvenlyColumn } from "@/core/components/FlexBox";
  */
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";

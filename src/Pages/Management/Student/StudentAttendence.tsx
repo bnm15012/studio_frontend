@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { studentsAssignmentsCruds } from "../../../api/all.api";
+import { studentsAssignmentsCruds } from "@/api/all.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { formatDate, getLocalDateTime, parseDateTime } from "@/core/utils/DateUtil";
 import QrForm from "@/core/components/forms/QrForm";

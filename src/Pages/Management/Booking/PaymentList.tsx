@@ -7,10 +7,10 @@ import {
     StyledCardContent,
     StyledMotionCard,
 } from "@/core/components/cards/StyledCard";
-import PaymentCard from "../Payments/PaymentCardView";
+import PaymentCard from "@/Pages/Management/Payments/PaymentCardView";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { AddCircleOutline, Edit } from "@mui/icons-material";
-import { bookingCruds, paymentCruds } from "../../../api/all.api";
+import { bookingCruds, paymentCruds } from "@/api/all.api";
 import { useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import Loading from "@/core/components/loading/Loading";

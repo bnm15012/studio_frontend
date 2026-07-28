@@ -1,12 +1,12 @@
 /** Dialog-based form for editing a single entity row, rendering visible fields with save/cancel buttons. */
-import Field from "../components/fields/Field";
-import { FlexBetween } from "../components/layout/FlexBox";
+import Field from "@/core/components/fields/Field";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import StyledDialog from "../components/dialogs/StyledDialog";
-import { FieldLabel } from "../components/fields/StyledField";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { FieldLabel } from "@/core/components/fields/StyledField";
 import { useUI } from "@/context/UIContext";
-import { bindGetOptions, resolveFieldValue, isFieldEditable } from "../utils/fieldHelpers";
-import { Entity, FieldDef, FieldMeta } from "../types";
+import { bindGetOptions, resolveFieldValue, isFieldEditable } from "@/core/utils/fieldHelpers";
+import { Entity, FieldDef, FieldMeta } from "@/core/types";
 import { Close } from "@mui/icons-material";
 import { Save } from "lucide-react";
 

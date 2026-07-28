@@ -1,9 +1,9 @@
-import { setLogin, setStudio, setSubscriptionPlan } from "../../state/authSlice";
+import { setLogin, setStudio, setSubscriptionPlan } from "@/state/authSlice";
 import api from "@/core/utils/api";
 import type { AppDispatch } from "@/state";
 import axios from "axios";
-import { transformRegisterData } from "./auth.util";
-import { branchCruds } from "../../api/all.api";
+import { transformRegisterData } from "@/Pages/Auth/auth.util";
+import { branchCruds } from "@/api/all.api";
 import { closeLastDialog } from "@/state/dialogSlice";
 
 export const registerApiCall = async (values: Record<string, unknown>) => {

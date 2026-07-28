@@ -1,6 +1,6 @@
 /** Defines default CRUD action items (edit, delete, open-form) with their icons and click handlers. */
 import { Delete, Edit, OpenInNew } from "@mui/icons-material";
-import { ActionItem } from "../../types";
+import { ActionItem } from "@/core/types";
 
 // Icon elements as module-level constants — created once, not on every defaultActions() call.
 const EditIcon = <Edit />;
