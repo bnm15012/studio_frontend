@@ -1,6 +1,6 @@
 /** Compact icon + value chip for displaying dates or string values with an associated icon. */
 import { Box, Typography, useTheme } from "@mui/material";
-import { getLocalDateTime } from "../../utils/DateUtil";
+import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { CalendarMonth } from "@mui/icons-material";
 
 /**

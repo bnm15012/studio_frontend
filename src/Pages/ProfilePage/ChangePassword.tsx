@@ -4,7 +4,7 @@ import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
 import Loading from "@/core/components/loading/Loading";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { updateProfile } from "../Auth/auth.api";
-import { validatePassword } from "../../utils/validationConstraints";
+import { validatePassword } from "@/core/utils/validationConstraints";
 import { closeLastDialog } from "../../state/dialogSlice";
 import type { User } from "@/api/types";
 

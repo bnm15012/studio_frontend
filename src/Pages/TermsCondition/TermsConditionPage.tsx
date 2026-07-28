@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Typography, Box, Stack, Divider, useTheme } from "@mui/material";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
-import Footer from "../../Components/Footer";
+import Footer from "@/core/components/Footer";
 
 const TermsConditionPage: React.FC = () => {
     const theme = useTheme();

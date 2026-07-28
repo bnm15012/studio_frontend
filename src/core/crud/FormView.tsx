@@ -19,7 +19,7 @@ import { CloudUpload } from "@mui/icons-material";
 import SegmentIcon from "@mui/icons-material/Segment";
 import { useNavigate } from "react-router-dom";
 import Field from "../components/fields/Field";
-import { getNestedValue } from "../../utils/objectHelpers";
+import { getNestedValue } from "../utils/objectHelpers";
 import { FieldLabel } from "../components/fields/StyledField";
 import { resolveFieldValue, bindGetOptions, isFieldEditable } from "../utils/fieldHelpers";
 import { useUI } from "@/context/UIContext";

@@ -6,7 +6,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { GlobalStyles, useTheme } from "@mui/system";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import { parseDateTime, formatDateTime } from "../../utils/DateUtil";
+import { parseDateTime, formatDateTime } from "@/core/utils/DateUtil";
 
 export interface DateTimeProps {
     value?: string | null;

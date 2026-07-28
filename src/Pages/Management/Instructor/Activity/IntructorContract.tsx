@@ -6,7 +6,7 @@ import { getLocalDateTime } from "@/core/utils/DateUtil";
 import Loading from "@/core/components/loading/Loading";
 import { getAllTemplatesAPI } from "../../TemplatesPage/Template.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { replacePlaceholders } from "../../../../utils/globalFuns";
+import { replacePlaceholders } from "@/core/utils/globalFuns";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";

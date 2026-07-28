@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Paper, Box, Stack, keyframes } from "@mui/material";
 import { FlexBetween, FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
-import Footer from "../../Components/Footer";
+import Footer from "@/core/components/Footer";
 
 // Define animations
 const fadeIn = keyframes`

@@ -21,7 +21,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Navbar } from "@/NavigationComponets/Navbar/Navbar";
-import Footer from "../../Components/Footer";
+import Footer from "@/core/components/Footer";
 
 // Define animations
 const fadeIn = keyframes`

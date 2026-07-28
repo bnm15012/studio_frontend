@@ -7,7 +7,7 @@ const FeaturesSection = lazy(() => import("./FeaturesSection"));
 const DashboardPreview = lazy(() => import("./DashboardPreview"));
 const PricingSection = lazy(() => import("../Pricing/PricingSection"));
 const DemoVideoSection = lazy(() => import("./DemoVideoSection"));
-const Footer = lazy(() => import("../../Components/Footer"));
+const Footer = lazy(() => import("@/core/components/Footer"));
 
 const HomePage = () => {
     useEffect(() => {

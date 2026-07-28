@@ -2,7 +2,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { useRef } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import { replacePlaceholders } from "../../../utils/globalFuns";
+import { replacePlaceholders } from "@/core/utils/globalFuns";
 import { Typography } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";

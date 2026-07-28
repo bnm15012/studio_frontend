@@ -7,7 +7,7 @@ import { sendWhatsAppMessage } from "./communication.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { Box, TextField, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import { replacePlaceholders } from "../../../utils/globalFuns";
+import { replacePlaceholders } from "@/core/utils/globalFuns";
 import { useAppUI } from "@/context/UIContext";
 
 interface SelectTemplateDialogProps {
