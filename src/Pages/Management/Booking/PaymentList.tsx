@@ -13,7 +13,7 @@ import { AddCircleOutline, Edit } from "@mui/icons-material";
 import { bookingCruds, paymentCruds } from "@/api/all.api";
 import { useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import DialogForm from "@/core/crud/DialogForm";
 import { useAppUI } from "@/context/UIContext";
@@ -92,7 +92,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     };
     return (
         <Box sx={{ mt: 1 }}>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             <FlexBetween p={1}>
                 <Typography variant="h6" sx={{ fontWeight: 600, my: "auto" }}>
                     {title}

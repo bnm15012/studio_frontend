@@ -51,7 +51,7 @@ const Notification: React.FC<NotificationProps> = ({ branch, token }) => {
             }));
 
             dispatch(setNotifications(birthdayNotifications));
-        } catch (err: unknown) {
+        } catch (err) {
             console.error("Failed to fetch student names:", err);
         } finally {
             setLoading(false);

@@ -31,7 +31,7 @@ export const generatePresignUrl = async (
             data: response.data.data,
             message: response.data.status.statusMessage || "Success",
         };
-    } catch (err: unknown) {
+    } catch (err) {
         const message = getApiMessage(
             err as { response?: { data?: { status?: { statusMessage?: string } } } },
             "Failed to fetch dashboard data",
@@ -64,7 +64,7 @@ export const uploadToS3 = async (
         }
         showAlert("File uploaded successfully!", "success");
         return true;
-    } catch (err: unknown) {
+    } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         showAlert("Error uploading file: " + message, "error");
         console.error("Error uploading file:", err);

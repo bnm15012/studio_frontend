@@ -17,7 +17,7 @@ import {
 import MultiSelectDialog from "@/core/components/dialogs/MultiSelectDialog";
 import { getStudentNamesAPI } from "@/Pages/Management/Student/Student.api";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { getInstructorNamesAPI } from "@/Pages/Management/Instructor/Instructor.api";
@@ -114,7 +114,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -129,7 +129,7 @@ const Communication = () => {
                 size,
             });
             return { data: data || [], totalCount: totalCount || 0 };
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Failed to fetch student names:", error);
             showAlert("Failed to fetch student names", "error");
             return { data: [], totalCount: 0 };
@@ -191,7 +191,7 @@ const Communication = () => {
             } else {
                 showAlert(response.message, "error");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error("Failed to send message:", error);
             showAlert("Failed to send message", "error");
         } finally {
@@ -201,7 +201,7 @@ const Communication = () => {
 
     return (
         <FlexBetweenColumn sx={{ width: "100%" }}>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             <FlexBetween flexDirection={isMobile ? "column" : "row"} gap={1} width={"100%"}>
                 {/* Left Panel */}
                 <FlexBetweenColumn

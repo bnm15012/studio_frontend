@@ -34,7 +34,7 @@ export const getAllTemplatesAPI = async ({
             message: status.statusMessage,
             totalCount: status.totalCount,
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
         return {
             success: false,

@@ -32,7 +32,7 @@ const ReceipentsListDialog: React.FC<ReceipentsListDialogProps> = ({ onClose, me
             } else {
                 showAlert(message, "error");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
             showAlert("Failed to fetch message recipients!", "error");
         } finally {

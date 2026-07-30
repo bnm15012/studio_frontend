@@ -24,8 +24,8 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    "allowJs": true,
-    "checkJs": true,
+    "allowJs": false,
+    "checkJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {

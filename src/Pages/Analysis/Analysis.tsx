@@ -27,7 +27,7 @@ import {
 } from "chart.js";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import { fetchReportData } from "@/Pages/Analysis/analysis.api";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAppDispatch } from "@/state";
 import { setAnalysisData } from "@/state/analysisSlice";
 import { useAppSelector } from "@/state";
@@ -133,7 +133,7 @@ const Analysis: React.FC = () => {
                     setIncomeBarData(data.expenseVsPaymentBarData);
                     setActivityData(data.activityData);
                 }
-            } catch (error: unknown) {
+            } catch (error) {
                 console.error(
                     "Error fetching report data:",
                     error instanceof Error ? error.message : String(error),
@@ -181,91 +181,65 @@ const Analysis: React.FC = () => {
                     </FormControl>
                 </Box>
 
-                {loading ? (
-                    <Loading />
-                ) : (
-                    expenseData &&
-                    paymentData &&
-                    incomeBarData &&
-                    incomeLineData &&
-                    activityData && (
-                        <>
-                            {/* Row 1 */}
-                            <Grid container spacing={3} mb={3}>
-                                <Grid item xs={12} md={6}>
-                                    <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                color="textSecondary"
-                                                gutterBottom
-                                            >
-                                                Income & Expense
-                                            </Typography>
-                                            <Box sx={{ height: 275 }}>
-                                                <Line
-                                                    data={incomeLineData}
-                                                    options={chartOptions}
-                                                />
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                color="textSecondary"
-                                                gutterBottom
-                                            >
-                                                Expense Categories
-                                            </Typography>
-                                            <Box sx={{ height: 275 }}>
-                                                <Pie data={expenseData} options={chartOptions} />
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
+                <TopProgressBar loading={loading} />
+                {expenseData && paymentData && incomeBarData && incomeLineData && activityData && (
+                    <>
+                        {/* Row 1 */}
+                        <Grid container spacing={3} mb={3}>
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" color="textSecondary" gutterBottom>
+                                            Income & Expense
+                                        </Typography>
+                                        <Box sx={{ height: 275 }}>
+                                            <Line data={incomeLineData} options={chartOptions} />
+                                        </Box>
+                                    </CardContent>
+                                </Card>
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" color="textSecondary" gutterBottom>
+                                            Expense Categories
+                                        </Typography>
+                                        <Box sx={{ height: 275 }}>
+                                            <Pie data={expenseData} options={chartOptions} />
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
 
-                            {/* Row 2 */}
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} md={6}>
-                                    <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                color="textSecondary"
-                                                gutterBottom
-                                            >
-                                                Income & Expense
-                                            </Typography>
-                                            <Box sx={{ height: 275 }}>
-                                                <Bar data={incomeBarData} options={chartOptions} />
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                color="textSecondary"
-                                                gutterBottom
-                                            >
-                                                Payment By PayeeType
-                                            </Typography>
-                                            <Box sx={{ height: 275 }}>
-                                                <Pie data={paymentData} options={chartOptions} />
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
+                        {/* Row 2 */}
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" color="textSecondary" gutterBottom>
+                                            Income & Expense
+                                        </Typography>
+                                        <Box sx={{ height: 275 }}>
+                                            <Bar data={incomeBarData} options={chartOptions} />
+                                        </Box>
+                                    </CardContent>
+                                </Card>
                             </Grid>
-                        </>
-                    )
+                            <Grid item xs={12} md={6}>
+                                <Card sx={{ boxShadow: 4, borderRadius: 2 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" color="textSecondary" gutterBottom>
+                                            Payment By PayeeType
+                                        </Typography>
+                                        <Box sx={{ height: 275 }}>
+                                            <Pie data={paymentData} options={chartOptions} />
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
+                    </>
                 )}
             </Box>
         </WidgetsOnPage>

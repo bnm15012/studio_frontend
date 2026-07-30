@@ -4,6 +4,9 @@ import { getApiMessage, getHeader, isCacheValid, withLoading } from "@/core/api/
 import { CrudThunks, Entity, AppDispatch, RequestParams } from "@/core/types";
 import { GenericState } from "@/core/state/stateTypes";
 import { buildThunkKey, tryAcquireThunk, releaseThunk } from "@/core/api/apiGuard";
+import { RootState } from "@/state";
+
+type GetState = () => RootState;
 
 export interface CrudThunksOptions<T extends Entity> {
     actions: {
@@ -12,13 +15,13 @@ export interface CrudThunksOptions<T extends Entity> {
         prependItem: (item: T) => { type: string; payload: T };
         updateItem: (item: Entity) => { type: string; payload: Entity };
         removeItem: (id: string | number) => { type: string; payload: string | number };
-        appendItems: (payload: { data: T[]; rootId: unknown }) => {
+        appendItems: (payload: { data: T[]; rootId: string | number }) => {
             type: string;
-            payload: { data: T[]; rootId: unknown };
+            payload: { data: T[]; rootId: string | number };
         };
-        setItems: (payload: { data: T[]; rootId: unknown }) => {
+        setItems: (payload: { data: T[]; rootId: string | number }) => {
             type: string;
-            payload: { data: T[]; rootId: unknown };
+            payload: { data: T[]; rootId: string | number };
         };
         setInfo: (info: Entity) => { type: string; payload: Entity };
         clearData: () => { type: string };
@@ -36,10 +39,13 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
             setLoading: (loading: boolean) => void,
             prepend?: boolean,
         ) =>
-        async (dispatch: AppDispatch, getState: unknown) => {
+        async (dispatch: AppDispatch, getState: GetState) => {
             await withLoading(setLoading, async () => {
                 try {
-                    const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
+                    const state =
+                        ((getState() as Record<string, unknown>)[route] as
+                            | GenericState<T>
+                            | undefined) ?? ({} as GenericState<T>);
                     const {
                         data: { data },
                     } = await api.post(`/${route}/add`, newData, getHeader(token));
@@ -52,7 +58,7 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
                             ? actions.prependItem((data as T[])[0])
                             : actions.addItem((data as T[])[0]),
                     );
-                } catch (err: unknown) {
+                } catch (err) {
                     console.error(err);
                     showAlert(
                         getApiMessage(
@@ -73,21 +79,24 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
             showAlert: (msg: string, type: string) => void,
             setLoading: (loading: boolean) => void,
         ) =>
-        async (dispatch: AppDispatch, getState: unknown) => {
+        async (dispatch: AppDispatch, getState: GetState) => {
             await withLoading(setLoading, async () => {
                 try {
-                    const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
+                    const state =
+                        ((getState() as Record<string, unknown>)[route] as
+                            | GenericState<T>
+                            | undefined) ?? ({} as GenericState<T>);
                     const { data } = await api.put(
                         `/${route}/update/${id}`,
                         updatedData,
                         getHeader(token),
                     );
                     const record = (data.data as T[])[0];
-                    if ((state.recordById as unknown as Entity)[id]) {
+                    if (state.recordById[id]) {
                         dispatch(actions.setRecord(record));
                     }
-                    dispatch(actions.updateItem(record as unknown as Entity));
-                } catch (err: unknown) {
+                    dispatch(actions.updateItem(record as Entity));
+                } catch (err) {
                     console.error(err);
                     showAlert(
                         getApiMessage(
@@ -112,7 +121,7 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
                 try {
                     await api.delete(`/${route}/delete/${id}`, getHeader(token));
                     dispatch(actions.removeItem(id));
-                } catch (err: unknown) {
+                } catch (err) {
                     console.error(err);
                     showAlert(
                         getApiMessage(
@@ -136,12 +145,14 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
             /** Internal flag — used by `refresh` to bypass cache checks. Not part of the public CrudThunks interface. */
             _force?: boolean,
         ) =>
-        async (dispatch: AppDispatch, getState: unknown) => {
-            const state = (getState as () => Entity)()[route] as GenericState<T>;
+        async (dispatch: AppDispatch, getState: GetState) => {
+            const state =
+                ((getState() as Record<string, unknown>)[route] as GenericState<T> | undefined) ??
+                ({} as GenericState<T>);
 
             if (rootId === 0) return;
             if (!_force && isCacheValid(state, rootId, params)) return;
-            if (!_force && !params.page && (state.items as unknown[]).length) return;
+            if (!_force && !params.page && state.items.length) return;
 
             // ── Thunk in-flight guard ──────────────────────────────────────────
             // Prevents identical concurrent dispatches (e.g. two components both
@@ -177,7 +188,7 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
                                 totalCount: (status as Entity).totalCount,
                             }),
                         );
-                    } catch (err: unknown) {
+                    } catch (err) {
                         console.error(err);
                         showAlert(
                             getApiMessage(
@@ -202,8 +213,10 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
             setLoading: (loading: boolean) => void,
             { forceRefresh = false }: { forceRefresh?: boolean } = {},
         ) =>
-        async (dispatch: AppDispatch, getState: unknown) => {
-            const state = (getState as () => Entity)()[route] as GenericState<T> | undefined;
+        async (dispatch: AppDispatch, getState: GetState) => {
+            const state = (getState() as Record<string, unknown>)[route] as
+                | GenericState<T>
+                | undefined;
             if (!state) return;
 
             if (id === 0) return;
@@ -218,7 +231,7 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
                     const record = (data as T[])[0];
                     dispatch(actions.setRecord(record));
                     return record;
-                } catch (err: unknown) {
+                } catch (err) {
                     console.error(err);
                     showAlert(
                         getApiMessage(
@@ -239,12 +252,14 @@ export function createCrudThunks<T extends Entity>({ actions, route }: CrudThunk
             token: string | null | undefined,
             infinite = false,
         ) =>
-        async (dispatch: AppDispatch, getState: unknown) => {
-            const state = (getState as () => Entity)()[route] as unknown as GenericState<T>;
+        async (dispatch: AppDispatch, getState: GetState) => {
+            const state =
+                ((getState() as Record<string, unknown>)[route] as GenericState<T> | undefined) ??
+                ({} as GenericState<T>);
 
             const rootId = state.rootId as string | number | null | undefined;
-            const pageSize = (state.pageSize as number) || 10;
-            const searchTerm = (state.searchTerm as string) || "";
+            const pageSize = state.pageSize || 10;
+            const searchTerm = state.searchTerm || "";
             const filterKeys = (state.filterKeys as Entity) || {};
 
             if (rootId === null || rootId === undefined || rootId === 0) {

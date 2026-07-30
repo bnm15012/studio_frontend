@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
-import { useParams, useLocation } from "react-router-dom";
-import Loading from "@/core/components/loading/Loading";
+import { useParams } from "react-router-dom";
+import { Box, Skeleton } from "@mui/material";
 const Clients = lazy(() => import("@/Pages/Management/Client/Clients"));
 const Bookings = lazy(() => import("@/Pages/Management/Booking/Bookings"));
 const Students = lazy(() => import("@/Pages/Management/Student/Students"));
@@ -21,7 +21,6 @@ const Attendance = lazy(() => import("@/Pages/Management/Attendance/Attendance")
 
 const Management: React.FC = () => {
     const { page, ID: rawID } = useParams<{ page: string; ID?: string }>();
-    const location = useLocation();
     /** Convert URL param to number. "NEW" → 0, digits → Number, absent → undefined */
     const ID =
         rawID !== undefined
@@ -73,7 +72,15 @@ const Management: React.FC = () => {
 
     return (
         <WidgetsOnPage isSidebarShouldBeOn={true}>
-            <Suspense key={location.pathname} fallback={<Loading />}>
+            <Suspense
+                fallback={
+                    <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
+                        <Skeleton variant="rectangular" height={40} sx={{ borderRadius: 1 }} />
+                        <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 1 }} />
+                        <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 1 }} />
+                    </Box>
+                }
+            >
                 {renderComponent()}
             </Suspense>
         </WidgetsOnPage>

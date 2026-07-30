@@ -33,7 +33,7 @@ export const addEnquiryAPI = async ({
             message: status.statusMessage,
             totalCount: status.totalCount,
         };
-    } catch (err: unknown) {
+    } catch (err) {
         return {
             success: false,
             message: getApiMessage(

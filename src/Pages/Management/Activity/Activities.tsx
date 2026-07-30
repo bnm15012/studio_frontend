@@ -136,7 +136,7 @@ const Activities = () => {
                 );
                 setDialogOpen(false);
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
             showAlert(error instanceof Error ? error.message : "Error saving activity!", "error");
         }

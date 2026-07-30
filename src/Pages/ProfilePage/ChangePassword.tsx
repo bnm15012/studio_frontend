@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState } from "react";
 import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { updateProfile } from "@/Pages/Auth/auth.api";
 import { validatePassword } from "@/core/utils/validationConstraints";
@@ -48,7 +48,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
             } else {
                 showAlert(responseMessage || "Failed to change password", "error");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             showAlert(error instanceof Error ? error.message : "Error changing password", "error");
         } finally {
             setLoading(false);
@@ -57,6 +57,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, height: "100%" }}>
+            <TopProgressBar loading={loading} />
             <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
                     Current Email
@@ -108,8 +109,6 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
             >
                 Change Password
             </Button>
-
-            {loading && <Loading />}
         </Box>
     );
 };

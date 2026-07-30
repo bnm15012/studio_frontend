@@ -152,7 +152,7 @@ export const useCrudAction = <T extends Entity>({
                 }
                 updateEditId(-1);
                 if (formKey === 0) navigate(`/management/${tableName}/`);
-            } catch (error: unknown) {
+            } catch (error) {
                 console.error(error);
                 const msg =
                     error instanceof Error ? error.message : "Operation failed. Please try again!";

@@ -70,7 +70,7 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
                     showAlert(message || "Failed to register!", "error");
                 }
             }
-        } catch (err: unknown) {
+        } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             showAlert(message, "error");
         } finally {

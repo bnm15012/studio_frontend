@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { fetchDashBoardData } from "@/Pages/DashBoard/Dashboard.api";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import Group from "@mui/icons-material/Group";
 import CardMembershipRounded from "@mui/icons-material/CardMembershipRounded";
@@ -197,7 +197,7 @@ const DashBoard: React.FC = () => {
                     height: "100vh",
                 }}
             >
-                {loading && <Loading />}
+                <TopProgressBar loading={loading} />
 
                 {/* ── Hero banner ──────────────────────────────────── */}
                 <Box

@@ -32,7 +32,7 @@ export const getCLientByNamesAPI = async ({ branchId, token, params }: GetClient
             success: true,
             message: status.statusMessage || "Client fetched successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch client!"),

@@ -8,7 +8,7 @@ import Views from "@/core/crud/Views";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "@/Pages/Management/Student/StudentAttendence";
 import BulkAttendanceDialog from "@/Pages/Management/Attendance/BulkAttendanceDialog";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { getCurrentDateLocal } from "@/core/utils/DateUtil";
 import MarkPresentDialog from "@/Pages/Management/Student/MarkPresent";
@@ -187,7 +187,7 @@ const Attendance = () => {
 
     return (
         <FlexBetweenColumn>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             <Box>
                 <Views<StudentAssignment>
                     actionBarProps={{

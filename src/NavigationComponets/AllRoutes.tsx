@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AppUIProvider, NonAuthUIProvider } from "@/context/UIContext";
-import Loading from "@/core/components/loading/Loading";
+import { Box, CircularProgress } from "@mui/material";
 import { useAppSelector } from "@/state";
 
 import HomePage from "@/Pages/HomePage/HomePage";
@@ -31,12 +31,25 @@ import ServerErrorDialog from "@/core/components/dialogs/ServerErrorDialog";
 import AuthTransitionOverlay from "@/core/components/loading/AuthTransitionOverlay";
 
 export const AllRoutes = () => {
-    const location = useLocation();
     const token = useAppSelector((state) => state.auth.token);
     const loading = useAppSelector((state) => state.auth.loading);
 
     return (
-        <Suspense key={location.pathname} fallback={<Loading />}>
+        <Suspense
+            fallback={
+                <Box
+                    sx={{
+                        width: "100vw",
+                        height: "100vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <CircularProgress size={32} thickness={3} />
+                </Box>
+            }
+        >
             {loading ? (
                 <AuthTransitionOverlay />
             ) : token ? (

@@ -2,10 +2,9 @@ import { useAppDispatch, useAppSelector } from "@/state";
 import { useEffect, useState } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { genericTemplateCruds } from "@/api/all.api";
-import Loading from "@/core/components/loading/Loading";
+import { Box, TextField, Typography, Skeleton } from "@mui/material";
 import { sendWhatsAppMessage } from "@/Pages/Management/Communication/communication.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { Box, TextField, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
 import { useAppUI } from "@/context/UIContext";
@@ -123,7 +122,17 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                 {/* Template List */}
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     {loading ? (
-                        <Loading />
+                        <>
+                            {[1, 2, 3].map((i) => (
+                                <Box
+                                    key={i}
+                                    sx={{ p: 2, border: "1px solid #ddd", borderRadius: 2 }}
+                                >
+                                    <Skeleton width="60%" height={24} />
+                                    <Skeleton width="80%" height={16} sx={{ mt: 1 }} />
+                                </Box>
+                            ))}
+                        </>
                     ) : allTemplates.length === 0 ? (
                         <Box
                             sx={{

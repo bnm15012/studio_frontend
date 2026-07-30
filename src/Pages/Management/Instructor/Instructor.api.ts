@@ -29,7 +29,7 @@ export const getInstructorNamesAPI = async ({
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched instructors successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const message =
             error && typeof error === "object" && "response" in error
                 ? (error as { response?: { data?: { message?: string } } }).response?.data?.message

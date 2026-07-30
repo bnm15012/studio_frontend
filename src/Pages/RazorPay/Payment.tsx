@@ -94,7 +94,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                                 );
                             }
                             onClose();
-                        } catch (error: unknown) {
+                        } catch (error) {
                             console.error(error);
                             showAlert("Payment processing failed. Please try again.", "error");
                         }
@@ -115,7 +115,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
             } else {
                 throw new Error("Failed to create order.");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(
                 "Error in payment process:",
                 error instanceof Error ? error.message : String(error),

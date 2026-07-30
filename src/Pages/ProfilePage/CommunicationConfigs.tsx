@@ -7,7 +7,7 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Field from "@/core/components/fields/Field";
 import { updateStudio } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAppUI } from "@/context/UIContext";
 import { Studio } from "@/api/types";
 
@@ -43,7 +43,7 @@ const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) =
 
     return (
         <Box sx={{ px: 3 }}>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             {/* Email Configuration Section */}
             <FlexBetween flexDirection={"column"} gap={5}>
                 {isAdmin && (

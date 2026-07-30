@@ -55,7 +55,7 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
                     showAlert(result.message, "error");
                     setPreviewUrl(value || "/assets/defaultUserPic.png");
                 }
-            } catch (error: unknown) {
+            } catch (error) {
                 console.error(error);
                 showAlert("An error occurred during image upload.", "error");
                 setPreviewUrl(value || "/assets/defaultUserPic.png");

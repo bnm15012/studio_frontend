@@ -26,7 +26,7 @@ export const getAllBranchAPI = async ({
             totalCount: status.totalCount,
             message: status.statusMessage || "Branchs fetched successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to fetch Branchs!"),
@@ -50,7 +50,7 @@ export const addBranchAPI = async ({
             success: true,
             message: status.statusMessage || "Branch added successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to add Branch!"),
@@ -76,7 +76,7 @@ export const updateBranchAPI = async ({
             success: true,
             message: status.statusMessage || "Branch updated successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to update Branch!"),
@@ -107,7 +107,7 @@ export const toggleBranchAPI = async ({
             success: true,
             message: status.statusMessage || "Branch updated successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(error, "Failed to update Branch!"),

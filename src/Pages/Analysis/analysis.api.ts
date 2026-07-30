@@ -46,7 +46,7 @@ export const fetchReportData = async ({
             data: processMonthlyStudioData(data),
             message: data.message || "Report data retrieved successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         console.error("Report data fetch error:", error);
 
         const message =

@@ -19,7 +19,7 @@ import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucid
 import { Check as CheckIcon, Close } from "@mui/icons-material";
 import { getAllPlans } from "@/Pages/Pricing/plans.api";
 import PaymentDialog from "@/Pages/RazorPay/Payment";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { openDialog } from "@/state/dialogSlice";
 import { alpha } from "@mui/material/styles";
 import { PlanItem } from "@/Pages/RazorPay/Payment";
@@ -116,7 +116,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                 mb: 8,
             }}
         >
-            {isLoading && <Loading />}
+            <TopProgressBar loading={isLoading} />
             {allPlans &&
                 allPlans.map((plan: Plan, index: number) => (
                     <Box key={index}>

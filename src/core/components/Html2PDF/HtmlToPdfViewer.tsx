@@ -1,8 +1,12 @@
 /** Main PDF viewer/generator component: renders HTML content, paginates to A4, and exposes download/print/email/WhatsApp actions via ref. */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { ConfirmationDialog } from "@/core/components/Html2PDF/ConfirmationDialog";
-import Loading from "@/core/components/loading/Loading";
-import { usePdfActions, type WhatsAppPayload, type SendFilePayload } from "@/core/components/Html2PDF/usePdfActions";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
+import {
+    usePdfActions,
+    type WhatsAppPayload,
+    type SendFilePayload,
+} from "@/core/components/Html2PDF/usePdfActions";
 import { paginate } from "@/core/components/Html2PDF/html2pdf.util";
 import "./html2pdf.css";
 
@@ -169,7 +173,7 @@ const HtmlToPdfViewer = forwardRef<HtmlToPdfViewerRef, HtmlToPdfViewerProps>(
 
         return (
             <>
-                {loading && <Loading />}
+                <TopProgressBar loading={loading} />
                 <div id="main" ref={sourceRef} style={{ display: "none" }}>
                     <div>
                         <div className="header-container">

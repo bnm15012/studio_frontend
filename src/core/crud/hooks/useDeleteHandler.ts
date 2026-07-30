@@ -54,7 +54,7 @@ export const useDeleteHandler = <T extends Entity>({
             if (deleteId === 0) return;
             tableCruds.remove(deleteId, token, showAlert, setLoading)(dispatch);
             if (formKey !== undefined) navigate(`/management/${tableName}`);
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
             showAlert(`Failed to delete ${tableName}!`, "error");
         } finally {

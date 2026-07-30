@@ -1,6 +1,6 @@
 /** Table-based list view component using MUI Table, with animated row transitions (framer-motion), pagination, checkboxes for row selection, and field rendering via FieldCell. */
 import React, { memo } from "react";
-import { TableBody, TableHead, Paper, Pagination, Checkbox } from "@mui/material";
+import { TableBody, TableHead, Paper, Pagination, Checkbox, Skeleton } from "@mui/material";
 
 import {
     StyledTable,
@@ -27,6 +27,29 @@ const rowVariants = {
     }),
     exit: { opacity: 0, transition: { duration: 0.15 } },
 };
+
+const SKELETON_ROWS = 6;
+
+function TableSkeletonRows({ colCount }: { colCount: number }) {
+    return (
+        <>
+            {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+                <StyledTableRow key={`skel-${i}`}>
+                    {Array.from({ length: colCount }).map((__, j) => (
+                        <StyledTableCell key={j}>
+                            <Skeleton
+                                variant="text"
+                                width={j === 0 ? 30 : `${60 + Math.random() * 30}%`}
+                                height={18}
+                                sx={{ borderRadius: 1 }}
+                            />
+                        </StyledTableCell>
+                    ))}
+                </StyledTableRow>
+            ))}
+        </>
+    );
+}
 
 interface DesktopTableProps<T extends Entity> {
     fields: FieldDef<T>[];
@@ -101,74 +124,82 @@ function DesktopTable<T extends Entity = Entity>({
                 </TableHead>
                 <TableBody>
                     <AnimatePresence mode="sync">
-                        {data.map((row, rowIndex) => {
-                            const rowId = Number(row[fieldsMeta.primary]) || 0;
-                            const isItemSelected = selectedRows.includes(rowId);
-                            return (
-                                <StyledTableRow
-                                    key={String(rowId)}
-                                    custom={rowIndex}
-                                    variants={rowVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                    sx={{ cursor: onClickRow ? "pointer" : "auto" }}
-                                    onClick={() => onClickRow && onClickRow(row)}
-                                    selected={isItemSelected}
-                                >
-                                    {multi && (
-                                        <StyledTableCell padding="checkbox">
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                onChange={(e) => handleSelectRow(e, rowId)}
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                        </StyledTableCell>
-                                    )}
-                                    <StyledTableCell>
-                                        {getRowNumber(
-                                            tableState as {
-                                                currentPage: string | number;
-                                                pageSize: number;
-                                            },
-                                            rowIndex,
+                        {data.length === 0 && loading ? (
+                            <TableSkeletonRows
+                                colCount={2 + visibleFields.length + (multi ? 1 : 0)}
+                            />
+                        ) : (
+                            data.map((row, rowIndex) => {
+                                const rowId = Number(row[fieldsMeta.primary]) || 0;
+                                const isItemSelected = selectedRows.includes(rowId);
+                                return (
+                                    <StyledTableRow
+                                        key={String(rowId)}
+                                        custom={rowIndex}
+                                        variants={rowVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                        sx={{ cursor: onClickRow ? "pointer" : "auto" }}
+                                        onClick={() => onClickRow && onClickRow(row)}
+                                        selected={isItemSelected}
+                                    >
+                                        {multi && (
+                                            <StyledTableCell padding="checkbox">
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    onChange={(e) => handleSelectRow(e, rowId)}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            </StyledTableCell>
                                         )}
-                                    </StyledTableCell>
-
-                                    {visibleFields.map((field) => (
-                                        <StyledTableCell key={field.name}>
-                                            <FieldCell
-                                                field={field}
-                                                row={row}
-                                                isEdit={
-                                                    editingId === rowId &&
-                                                    (field.editable ? field.editable(row) : true)
-                                                }
-                                                handleChange={(v, _id, name) =>
-                                                    handleChange(v, rowId, name)
-                                                }
-                                                handleViewOpen={handleViewOpen}
-                                                submitAttempted={submitAttempted}
-                                            />
+                                        <StyledTableCell>
+                                            {getRowNumber(
+                                                tableState as {
+                                                    currentPage: string | number;
+                                                    pageSize: number;
+                                                },
+                                                rowIndex,
+                                            )}
                                         </StyledTableCell>
-                                    ))}
 
-                                    <StyledTableCell onClick={(e) => e.stopPropagation()}>
-                                        <FlexEvenly>
-                                            <RowActions
-                                                isEditing={editingId === rowId}
-                                                rowId={rowId}
-                                                handleSave={handleSave}
-                                                handleCancel={handleCancel}
-                                                actions={actions}
-                                                row={row}
-                                            />
-                                        </FlexEvenly>
-                                    </StyledTableCell>
-                                </StyledTableRow>
-                            );
-                        })}
+                                        {visibleFields.map((field) => (
+                                            <StyledTableCell key={field.name}>
+                                                <FieldCell
+                                                    field={field}
+                                                    row={row}
+                                                    isEdit={
+                                                        editingId === rowId &&
+                                                        (field.editable
+                                                            ? field.editable(row)
+                                                            : true)
+                                                    }
+                                                    handleChange={(v, _id, name) =>
+                                                        handleChange(v, rowId, name)
+                                                    }
+                                                    handleViewOpen={handleViewOpen}
+                                                    submitAttempted={submitAttempted}
+                                                />
+                                            </StyledTableCell>
+                                        ))}
+
+                                        <StyledTableCell onClick={(e) => e.stopPropagation()}>
+                                            <FlexEvenly>
+                                                <RowActions
+                                                    isEditing={editingId === rowId}
+                                                    rowId={rowId}
+                                                    handleSave={handleSave}
+                                                    handleCancel={handleCancel}
+                                                    actions={actions}
+                                                    row={row}
+                                                />
+                                            </FlexEvenly>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                );
+                            })
+                        )}
                     </AnimatePresence>
 
                     {data.length === 0 && !loading && (

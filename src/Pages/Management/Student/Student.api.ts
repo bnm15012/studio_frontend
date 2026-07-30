@@ -31,7 +31,7 @@ export const getStudentNamesAPI = async ({
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched students successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message:
@@ -75,7 +75,7 @@ export const addStudentAPI = async ({ newData, token }: AddStudentParams) => {
             success: true,
             message: status.statusMessage,
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message:

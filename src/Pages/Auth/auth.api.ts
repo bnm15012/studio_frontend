@@ -19,7 +19,7 @@ export const registerApiCall = async (values: Record<string, unknown>) => {
                 response.data.message ||
                 "You will receive an email which contains password! please login with that password!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }
@@ -73,7 +73,7 @@ export const loginApiCall = async ({ values, dispatch }: LoginApiParams) => {
             }),
         );
         return { success: true, message: authData.message || "Login successful!" };
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }
@@ -108,7 +108,7 @@ export const changePasswordApiCall = async ({
             success: true,
             message: response.data.message || "Password changed successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }
@@ -144,7 +144,7 @@ export const updateProfile = async ({ values, dispatch, token }: UpdateProfilePa
         } else {
             return { success: true, message: savedUser.message || "Profile updated" };
         }
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }
@@ -157,7 +157,7 @@ export const sendOTPRequest = async (email: string) => {
             success: true,
             otpToken: response.data.data[0].otpToken || "OTP sent successfully to your email!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }
@@ -188,7 +188,7 @@ export const updateStudio = async ({ values, dispatch, token }: UpdateStudioPara
         } else {
             return { success: false, message: savedStudio.message || "Studio updated" };
         }
-    } catch (error: unknown) {
+    } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         return { success: false, message };
     }

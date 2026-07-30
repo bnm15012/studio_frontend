@@ -29,7 +29,7 @@ export const createOrder = async ({ token, plan, studioId, branchId }: CreateOrd
             data: response.data.data[0],
             message: response.data.status.statusMessage || "Order created successfully of amount!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         console.error("Error creating order:", error);
         throw error;
     }
@@ -50,7 +50,7 @@ export const verifyPayment = async (
             data: response.data.data[0],
             message: response.data.status.statusMessage || "Payment done successfully !",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         console.error("Error verifying payment:", error);
         throw error;
     }

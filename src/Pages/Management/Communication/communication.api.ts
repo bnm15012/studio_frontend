@@ -54,7 +54,7 @@ export const sendMessageApi = async ({
             success: true,
             message: status.statusMessage || "Message sent successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(
@@ -88,7 +88,7 @@ export const getMessageHistoryAPI = async ({
             totalCount: status.totalCount,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(
@@ -116,7 +116,7 @@ export const getMessageRecipientsAPI = async ({
             success: true,
             message: status.statusMessage || "Templates fetched successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message: getErrorMessage(
@@ -142,7 +142,7 @@ export const sendWhatsAppMessage = async ({
     window.open(whatsappUrl, "_blank");
     try {
         await sendMessageApi({ token, payload });
-    } catch (error: unknown) {
+    } catch (error) {
         console.error(error);
     }
     return {

@@ -40,7 +40,7 @@ const MarkPresentDialog: React.FC = () => {
                 );
                 setScanStatus("success");
                 setMessage("Attendance Marked");
-            } catch (error: unknown) {
+            } catch (error) {
                 setScanStatus("fail");
                 setMessage(
                     error instanceof Error
@@ -125,7 +125,7 @@ const MarkPresentDialog: React.FC = () => {
                     },
                     () => {},
                 );
-            } catch (err: unknown) {
+            } catch (err) {
                 console.error("Scanner Error:", err);
                 if (!isMounted) return;
 

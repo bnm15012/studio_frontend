@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -54,6 +55,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.23",
     "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^6.0.11",
     "typescript": "^5.9.3",
@@ -61,5 +64,10 @@
     "vite": "^6.0.11",
     "vite-plugin-checker": "^0.10.3",
     "vite-tsconfig-paths": "^6.1.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
   }
 }

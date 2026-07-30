@@ -24,7 +24,7 @@ export const uploadImageApiCall = async (
         });
         const data = response.data;
         return { success: true, data, message: "Image uploaded successfully!" };
-    } catch (error: unknown) {
+    } catch (error) {
         const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
         const message = err?.response?.data?.status?.statusMessage || "Failed to upload image.";
         return { success: false, message };

@@ -11,7 +11,7 @@ export const getAllPlans = async ({ AMC }: GetAllPlansParams) => {
             params: { AMC },
         });
         return { data: response.data.data, success: true, message: "Plans fetched successfully" };
-    } catch (error: unknown) {
+    } catch (error) {
         console.error(error);
         return { data: null, success: false, message: "Error fetching plans" };
     }

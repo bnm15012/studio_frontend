@@ -38,7 +38,7 @@ export default function SelectionField<T>({
                 setLoading(true);
                 const result = await getOptions(search, 1, limit);
                 setOptions(result);
-            } catch (err: unknown) {
+            } catch (err) {
                 console.error("Error fetching options", err);
                 setOptions([]);
             } finally {

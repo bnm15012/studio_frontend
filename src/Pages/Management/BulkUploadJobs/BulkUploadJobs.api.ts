@@ -16,7 +16,7 @@ export const createBulkUploadJobAPI = async (
             data: data,
             message: status.statusMessage || "Started uploading data, will be processed shortly.",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const err = error as { response?: { data?: { message?: string } } };
         return {
             success: false,
@@ -52,7 +52,7 @@ export const getBulkUploadJobsAPI = async ({
             totalCount: status.totalCount,
             message: status.statusMessage || "Fetched bulk upload jobs successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const err = error as { response?: { data?: { message?: string } } };
         return {
             success: false,

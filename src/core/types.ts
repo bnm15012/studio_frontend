@@ -2,10 +2,8 @@
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
 import { Entity, FilterKeys } from "@/core/state/stateTypes";
-import { RootState } from "@/state";
-export type { Entity, FilterKeys };
-
-export type AppDispatch = (action: unknown) => unknown;
+import { RootState, AppDispatch } from "@/state";
+export type { Entity, FilterKeys, AppDispatch };
 
 export type ViewMode = "LIST" | "CARD" | "FORM";
 
@@ -497,7 +495,6 @@ export interface ActionItem<T = GenericItem> {
     icon?: React.ReactNode;
     sx?: {
         color?: string;
-        [key: string]: unknown;
     };
     hide?: boolean | ((row: T) => boolean);
     enabled?: boolean | ((row: T) => boolean);

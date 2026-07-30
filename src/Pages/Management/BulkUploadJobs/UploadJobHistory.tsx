@@ -11,7 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "@/core/components/tables/StyledTableComponents";
 import { getBulkUploadJobsAPI } from "@/Pages/Management/BulkUploadJobs/BulkUploadJobs.api";
 import { useAlert } from "@/core/components/feedback/Alert";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { useAppUI } from "@/context/UIContext";
 
@@ -54,7 +54,7 @@ const UploadJobHistory = () => {
 
     return (
         <Box>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             <TableContainer>
                 <Table>
                     <TableHead>

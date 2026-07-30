@@ -2,7 +2,7 @@ import { Pagination } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
 import { getMessageHistoryAPI } from "@/Pages/Management/Communication/communication.api";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 
@@ -50,7 +50,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
                 } else {
                     showAlert(message, "error");
                 }
-            } catch (error: unknown) {
+            } catch (error) {
                 console.error(error);
                 showAlert("Failed to fetch expenses!", "error");
             } finally {
@@ -72,7 +72,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
 
     return (
         <FlexBetween flexDirection={"column"} mt={2}>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             {isMobile ? (
                 <MessageHistoryCard onViewRecipients={setOpenDialog} history={history} />
             ) : (

@@ -44,7 +44,7 @@ const InfiniteSelectField: React.FC<InfiniteSelectFieldProps> = ({
                     return [...prev, ...uniqueNewOptions];
                 });
                 setTotal(response.total);
-            } catch (err: unknown) {
+            } catch (err) {
                 setError(err instanceof Error ? err.message : "Failed to fetch options");
             } finally {
                 setLoading(false);

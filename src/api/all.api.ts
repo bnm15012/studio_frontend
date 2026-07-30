@@ -72,7 +72,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>()({
                             getHeader(token),
                         );
                         dispatch(actions.updateItems(data.data));
-                    } catch (err: unknown) {
+                    } catch (err) {
                         console.error(err);
                         showAlert(
                             getApiMessage(
@@ -103,7 +103,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>()({
                             getHeader(token),
                         );
                         dispatch(actions.updateItem(data.data[0]));
-                    } catch (err: unknown) {
+                    } catch (err) {
                         console.error(err);
                         showAlert(
                             getApiMessage(
@@ -127,7 +127,7 @@ export const studentsAssignmentsCruds = createCrudModule<StudentAssignment>()({
                 try {
                     const { data } = await api.get(`/${route}/invoice?token=${invoiceToken}`);
                     return data;
-                } catch (err: unknown) {
+                } catch (err) {
                     console.error(err);
                     showAlert(
                         getApiMessage(

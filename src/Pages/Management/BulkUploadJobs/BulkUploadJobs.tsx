@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAlert } from "@/core/components/feedback/Alert";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import UploadData from "@/Pages/Management/BulkUploadJobs/UploadData";
 import { generatePresignUrl, uploadToS3 } from "@/api/s3.api";
 import { createBulkUploadJobAPI } from "@/Pages/Management/BulkUploadJobs/BulkUploadJobs.api";
@@ -64,7 +64,7 @@ const BulkUploadJobs = () => {
                     throw new Error(message || "Failed to create bulk upload job");
                 }
                 showAlert("File uploaded successfully!", "success");
-            } catch (error: unknown) {
+            } catch (error) {
                 showAlert(
                     "Error uploading file: " +
                         (error instanceof Error ? error.message : String(error)),
@@ -85,7 +85,7 @@ const BulkUploadJobs = () => {
                     handleUploadFile={handleUploadFile}
                 />
             </FlexBetween>
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
             <UploadJobHistory />
         </FlexBetweenColumn>
     );

@@ -26,7 +26,7 @@ export const fetchDashBoardData = async ({
             data,
             message: data.message || "Dashboard data retrieved successfully!",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         console.error("Dashboard data fetch error:", error);
 
         const message =

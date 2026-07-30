@@ -18,7 +18,7 @@ export const updatePaymentAPI = async ({ paymentId, paymentData, token }: Update
             data: response.data.data[0],
             message: response.data.status.statusMessage,
         };
-    } catch (error: unknown) {
+    } catch (error) {
         const message =
             error && typeof error === "object" && "response" in error
                 ? (error as { response?: { data?: { message?: string } } })?.response?.data?.message

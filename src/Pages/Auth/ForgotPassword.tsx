@@ -12,7 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/state";
 import { useState } from "react";
 import { FlexBetween, FlexEvenlyColumn } from "@/core/components/layout/FlexBox";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { changePasswordApiCall, sendOTPRequest } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import CloseIcon from "@mui/icons-material/Close";
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
             } else {
                 showAlert(message || "Failed to send OTP", "error");
             }
-        } catch (err: unknown) {
+        } catch (err) {
             console.error(err);
             showAlert("Error sending OTP", "error");
         } finally {
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
             } else {
                 showAlert(message || "Failed to change password", "error");
             }
-        } catch (err: unknown) {
+        } catch (err) {
             showAlert(err instanceof Error ? err.message : String(err), "error");
         } finally {
             setLoading(false);
@@ -214,7 +214,7 @@ const ForgotPassword = () => {
                 )}
             </FlexEvenlyColumn>
 
-            {loading && <Loading />}
+            <TopProgressBar loading={loading} />
         </Dialog>
     );
 };

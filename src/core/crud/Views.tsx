@@ -7,14 +7,14 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
 import { useAlert } from "@/core/components/feedback/Alert";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Typography, Box, Paper, CircularProgress } from "@mui/material";
+import { Typography, Box, Paper } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useNavigate } from "react-router-dom";
 import { useMergedActions } from "@/core/crud/hooks/useMergedActions";
 import { useCrudAction } from "@/core/crud/hooks/useCrudAction";
 import { useTableData } from "@/core/crud/hooks/useTableData";
 import { useDeleteHandler } from "@/core/crud/hooks/useDeleteHandler";
-import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
 import {
     FieldDef,
@@ -122,7 +122,9 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
     const theme = useTheme();
     const { isMobile, token: rawToken } = useAppUI();
     const token = rawToken ?? "";
-    const [loading, setLoading] = useState(false);
+    const [fetchLoading, setFetchLoading] = useState(false);
+    const [mutateLoading, setMutateLoading] = useState(false);
+    const loading = fetchLoading || mutateLoading;
 
     const [visibilityMap, setVisibilityMap] = useState<ColumnVisibilityMap>(() =>
         getStoredVisibility(tableName),
@@ -147,7 +149,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
         size,
         rootId,
         currentView,
-        setLoading,
+        setLoading: setFetchLoading,
         defaultParams,
     });
 
@@ -169,7 +171,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
         tableCruds: safeCruds,
         token,
         showAlert,
-        setLoading,
+        setLoading: setMutateLoading,
         rootId,
         navigate,
         tableName,
@@ -200,7 +202,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
         tableCruds: safeCruds,
         token,
         showAlert,
-        setLoading,
+        setLoading: setMutateLoading,
         dispatch,
         navigate,
         formKey,
@@ -209,8 +211,8 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
     });
 
     const refreshData = useCallback(() => {
-        dispatch(safeCruds.refresh(showAlert, setLoading, token));
-    }, [dispatch, showAlert, safeCruds, token]);
+        dispatch(safeCruds.refresh(showAlert, setFetchLoading, token));
+    }, [dispatch, showAlert, safeCruds, token, setFetchLoading]);
 
     const openFormView = useCallback(
         (row: T) => {
@@ -336,6 +338,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
 
     return (
         <>
+            <TopProgressBar loading={fetchLoading} />
             {formKey !== undefined ? (
                 <FormView<T>
                     {...commonStableProps}
@@ -456,11 +459,6 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                         </Box>
                     )}
                 </StyledDialog>
-            )}
-            {loading && (
-                <FlexEvenly>
-                    <CircularProgress />
-                </FlexEvenly>
             )}
 
             {deleteDialogOpen && deleteId > 0 && (

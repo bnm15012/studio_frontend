@@ -14,7 +14,7 @@ export const createWhatsAppCredentialsAPI = async ({
             },
         });
         return response.data.data[0];
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message:
@@ -43,7 +43,7 @@ export const checkWhatsAppConnectionAPI = async ({
             success: true,
             message: "Connected !",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message:
@@ -72,7 +72,7 @@ export const logoutWhatsAppConnectionAPI = async ({
             success: true,
             message: "diconnected !",
         };
-    } catch (error: unknown) {
+    } catch (error) {
         return {
             success: false,
             message:

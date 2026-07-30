@@ -30,14 +30,14 @@ export const withLoading = async <T>(
 };
 
 interface CacheState {
-    rootId: unknown;
-    currentPage: unknown;
-    searchTerm: unknown;
+    rootId: string | number;
+    currentPage: string | number;
+    searchTerm: string;
     filterKeys: Record<string, unknown>;
 }
 
 interface CacheParams {
-    page?: unknown;
+    page?: number;
     searchTerm?: string;
 }
 
@@ -45,7 +45,11 @@ interface CacheParams {
  * Returns true when the slice state already contains the data being requested,
  * meaning the thunk can safely skip a network call.
  */
-export const isCacheValid = (state: CacheState, rootId: unknown, params: CacheParams): boolean =>
+export const isCacheValid = (
+    state: CacheState,
+    rootId: string | number,
+    params: CacheParams,
+): boolean =>
     state.rootId === rootId &&
     state.currentPage === params.page &&
     params.searchTerm === state.searchTerm &&

@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useEffect, useState } from "react";
-import Loading from "@/core/components/loading/Loading";
+
 import UserWidgets from "@/Pages/ProfilePage/Widgets/UserWidgets";
 import { Box, Tabs, Tab, useTheme } from "@mui/material";
 import ChangePassword from "@/Pages/ProfilePage/ChangePassword";
@@ -117,9 +117,7 @@ const ProfilePage: React.FC = () => {
                     <SettingsTab />
                 ) : tabValue === 4 ? (
                     <CommunicationConfigs studio={studio} />
-                ) : (
-                    <Loading />
-                )}
+                ) : null}
             </Box>
         </StyledDialog>
     );

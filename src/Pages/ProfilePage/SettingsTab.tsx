@@ -48,7 +48,7 @@ const SettingsTab: React.FC = () => {
             } else {
                 showAlert(message, "error");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
             showAlert("Internal server error", "error");
         }

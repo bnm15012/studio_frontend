@@ -263,7 +263,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
             } else {
                 showAlert(message, "error");
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
 
             showAlert(error instanceof Error ? error.message : "Failed to submit form", "error");

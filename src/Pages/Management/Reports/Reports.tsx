@@ -14,7 +14,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
 import { useAlert } from "@/core/components/feedback/Alert";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { reportsAPi } from "@/Pages/Management/Reports/reports.api";
 import { useAppUI } from "@/context/UIContext";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
@@ -185,7 +185,7 @@ const Reports: React.FC = () => {
                     }
                 }
             }
-        } catch (error: unknown) {
+        } catch (error) {
             console.error(error);
             showAlert("Failed to fetch report data.", "error");
         } finally {
@@ -391,7 +391,7 @@ const Reports: React.FC = () => {
                     width: isMobile ? "100%" : "auto",
                 }}
             >
-                {loading && <Loading />}
+                <TopProgressBar loading={loading} />
                 <HtmlToPdfViewer
                     ref={pdfViewerRef}
                     studio={studio as { logo: string; studioName: string }}

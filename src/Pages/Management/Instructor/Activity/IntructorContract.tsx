@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "@/state";
 import DialogContent from "@mui/material/DialogContent";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
-import Loading from "@/core/components/loading/Loading";
+import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
@@ -105,7 +105,7 @@ const InstructorContract = ({
             ]}
         >
             <DialogContent dividers sx={{ display: "flex", justifyContent: "center" }}>
-                {loading && <Loading />}
+                <TopProgressBar loading={loading} />
                 <HtmlToPdfViewer
                     fileName={`Instructor-Contract-${String(instructorData.name)}.pdf`}
                     ref={pdfViewerRef}

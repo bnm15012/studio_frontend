@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { studentsAssignmentsCruds } from "@/api/all.api";
 import StudentInvoice from "@/Pages/Management/Student/StudentInvoice";
-import Loading from "@/core/components/loading/Loading";
+
 import BookingInvoice from "@/Pages/Management/Booking/BookingInvoice";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { Booking, Branch, GenericTemplate, Student, StudentAssignment, Studio } from "@/api/types";
 
 interface InvoiceData {
@@ -48,7 +48,19 @@ const InvoicePage: React.FC = () => {
     }, [fetchInvoice, invoiceToken]);
 
     if (loading) {
-        return <Loading />;
+        return (
+            <Box
+                sx={{
+                    width: "100vw",
+                    height: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <CircularProgress size={32} thickness={3} />
+            </Box>
+        );
     }
 
     if (!invoice) {
