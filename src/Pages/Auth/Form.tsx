@@ -5,6 +5,7 @@ import { closeLastDialog, openDialog } from "@/state/dialogSlice.js";
 import FormFields from "@/Pages/Auth/FormFields";
 import type { FormFieldsValues } from "@/Pages/Auth/FormFields";
 import { loginApiCall, registerApiCall } from "@/Pages/Auth/auth.api";
+import type { RegisterFormValues, LoginFormValues } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
 import { User } from "@/api/types.js";
@@ -37,7 +38,7 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
     const dispatch = useAppDispatch();
     const isLogin = pageType === "Login";
     const isRegister = pageType === "Register";
-    const [values, setValues] = useState<Record<string, unknown>>(
+    const [values, setValues] = useState<RegisterFormValues | LoginFormValues | User>(
         isLogin
             ? initialValuesLogin
             : editProfile
@@ -57,12 +58,15 @@ const Form: React.FC<FormProps> = ({ pageType, editProfile = false, user }) => {
             setLoading(true);
             if (isLogin) {
                 dispatch(setAuthLoading({ loading: true }));
-                const response = await loginApiCall({ values, dispatch });
+                const response = await loginApiCall({
+                    values: values as LoginFormValues,
+                    dispatch,
+                });
                 if (!response.success) {
                     showAlert(response.message, "error");
                 }
             } else {
-                const { success, message } = await registerApiCall(values);
+                const { success, message } = await registerApiCall(values as RegisterFormValues);
                 if (success) {
                     showAlert(message, "success");
                     dispatch(closeLastDialog());

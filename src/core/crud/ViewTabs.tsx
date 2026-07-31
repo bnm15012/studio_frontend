@@ -4,7 +4,7 @@ import { Tabs, Tab, Box, Button } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Views, { type ViewsProps } from "@/core/crud/Views";
 import { Add } from "@mui/icons-material";
-import type { Entity, ViewMode } from "@/core/types";
+import type { GenericItem, ViewMode } from "@/core/types";
 
 interface ViewFieldApi {
     current?: {
@@ -15,7 +15,7 @@ interface ViewFieldApi {
 interface ViewFieldItem {
     label?: string;
     api?: ViewFieldApi;
-    viewProps?: Partial<ViewsProps<Entity>>;
+    viewProps?: Partial<ViewsProps<GenericItem>>;
 }
 
 interface ViewTabsProps {
@@ -70,7 +70,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     sx={{ mt: 2, display: tabIndex === index ? "block" : "none" }}
                 >
                     <Views
-                        {...(view.viewProps as ViewsProps<Entity>)}
+                        {...(view.viewProps as ViewsProps<GenericItem>)}
                         rootId={formKey ?? 0}
                         currentView={currentView ?? "LIST"}
                     />

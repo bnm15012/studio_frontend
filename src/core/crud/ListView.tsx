@@ -9,7 +9,7 @@ import {
     StyledTableRow,
 } from "@/core/components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
-import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps } from "@/core/types";
+import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps, CrudState } from "@/core/types";
 import { useUI } from "@/context/UIContext";
 import FieldCell from "@/core/crud/components/FieldCell";
 import { getVisibleFields } from "@/core/utils/fieldHelpers";
@@ -58,7 +58,7 @@ interface DesktopTableProps<T extends Entity> {
     /** -1 = nothing editing, 0 = new row, positive = existing row */
     editingId?: number;
     multi?: boolean;
-    tableState: Entity;
+    tableState: CrudState;
     loading?: boolean;
     handleSave?: (rowId: number) => void | Promise<void>;
     handleCancel?: () => void;

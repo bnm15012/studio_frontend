@@ -1,7 +1,8 @@
+import type { BulkUploadJob } from "@/api/types";
 import api from "@/core/utils/api";
 
 export const createBulkUploadJobAPI = async (
-    jobData: Record<string, unknown>,
+    jobData: Partial<BulkUploadJob>,
     token: string | null | undefined,
 ) => {
     try {

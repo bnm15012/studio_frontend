@@ -1,10 +1,11 @@
+import type { Branch } from "@/api/types";
 import { Box } from "@mui/material";
 import { Circle, Business } from "@mui/icons-material";
 import ContactSection from "@/core/components/cards/ContactSection";
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardLocation from "@/core/components/cards/CardLocation";
 
-const BranchCardView = ({ row }: { row: Record<string, unknown> }) => {
+const BranchCardView = ({ row }: { row: Branch }) => {
     const name = row.name as string | undefined;
     const address = row.address as string | undefined;
     const city = row.city as string | undefined;

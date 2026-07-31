@@ -8,6 +8,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
 import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
 import { FieldDef } from "@/core/types";
+import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 
 // ==============================
 // Styled Components
@@ -389,9 +390,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                                 type={field.type}
                                                 extraProp={bindGetOptions(field, formState)}
                                                 validation={
-                                                    field.validation as
-                                                        | Record<string, unknown>
-                                                        | undefined
+                                                    field.validation as ValidationRules | undefined
                                                 }
                                             />
                                         </FieldContainer>

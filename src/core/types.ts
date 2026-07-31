@@ -571,9 +571,9 @@ export interface ViewsApiRef {
     refreshData?: () => void;
 }
 
-export interface BaseViewProps<T extends Entity = GenericItem> {
+export interface BaseViewProps<T extends Record<string, unknown> = GenericItem> {
     data: T[];
-    tableState: Record<string, unknown>;
+    tableState: CrudState;
     loading?: boolean;
     fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;

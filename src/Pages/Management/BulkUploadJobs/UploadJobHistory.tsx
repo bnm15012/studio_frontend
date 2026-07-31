@@ -1,3 +1,4 @@
+import type { BulkUploadJob } from "@/api/types";
 import {
     TableBody,
     TableHead,
@@ -20,7 +21,7 @@ const UploadJobHistory = () => {
     const showAlert = useAlert();
     const { token, currentBranch } = useAppUI();
     const [page, setPage] = useState(1);
-    const [data, setData] = useState<Record<string, unknown>[] | undefined>();
+    const [data, setData] = useState<BulkUploadJob[] | undefined>();
     const [loading, setLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
 

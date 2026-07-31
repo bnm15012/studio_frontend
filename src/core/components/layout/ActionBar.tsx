@@ -15,7 +15,7 @@ import { iconBtnFilledSx, iconBtnSx } from "@/core/components/layout/ActionButto
 import ColumnVisibilityButton from "@/core/components/layout/ColumnVisibilityButton";
 import { ColumnVisibilityButtonProps } from "@/core/components/layout/columnVisibilityHelper";
 
-import { Entity } from "@/core/types";
+import { GenericItem } from "@/core/types";
 
 interface CrudApi {
     current?: {
@@ -30,8 +30,8 @@ export interface ActionBarProps {
     search?: boolean;
     qrProps?: QrFormProps;
     api?: CrudApi;
-    columnVisibility?: Omit<ColumnVisibilityButtonProps<Entity>, "fields"> & {
-        fields: ColumnVisibilityButtonProps<Entity>["fields"];
+    columnVisibility?: Omit<ColumnVisibilityButtonProps<GenericItem>, "fields"> & {
+        fields: ColumnVisibilityButtonProps<GenericItem>["fields"];
     };
     tableName?: string;
     addBtnText?: string;

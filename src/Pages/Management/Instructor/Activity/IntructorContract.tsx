@@ -11,6 +11,7 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 import { useAppUI } from "@/context/UIContext";
+import type { GenericTemplate, Instructor, InstructorAssignment } from "@/api/types";
 
 const InstructorContract = ({
     open,
@@ -19,19 +20,19 @@ const InstructorContract = ({
 }: {
     open: boolean;
     onClose: () => void;
-    activityData: Record<string, unknown>;
+    activityData: InstructorAssignment;
 }) => {
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
-    const [templates, setTemplates] = useState<Record<string, unknown>[]>([]);
+    const [templates, setTemplates] = useState<GenericTemplate[]>([]);
     const { token, studio, currentBranch } = useAppUI();
 
     const [loading, setLoading] = useState(false);
-    const [instructorData, setInstructorData] = useState<Record<string, unknown>>({});
+    const [instructorData, setInstructorData] = useState<Partial<Instructor>>({});
 
     const tableState = useAppSelector((state) => state["instructors"]);
-    const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<number | string | null>(null);
 
     useEffect(() => {
         const fetchTemplates = async () => {
@@ -59,7 +60,7 @@ const InstructorContract = ({
 
     useEffect(() => {
         if (instructorData)
-            setInstructorData(tableState.recordById[activityData.instructorId as string] || {});
+            setInstructorData(tableState.recordById[Number(activityData.instructorId)] || {});
     }, [activityData.instructorId, instructorData, tableState.recordById]);
 
     useEffect(() => {
@@ -71,12 +72,12 @@ const InstructorContract = ({
             );
 
             if (matchedTemplate) {
-                setSelectedTemplateId(matchedTemplate.id as string);
+                setSelectedTemplateId(matchedTemplate.id ?? null);
             }
         }
     }, [templates, selectedTemplateId, activityData.activityName]);
 
-    const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
+    const selectedTemplate = templates.find((t) => String(t.id) === String(selectedTemplateId));
 
     const preparedDescription = selectedTemplate
         ? replacePlaceholders(selectedTemplate.templateContent as string, {

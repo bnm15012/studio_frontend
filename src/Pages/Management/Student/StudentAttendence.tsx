@@ -8,7 +8,7 @@ import { formatDate, getLocalDateTime, parseDateTime } from "@/core/utils/DateUt
 import QrForm from "@/core/components/forms/QrForm";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import type { StudentAssignment } from "@/api/types";
+import type { AttendanceEntry, StudentAssignment } from "@/api/types";
 
 interface StudentAttendenceProps {
     open: boolean;
@@ -33,7 +33,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
 
         const map: Record<string, boolean> = {};
 
-        activityData.attendanceEntries?.forEach((entry: Record<string, unknown>) => {
+        activityData.attendanceEntries?.forEach((entry: AttendanceEntry) => {
             const key = entry.date as string;
             map[key] = Boolean(entry.present);
         });
@@ -77,7 +77,7 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
         (currentMap: Record<string, boolean>) => {
             const originalMap: Record<string, boolean> = {};
 
-            activityData.attendanceEntries?.forEach((entry: Record<string, unknown>) => {
+            activityData.attendanceEntries?.forEach((entry: AttendanceEntry) => {
                 originalMap[entry.date as string] = Boolean(entry.present);
             });
 

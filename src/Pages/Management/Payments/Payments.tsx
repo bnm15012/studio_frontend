@@ -97,7 +97,7 @@ const Expenses: React.FC = () => {
                         { name: "delete", enabled: () => false, hide: true },
                         {
                             name: "edit",
-                            enabled: (row: Record<string, unknown>) => row.status !== "COMPLETED",
+                            enabled: (row: Payment) => row.status !== "COMPLETED",
                         },
                     ]}
                     tableName={"payments"}

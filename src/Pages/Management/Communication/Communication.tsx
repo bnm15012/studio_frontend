@@ -77,14 +77,12 @@ const Communication = () => {
                         initialTemplate.id || 0,
                     );
                     let nextId = prevMaxId + 1;
-                    const processedData = (res.data || []).map(
-                        (template: Record<string, unknown>) => {
-                            if (!template.id) {
-                                return { ...template, id: nextId++ };
-                            }
-                            return template;
-                        },
-                    );
+                    const processedData = (res.data || []).map((template: GenericTemplate) => {
+                        if (!template.id) {
+                            return { ...template, id: nextId++ };
+                        }
+                        return template;
+                    });
                     return [initialTemplate, ...processedData];
                 });
             } else {

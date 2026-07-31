@@ -5,9 +5,16 @@ import { Select, MenuItem, FormControl, TableCell } from "@mui/material";
 import { useAppUI } from "@/context/UIContext";
 import type { Activity, BatchEntry } from "@/api/types";
 
+interface SelectedActivityData {
+    activity?: Activity;
+    membershipType?: string;
+    batchName?: string;
+    [key: string]: unknown;
+}
+
 interface ActivityMembershipSelectorProps {
     onSelect: (...args: unknown[]) => void;
-    selectedData?: Record<string, unknown>;
+    selectedData?: SelectedActivityData;
     isMemberSHipToo?: boolean;
 }
 
@@ -20,10 +27,8 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
     const activities = useAppSelector((state) => state.activities.items);
 
     const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-        activities.find(
-            (f: Activity) =>
-                f.activityId === (selectedData?.activity as Record<string, unknown>).activityId,
-        ) || null,
+        activities.find((f: Activity) => f.activityId === selectedData?.activity?.activityId) ||
+            null,
     );
     const [selectedMembership, setSelectedMembership] = useState(
         selectedData?.membershipType || "",

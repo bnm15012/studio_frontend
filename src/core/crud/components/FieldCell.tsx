@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import Field from "@/core/components/fields/Field";
 import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
 import { Entity, FieldDef } from "@/core/types";
+import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 
 /**
  * FieldCell
@@ -65,7 +66,7 @@ function FieldCell<T extends Entity>({
             setValue={(v) => handleChange?.(v, rowId, field.name)}
             type={field.type}
             extraProp={bindGetOptions(field, row)}
-            validation={field.validation as Record<string, unknown>}
+            validation={field.validation as ValidationRules}
             submitAttempted={submitAttempted}
         />
     );

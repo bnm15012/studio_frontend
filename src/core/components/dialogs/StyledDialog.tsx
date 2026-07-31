@@ -53,7 +53,7 @@ export interface DialogAction {
     component: React.ReactNode;
 }
 
-interface StyledDialogProps extends Omit<DialogProps, "open" | "onClose"> {
+export interface StyledDialogProps extends Omit<DialogProps, "open" | "onClose"> {
     open: boolean;
     onClose: () => void;
     closeIcon?: boolean;
@@ -66,6 +66,7 @@ interface StyledDialogProps extends Omit<DialogProps, "open" | "onClose"> {
     actions?: DialogAction[];
     titleBgColor?: TitleBgKey;
     fullScreen?: boolean;
+    size?: "xs" | "sm" | "md" | "lg" | "xl" | false | string;
 }
 
 const StyledDialog: React.FC<StyledDialogProps> = ({
@@ -81,6 +82,7 @@ const StyledDialog: React.FC<StyledDialogProps> = ({
     actions = [],
     titleBgColor = "success",
     fullScreen = false,
+    size = "md",
     ...props
 }) => {
     const { isMobile } = useUI();
@@ -94,6 +96,7 @@ const StyledDialog: React.FC<StyledDialogProps> = ({
             slots={{ transition: isMobile || isFullScreen ? Transition : undefined }}
             fullWidth
             fullScreen={isFullScreen}
+            maxWidth={(size as "xs" | "sm" | "md" | "lg" | "xl" | false) || props.maxWidth}
             {...props}
         >
             <DialogTitle

@@ -1,4 +1,5 @@
-export const transformRegisterData = (data: Record<string, unknown>) => ({
+import type { RegisterFormValues } from "@/Pages/Auth/auth.api";
+export const transformRegisterData = (data: RegisterFormValues) => ({
     studioName: data.studioName as string,
     location: data.location as string,
     userName: data.userName as string,

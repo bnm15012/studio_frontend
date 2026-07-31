@@ -49,7 +49,7 @@ const getBadgeStyles = (badge: React.ReactNode, enabled: boolean | undefined, th
 
 interface CardHeaderProps {
     enabled?: boolean;
-    FieldIcon?: React.ComponentType<Record<string, unknown>>;
+    FieldIcon?: React.ElementType;
     image?: string;
     fieldValue?: string | number;
     badge?: React.ReactNode;

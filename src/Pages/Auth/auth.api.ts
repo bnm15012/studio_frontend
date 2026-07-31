@@ -5,8 +5,25 @@ import axios from "axios";
 import { transformRegisterData } from "@/Pages/Auth/auth.util";
 import { branchCruds } from "@/api/all.api";
 import { closeLastDialog } from "@/state/dialogSlice";
+import type { User, Studio } from "@/api/types";
 
-export const registerApiCall = async (values: Record<string, unknown>) => {
+export interface RegisterFormValues {
+    studioName: string;
+    location: string;
+    userName: string;
+    email: string;
+    contactDetails: string;
+    address: string;
+    state: string;
+    pincode: string;
+}
+
+export interface LoginFormValues {
+    userName: string;
+    password: string;
+}
+
+export const registerApiCall = async (values: RegisterFormValues) => {
     try {
         const response = await axios.post(
             `${import.meta.env.VITE_APP_REST_API as string}/studios/add`,
@@ -26,7 +43,7 @@ export const registerApiCall = async (values: Record<string, unknown>) => {
 };
 
 interface LoginApiParams {
-    values: Record<string, unknown>;
+    values: LoginFormValues;
     dispatch: AppDispatch;
 }
 
@@ -115,14 +132,17 @@ export const changePasswordApiCall = async ({
 };
 
 interface UpdateProfileParams {
-    values: Record<string, unknown>;
+    values: Partial<Omit<User, "imageUrl">> & {
+        imageUrl?: string | null;
+        userId?: number | string;
+    };
     dispatch: AppDispatch;
     token: string;
 }
 
 export const updateProfile = async ({ values, dispatch, token }: UpdateProfileParams) => {
     try {
-        const savedUserResponse = await api.put(`/users/update/${values["userId"]}`, values, {
+        const savedUserResponse = await api.put(`/users/update/${values.userId}`, values, {
             headers: {
                 Authorization: `${token}`,
                 "Content-Type": "application/json",
@@ -164,7 +184,7 @@ export const sendOTPRequest = async (email: string) => {
 };
 
 interface UpdateStudioParams {
-    values: Record<string, unknown>;
+    values: Partial<Omit<Studio, "logo">> & { logo?: string | null; studioId?: number | string };
     dispatch: AppDispatch;
     token: string | null | undefined;
 }

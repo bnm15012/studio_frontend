@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/state";
 import { usePageSearch } from "@/core/hooks/useSearch";
-import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState } from "@/core/types";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState, RequestParams } from "@/core/types";
 
 export interface UseTableDataParams<T extends Record<string, unknown> = Record<string, unknown>> {
     tableCruds: CrudThunks<T>;
@@ -13,7 +13,7 @@ export interface UseTableDataParams<T extends Record<string, unknown> = Record<s
     rootId: number;
     currentView: string;
     setLoading: SetLoadingFn;
-    defaultParams?: Record<string, unknown>;
+    defaultParams?: RequestParams & Record<string, unknown>;
 }
 
 export const useTableData = <T extends Record<string, unknown> = Record<string, unknown>>({
@@ -29,7 +29,9 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
 }: UseTableDataParams<T>) => {
     const dispatch = useAppDispatch();
     const tableState = useAppSelector(
-        (state: Record<string, unknown>) => (state[tableName] as CrudState) || ({} as CrudState),
+        (state) =>
+            ((state as unknown as Record<string, unknown>)[tableName] as CrudState) ||
+            ({} as CrudState),
     );
 
     const { subscribe } = usePageSearch();

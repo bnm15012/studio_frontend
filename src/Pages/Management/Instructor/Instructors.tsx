@@ -2,12 +2,7 @@ import { useAppSelector } from "@/state";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
-import type {
-    Activity,
-    activityStatus,
-    Instructor,
-    InstructorAssignment,
-} from "@/api/types";
+import type { Activity, activityStatus, Instructor, InstructorAssignment } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "@/api/all.api";
 import InstructorCard from "@/Pages/Management/Instructor/InstructorCard";
@@ -135,7 +130,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const { isMobile, currentBranch } = useAppUI();
     const api = useRef<ViewsApiRef>({});
     const apiInstructor = useRef<ViewsApiRef>({});
-    const [generateContractDoc, setGenerateContractDoc] = useState<Record<string, unknown> | null>(
+    const [generateContractDoc, setGenerateContractDoc] = useState<InstructorAssignment | null>(
         null,
     );
     const allActivities = useAppSelector((state) => state.activities.items);

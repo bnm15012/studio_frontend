@@ -19,7 +19,7 @@ export const formatDateTime = (date: Date): string => {
 };
 
 // ✅ Add days (LOCAL)
-export const addDays = (date: string, days: number): string | null => {
+export const addDays = (date: string, days: number): string => {
     const parsed = parseDateTime(date);
     if (!parsed) throw new Error("Invalid date");
 

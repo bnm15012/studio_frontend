@@ -2,15 +2,19 @@
 import Field from "@/core/components/fields/Field";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
-import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import StyledDialog, {
+    type StyledDialogProps,
+    type DialogAction,
+} from "@/core/components/dialogs/StyledDialog";
 import { FieldLabel } from "@/core/components/fields/StyledField";
 import { useUI } from "@/context/UIContext";
 import { bindGetOptions, resolveFieldValue, isFieldEditable } from "@/core/utils/fieldHelpers";
-import { Entity, FieldDef, FieldMeta } from "@/core/types";
+import { ActionItem, Entity, FieldDef, FieldMeta, CrudState } from "@/core/types";
+import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 import { Close } from "@mui/icons-material";
 import { Save } from "lucide-react";
 
-interface DialogFormProps<T extends Entity> {
+interface DialogFormProps<T extends Entity> extends Omit<Partial<StyledDialogProps>, "actions"> {
     data: T;
     fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;
@@ -18,7 +22,10 @@ interface DialogFormProps<T extends Entity> {
     handleSave: (rowId: number) => void | Promise<void>;
     setClose: () => void;
     submitAttempted?: boolean;
-    [key: string]: unknown;
+    actions?: ActionItem<T>[] | DialogAction[];
+    tableState?: CrudState;
+    loading?: boolean;
+    editingId?: number;
 }
 
 export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
@@ -30,6 +37,10 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
         handleChange,
         handleSave,
         submitAttempted,
+        actions: _actions,
+        tableState: _tableState,
+        loading: _loading,
+        editingId: _editingId,
         ...dialogProps
     } = props;
     const { isMobile } = useUI();
@@ -81,7 +92,7 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
                                 }
                                 type={field.type}
                                 extraProp={bindGetOptions(field, data)}
-                                validation={field.validation as Record<string, unknown>}
+                                validation={field.validation as ValidationRules}
                                 submitAttempted={submitAttempted}
                             />
                         </Box>

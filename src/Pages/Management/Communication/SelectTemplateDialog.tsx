@@ -8,11 +8,20 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
 import { useAppUI } from "@/context/UIContext";
+import type { GenericTemplate } from "@/api/types";
+
+interface SelectTemplateDialogData {
+    raw?: unknown;
+    phoneNumber?: string;
+    email?: string;
+    notificationType?: string;
+    ids?: (string | number)[];
+}
 
 interface SelectTemplateDialogProps {
     open: boolean;
     onClose: (arg?: unknown) => void;
-    data: Record<string, unknown>;
+    data: SelectTemplateDialogData;
 }
 
 const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
@@ -23,13 +32,12 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
     const { raw, phoneNumber, notificationType, ids } = data || {};
 
     const [loading, setLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<Record<string, unknown> | null>(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<GenericTemplate | null>(null);
     const [editableMessage, setEditableMessage] = useState("");
 
     const allTemplates = useAppSelector((state) =>
         (state.genericTemplate.items || []).filter(
-            (template: Record<string, unknown>) =>
-                template.templateType === "COMMUNICATION" && template.id,
+            (template: GenericTemplate) => template.templateType === "COMMUNICATION" && template.id,
         ),
     );
 

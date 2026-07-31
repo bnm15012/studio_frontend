@@ -1,8 +1,9 @@
+import type { Payment } from "@/api/types";
 import api from "@/core/utils/api";
 
 interface UpdatePaymentParams {
     paymentId: string | number;
-    paymentData: Record<string, unknown>;
+    paymentData: Partial<Payment>;
     token: string | null | undefined;
 }
 

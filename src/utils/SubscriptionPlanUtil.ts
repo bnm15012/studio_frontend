@@ -31,7 +31,7 @@ const getEndDateBySubscriptionPlan = (
     startDate: string,
     planName: string,
     membershipTypes: MembershipPackage[] = [],
-): string | null => {
+): string => {
     const days = parsePlanDays(planName, membershipTypes);
     return addDays(startDate, days);
 };

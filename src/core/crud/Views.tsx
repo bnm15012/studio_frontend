@@ -3,7 +3,7 @@ import DialogForm from "@/core/crud/DialogForm";
 import FormView from "@/core/crud/FormView";
 import ListView from "@/core/crud/ListView";
 import CardView from "@/core/crud/CardView";
-import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import StyledDialog, { type StyledDialogProps } from "@/core/components/dialogs/StyledDialog";
 import DeleteDialog from "@/core/components/dialogs/DeleteDialog";
 import { useAlert } from "@/core/components/feedback/Alert";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -25,6 +25,7 @@ import {
     ViewMode,
     ViewsApiRef,
     BaseViewProps,
+    RequestParams,
 } from "@/core/types";
 import { useAppDispatch } from "@/state";
 import { useRowSelection } from "@/core/crud/hooks/useRowSelection";
@@ -48,8 +49,8 @@ export interface ViewsProps<T extends Entity> {
     fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;
     apiRef?: React.MutableRefObject<ViewsApiRef>;
-    dialogProps?: Record<string, unknown>;
-    defaultParams?: Record<string, unknown>;
+    dialogProps?: Partial<StyledDialogProps>;
+    defaultParams?: RequestParams & Record<string, unknown>;
     beforeAdd?: (row: T) => T | Promise<T>;
     beforeUpdate?: (row: T) => T | Promise<T>;
     cardLayout?: "vertical" | "horizontal";

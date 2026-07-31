@@ -128,7 +128,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
         }));
     };
 
-    const updateBatch = (batchId: string | number, updates: Record<string, unknown>) => {
+    const updateBatch = (batchId: string | number, updates: Partial<BatchFormData>) => {
         setFormData((prev) => ({
             ...prev,
             batchEntries: (prev.batchEntries ?? []).map((b) =>

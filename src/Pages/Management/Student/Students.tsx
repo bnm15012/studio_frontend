@@ -273,7 +273,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const overRideOnChange = useCallback(
-        (value: unknown, obj: Record<string, unknown>, fieldPath: string) => {
+        (value: unknown, obj: Partial<StudentAssignment>, fieldPath: string) => {
             if (!value) return obj;
 
             const newObj = { ...obj };
@@ -287,22 +287,24 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
                 newObj.membershipEndDate =
-                    entry?.planType &&
-                    getEndDateBySubscriptionPlan(
-                        String(newObj.membershipStartDate ?? ""),
-                        entry?.planType,
-                        cachedMembershipTypes,
-                    );
+                    (entry?.planType &&
+                        getEndDateBySubscriptionPlan(
+                            String(newObj.membershipStartDate ?? ""),
+                            entry?.planType,
+                            cachedMembershipTypes,
+                        )) ||
+                    undefined;
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(String(newObj.activityName), String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
                 newObj.daysPerWeek = entry?.daysPerWeek;
                 newObj.batchName = entry?.name;
-                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
-                    String(newObj.membershipStartDate ?? ""),
-                    String(value),
-                    cachedMembershipTypes,
-                );
+                newObj.membershipEndDate =
+                    getEndDateBySubscriptionPlan(
+                        String(newObj.membershipStartDate ?? ""),
+                        String(value),
+                        cachedMembershipTypes,
+                    ) || undefined;
                 newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
                 newObj.activityAmount = entry?.price;
             } else if (fieldPath === "daysPerWeek") {
@@ -379,7 +381,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         label: "Activity",
                         type: "SELECT",
                         getValue: (value: string) => value && { value, key: String(value) },
-                        editable: (row: Record<string, unknown>) => row.assignmentId === 0,
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
                         getOptions: async (search: string, page: number, limit: number) =>
                             allActivities
                                 .filter((a: Activity) =>

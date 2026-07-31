@@ -1,3 +1,4 @@
+import type { Branch } from "@/api/types";
 import api from "@/core/utils/api";
 
 const getErrorMessage = (error: unknown, defaultMessage: string): string =>
@@ -38,7 +39,7 @@ export const addBranchAPI = async ({
     branchData,
     token,
 }: {
-    branchData: Record<string, unknown>;
+    branchData: Partial<Branch>;
     token: string;
 }) => {
     try {
@@ -64,7 +65,7 @@ export const updateBranchAPI = async ({
     token,
 }: {
     branchId: string | number;
-    branchData: Record<string, unknown>;
+    branchData: Partial<Branch>;
     token: string;
 }) => {
     try {

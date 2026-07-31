@@ -8,7 +8,7 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { WhatsApp } from "@mui/icons-material";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
-import { Booking, Branch, GenericTemplate, Studio } from "@/api/types";
+import { Booking, Branch, GenericTemplate, PaymentEntry, Studio } from "@/api/types";
 
 const sectionTitle = {
     marginTop: "10mm",
@@ -51,11 +51,12 @@ const BookingInvoice = ({
     return (
         <StyledDialog
             open={open}
+            closeIcon={true}
             onClose={onClose}
             fullScreen={!isUser}
+            title="Invoice"
             confirmText="Download"
             onConfirm={() => pdfViewerRef.current!.downloadPDF()}
-            cancelText="Close"
             maxWidth="md"
             actions={
                 isUser
@@ -185,8 +186,8 @@ const BookingInvoice = ({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(bd.paymentEntries as Record<string, unknown>[]).map(
-                                        (paymentEntry: Record<string, unknown>) => (
+                                    {(bd.paymentEntries as PaymentEntry[]).map(
+                                        (paymentEntry: PaymentEntry) => (
                                             <tr key={String(paymentEntry.id)}>
                                                 <td style={tableCellStyle}>
                                                     {Number(paymentEntry.amount).toFixed(2)}

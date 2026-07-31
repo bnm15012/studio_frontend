@@ -5,10 +5,15 @@ const getErrorMessage = (
     defaultMessage: string,
 ) => error.response?.data?.status?.statusMessage || defaultMessage;
 
+export interface SendMessagePayload {
+    branchId?: string | number;
+    [key: string]: unknown;
+}
+
 const getHeaders = (
     token: string | null | undefined,
     otherHeader: Record<string, string> = {},
-    params: Record<string, unknown> = {},
+    params: Record<string, string | number | boolean> = {},
 ) => ({
     headers: { Authorization: `${token}`, ...otherHeader },
     params: params,
@@ -22,7 +27,7 @@ export const sendMessageApi = async ({
     size = 1,
 }: {
     token: string | null | undefined;
-    payload: Record<string, unknown>;
+    payload: SendMessagePayload;
     file?: File | null;
     page?: number;
     size?: number;
@@ -136,7 +141,7 @@ export const sendWhatsAppMessage = async ({
     token: string | null | undefined;
     phone: string;
     message: string;
-    payload: Record<string, unknown>;
+    payload: SendMessagePayload;
 }) => {
     const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
