@@ -2,8 +2,7 @@ import { useAppSelector, useAppDispatch } from "@/state";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
-import { IconButton, Popover, DialogContentText, Chip } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { IconButton, Popover, DialogContentText } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -271,6 +270,12 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     name: "paymentStatus",
                     label: "Payment Status",
                     section: "Payment Details",
+                    type: "STATE",
+                    colorMap: {
+                        PAID: "#22c55e",
+                        PARTIAL: "#f59e0b",
+                        PENDING: "#ef4444",
+                    },
                     getValue: (value: unknown, row: Booking) => {
                         const dueAmount =
                             ((row.totalAmount as number) || 0) -
@@ -280,35 +285,13 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                     .map((p) => p.amount as number)
                                     .reduce((a: number, b: number) => a + b, 0)) ||
                                 0);
-                        let label: string;
-                        let color: string;
                         if (dueAmount === 0) {
-                            label = "PAID";
-                            color = "#22c55e";
+                            return "PAID";
                         } else if (dueAmount > 0 && dueAmount != (row.totalAmount as number)) {
-                            label = "PARTIAL";
-                            color = "#f59e0b";
-                        } else {
-                            label = "PENDING";
-                            color = "#ef4444";
+                            return "PARTIAL";
                         }
-                        return (
-                            <Chip
-                                size="small"
-                                label={label}
-                                sx={{
-                                    height: 22,
-                                    fontSize: 10.5,
-                                    fontWeight: 800,
-                                    letterSpacing: 0.4,
-                                    color,
-                                    backgroundColor: alpha(color, 0.1),
-                                    border: `1.5px solid ${alpha(color, 0.3)}`,
-                                }}
-                            />
-                        );
+                        return "PENDING";
                     },
-                    extraProp: { readOnly: true },
                 },
                 {
                     show: true,

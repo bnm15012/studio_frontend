@@ -109,11 +109,6 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
     const { isMobile } = useUI();
     const theme = useTheme();
 
-    // Pick up the field marked as STATE or isState, if any
-    const stateField = fields.find((f) => f.type === "STATE" || f.isState);
-    const stateValue = stateField ? String(data?.[stateField.name] ?? "") : "";
-    const stateColor = stateField?.colorMap?.[stateValue] ?? theme.palette.text.secondary;
-
     const normalFields = fields.filter(
         (f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type || ""),
     );
@@ -199,21 +194,6 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                             : alpha(theme.palette.success.main, 0.12),
                                 }}
                             />
-                            {formKey !== 0 && stateValue && (
-                                <Chip
-                                    size="small"
-                                    label={stateValue}
-                                    sx={{
-                                        height: 18,
-                                        fontSize: 10,
-                                        px: 0.5,
-                                        fontWeight: 700,
-                                        color: stateColor,
-                                        backgroundColor: alpha(stateColor, 0.12),
-                                        border: `1px solid ${alpha(stateColor, 0.3)}`,
-                                    }}
-                                />
-                            )}
                         </Box>
                     </Box>
                 </Box>

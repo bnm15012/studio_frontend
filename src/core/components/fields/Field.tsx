@@ -2,8 +2,7 @@
 import React, { Suspense } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import { ExtraProp, SelectOption, GenericItem } from "@/core/types";
-import { Chip } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { Box } from "@mui/material";
 
 import StyledSwitch from "@/core/components/fields/StyledSwitch";
 import DateTime from "@/core/components/fields/DateTime";
@@ -214,19 +213,16 @@ const Field = <FT, T>({
         const colorMap = extraProp?.colorMap ?? {};
         const color = colorMap[valStr] ?? "#9e9e9e";
         return (
-            <Chip
-                size="small"
-                label={valStr}
+            <Box
                 sx={{
                     height: 20,
-                    fontSize: 11,
                     px: 0.5,
                     fontWeight: 700,
                     color: color,
-                    backgroundColor: alpha(color, 0.12),
-                    border: `1px solid ${alpha(color, 0.3)}`,
                 }}
-            />
+            >
+                {valStr}
+            </Box>
         );
     }
 
