@@ -4,7 +4,7 @@ import { Tabs, Tab, Box, Button } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Views, { type ViewsProps } from "@/core/crud/Views";
 import { Add } from "@mui/icons-material";
-import type { CrudRecord, ViewMode } from "@/core/types";
+import type { ViewMode, CrudRecord } from "@/core/types";
 
 interface ViewFieldApi {
     current?: {

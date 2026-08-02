@@ -29,7 +29,7 @@ import type {
     Student,
     StudentAssignment,
 } from "@/api/types";
-import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, FieldValue, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
@@ -380,7 +380,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         name: "activityName",
                         label: "Activity",
                         type: "SELECT",
-                        getValue: (value: string) => value && { value, key: String(value) },
+                        getValue: (value: string) => ({ value: value || "", key: value || "" }),
                         editable: (row: StudentAssignment) => row.assignmentId === 0,
                         getOptions: async (search: string, page: number, limit: number) =>
                             allActivities
@@ -404,32 +404,29 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         type: "SELECT",
                         editable: (row: StudentAssignment) => row.assignmentId === 0,
                         getValue: (value: string) => ({ value, key: value }),
-                        extraProp: {
-                            addValue: false,
-                            getOptions: async (
-                                search: string,
-                                page: number,
-                                limit: number,
-                                row: StudentAssignment,
-                            ) => {
-                                const batchEntries = allActivities.find(
-                                    (a: Activity) => a.activityType === row["activityName"],
-                                )?.batchEntries;
-                                return [
-                                    ...new Set(
-                                        (batchEntries as BatchEntry[] | undefined)
-                                            ?.filter((b: BatchEntry) =>
-                                                (b.planType as string)
-                                                    .toLowerCase()
-                                                    .includes(search.toLowerCase()),
-                                            )
-                                            .map((b: BatchEntry) => b.planType),
-                                    ),
-                                ]
-                                    .slice((page - 1) * limit, page * limit)
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities.find(
+                                (a: Activity) => a.activityType === row["activityName"],
+                            )?.batchEntries;
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)
+                                        ?.filter((b: BatchEntry) =>
+                                            (b.planType as string)
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        )
+                                        .map((b: BatchEntry) => b.planType),
+                                ),
+                            ]
+                                .slice((page - 1) * limit, page * limit)
 
-                                    .map((a: string) => ({ key: a, value: a }));
-                            },
+                                .map((a: string) => ({ key: a, value: a }));
                         },
                         validation: { required: true },
                     },

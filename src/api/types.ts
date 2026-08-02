@@ -107,6 +107,7 @@ export interface AttendanceEntry {
 }
 
 export interface PaymentEntry {
+    id: number;
     paymentDate: string;
     payeeType: string;
     status?: paymentStatus;
@@ -222,6 +223,7 @@ export interface Payment {
     paymentType: paymentType;
     amount: number;
     actualAmount?: number;
+    type?: string;
 }
 
 export interface BatchEntry {

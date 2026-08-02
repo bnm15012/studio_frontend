@@ -110,6 +110,8 @@ export interface NumberExtraProp {
 export interface DateExtraProp {
     readOnly?: boolean;
     includeCurrentTime?: boolean;
+    min?: string | number;
+    max?: string | number;
 }
 
 /** ExtraProp for BOOL fields. */
@@ -212,7 +214,7 @@ interface FieldDefCommon<T, K extends string> {
         maxLength?: number;
     };
     api?: React.RefObject<ViewsApiRef>;
-    viewProps?: Partial<ViewsProps<CrudRecord>>;
+    viewProps?: Partial<ViewsProps<T>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
@@ -318,7 +320,7 @@ export interface EditorFieldDef<T, K extends KnownKeys<T> & string> extends Fiel
 
 export interface CustomFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
     type: "CUSTOM";
-    extraProp: CustomExtraProp;
+    extraProp: CustomExtraProp<T>;
     getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
 }
 
@@ -385,7 +387,7 @@ interface LooseFieldCommon<T> {
         maxLength?: number;
     };
     api?: React.RefObject<ViewsApiRef>;
-    viewProps?: Partial<ViewsProps<CrudRecord>>;
+    viewProps?: Partial<ViewsProps<T>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
@@ -473,7 +475,7 @@ export type LooseFieldDef<T> =
       } & LooseFieldCommon<T>)
     | ({
           type: "CUSTOM";
-          extraProp: CustomExtraProp;
+          extraProp: CustomExtraProp<T>;
           getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({

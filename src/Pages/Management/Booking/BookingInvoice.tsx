@@ -187,8 +187,8 @@ const BookingInvoice = ({
                                 </thead>
                                 <tbody>
                                     {(bd.paymentEntries as PaymentEntry[]).map(
-                                        (paymentEntry: PaymentEntry) => (
-                                            <tr key={String(paymentEntry.id)}>
+                                        (paymentEntry: PaymentEntry, index: number) => (
+                                            <tr key={index}>
                                                 <td style={tableCellStyle}>
                                                     {Number(paymentEntry.amount).toFixed(2)}
                                                 </td>

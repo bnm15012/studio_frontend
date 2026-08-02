@@ -254,8 +254,10 @@ function FormView<T extends CrudRecord>(props: FormViewProps<T>) {
                                         }
                                         type={imageField.type}
                                         extraProp={{
-                                            ...((imageField.extraProp as Record<string, unknown>) ||
-                                                {}),
+                                            ...(((imageField as { extraProp?: unknown })
+                                                .extraProp as
+                                                | Record<string, unknown>
+                                                | undefined) || {}),
                                             size: "140px",
                                         }}
                                         submitAttempted={Boolean(submitAttempted)}

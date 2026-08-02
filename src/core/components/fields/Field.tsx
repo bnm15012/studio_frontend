@@ -1,7 +1,7 @@
 /** Master field renderer that dispatches to the correct input component (Switch, DateTime, TextField, Select, Checkbox, Image, Editor, Custom) based on field type. */
 import React, { Suspense } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
-import { ExtraProp, SelectOption, CrudRecord } from "@/core/types";
+import { ExtraProp, SelectOption, CrudRecord, FieldValue } from "@/core/types";
 import { Box } from "@mui/material";
 
 import StyledSwitch from "@/core/components/fields/StyledSwitch";
@@ -25,7 +25,7 @@ export interface FieldProps<FT = FieldValue, T extends CrudRecord = CrudRecord> 
     submitAttempted?: boolean | undefined;
 }
 
-const Field = <FT, T>({
+const Field = <FT, T extends CrudRecord = CrudRecord>({
     value,
     setValue,
     isEdit = true,
@@ -52,7 +52,7 @@ const Field = <FT, T>({
                         setValue={setValueFn}
                         getOptions={getOptions!}
                         variant={extraProp.variant ?? "standard"}
-                        validation={validation}
+                        validation={validation as ValidationRules}
                         saveType={extraProp.saveType ?? "string"}
                     />
                 );
@@ -118,7 +118,7 @@ const Field = <FT, T>({
             case "CUSTOM":
                 return CustomComponent ? (
                     <CustomComponent
-                        value={value}
+                        value={value as FieldValue}
                         setValue={setValueFn}
                         label={label}
                         isEdit={true}
@@ -182,7 +182,7 @@ const Field = <FT, T>({
             case "CUSTOM":
                 return CustomComponent ? (
                     <CustomComponent
-                        value={value}
+                        value={value as FieldValue}
                         setValue={setValueFn}
                         label={label}
                         isEdit={false}

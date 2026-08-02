@@ -34,19 +34,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const dispatch = useAppDispatch();
     const [paymentFormData, setPaymentFormData] = useState<Partial<Payment> | undefined>();
 
-    if (!value.length) {
-        return (
-            <Box sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    {title}
-                </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                    No Payments Found
-                </Typography>
-            </Box>
-        );
-    }
-
     const handleSave = async () => {
         if (!paymentFormData) return;
         if (paymentFormData.id !== 0) {
@@ -90,6 +77,20 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
         setOpenPaymentDialog(false);
         setPaymentFormData(undefined);
     };
+
+    if (!value.length) {
+        return (
+            <Box sx={{ mt: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                    {title}
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                    No Payments Found
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
         <Box sx={{ mt: 1 }}>
             <TopProgressBar loading={loading} />
@@ -139,8 +140,8 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 ))}
             </StyledCardContainer>
             {openPaymentDialog && paymentFormData && (
-                <DialogForm<Partial<Payment>>
-                    data={paymentFormData}
+                <DialogForm<Payment>
+                    data={paymentFormData as Payment}
                     fieldsMeta={{ primary: "id", root: "branchId" }}
                     fields={[
                         {

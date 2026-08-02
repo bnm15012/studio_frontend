@@ -53,7 +53,9 @@ const BranchPage = () => {
     }
 
     const beforeAdd = async (row: User) => {
-        const updatedRow = { ...row };
+        const updatedRow = {
+            ...row,
+        } as User & { branchId?: number; studioEntry?: unknown };
         delete updatedRow["branchId"];
         updatedRow["studioEntry"] = {
             studioId: studio.studioId,

@@ -194,7 +194,7 @@ const Attendance = () => {
                         filterOptions,
                         add: false,
                         handleFilterKeys: (keys) => {
-                            setDate(keys["date"]);
+                            setDate(String(keys["date"] ?? ""));
                         },
                         children: <MarkPresentDialog />,
                     }}

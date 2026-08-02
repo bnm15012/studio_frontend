@@ -7,7 +7,7 @@ import Field from "@/core/components/fields/Field";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
 import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
-import { FieldDef, FieldValue } from "@/core/types";
+import { CrudRecord, FieldDef, FieldValue, LooseFormRecord } from "@/core/types";
 import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 
 // ==============================
@@ -380,15 +380,26 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
                                             <Field
                                                 isEdit={
                                                     field.editable
-                                                        ? field.editable(formState)
+                                                        ? field.editable(
+                                                              formState as unknown as LooseFormRecord,
+                                                          )
                                                         : true
                                                 }
-                                                value={resolveFieldValue(field, formState, true)}
+                                                value={
+                                                    resolveFieldValue(
+                                                        field as unknown as FieldDef<CrudRecord>,
+                                                        formState as unknown as CrudRecord,
+                                                        true,
+                                                    ) as unknown as FieldValue
+                                                }
                                                 setValue={(v) => {
                                                     handleChange(field.name, v);
                                                 }}
                                                 type={field.type}
-                                                extraProp={bindGetOptions(field, formState)}
+                                                extraProp={bindGetOptions(
+                                                    field as unknown as FieldDef<CrudRecord>,
+                                                    formState as unknown as CrudRecord,
+                                                )}
                                                 validation={
                                                     field.validation as ValidationRules | undefined
                                                 }

@@ -93,7 +93,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                 <h2>INVOICE</h2>
                                 <div>
                                     <strong>Invoice #</strong>: INV-
-                                    {String(activityData.paymentEntry.id ?? "")}
+                                    {activityData.paymentEntry.id ?? ""}
                                 </div>
                                 <div>
                                     <strong>Invoice Date</strong>:{" "}

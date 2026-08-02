@@ -1,3 +1,6 @@
+import { RequestParams } from "@/core/types";
+import api from "@/core/utils/api";
+
 export interface ApiErrorResponse {
     response?: {
         data?: {
@@ -29,8 +32,6 @@ const getErrorMessage = (
 const getHeaders = (token: string | null | undefined) => ({
     headers: { Authorization: `${token}` },
 });
-
-import { RequestParams } from "@/core/types";
 
 interface GetClientParams {
     branchId: string | number;

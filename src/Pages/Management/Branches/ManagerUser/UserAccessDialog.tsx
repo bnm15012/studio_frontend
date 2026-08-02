@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
 import { userRights } from "@/api/types";
+import { FieldValue } from "@/core/types";
 
 const ACCESS_BUTTONS = {
     activity: "Activity",

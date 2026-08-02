@@ -104,8 +104,8 @@ const UploadJobHistory = () => {
                                         </Typography>
                                     </StyledTableCell>
                                     <StyledTableCell>
-                                        {(row.errorMessages as string[]).length > 0
-                                            ? (row.errorMessages as string[]).join(", ")
+                                        {(row.errorMessages as unknown as string[]).length > 0
+                                            ? (row.errorMessages as unknown as string[]).join(", ")
                                             : "—"}
                                     </StyledTableCell>
                                 </StyledTableRow>

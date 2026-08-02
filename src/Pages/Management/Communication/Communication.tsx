@@ -25,7 +25,7 @@ import SentSMSHistory from "@/Pages/Management/Communication/SentSMSHistory";
 import { sendMessageApi } from "@/Pages/Management/Communication/communication.api";
 import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAppUI } from "@/context/UIContext";
-import type { GenericTemplate } from "@/api/types";
+import type { GenericTemplate, Student } from "@/api/types";
 import type { CrudRecord } from "@/core/types";
 
 const MAIL_TYPE = ["EMAIL"];
@@ -170,9 +170,9 @@ const Communication = () => {
                             : null,
                 memberIds:
                     audienceType === "selectedStudents"
-                        ? selectedStudents.map((s) => s.studentId)
+                        ? selectedStudents.map((s) => (s as Student).studentId)
                         : audienceType === "selectedInstructors"
-                          ? selectedInstructors.map((i) => i.studentId)
+                          ? selectedInstructors.map((i) => (i as Student).studentId)
                           : [],
             };
 
@@ -383,8 +383,10 @@ const Communication = () => {
                                             ? selectedStudents
                                             : selectedInstructors
                                         ).map((user) => (
-                                            <Box key={String(user.studentId)}>
-                                                <Typography>{String(user.name)}</Typography>
+                                            <Box key={String((user as Student).studentId)}>
+                                                <Typography>
+                                                    {String((user as Student).name)}
+                                                </Typography>
                                                 <Divider />
                                             </Box>
                                         ))
