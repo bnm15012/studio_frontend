@@ -61,7 +61,7 @@ const ProfilePage: React.FC = () => {
                           ? "Settings"
                           : "Communication Configuration"
             }
-            open={dialogNames.includes(dialog)}
+            open={dialogNames.includes(dialog!)}
             onClose={handleClose}
             maxWidth="md"
             PaperProps={{

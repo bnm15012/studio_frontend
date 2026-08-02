@@ -72,7 +72,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     <Views
                         {...(view.viewProps as ViewsProps<CrudRecord>)}
                         rootId={formKey ?? 0}
-                        currentView={currentView ?? "LIST"}
+                        {...(currentView && { currentView })}
                     />
                 </Box>
             ))}

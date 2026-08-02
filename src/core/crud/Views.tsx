@@ -57,7 +57,7 @@ export interface ViewsProps<T extends CrudRecord> {
     beforeUpdate?: (row: T) => T | Promise<T>;
     cardLayout?: "vertical" | "horizontal";
     fieldToDisplayOnDelete?: string;
-    currentView: ViewMode;
+    currentView?: ViewMode;
     showAddButton?: boolean;
     CardContentComponent?: React.ComponentType<{
         row: T;
@@ -98,9 +98,9 @@ function Views<T extends CrudRecord>(props: ViewsProps<T>) {
         showAddButton = false,
         tableCruds,
         fields,
+        currentView: currentViewProp = "LIST",
         fieldsMeta,
         apiRef = { current: {} },
-        currentView = "LIST",
         fieldToDisplayOnDelete = "name",
         CardContentComponent,
         actions = [],
@@ -116,6 +116,8 @@ function Views<T extends CrudRecord>(props: ViewsProps<T>) {
         infiniteScroll = true,
         customView: CustomView,
     } = props;
+
+    const currentView = currentViewProp;
 
     const consts = useRef({ primaryKey: fieldsMeta.primary, rootKey: fieldsMeta.root, fields });
 

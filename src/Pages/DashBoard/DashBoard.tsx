@@ -372,7 +372,7 @@ const DashBoard: React.FC = () => {
                                     label={item.label}
                                     icon={item.icon}
                                     delay={delay}
-                                    blurValue={item.blur}
+                                    blurValue={!!item.blur}
                                 />
                             );
                         })}

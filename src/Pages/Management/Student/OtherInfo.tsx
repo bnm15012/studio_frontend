@@ -190,64 +190,71 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
                 </Button>
             </Box>
 
-            <StyledDialog
-                open={open}
-                onClose={handleClose}
-                closeIcon
-                maxWidth="md"
-                title="Additional Information"
-                titleBgColor="info"
-                onConfirm={isEdit ? handleSave : undefined}
-                confirmText="Save"
-                cancelText={isEdit ? "Cancel" : "Close"}
-            >
-                <Stack spacing={3} mt={1}>
-                    {FORM_SECTIONS.map((section) => (
-                        <Paper
-                            key={section.title}
-                            elevation={0}
-                            sx={{
-                                p: 2.5,
-                                borderRadius: 3,
-                                border: "1px solid",
-                                borderColor: "divider",
-                            }}
-                        >
-                            <Typography variant="subtitle1" fontWeight={700} mb={2}>
-                                {section.title}
-                            </Typography>
+            {(() => {
+                const dialogProps: React.ComponentProps<typeof StyledDialog> = {
+                    open,
+                    onClose: handleClose,
+                    closeIcon: true,
+                    maxWidth: "md",
+                    title: "Additional Information",
+                    titleBgColor: "info",
+                    confirmText: isEdit ? "Save" : "Close",
+                    cancelText: "Cancel",
+                };
+                if (isEdit) {
+                    dialogProps.onConfirm = handleSave;
+                }
+                return (
+                    <StyledDialog {...dialogProps}>
+                        <Stack spacing={3} mt={1}>
+                            {FORM_SECTIONS.map((section) => (
+                                <Paper
+                                    key={section.title}
+                                    elevation={0}
+                                    sx={{
+                                        p: 2.5,
+                                        borderRadius: 3,
+                                        border: "1px solid",
+                                        borderColor: "divider",
+                                    }}
+                                >
+                                    <Typography variant="subtitle1" fontWeight={700} mb={2}>
+                                        {section.title}
+                                    </Typography>
 
-                            <Divider sx={{ mb: 2 }} />
+                                    <Divider sx={{ mb: 2 }} />
 
-                            <Stack spacing={2}>
-                                {section.fields.map((field) => (
-                                    <FlexBetween key={field.name} gap={2}>
-                                        <FieldLabel
-                                            sx={{
-                                                minWidth: 250,
-                                                m: "auto",
-                                            }}
-                                        >
-                                            {field.label}
-                                        </FieldLabel>
+                                    <Stack spacing={2}>
+                                        {section.fields.map((field) => (
+                                            <FlexBetween key={field.name} gap={2}>
+                                                <FieldLabel
+                                                    sx={{
+                                                        minWidth: 250,
+                                                        m: "auto",
+                                                    }}
+                                                >
+                                                    {field.label}
+                                                </FieldLabel>
 
-                                        <Box width="100%" m={"auto"}>
-                                            <Field
-                                                type={field.type}
-                                                value={formData[field.name] || ""}
-                                                isEdit={isEdit ?? false}
-                                                setValue={(value) =>
-                                                    handleChange(field.name, value)
-                                                }
-                                            />
-                                        </Box>
-                                    </FlexBetween>
-                                ))}
-                            </Stack>
-                        </Paper>
-                    ))}
-                </Stack>
-            </StyledDialog>
+                                                <Box width="100%" m={"auto"}>
+                                                    <Field
+                                                        type={field.type}
+                                                        value={formData[field.name] || ""}
+                                                        isEdit={isEdit ?? false}
+                                                        setValue={(value) =>
+                                                            handleChange(field.name, value)
+                                                        }
+                                                    />
+                                                </Box>
+                                            </FlexBetween>
+                                        ))}
+                                    </Stack>
+                                </Paper>
+                            ))}
+                        </Stack>
+                    </StyledDialog>
+                );
+            })()}
         </>
     );
 };

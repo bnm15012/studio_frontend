@@ -17,7 +17,7 @@ const ActivityBatchCard: React.FC<ActivityBatchCardProps> = ({ batch }) => {
     const { permissions } = useAppUI();
     const theme = useTheme();
     const chipColor =
-        membershipTypeColors[Number(batch.batchId || 1) % membershipTypeColors.length];
+        membershipTypeColors[Number(batch.batchId || 1) % membershipTypeColors.length]!;
 
     return (
         <Box sx={{ py: 1.25 }}>

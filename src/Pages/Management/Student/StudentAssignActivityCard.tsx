@@ -51,7 +51,6 @@ const StudentAssignActivityCard: React.FC<StudentAssignActivityCardProps> = ({ r
                 enabled={membershipStatus === "ACTIVE"}
                 fieldValue={activityName}
                 FieldIcon={Activity}
-                image={undefined}
             />
             <Box display="flex" alignItems="center" gap={1.5}>
                 <CardChip value={registrationDate} type="DATE" ChipIcon={Calendar} />

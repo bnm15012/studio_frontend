@@ -50,7 +50,7 @@ const getBadgeStyles = (badge: React.ReactNode, enabled: boolean | undefined, th
 interface CardHeaderProps {
     enabled?: boolean;
     FieldIcon?: React.ElementType;
-    image?: string;
+    image?: string | undefined;
     fieldValue?: string | number;
     badge?: React.ReactNode;
     badgeSx?: SxProps<Theme>;

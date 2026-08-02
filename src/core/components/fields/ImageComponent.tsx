@@ -40,6 +40,11 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
     const handleDrop = async (acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
             const file = acceptedFiles[0];
+            if (!file || !file.type.startsWith("image/")) {
+                showAlert("Only image files are allowed.", "error");
+                return;
+            }
+
             const preview = URL.createObjectURL(file);
             setPreviewUrl(preview);
             setUploading(true);

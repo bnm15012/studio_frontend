@@ -130,7 +130,7 @@ const Carousel = () => {
                             lineHeight: 1.2,
                         }}
                     >
-                        {images[currentIndex].title}
+                        {images[currentIndex]?.title}
                     </Typography>
                 </Fade>
 
@@ -146,7 +146,7 @@ const Carousel = () => {
                             fontSize: { xs: "1.2rem", md: "1.8rem" },
                         }}
                     >
-                        {images[currentIndex].subtitle}
+                        {images[currentIndex]?.subtitle}
                     </Typography>
                 </Slide>
 

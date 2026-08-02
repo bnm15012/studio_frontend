@@ -136,7 +136,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
-        (): FieldDef<Instructor> => ({
+        (): FieldDef<InstructorAssignment> => ({
             show: false,
             name: "assignments",
             label: "Contracts",

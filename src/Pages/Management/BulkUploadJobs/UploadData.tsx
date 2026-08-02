@@ -20,6 +20,7 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Papa from "papaparse";
 import { StyledTable } from "@/core/components/tables/StyledTableComponents";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { useAlert } from "@/core/components/feedback/Alert";
 
 const validationSchema = {
     name: {
@@ -53,6 +54,7 @@ interface UploadDataProps {
 
 const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePath }) => {
     const [openDialog, setOpenDialog] = useState(false);
+    const showAlert = useAlert();
     const [file, setFile] = useState<File | null>(null);
     const [parsedData, setParsedData] = useState<Record<string, string>[]>([]);
     const [validationErrors, setValidationErrors] = useState<Record<string, string>[]>([]);
@@ -118,6 +120,11 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
                         onDrop={(acceptedFiles) => {
                             if (acceptedFiles.length > 0) {
                                 const f = acceptedFiles[0];
+                                if (!f || f.type !== "text/csv") {
+                                    showAlert("Please upload a valid CSV file.", "error");
+                                    return;
+                                }
+
                                 setFile(f);
                                 parseCsv(f);
                             }
@@ -157,18 +164,20 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
                                                             {startIndex + rowIndex + 1}
                                                         </TableCell>
                                                         {Object.keys(validationSchema).map(
-                                                            (key) => (
+                                                            (key: string) => (
                                                                 <TableCell
                                                                     key={key}
                                                                     sx={{
                                                                         color: validationErrors[
                                                                             rowIndex
-                                                                        ][key]
+                                                                        ]?.[key]
                                                                             ? "error.main"
                                                                             : "inherit",
                                                                     }}
                                                                 >
-                                                                    {validationErrors[rowIndex][key]
+                                                                    {validationErrors[rowIndex]?.[
+                                                                        key
+                                                                    ]
                                                                         ? row[key] || "*Required"
                                                                         : row[key]}
                                                                 </TableCell>

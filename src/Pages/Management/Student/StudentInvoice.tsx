@@ -11,7 +11,7 @@ import { Branch, Student, StudentAssignment, Studio } from "@/api/types";
 interface StudentInvoiceProps {
     open: boolean;
     onClose: () => void;
-    studentData: Student;
+    studentData?: Student;
     activityData: StudentAssignment;
     studio: Studio;
     currentBranch: Branch;
@@ -29,6 +29,11 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
 }) => {
     const pdfViewerRef = useRef<HtmlToPdfViewerRef | null>(null);
     const { permissions } = useAppUI();
+
+    if (!studentData) {
+        return null;
+    }
+
     const discount = (
         Number(activityData.paymentEntry.amount || 0) - Number(activityData.activityAmount || 0)
     ).toFixed(2);

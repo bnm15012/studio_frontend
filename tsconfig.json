@@ -28,7 +28,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
-    "noUncheckedIndexedAccess": false,
+    "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
 
     "paths": {"@/*": ["./src/*"]}

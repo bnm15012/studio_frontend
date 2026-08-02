@@ -89,12 +89,12 @@ const ActivityMembershipSelector: React.FC<ActivityMembershipSelectorProps> = ({
         const batches =
             availableDaysOptions.filter((p: BatchEntry) => p.daysPerWeek === selectedDays) || [];
 
-        const firstBatch = batches[0] || {};
-        const updatedBatchName = firstBatch.name || "";
-        const updatedBatchTime = `${firstBatch.startTime || "00:00"} - ${
-            firstBatch.endTime || "00:00"
+        const firstBatch = batches[0];
+        const updatedBatchName = firstBatch?.name || "";
+        const updatedBatchTime = `${firstBatch?.startTime || "00:00"} - ${
+            firstBatch?.endTime || "00:00"
         }`;
-        const updatedAmount = firstBatch.price || 0;
+        const updatedAmount = firstBatch?.price || 0;
 
         setDaysPerWeek(selectedDays);
         setAvailableBatches(batches);

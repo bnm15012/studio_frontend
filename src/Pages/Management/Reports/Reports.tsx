@@ -89,7 +89,7 @@ const Reports: React.FC = () => {
                 });
                 const { data, success, message } = resultIE;
 
-                if (success && data && data.length > 0) {
+                if (success && data && data.length > 0 && data[0]) {
                     const report = data[0].ieMonthlyReportEntry;
                     if (!report) {
                         setEiData({ income: [], expenses: [], totalIncome: 0, totalExpense: 0 });

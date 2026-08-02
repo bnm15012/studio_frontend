@@ -349,7 +349,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 showAddButton: true,
                 tableCruds: studentsAssignmentsCruds,
                 tableName: "studentActivities",
-                beforeAdd,
+                beforeAdd: beforeAdd,
                 overRideOnChange,
                 size: 4,
                 actions: [
@@ -408,10 +408,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                             search: string,
                             page: number,
                             limit: number,
-                            row: StudentAssignment,
+                            row?: StudentAssignment,
                         ) => {
                             const batchEntries = allActivities.find(
-                                (a: Activity) => a.activityType === row["activityName"],
+                                (a: Activity) => a.activityType === row?.["activityName"],
                             )?.batchEntries;
                             return [
                                 ...new Set(
@@ -441,12 +441,12 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                             search: string,
                             page: number,
                             limit: number,
-                            row: StudentAssignment,
+                            row?: StudentAssignment,
                         ) => {
                             const batchEntries = allActivities
-                                .find((a: Activity) => a.activityType === row["activityName"])
+                                .find((a: Activity) => a.activityType === row?.["activityName"])
                                 ?.batchEntries?.filter(
-                                    (b: BatchEntry) => b.planType === row["membershipType"],
+                                    (b: BatchEntry) => b.planType === row?.["membershipType"],
                                 );
                             return [
                                 ...new Set(
