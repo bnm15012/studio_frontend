@@ -10,9 +10,10 @@ import {
 
 import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
+import { MessageHistoryItem } from "@/Pages/Management/Communication/communication.api";
 
 interface MessageHistoryCardProps {
-    history: Record<string, unknown>[] | null | undefined;
+    history: MessageHistoryItem[] | null | undefined;
     onViewRecipients: (id: string | number) => void;
 }
 

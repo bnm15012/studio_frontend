@@ -27,7 +27,7 @@ import { StyledFieldContainer, StyledFieldItem } from "@/core/crud/FormComponent
 import React, { memo } from "react";
 import ViewTabs from "@/core/crud/ViewTabs";
 import Actions from "@/core/crud/helper/Actions";
-import { ActionItem, Entity, FieldDef, ViewMode } from "@/core/types";
+import { ActionItem, CrudRecord, FieldDef, ViewMode, FieldValue } from "@/core/types";
 import { FadeIn } from "@/core/crud/components/shared";
 
 /* ───────── Skeleton (slightly denser) ───────── */
@@ -72,7 +72,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
     </Box>
 );
 
-export interface FormViewProps<T extends Entity> {
+export interface FormViewProps<T extends CrudRecord> {
     fields: FieldDef<T>[];
     /** 0 = new record, positive = existing id */
     formKey: number;
@@ -81,7 +81,7 @@ export interface FormViewProps<T extends Entity> {
     tableName: string;
     /** -1 = not editing, 0 = new, positive = editing existing */
     editingId: number;
-    handleChange: (value: unknown, formKey: number, fieldName: string) => void;
+    handleChange: (value: FieldValue, formKey: number, fieldName: string) => void;
     handleSave: (formKey: number) => void;
     handleCancel: () => void;
     currentView?: ViewMode;
@@ -89,7 +89,7 @@ export interface FormViewProps<T extends Entity> {
     submitAttempted?: boolean;
 }
 
-function FormView<T extends Entity>(props: FormViewProps<T>) {
+function FormView<T extends CrudRecord>(props: FormViewProps<T>) {
     const {
         fields,
         formKey,
@@ -243,16 +243,22 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                             (editingId !== undefined && editingId >= 0) ||
                                             formKey === 0
                                         }
-                                        value={getNestedValue(data, imageField.name)}
-                                        setValue={(v: unknown) =>
+                                        value={
+                                            getNestedValue(
+                                                data as unknown as Record<string, unknown>,
+                                                imageField.name,
+                                            ) as FieldValue
+                                        }
+                                        setValue={(v: FieldValue) =>
                                             handleChange(v, formKey, imageField.name)
                                         }
                                         type={imageField.type}
                                         extraProp={{
-                                            ...imageField.extraProp,
+                                            ...((imageField.extraProp as Record<string, unknown>) ||
+                                                {}),
                                             size: "140px",
                                         }}
-                                        submitAttempted={submitAttempted}
+                                        submitAttempted={Boolean(submitAttempted)}
                                     />
                                 </Box>
                             </FlexEvenly>
@@ -278,6 +284,7 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                     <StyledFieldContainer>
                                         {fieldsInSection.map((field) => {
                                             const isEditing = editingId !== -1 || formKey === 0;
+                                            const fieldType = field.type || "TEXT";
                                             return (
                                                 <StyledFieldItem key={field.name}>
                                                     <FieldLabel>{field.label}</FieldLabel>
@@ -287,15 +294,17 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                                             data,
                                                             isEditing,
                                                         )}
-                                                        value={resolveFieldValue(
-                                                            field,
-                                                            data,
-                                                            isEditing,
-                                                        )}
-                                                        setValue={(v: unknown) =>
+                                                        value={
+                                                            resolveFieldValue(
+                                                                field,
+                                                                data,
+                                                                isEditing,
+                                                            ) as FieldValue
+                                                        }
+                                                        setValue={(v: FieldValue) =>
                                                             handleChange(v, formKey, field.name)
                                                         }
-                                                        type={field.type}
+                                                        type={fieldType}
                                                         extraProp={bindGetOptions(field, data)}
                                                         validation={
                                                             field.validation as Record<
@@ -303,7 +312,7 @@ function FormView<T extends Entity>(props: FormViewProps<T>) {
                                                                 unknown
                                                             >
                                                         }
-                                                        submitAttempted={submitAttempted}
+                                                        submitAttempted={Boolean(submitAttempted)}
                                                     />
                                                 </StyledFieldItem>
                                             );

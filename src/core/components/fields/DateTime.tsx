@@ -9,18 +9,18 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { parseDateTime, formatDateTime } from "@/core/utils/DateUtil";
 
 export interface DateTimeProps {
-    value?: string | null;
-    label?: string;
+    value?: string | null | undefined;
+    label?: string | undefined;
     setValue: (val: string | null) => void;
-    minVal?: string;
-    maxVal?: string;
-    readOnly?: boolean;
-    format?: "DATE" | "DATETIME";
-    variant?: "standard" | "outlined" | "filled";
-    includeCurrentTime?: boolean;
-    placeholder?: string;
-    showTitle?: boolean;
-    size?: "small" | "medium";
+    minVal?: string | undefined;
+    maxVal?: string | undefined;
+    readOnly?: boolean | undefined;
+    format?: "DATE" | "DATETIME" | undefined;
+    variant?: "standard" | "outlined" | "filled" | undefined;
+    includeCurrentTime?: boolean | undefined;
+    placeholder?: string | undefined;
+    showTitle?: boolean | undefined;
+    size?: "small" | "medium" | undefined;
 }
 
 const DateTime: React.FC<DateTimeProps> = ({

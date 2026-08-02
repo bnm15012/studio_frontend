@@ -1,9 +1,11 @@
-/** Central type definitions used across the core layer — AppDispatch, Entity, SelectOption, FieldDef, ActionItem, and Redux thunk types. */
+/** Central type definitions used across the core layer — AppDispatch, SelectOption, FieldDef, ActionItem, and Redux thunk types. */
 import React from "react";
 import type { AlertColor } from "@mui/material/Alert";
-import { Entity, FilterKeys } from "@/core/state/stateTypes";
+import type { ViewsProps } from "@/core/crud/Views";
+import { FilterKeys } from "@/core/state/stateTypes";
 import { RootState, AppDispatch } from "@/state";
-export type { Entity, FilterKeys, AppDispatch };
+import type { CrudRecord } from "@/api/types";
+export type { CrudRecord, FilterKeys, AppDispatch };
 
 export type ViewMode = "LIST" | "CARD" | "FORM";
 
@@ -12,18 +14,35 @@ export interface FieldMeta {
     root?: string;
 }
 
-export interface GenericItem {
-    id?: number;
-    [key: string]: unknown;
+/** Explicit boundary for rows whose schema is not statically typed yet
+ *  (e.g. public form builders). FieldDef<LooseFormRecord> resolves to the
+ *  LooseFieldDef branch because it declares no known keys. */
+export interface LooseFormRecord {
+    [key: string]: never;
 }
 
-export interface SelectOption<T = GenericItem> {
+export interface SelectOption<T = CrudRecord> {
     key: string | number;
     value: string | number;
     row?: T;
 }
 
-export interface ApiResponse<T = GenericItem> {
+/** The set of values a form/field can hold while being edited. */
+export type FieldValue =
+    | string
+    | number
+    | boolean
+    | SelectOption
+    | null
+    | undefined
+    | Record<string, string | number | boolean | null | undefined>;
+
+/** Nested map of template variable tokens whose leaves are display labels. */
+export interface TemplateVariables {
+    [key: string]: string | TemplateVariables;
+}
+
+export interface ApiResponse<T = CrudRecord> {
     success: boolean;
     data?: T;
     message?: string;
@@ -56,14 +75,6 @@ export type KnownKeys<T> = keyof {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type FieldVariant = "standard" | "outlined" | "filled";
-
-export interface CustomComponentProps {
-    value?: unknown;
-    setValue?: (val: unknown) => void;
-    label?: string;
-    isEdit?: boolean;
-    [key: string]: unknown;
-}
 
 /** ExtraProp for SELECT fields. `getOptions` is REQUIRED. */
 export interface SelectExtraProp {
@@ -122,16 +133,24 @@ export interface ImageExtraProp {
 export interface EditorExtraProp {
     readOnly?: boolean;
     rows?: number;
-    variables?: Record<string, unknown>;
+    variables?: TemplateVariables;
     disableVars?: boolean;
     variant?: FieldVariant;
     multiline?: boolean;
 }
 
 /** ExtraProp for CUSTOM fields. `CustomComponent` is REQUIRED. */
-export interface CustomExtraProp {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    CustomComponent: React.ComponentType<any>;
+export interface CustomExtraProp<T = CrudRecord> {
+    CustomComponent: React.ComponentType<{
+        data?: T;
+        field?: FieldDef<T>;
+        value?: FieldValue;
+        setValue?: (val: FieldValue) => void;
+        onChange?: (val: FieldValue) => void;
+        label?: string;
+        isEdit?: boolean;
+        [key: string]: unknown;
+    }>;
     readOnly?: boolean;
 }
 
@@ -140,7 +159,7 @@ export interface CustomExtraProp {
  * Used by internal UI components/renderers (Field.tsx, fieldHelpers.ts)
  * so they can access property fields without manual union checks.
  */
-export interface ExtraProp<T = GenericItem> {
+export interface ExtraProp<T = CrudRecord> {
     min?: string | number;
     max?: string | number;
     rows?: number;
@@ -150,22 +169,28 @@ export interface ExtraProp<T = GenericItem> {
         limit: number,
         row?: T,
     ) => Promise<SelectOption<T>[]>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    CustomComponent?: React.ComponentType<any>;
+    CustomComponent?: React.ComponentType<{
+        data?: T;
+        field?: FieldDef<T>;
+        value?: FieldValue;
+        setValue?: (val: FieldValue) => void;
+        onChange?: (val: FieldValue) => void;
+        label?: string;
+        isEdit?: boolean;
+        [key: string]: unknown;
+    }>;
     readOnly?: boolean;
     addValue?: boolean;
     saveType?: "string" | "object";
     size?: string | number;
     variant?: FieldVariant;
     includeCurrentTime?: boolean;
-    variables?: Record<string, unknown>;
+    variables?: TemplateVariables;
     multiline?: boolean;
     defaultImage?: string;
     disableVars?: boolean;
     colorMap?: Record<string, string>;
 }
-
-export type AnyExtraProp<T = GenericItem> = ExtraProp<T>;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Common base interfaces
@@ -178,14 +203,16 @@ interface FieldDefCommon<T, K extends string> {
     view?: boolean;
     section?: string;
     editable?: (row: T) => boolean;
-    setValue?: (value: T[keyof T & string], row?: T) => void;
+    setValue?: (value: FieldValue, row?: T) => void;
     validation?: {
         required?: boolean;
-        regex?: string | RegExp;
+        regex?: RegExp;
         message?: string;
+        minLength?: number;
+        maxLength?: number;
     };
-    api?: unknown;
-    viewProps?: unknown;
+    api?: React.RefObject<ViewsApiRef>;
+    viewProps?: Partial<ViewsProps<CrudRecord>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
@@ -297,13 +324,11 @@ export interface CustomFieldDef<T, K extends KnownKeys<T> & string> extends Fiel
 
 export interface ViewFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
     type: "VIEW";
-    extraProp?: Record<string, unknown>;
     getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
 }
 
 export interface ComponentFieldDef<T, K extends KnownKeys<T> & string> extends FieldDefTyped<T, K> {
     type: "COMPONENT";
-    extraProp?: Record<string, unknown>;
     getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
 }
 
@@ -317,7 +342,6 @@ export interface StateFieldDef<T, K extends KnownKeys<T> & string> extends Field
      *  Used together with `isState`. Falls back to theme.palette.text.secondary for unknown values.
      */
     colorMap?: Record<string, string>;
-    extraProp?: Record<string, unknown>;
     getValue?(value: T[K], row: T, isEdit: boolean): T[K] | React.ReactNode;
 }
 
@@ -350,16 +374,18 @@ interface LooseFieldCommon<T> {
     show?: boolean;
     view?: boolean;
     section?: string;
-    defaultValue?: unknown;
+    defaultValue?: FieldValue;
     editable?: (row: T) => boolean;
-    setValue?: (value: unknown, row?: T) => void;
+    setValue?: (value: FieldValue, row?: T) => void;
     validation?: {
         required?: boolean;
-        regex?: string | RegExp;
+        regex?: RegExp;
         message?: string;
+        minLength?: number;
+        maxLength?: number;
     };
-    api?: unknown;
-    viewProps?: unknown;
+    api?: React.RefObject<ViewsApiRef>;
+    viewProps?: Partial<ViewsProps<CrudRecord>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
@@ -385,94 +411,91 @@ export type LooseFieldDef<T> =
           ) => Promise<SelectOption<T>[]>;
           extraProp?: SelectExtraProp;
           getValue?(
-              value: unknown,
+              value: FieldValue,
               row: T,
               isEdit: boolean,
-          ): { key: string | number; value: unknown };
+          ): { key: string | number; value: FieldValue };
       } & LooseFieldCommon<T>)
     | ({
           type?: "TEXT";
           extraProp?: TextExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "TEXTAREA";
           extraProp?: TextareaExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "NUMBER";
           extraProp?: NumberExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "DATE";
           extraProp?: DateExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "DATETIME";
           extraProp?: DateExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "BOOL";
           extraProp?: BoolExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "CHECK";
           extraProp?: CheckExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "IMAGE";
           extraProp?: ImageExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "IMAGE_DIALOG";
           extraProp?: ImageExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "EMAIL";
           extraProp?: TextExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "EDITOR";
           extraProp?: EditorExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "CUSTOM";
           extraProp: CustomExtraProp;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "VIEW";
-          extraProp?: Record<string, unknown>;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "COMPONENT";
-          extraProp?: Record<string, unknown>;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>)
     | ({
           type: "STATE";
           isState?: boolean;
           colorMap?: Record<string, string>;
-          extraProp?: Record<string, unknown>;
-          getValue?(value: unknown, row: T, isEdit: boolean): unknown;
+          getValue?(value: FieldValue, row: T, isEdit: boolean): FieldValue | React.ReactNode;
       } & LooseFieldCommon<T>);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FieldDef<T>: Main union type
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type FieldDef<T = GenericItem> = [KnownKeys<T>] extends [never]
+export type FieldDef<T = LooseFormRecord> = [KnownKeys<T>] extends [never]
     ? LooseFieldDef<T>
     : { [K in KnownKeys<T>]: FieldDefForKey<T, K> }[KnownKeys<T>] | LooseFieldDef<T>;
 
@@ -489,7 +512,7 @@ export const defineField =
 // Remaining types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface ActionItem<T = GenericItem> {
+export interface ActionItem<T = CrudRecord> {
     name: string;
     onClick?: (row: T) => void;
     icon?: React.ReactNode;
@@ -502,20 +525,19 @@ export interface ActionItem<T = GenericItem> {
     help?: string;
 }
 
-export interface CrudState<T = GenericItem> {
+export interface CrudState<T = CrudRecord> {
     rootId: number;
     items: T[];
     recordById: Record<number, T>;
     searchTerm: string;
-    filterKeys: Record<string, unknown>;
+    filterKeys: FilterKeys;
     totalCount: number;
     totalPages: number;
     currentPage: number;
     pageSize: number;
-    [key: string]: unknown;
 }
 
-export interface CrudThunks<T = GenericItem> {
+export interface CrudThunks<T = CrudRecord> {
     add: (
         newData: Partial<T>,
         token: string,
@@ -571,24 +593,24 @@ export interface ViewsApiRef {
     refreshData?: () => void;
 }
 
-export interface BaseViewProps<T extends Record<string, unknown> = GenericItem> {
+export interface BaseViewProps<T extends CrudRecord = CrudRecord> {
     data: T[];
     tableState: CrudState;
-    loading?: boolean;
+    loading?: boolean | undefined;
     fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;
-    editingId?: number;
-    submitAttempted?: boolean;
-    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
-    handleSave?: (rowId: number) => void | Promise<void>;
-    handleCancel?: () => void;
+    editingId?: number | undefined;
+    submitAttempted?: boolean | undefined;
+    handleChange: (value: FieldValue, rowId: number, fieldName: string) => void;
+    handleSave?: ((rowId: number) => void | Promise<void>) | undefined;
+    handleCancel?: (() => void) | undefined;
     handlePageChange: (page: number) => void;
-    handleViewOpen?: (row: T) => void;
-    onClickRow?: (row: T) => void;
-    addNewRow?: () => void;
+    handleViewOpen?: ((row: T) => void) | undefined;
+    onClickRow?: ((row: T) => void) | undefined;
+    addNewRow?: (() => void) | undefined;
     actions: ActionItem<T>[];
     tableName: string;
     currentView: ViewMode;
-    multi?: boolean;
-    infiniteScroll?: boolean;
+    multi?: boolean | undefined;
+    infiniteScroll?: boolean | undefined;
 }

@@ -1,4 +1,3 @@
-import { Entity } from "@/core/types";
 import { Setting } from "@/state/authSlice";
 
 export type paymentType = "CASH" | "UPI";
@@ -17,7 +16,7 @@ export type expenseCategory =
     | "MARKETING"
     | "OTHER";
 
-export interface Branch extends Entity {
+export interface Branch {
     branchId: number;
     name: string;
     address?: string;
@@ -29,7 +28,7 @@ export interface Branch extends Entity {
     studioId: number;
 }
 
-export interface User extends Entity {
+export interface User {
     userId: number;
     userName: string;
     email: string;
@@ -42,7 +41,7 @@ export interface User extends Entity {
     token: string;
 }
 
-export interface Studio extends Entity {
+export interface Studio {
     studioId: number;
     studioName: string;
     location: string;
@@ -57,7 +56,7 @@ export interface Studio extends Entity {
     branchList: Branch[];
 }
 
-export interface SubscriptionPlan extends Entity {
+export interface SubscriptionPlan {
     id: number;
     subscriptionPlan: string;
     name: string;
@@ -70,7 +69,7 @@ export interface SubscriptionPlan extends Entity {
     paymentId?: string;
 }
 
-export interface InstructorAssignment extends Entity {
+export interface InstructorAssignment {
     assignmentId: number;
     instructorId: number;
     activityName: string;
@@ -81,7 +80,7 @@ export interface InstructorAssignment extends Entity {
     membershipStatus: activityStatus;
 }
 
-export interface Instructor extends Entity {
+export interface Instructor {
     instructorId: number;
     branchId: number;
     imageUrl?: string;
@@ -102,15 +101,16 @@ export interface Instructor extends Entity {
     assignments?: InstructorAssignment[];
 }
 
-export interface AttendanceEntry extends Entity {
+export interface AttendanceEntry {
     date: string;
     present: boolean;
 }
 
-export interface PaymentEntry extends Entity {
+export interface PaymentEntry {
     paymentDate: string;
     payeeType: string;
-    statu?: paymentStatus;
+    status?: paymentStatus;
+    paymentStatus?: paymentStatus;
     paymentType: paymentType;
     actualAmount?: number;
     amount: number;
@@ -119,9 +119,10 @@ export interface PaymentEntry extends Entity {
     payeeId?: number;
 }
 
-export interface StudentAssignment extends Entity {
+export interface StudentAssignment {
     assignmentId: number;
     studentId: number;
+    studentName?: string;
     activityName: string;
     membershipType: string;
     daysPerWeek: number;
@@ -137,7 +138,7 @@ export interface StudentAssignment extends Entity {
     invoiceToken?: string;
 }
 
-export interface Student extends Entity {
+export interface Student {
     studentId: number;
     branchId: number;
     imageUrl?: string;
@@ -151,10 +152,11 @@ export interface Student extends Entity {
     address?: string;
     emergencyContactNumber: string;
     additionalData?: string;
+    otherinfo?: string;
     assignments?: StudentAssignment[];
 }
 
-export interface Client extends Entity {
+export interface Client {
     clientId: number;
     branchId: number;
     groupName: string;
@@ -165,7 +167,7 @@ export interface Client extends Entity {
     notes?: string;
 }
 
-export interface Booking extends Entity {
+export interface Booking {
     id: number;
     branchId: number;
     purpose: string;
@@ -183,7 +185,7 @@ export interface Booking extends Entity {
     invoiceToken?: string;
 }
 
-export interface Expense extends Entity {
+export interface Expense {
     expenseId: number;
     branchId: number;
     description?: string;
@@ -193,14 +195,14 @@ export interface Expense extends Entity {
     amount: number;
 }
 
-export interface MembershipPackage extends Entity {
+export interface MembershipPackage {
     id: number;
     studioId: number;
     membershipPackage: string;
     days: number;
 }
 
-export interface Enquiry extends Entity {
+export interface Enquiry {
     enquiryId: number;
     branchId: number;
     enquiryDate: string;
@@ -209,7 +211,7 @@ export interface Enquiry extends Entity {
     enquiryPurpose: string;
 }
 
-export interface Payment extends Entity {
+export interface Payment {
     id: number;
     branchId: number;
     payeeType: string;
@@ -222,7 +224,7 @@ export interface Payment extends Entity {
     actualAmount?: number;
 }
 
-export interface BatchEntry extends Entity {
+export interface BatchEntry {
     batchId: number;
     name: string;
     planType: string;
@@ -232,7 +234,7 @@ export interface BatchEntry extends Entity {
     price: number;
 }
 
-export interface Activity extends Entity {
+export interface Activity {
     activityId: number;
     activityType: string;
     description?: string;
@@ -246,7 +248,7 @@ export interface Activity extends Entity {
     };
 }
 
-export interface GenericTemplate extends Entity {
+export interface GenericTemplate {
     id: number;
     studioId: number;
     templateType: string;
@@ -255,7 +257,7 @@ export interface GenericTemplate extends Entity {
     templateContent: string;
 }
 
-export interface BulkUploadJob extends Entity {
+export interface BulkUploadJob {
     id: number;
     entityType?: string;
     fileUrl?: string;
@@ -265,4 +267,33 @@ export interface BulkUploadJob extends Entity {
     totalRecords?: number;
     successCount?: number;
     failureCount?: number;
+    fileName?: string;
+    processedRecords?: number;
+    successfulRecords?: number;
+    failedRecords?: number;
+    completedAt?: string;
+    errorMessages?: string;
 }
+
+/** Every domain record that flows through the CRUD framework (list/table/form views). */
+export type CrudRecord =
+    | Branch
+    | User
+    | Studio
+    | SubscriptionPlan
+    | InstructorAssignment
+    | Instructor
+    | AttendanceEntry
+    | PaymentEntry
+    | StudentAssignment
+    | Student
+    | Client
+    | Booking
+    | Expense
+    | MembershipPackage
+    | Enquiry
+    | Payment
+    | BatchEntry
+    | Activity
+    | GenericTemplate
+    | BulkUploadJob;

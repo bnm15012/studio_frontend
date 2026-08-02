@@ -1,5 +1,5 @@
 /** MUI theme creation with extended palette (custom neutral, gradients, activityCardGradient colors) and light/dark mode configurations. */
-import { createTheme, ThemeOptions } from "@mui/material/styles";
+import { createTheme, ThemeOptions, Shadows } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
     interface TypeBackground {
@@ -47,7 +47,7 @@ declare module "@mui/material/Button" {
     }
 }
 
-const generateShadows = (rgbColor: string): string[] => {
+const generateShadows = (rgbColor: string): Shadows => {
     const shadows = [
         "none",
         ...Array(24)
@@ -67,7 +67,7 @@ const generateShadows = (rgbColor: string): string[] => {
             }),
     ];
 
-    return shadows;
+    return shadows as Shadows;
 };
 
 export const colorTokens = {
@@ -173,7 +173,7 @@ export const colorTokens = {
 };
 
 export const themeSettings = (mode: "light" | "dark"): ThemeOptions => ({
-    shadows: colorTokens.shadows[mode] as ThemeOptions["shadows"],
+    shadows: colorTokens.shadows[mode],
     palette: {
         mode: mode,
         ...(mode === "dark"

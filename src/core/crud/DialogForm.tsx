@@ -9,26 +9,29 @@ import StyledDialog, {
 import { FieldLabel } from "@/core/components/fields/StyledField";
 import { useUI } from "@/context/UIContext";
 import { bindGetOptions, resolveFieldValue, isFieldEditable } from "@/core/utils/fieldHelpers";
-import { ActionItem, Entity, FieldDef, FieldMeta, CrudState } from "@/core/types";
+import { ActionItem, CrudRecord, FieldDef, FieldMeta, CrudState, FieldValue } from "@/core/types";
 import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 import { Close } from "@mui/icons-material";
 import { Save } from "lucide-react";
 
-interface DialogFormProps<T extends Entity> extends Omit<Partial<StyledDialogProps>, "actions"> {
+interface DialogFormProps<T extends CrudRecord> extends Omit<
+    Partial<StyledDialogProps>,
+    "actions"
+> {
     data: T;
     fields: FieldDef<T>[];
     fieldsMeta: FieldMeta;
-    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
+    handleChange: (value: FieldValue, rowId: number, fieldName: string) => void;
     handleSave: (rowId: number) => void | Promise<void>;
     setClose: () => void;
-    submitAttempted?: boolean;
-    actions?: ActionItem<T>[] | DialogAction[];
-    tableState?: CrudState;
-    loading?: boolean;
-    editingId?: number;
+    submitAttempted?: boolean | undefined;
+    actions?: ActionItem<T>[] | DialogAction[] | undefined;
+    tableState?: CrudState | undefined;
+    loading?: boolean | undefined;
+    editingId?: number | undefined;
 }
 
-export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
+export function DialogForm<T extends CrudRecord>(props: DialogFormProps<T>) {
     const {
         data,
         fields,
@@ -44,7 +47,7 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
         ...dialogProps
     } = props;
     const { isMobile } = useUI();
-    const id = Number(data[fieldsMeta.primary]) || 0;
+    const id = Number(data[fieldsMeta.primary as keyof T]) || 0;
     const visibleFields = fields.filter((f) => f.show !== false);
 
     return (
@@ -82,18 +85,18 @@ export function DialogForm<T extends Entity>(props: DialogFormProps<T>) {
                         <Box sx={{ flex: 1, minWidth: 0, width: "100%" }}>
                             <Field
                                 isEdit={isFieldEditable(field, data, true)}
-                                value={resolveFieldValue(field, data, true)}
+                                value={resolveFieldValue(field, data, true) as FieldValue}
                                 setValue={(v) =>
                                     handleChange(
-                                        v,
-                                        Number(data[fieldsMeta.primary]) || 0,
+                                        v as FieldValue,
+                                        Number(data[fieldsMeta.primary as keyof T]) || 0,
                                         field.name,
                                     )
                                 }
-                                type={field.type}
+                                type={field.type || "TEXT"}
                                 extraProp={bindGetOptions(field, data)}
                                 validation={field.validation as ValidationRules}
-                                submitAttempted={submitAttempted}
+                                submitAttempted={Boolean(submitAttempted)}
                             />
                         </Box>
                     </Box>

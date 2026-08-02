@@ -9,12 +9,32 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { useAppDispatch, useAppSelector } from "@/state";
 import { useAppUI } from "@/context/UIContext";
 
+export interface RazorpayOptions {
+    key: string;
+    amount: number;
+    currency: "INR";
+    order_id: string;
+    handler: (response: RazorpayResponse) => void | Promise<void>;
+    prefill?: {
+        name?: string;
+        email?: string;
+        contact?: string;
+    };
+    notes?: Record<string, string>;
+}
+
 interface RazorpayInstance {
     open: () => void;
 }
 
 interface RazorpayConstructor {
-    new (options: Record<string, unknown>): RazorpayInstance;
+    new (options: RazorpayOptions): RazorpayInstance;
+}
+
+declare global {
+    interface Window {
+        Razorpay?: RazorpayConstructor;
+    }
 }
 
 interface RazorpayResponse {
@@ -45,7 +65,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
     const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
 
     useEffect(() => {
-        const RazorpayCtor = (window as unknown as Record<string, unknown>).Razorpay;
+        const RazorpayCtor = window.Razorpay;
         if (!RazorpayCtor) {
             console.error("Razorpay SDK is not loaded");
             showAlert("Payment system not available. Please try again later.");
@@ -67,10 +87,10 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
             if (success) {
                 const orderId = data.orderId;
 
-                const options = {
-                    key: (import.meta.env as Record<string, string>).VITE_APP_RAZOR_PAY_KEY || "",
+                const options: RazorpayOptions = {
+                    key: import.meta.env.VITE_APP_RAZOR_PAY_KEY || "",
                     amount: plan.amount * 100,
-                    currency: "INR" as const,
+                    currency: "INR",
                     order_id: orderId,
                     handler: async (response: RazorpayResponse) => {
                         try {
@@ -108,8 +128,10 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({ open, onClose, plan }) =>
                     },
                 };
 
-                const RazorpayCtor = (window as unknown as Record<string, unknown>)
-                    .Razorpay as unknown as RazorpayConstructor;
+                const RazorpayCtor = window.Razorpay;
+                if (!RazorpayCtor) {
+                    throw new Error("Razorpay SDK not loaded");
+                }
                 const razorpay = new RazorpayCtor(options);
                 razorpay.open();
             } else {

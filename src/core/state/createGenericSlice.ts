@@ -1,9 +1,10 @@
 /** Factory that creates a Redux Toolkit slice with generic CRUD reducers (setItems, addItem, updateItem, removeItem, etc.) for any entity type. */
 import { createSlice, Draft, PayloadAction, SliceCaseReducers } from "@reduxjs/toolkit";
-import { Entity, GenericState } from "@/core/state/stateTypes";
+import { FilterKeys, GenericState } from "@/core/state/stateTypes";
+import type { CrudRecord } from "@/api/types";
 
 export interface CreateGenericSliceOptions<
-    T extends Entity,
+    T extends CrudRecord,
     S extends GenericState<T>,
     R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
 > {
@@ -14,10 +15,12 @@ export interface CreateGenericSliceOptions<
 }
 
 export function createGenericSlice<
-    T extends Entity,
+    T extends CrudRecord,
     S extends GenericState<T>,
     R extends SliceCaseReducers<S> = SliceCaseReducers<S>,
 >({ name, idKey = "id", extraState, extraReducers = {} as R }: CreateGenericSliceOptions<T, S, R>) {
+    const idKeyOf = idKey as keyof T & string;
+
     const initialState: S = {
         rootId: 0,
         items: [] as T[],
@@ -53,7 +56,7 @@ export function createGenericSlice<
                     totalCount: number;
                     currentPage: number;
                     searchTerm?: string;
-                    filterKeys?: Entity;
+                    filterKeys?: FilterKeys;
                     pageSize: number;
                 }>,
             ) {
@@ -102,21 +105,26 @@ export function createGenericSlice<
                 } else {
                     const payload = action.payload as T;
                     state.items = state.items.map((item) =>
-                        (item as T)[idKey] === (payload as Entity)[idKey]
-                            ? { ...item, ...payload }
+                        (item as T)[idKeyOf] === payload[idKeyOf]
+                            ? { ...(item as T), ...payload }
                             : item,
                     ) as Draft<T[]>;
                 }
             },
 
-            updateItems(state, { payload }: PayloadAction<Entity | Entity[]>) {
+            updateItems(
+                state,
+                {
+                    payload,
+                }: PayloadAction<T | T[] | { predicate: (item: T) => boolean; data: Partial<T> }>,
+            ) {
                 if (
                     payload &&
                     typeof payload === "object" &&
                     !Array.isArray(payload) &&
                     "predicate" in payload
                 ) {
-                    const { predicate, data } = payload as unknown as {
+                    const { predicate, data } = payload as {
                         predicate: (item: T) => boolean;
                         data: Partial<T>;
                     };
@@ -126,10 +134,12 @@ export function createGenericSlice<
                     return;
                 }
                 if (Array.isArray(payload)) {
-                    const byId = new Map(payload.map((item) => [(item as Entity)[idKey], item]));
+                    const byId = new Map<T[keyof T], T>(
+                        payload.map((item) => [(item as T)[idKeyOf], item]),
+                    );
                     state.items = state.items.map((item) => {
-                        const updated = byId.get((item as Entity)[idKey]);
-                        return updated ? ({ ...item, ...updated } as T) : item;
+                        const updated = byId.get((item as T)[idKeyOf]);
+                        return updated ? ({ ...(item as T), ...updated } as T) : item;
                     }) as Draft<T[]>;
                 }
             },
@@ -143,14 +153,16 @@ export function createGenericSlice<
                         (item) => !(payload as (item: T) => boolean)(item as T),
                     );
                 } else {
-                    state.items = state.items.filter((item) => (item as Entity)[idKey] !== payload);
+                    state.items = state.items.filter(
+                        (item) => ((item as T)[idKeyOf] as string | number) !== payload,
+                    );
                 }
             },
 
             setRecord(state, { payload }: PayloadAction<T>) {
-                (state.recordById as Record<string | number, Entity>)[
-                    (payload as Entity)[idKey] as string | number
-                ] = payload as unknown as Entity;
+                (state.recordById as Record<string | number, T>)[
+                    payload[idKeyOf] as string | number
+                ] = payload;
             },
 
             clearData() {

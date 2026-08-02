@@ -12,12 +12,12 @@ import { useAppSelector } from "@/state";
  * image uploading API call, state/alert management, and default image fallback.
  */
 export interface ImageComponentProps {
-    value?: string;
-    setValue?: (url: string) => void;
-    size?: string;
-    isCircular?: boolean | string;
-    allowEdit?: boolean;
-    dirName?: string;
+    value?: string | undefined;
+    setValue?: ((url: string) => void) | undefined;
+    size?: string | undefined;
+    isCircular?: boolean | string | undefined;
+    allowEdit?: boolean | undefined;
+    dirName?: string | undefined;
 }
 
 const ImageComponent: React.FC<ImageComponentProps> = ({

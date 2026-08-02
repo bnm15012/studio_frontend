@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import Field from "@/core/components/fields/Field";
 import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
-import { Entity, FieldDef } from "@/core/types";
+import { CrudRecord, FieldDef, FieldValue } from "@/core/types";
 import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 
 /**
@@ -16,16 +16,16 @@ import type { ValidationRules } from "@/core/components/fields/StyledTextField";
  *
  * Replaces repeated inline <Field /> blocks across ListView, DialogForm, and CardView.
  */
-interface FieldCellProps<T extends Entity> {
+interface FieldCellProps<T extends CrudRecord> {
     field: FieldDef<T>;
     row: T;
     isEdit: boolean;
-    handleChange?: (value: unknown, rowId: number, fieldName: string) => void;
-    handleViewOpen?: (row: T) => void;
-    submitAttempted?: boolean;
+    handleChange?: ((value: FieldValue, rowId: number, fieldName: string) => void) | undefined;
+    handleViewOpen?: ((row: T) => void) | undefined;
+    submitAttempted?: boolean | undefined;
 }
 
-function FieldCell<T extends Entity>({
+function FieldCell<T extends CrudRecord>({
     field,
     row,
     isEdit,
@@ -57,17 +57,20 @@ function FieldCell<T extends Entity>({
         );
     }
 
-    const rowId = Number(row[Object.keys(row)[0]]) || 0;
+    const firstKey = Object.keys(row)[0] as keyof T | undefined;
+    const rowId = firstKey ? Number(row[firstKey]) || 0 : 0;
+
+    const fieldType = field.type || "TEXT";
 
     return (
         <Field
             isEdit={isEdit}
             value={resolveFieldValue(field, row, isEdit)}
-            setValue={(v) => handleChange?.(v, rowId, field.name)}
-            type={field.type}
+            setValue={(v) => handleChange?.(v as FieldValue, rowId, field.name)}
+            type={fieldType}
             extraProp={bindGetOptions(field, row)}
             validation={field.validation as ValidationRules}
-            submitAttempted={submitAttempted}
+            submitAttempted={Boolean(submitAttempted)}
         />
     );
 }

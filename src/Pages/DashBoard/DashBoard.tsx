@@ -26,7 +26,7 @@ interface DashboardCardItem {
     label: string;
     navigateTo?: string;
     icon: ReactNode;
-    blur?: unknown;
+    blur?: boolean;
 }
 
 const fadeInUp = keyframes`
@@ -372,7 +372,7 @@ const DashBoard: React.FC = () => {
                                     label={item.label}
                                     icon={item.icon}
                                     delay={delay}
-                                    blurValue={item.blur as boolean | undefined}
+                                    blurValue={item.blur}
                                 />
                             );
                         })}

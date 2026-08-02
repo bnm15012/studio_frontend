@@ -2,7 +2,7 @@
 import React from "react";
 import { Toolbar, Checkbox, Box, Typography, Chip } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
-import { ActionItem, Entity } from "@/core/types";
+import { ActionItem, CrudRecord } from "@/core/types";
 import Actions from "@/core/crud/helper/Actions";
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
 
@@ -10,7 +10,7 @@ import { FlexEvenly } from "@/core/components/layout/FlexBox";
 // SelectionToolbar
 // Shown above the list/card grid when 1+ rows are selected.
 // ─────────────────────────────────────────────────────────────────────────────
-interface SelectionToolbarProps<T extends Entity> {
+interface SelectionToolbarProps<T extends CrudRecord> {
     selectedCount: number;
     selectedRowsData: T[];
     multiActions: ActionItem<T>[];
@@ -18,7 +18,7 @@ interface SelectionToolbarProps<T extends Entity> {
     labelVariant?: "chip" | "text";
 }
 
-export function SelectionToolbar<T extends Entity>({
+export function SelectionToolbar<T extends CrudRecord>({
     selectedCount,
     selectedRowsData,
     multiActions,

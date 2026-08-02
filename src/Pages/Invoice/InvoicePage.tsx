@@ -17,14 +17,6 @@ interface InvoiceData {
     template: GenericTemplate;
 }
 
-interface StudentsAssignmentsCrudsExtended {
-    fetchInvoiceApi: (
-        invoiceToken: string,
-        showAlert: (msg: string, type: string) => void,
-        setLoading: (loading: boolean) => void,
-    ) => Promise<InvoiceData | undefined>;
-}
-
 const InvoicePage: React.FC = () => {
     const { invoiceToken } = useParams<{ invoiceToken: string }>();
     const showAlert = useAlert();
@@ -33,9 +25,11 @@ const InvoicePage: React.FC = () => {
 
     const fetchInvoice = useCallback(
         async (token: string) => {
-            const data = await (
-                studentsAssignmentsCruds as unknown as StudentsAssignmentsCrudsExtended
-            ).fetchInvoiceApi(token, showAlert as (msg: string, type: string) => void, setLoading);
+            const data = await studentsAssignmentsCruds.fetchInvoiceApi(
+                token,
+                showAlert,
+                setLoading,
+            );
             setInvoice(data);
         },
         [showAlert],

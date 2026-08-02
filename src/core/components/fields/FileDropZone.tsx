@@ -13,15 +13,15 @@ import EditIcon from "@mui/icons-material/Edit";
  * logic, state management, and side-effects to the parent wrapper.
  */
 interface FileDropZoneProps {
-    previewUrl?: string;
-    fileName?: string;
-    uploading?: boolean;
-    allowEdit?: boolean;
-    isCircular?: boolean | string;
-    size?: string;
+    previewUrl?: string | undefined;
+    fileName?: string | undefined;
+    uploading?: boolean | undefined;
+    allowEdit?: boolean | undefined;
+    isCircular?: boolean | string | undefined;
+    size?: string | undefined;
     acceptedFileFormats?: DropzoneProps["accept"];
     onDrop: (acceptedFiles: File[], rejectedFiles?: File[]) => void;
-    placeholderText?: string;
+    placeholderText?: string | undefined;
 }
 
 const FileDropZone: React.FC<FileDropZoneProps> = ({

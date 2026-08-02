@@ -15,7 +15,7 @@ import { iconBtnFilledSx, iconBtnSx } from "@/core/components/layout/ActionButto
 import ColumnVisibilityButton from "@/core/components/layout/ColumnVisibilityButton";
 import { ColumnVisibilityButtonProps } from "@/core/components/layout/columnVisibilityHelper";
 
-import { GenericItem } from "@/core/types";
+import { CrudRecord, FilterKeys } from "@/core/types";
 
 interface CrudApi {
     current?: {
@@ -25,19 +25,21 @@ interface CrudApi {
 }
 
 export interface ActionBarProps {
-    filterOptions?: FilterOption[];
-    handleFilterKeys?: (keys: Record<string, string>) => void;
-    search?: boolean;
-    qrProps?: QrFormProps;
-    api?: CrudApi;
-    columnVisibility?: Omit<ColumnVisibilityButtonProps<GenericItem>, "fields"> & {
-        fields: ColumnVisibilityButtonProps<GenericItem>["fields"];
-    };
-    tableName?: string;
-    addBtnText?: string;
-    add?: boolean;
-    refresh?: boolean;
-    children?: React.ReactNode;
+    filterOptions?: FilterOption[] | undefined;
+    handleFilterKeys?: ((keys: FilterKeys) => void) | undefined;
+    search?: boolean | undefined;
+    qrProps?: QrFormProps | undefined;
+    api?: CrudApi | undefined;
+    columnVisibility?:
+        | (Omit<ColumnVisibilityButtonProps<CrudRecord>, "fields"> & {
+              fields: ColumnVisibilityButtonProps<CrudRecord>["fields"];
+          })
+        | undefined;
+    tableName?: string | undefined;
+    addBtnText?: string | undefined;
+    add?: boolean | undefined;
+    refresh?: boolean | undefined;
+    children?: React.ReactNode | undefined;
 }
 
 const ActionBar: React.FC<ActionBarProps> = ({

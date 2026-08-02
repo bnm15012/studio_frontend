@@ -1,7 +1,10 @@
 import { Pagination } from "@mui/material";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { useCallback, useEffect, useState } from "react";
-import { getMessageHistoryAPI } from "@/Pages/Management/Communication/communication.api";
+import {
+    getMessageHistoryAPI,
+    MessageHistoryItem,
+} from "@/Pages/Management/Communication/communication.api";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { useAppUI } from "@/context/UIContext";
@@ -11,7 +14,7 @@ import MessageHistoryCard from "@/Pages/Management/Communication/MessageHistoryC
 import ReceipentsListDialog from "@/Pages/Management/Communication/ReceipentsListDialog";
 
 interface SentSMSHistoryProps {
-    newHistory?: Record<string, unknown>[] | Record<string, unknown>;
+    newHistory?: MessageHistoryItem[] | MessageHistoryItem;
 }
 
 const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
@@ -19,7 +22,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
     const { isMobile, token, currentBranch } = useAppUI();
     const [size] = useState(isMobile ? 6 : 3);
     const [page, setPage] = useState(1);
-    const [history, setHistory] = useState<Record<string, unknown>[] | null | undefined>(
+    const [history, setHistory] = useState<MessageHistoryItem[] | null | undefined>(
         Array.isArray(newHistory) ? newHistory : null,
     );
 
@@ -46,7 +49,7 @@ const SentSMSHistory: React.FC<SentSMSHistoryProps> = ({ newHistory }) => {
 
                 if (success) {
                     setHistory(data);
-                    setTotalPage(Math.ceil(totalCount / size));
+                    setTotalPage(Math.ceil((totalCount ?? 0) / size));
                 } else {
                     showAlert(message, "error");
                 }

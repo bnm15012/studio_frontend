@@ -1,10 +1,11 @@
-/** Hook that fetches and manages table data via Redux dispatch, handling pagination, search, filtering, and caching through CrudThunks. */
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/state";
 import { usePageSearch } from "@/core/hooks/useSearch";
 import { ShowAlertFn, SetLoadingFn, CrudThunks, CrudState, RequestParams } from "@/core/types";
+import { FilterKeys } from "@/core/state/stateTypes";
+import type { CrudRecord } from "@/api/types";
 
-export interface UseTableDataParams<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface UseTableDataParams<T extends CrudRecord = CrudRecord> {
     tableCruds: CrudThunks<T>;
     tableName: string;
     token: string;
@@ -13,10 +14,10 @@ export interface UseTableDataParams<T extends Record<string, unknown> = Record<s
     rootId: number;
     currentView: string;
     setLoading: SetLoadingFn;
-    defaultParams?: RequestParams & Record<string, unknown>;
+    defaultParams?: RequestParams & FilterKeys;
 }
 
-export const useTableData = <T extends Record<string, unknown> = Record<string, unknown>>({
+export const useTableData = <T extends CrudRecord = CrudRecord>({
     tableCruds,
     tableName,
     token,
@@ -30,8 +31,8 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     const dispatch = useAppDispatch();
     const tableState = useAppSelector(
         (state) =>
-            ((state as unknown as Record<string, unknown>)[tableName] as CrudState) ||
-            ({} as CrudState),
+            ((state as unknown as Record<string, CrudState<T>>)[tableName] as CrudState<T>) ||
+            ({} as CrudState<T>),
     );
 
     const { subscribe } = usePageSearch();
@@ -39,10 +40,10 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     // Lazy-initialize from the Redux store so that if the store already has
     // cached items (e.g. back-navigation), the component never renders with an
     // empty array first — eliminating the visible flash/flicker on mount.
-    const [data, setData] = useState<T[]>(() => (tableState.items as T[]) ?? []);
+    const [data, setData] = useState<T[]>(() => (tableState.items as unknown as T[]) ?? []);
     const [page, setPage] = useState<number>(1);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [filterKeys, setFilterKeys] = useState<Record<string, unknown>>({});
+    const [filterKeys, setFilterKeys] = useState<FilterKeys>({});
 
     const fetchData = useCallback(async () => {
         dispatch(
@@ -87,7 +88,7 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     );
 
     useEffect(() => {
-        const unsubscribe = subscribe((term: string, filters: Record<string, unknown>) => {
+        const unsubscribe = subscribe((term: string, filters: FilterKeys) => {
             setPage(1);
             setSearchTerm(term);
             setFilterKeys(filters);
@@ -101,7 +102,7 @@ export const useTableData = <T extends Record<string, unknown> = Record<string, 
     }, [fetchData]);
 
     useEffect(() => {
-        setData((tableState.items as T[]) ?? []);
+        setData((tableState.items as unknown as T[]) ?? []);
     }, [tableState.items]);
 
     return {

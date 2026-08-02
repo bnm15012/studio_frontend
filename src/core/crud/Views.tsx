@@ -21,12 +21,14 @@ import {
     FieldMeta,
     ActionItem,
     CrudThunks,
-    Entity,
+    CrudRecord,
     ViewMode,
     ViewsApiRef,
     BaseViewProps,
     RequestParams,
+    FieldValue,
 } from "@/core/types";
+import { FilterKeys } from "@/core/state/stateTypes";
 import { useAppDispatch } from "@/state";
 import { useRowSelection } from "@/core/crud/hooks/useRowSelection";
 import { SelectionToolbar } from "@/core/crud/components/SelectionToolbar";
@@ -37,11 +39,11 @@ import {
     getStoredVisibility,
 } from "@/core/components/layout/columnVisibilityHelper";
 
-export interface ViewsProps<T extends Entity> {
+export interface ViewsProps<T extends CrudRecord> {
     /** 0 = new record, positive integer = existing record id, undefined = list mode */
     formKey?: number;
     tableName: string;
-    overRideOnChange?: (value: unknown, obj: T, field: string) => T;
+    overRideOnChange?: (value: FieldValue, obj: Partial<T> | T, field: string) => Partial<T> | T;
     size: number;
     /** 0 means "no root context yet" — fetch will be skipped until non-zero */
     rootId: number;
@@ -50,7 +52,7 @@ export interface ViewsProps<T extends Entity> {
     fieldsMeta: FieldMeta;
     apiRef?: React.MutableRefObject<ViewsApiRef>;
     dialogProps?: Partial<StyledDialogProps>;
-    defaultParams?: RequestParams & Record<string, unknown>;
+    defaultParams?: RequestParams & FilterKeys;
     beforeAdd?: (row: T) => T | Promise<T>;
     beforeUpdate?: (row: T) => T | Promise<T>;
     cardLayout?: "vertical" | "horizontal";
@@ -78,7 +80,7 @@ export interface ViewsProps<T extends Entity> {
      * ```tsx
      * import type { BaseViewProps } from "@/core/types";
      *
-     * function KanbanView<T extends Entity>(props: BaseViewProps<T>) {
+     * function KanbanView<T extends CrudRecord>(props: BaseViewProps<T>) {
      *   return <div>{props.data.map(row => ...)}</div>;
      * }
      *
@@ -88,7 +90,7 @@ export interface ViewsProps<T extends Entity> {
     customView?: React.ComponentType<BaseViewProps<T>>;
 }
 
-function Views<T extends Entity>(props: ViewsProps<T>) {
+function Views<T extends CrudRecord>(props: ViewsProps<T>) {
     const {
         formKey,
         dialogProps,
@@ -217,7 +219,11 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
 
     const openFormView = useCallback(
         (row: T) => {
-            navigate(`/management/${tableName}/${row[consts.current.primaryKey]}`);
+            navigate(
+                `/management/${tableName}/${
+                    (row as unknown as Record<string, unknown>)[consts.current.primaryKey]
+                }`,
+            );
         },
         [navigate, tableName],
     );
@@ -268,14 +274,14 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
             tableName,
             currentView,
             multi,
-            CardContentComponent,
+            ...(CardContentComponent ? { CardContentComponent } : {}),
             handleChange,
             infiniteScroll,
             handleViewOpen,
             handleSave,
             handleCancel,
             handlePageChange,
-            addNewRow: showAddButton ? addNewRow : undefined,
+            ...(showAddButton ? { addNewRow } : {}),
             onClickRow,
         }),
         [
@@ -377,7 +383,7 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                                     columnVisibility={{
                                         currentView: formKey !== undefined ? "FORM" : currentView,
                                         tableKey: tableName,
-                                        fields: fields as unknown as FieldDef[],
+                                        fields: fields as unknown as FieldDef<CrudRecord>[],
                                         onVisibilityChange: setVisibilityMap,
                                     }}
                                 />
@@ -388,7 +394,6 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                         <CardView<T>
                             {...commonStableProps}
                             {...commonProps}
-                            CardContentComponent={CardContentComponent}
                             handleLoadMore={loadMore}
                             selectedRows={selectedRows}
                             isAllSelected={isAllSelected}
@@ -424,8 +429,12 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                         {...dialogProps}
                         submitAttempted={submitAttempted}
                         data={
-                            data.find((d) => d[consts.current.primaryKey] === editingId) ??
-                            ({} as T)
+                            data.find(
+                                (d) =>
+                                    (d as unknown as Record<string, unknown>)[
+                                        consts.current.primaryKey
+                                    ] === editingId,
+                            ) ?? ({} as T)
                         }
                     />
                 )}
@@ -453,7 +462,11 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                                             background: theme.palette.background.odd,
                                         }}
                                     >
-                                        {viewRow[field.name] as React.ReactNode}
+                                        {
+                                            (viewRow as unknown as Record<string, unknown>)[
+                                                field.name
+                                            ] as React.ReactNode
+                                        }
                                     </Paper>
                                 </Typography>
                             ))}
@@ -469,9 +482,14 @@ function Views<T extends Entity>(props: ViewsProps<T>) {
                     onConfirm={handleDeleteConfirm}
                     id={deleteId}
                     displayData={`${tableName} for ${
-                        data.find((d) => d[consts.current.primaryKey] === deleteId)?.[
-                            fieldToDisplayOnDelete
-                        ]
+                        (
+                            data.find(
+                                (d) =>
+                                    (d as unknown as Record<string, unknown>)[
+                                        consts.current.primaryKey
+                                    ] === deleteId,
+                            ) as unknown as Record<string, unknown> | undefined
+                        )?.[fieldToDisplayOnDelete] ?? deleteId
                     }`}
                 />
             )}

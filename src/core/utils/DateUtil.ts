@@ -5,7 +5,10 @@ export const parseDateTime = (str: string | null | undefined): Date | null => {
     const [d, t = "00:00:00"] = str.split(" ");
     if (!d) return null;
 
-    const [y, m, day] = d.split("-").map(Number);
+    const parts = d.split("-").map(Number);
+    if (parts.length < 3 || parts.some(isNaN)) return null;
+    const [y, m, day] = parts as [number, number, number];
+
     const [h = 0, min = 0, s = 0] = t.split(":").map(Number);
 
     const date = new Date(y, m - 1, day, h, min, s);

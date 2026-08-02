@@ -1,7 +1,7 @@
 /** Master field renderer that dispatches to the correct input component (Switch, DateTime, TextField, Select, Checkbox, Image, Editor, Custom) based on field type. */
 import React, { Suspense } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
-import { ExtraProp, SelectOption, GenericItem } from "@/core/types";
+import { ExtraProp, SelectOption, CrudRecord } from "@/core/types";
 import { Box } from "@mui/material";
 
 import StyledSwitch from "@/core/components/fields/StyledSwitch";
@@ -13,16 +13,16 @@ import ImageComponent from "@/core/components/fields/ImageComponent";
 import ImageDialog from "@/core/crud/ImageDialog";
 import StyledCheckbox from "@/core/components/fields/StyledCheckbox";
 
-export interface FieldProps<FT, T = GenericItem> {
-    value?: FT;
-    setValue?: (val: FT) => void;
-    isEdit?: boolean;
-    placeholder?: string;
-    label?: string;
-    type?: string;
-    validation?: ValidationRules;
-    extraProp?: ExtraProp<T>;
-    submitAttempted?: boolean;
+export interface FieldProps<FT = FieldValue, T extends CrudRecord = CrudRecord> {
+    value?: FT | undefined;
+    setValue?: ((val: FT) => void) | undefined;
+    isEdit?: boolean | undefined;
+    placeholder?: string | undefined;
+    label?: string | undefined;
+    type?: string | undefined;
+    validation?: ValidationRules | undefined;
+    extraProp?: ExtraProp<T> | undefined;
+    submitAttempted?: boolean | undefined;
 }
 
 const Field = <FT, T>({

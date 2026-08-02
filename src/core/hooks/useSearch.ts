@@ -1,13 +1,14 @@
 /** usePageSearch — pub/sub search hook. Subscribers register handlers that fire when search term or filter changes. */
 import { useState, useCallback } from "react";
+import { FilterKeys } from "../types";
 
-type SearchHandler = (term: string, filter: Record<string, string>) => void;
+type SearchHandler = (term: string, filter: FilterKeys) => void;
 
 const subscribers = new Set<SearchHandler>();
 
 export const usePageSearch = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filter, setFilter] = useState<Record<string, string>>({});
+    const [filter, setFilter] = useState<FilterKeys>({});
 
     const subscribe = useCallback((handler: SearchHandler) => {
         subscribers.add(handler);
@@ -17,7 +18,7 @@ export const usePageSearch = () => {
         };
     }, []);
 
-    const triggerSearch = (term: string, filter: Record<string, string>) => {
+    const triggerSearch = (term: string, filter: FilterKeys) => {
         setSearchTerm(term);
         setFilter(filter);
         subscribers.forEach((handler) => handler(term, filter));

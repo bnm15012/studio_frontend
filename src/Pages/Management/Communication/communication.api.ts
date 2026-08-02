@@ -5,9 +5,31 @@ const getErrorMessage = (
     defaultMessage: string,
 ) => error.response?.data?.status?.statusMessage || defaultMessage;
 
+export interface MessageHistoryItem {
+    id?: number | string;
+    title?: string;
+    sentDate?: string;
+    memberType?: string;
+    notificationType?: "EMAIL" | "WHATSAPP" | string;
+    content?: string;
+}
+
+export interface RecipientItem {
+    id?: number | string;
+    name?: string;
+    contact?: string;
+    status?: "SENT" | "PENDING" | "FAILED" | string;
+}
+
 export interface SendMessagePayload {
     branchId?: string | number;
-    [key: string]: unknown;
+    title?: string;
+    content?: string;
+    notificationType?: string;
+    memberType?: string | null;
+    recipients?: (number | string)[];
+    memberIds?: (number | string)[];
+    [key: string]: string | number | boolean | (number | string)[] | File | null | undefined;
 }
 
 const getHeaders = (
@@ -80,7 +102,12 @@ export const getMessageHistoryAPI = async ({
     branchId: string | number;
     page: number;
     size: number;
-}) => {
+}): Promise<{
+    data: MessageHistoryItem[];
+    success: boolean;
+    totalCount?: number;
+    message: string;
+}> => {
     try {
         const response = await api.get(`/getMessageHistory/${branchId}`, {
             headers: { Authorization: `${token}` },
@@ -88,13 +115,14 @@ export const getMessageHistoryAPI = async ({
         });
         const { data, status } = response.data;
         return {
-            data,
+            data: data as MessageHistoryItem[],
             success: true,
             totalCount: status.totalCount,
             message: status.statusMessage || "Templates fetched successfully!",
         };
     } catch (error) {
         return {
+            data: [],
             success: false,
             message: getErrorMessage(
                 error as { response?: { data?: { status?: { statusMessage?: string } } } },
@@ -110,19 +138,24 @@ export const getMessageRecipientsAPI = async ({
 }: {
     token: string | null | undefined;
     messageId: string | number;
-}) => {
+}): Promise<{
+    data: RecipientItem[];
+    success: boolean;
+    message: string;
+}> => {
     try {
         const response = await api.get(`/getMessageRecipients/${messageId}`, {
             headers: { Authorization: `${token}` },
         });
         const { data, status } = response.data;
         return {
-            data,
+            data: data as RecipientItem[],
             success: true,
             message: status.statusMessage || "Templates fetched successfully!",
         };
     } catch (error) {
         return {
+            data: [],
             success: false,
             message: getErrorMessage(
                 error as { response?: { data?: { status?: { statusMessage?: string } } } },

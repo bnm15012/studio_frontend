@@ -3,9 +3,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { DialogContent, ListItemText, Checkbox, MenuItem, CircularProgress } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 
-import { GenericItem } from "@/core/types";
+import { CrudRecord } from "@/core/types";
 
-interface MultiSelectDialogProps<T extends GenericItem = GenericItem> {
+interface MultiSelectDialogProps<T extends CrudRecord = CrudRecord> {
     open: boolean;
     onClose: () => void;
     fetchOptions: (page: number, size: number) => Promise<{ data: T[]; totalCount: number }>;
@@ -15,7 +15,13 @@ interface MultiSelectDialogProps<T extends GenericItem = GenericItem> {
     labelKey?: string;
 }
 
-export function MultiSelectDialog<T extends GenericItem = GenericItem>({
+/** Reads a dynamic property off a row, collapsing it to a comparable primitive. */
+const readKey = <T extends CrudRecord>(item: T, key: string): string | number | undefined => {
+    const val = (item as unknown as Record<string, unknown>)[key];
+    return typeof val === "string" || typeof val === "number" ? val : undefined;
+};
+
+export function MultiSelectDialog<T extends CrudRecord = CrudRecord>({
     open,
     onClose,
     fetchOptions,
@@ -41,7 +47,7 @@ export function MultiSelectDialog<T extends GenericItem = GenericItem>({
                 const merged = [...prev, ...fetchedData];
                 const uniqueMap = new Map<string | number | undefined, T>();
                 merged.forEach((item) => {
-                    uniqueMap.set(item[valueKey] as string | number | undefined, item);
+                    uniqueMap.set(readKey(item, valueKey), item);
                 });
                 return Array.from(uniqueMap.values());
             });
@@ -61,7 +67,7 @@ export function MultiSelectDialog<T extends GenericItem = GenericItem>({
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting) {
+                if (entry?.isIntersecting) {
                     fetchMoreOptions(Math.floor(options.length / LIMIT) + 1);
                 }
             },
@@ -92,16 +98,18 @@ export function MultiSelectDialog<T extends GenericItem = GenericItem>({
         >
             <DialogContent dividers style={{ maxHeight: "400px", overflow: "auto" }}>
                 {options.map((option, index) => {
-                    const optVal = option[valueKey];
-                    const optLabel = option[labelKey];
+                    const optVal = readKey(option, valueKey);
+                    const optLabel = readKey(option, labelKey);
                     return (
                         <MenuItem
                             key={String(optLabel ?? index)}
                             onClick={() => {
-                                const exists = selected.some((sel) => sel[valueKey] === optVal);
+                                const exists = selected.some(
+                                    (sel) => readKey(sel, valueKey) === optVal,
+                                );
                                 if (exists) {
                                     setSelected((prev) =>
-                                        prev.filter((sel) => sel[valueKey] !== optVal),
+                                        prev.filter((sel) => readKey(sel, valueKey) !== optVal),
                                     );
                                 } else {
                                     setSelected((prev) => [...prev, option]);
@@ -112,7 +120,7 @@ export function MultiSelectDialog<T extends GenericItem = GenericItem>({
                             <span>{index + 1}.</span>
                             <Checkbox
                                 edge="start"
-                                checked={selected.some((sel) => sel[valueKey] === optVal)}
+                                checked={selected.some((sel) => readKey(sel, valueKey) === optVal)}
                                 tabIndex={-1}
                                 disableRipple
                             />

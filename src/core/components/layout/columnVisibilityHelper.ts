@@ -1,9 +1,9 @@
 import { KEYS, ls } from "@/core/utils/localStorageHelper";
-import { Entity, FieldDef } from "@/core/types";
+import { CrudRecord, FieldDef } from "@/core/types";
 
 export type ColumnVisibilityMap = Record<string, boolean>;
 
-export interface ColumnVisibilityButtonProps<T extends Entity> {
+export interface ColumnVisibilityButtonProps<T extends CrudRecord> {
     /**
      * Unique key used to namespace the visibility map in localStorage.
      * Typically the table / entity name, e.g. "students" or "invoices".
@@ -35,7 +35,7 @@ export function storeVisibility(tableKey: string, map: ColumnVisibilityMap) {
  * Given the full list of fields and the stored map, returns which fields
  * are visible. A field is visible when it's not explicitly set to false.
  */
-export function applyVisibility<T extends Entity>(
+export function applyVisibility<T extends CrudRecord>(
     fields: FieldDef<T>[],
     map: ColumnVisibilityMap,
 ): FieldDef<T>[] {

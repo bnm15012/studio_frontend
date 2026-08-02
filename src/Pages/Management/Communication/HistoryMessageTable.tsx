@@ -10,9 +10,11 @@ import { getLocalDateTime } from "@/core/utils/DateUtil";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { Email, WhatsApp } from "@mui/icons-material";
 
+import { MessageHistoryItem } from "@/Pages/Management/Communication/communication.api";
+
 interface HistoryMessageTableProps {
     onViewRecipients: (id: string | number) => void;
-    history: Record<string, unknown>[] | null | undefined;
+    history: MessageHistoryItem[] | null | undefined;
 }
 
 const HistoryMessageTable: React.FC<HistoryMessageTableProps> = ({ onViewRecipients, history }) => (

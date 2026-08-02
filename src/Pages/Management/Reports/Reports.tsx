@@ -15,18 +15,25 @@ import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { formatDate, getCurrentDateTimeLocal, getLocalDateTime } from "@/core/utils/DateUtil";
 import { useAlert } from "@/core/components/feedback/Alert";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
-import { reportsAPi } from "@/Pages/Management/Reports/reports.api";
+import {
+    reportsAPi,
+    IncomeReportEntry,
+    ExpenseReportEntry,
+    PaymentReportEntry,
+} from "@/Pages/Management/Reports/reports.api";
 import { useAppUI } from "@/context/UIContext";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 
+type TableCellType = string | number | React.ReactNode;
+
 interface ReportData {
-    income?: unknown[][];
-    expenses?: unknown[][];
+    income?: TableCellType[][];
+    expenses?: TableCellType[][];
     totalIncome?: number;
     totalExpense?: number;
-    pendingPaymentEntries?: unknown[][];
+    pendingPaymentEntries?: TableCellType[][];
     totalPendingPayment?: number;
-    completedPaymentEntries?: unknown[][];
+    completedPaymentEntries?: TableCellType[][];
     totalCompletedPayment?: number;
 }
 
@@ -80,16 +87,10 @@ const Reports: React.FC = () => {
                     type: "incomeExpense",
                     ...commonPayload,
                 });
-                const { data, success, message } = resultIE as {
-                    data: Record<string, unknown>[];
-                    success: boolean;
-                    message: string;
-                };
+                const { data, success, message } = resultIE;
 
-                if (success && data.length > 0) {
-                    const report = data[0].ieMonthlyReportEntry as
-                        | Record<string, unknown>
-                        | undefined;
+                if (success && data && data.length > 0) {
+                    const report = data[0].ieMonthlyReportEntry;
                     if (!report) {
                         setEiData({ income: [], expenses: [], totalIncome: 0, totalExpense: 0 });
                         showAlert("No data available.", "warning");
@@ -98,29 +99,27 @@ const Reports: React.FC = () => {
                     const totalIncome = Number(report.income ?? 0);
                     const totalExpense = Number(report.expense ?? 0);
 
-                    const incomeFormatted =
-                        ((report.incomeEntries as Record<string, unknown>[] | undefined) ?? []).map(
-                            (entry: Record<string, unknown>, index: number) => [
-                                index + 1,
-                                String(entry.studentName ?? ""),
-                                String(entry.paymentMode ?? ""),
-                                `${String(entry.activityName ?? "")} ${entry.membershipType ? "(" + String(entry.membershipType) + ")" : ""}`,
-                                getLocalDateTime(String(entry.paymenDate ?? null)),
-                                `₹${String(entry.amount ?? "")}`,
-                            ],
-                        ) ?? [];
+                    const incomeFormatted: TableCellType[][] = (report.incomeEntries ?? []).map(
+                        (entry: IncomeReportEntry, index: number) => [
+                            index + 1,
+                            String(entry.studentName ?? ""),
+                            String(entry.paymentMode ?? ""),
+                            `${String(entry.activityName ?? "")} ${entry.membershipType ? "(" + String(entry.membershipType) + ")" : ""}`,
+                            getLocalDateTime(String(entry.paymenDate ?? null)),
+                            `₹${String(entry.amount ?? "")}`,
+                        ],
+                    );
 
-                    const expenseFormatted =
-                        (
-                            (report?.expenseEntries as Record<string, unknown>[] | undefined) ?? []
-                        ).map((entry: Record<string, unknown>, index: number) => [
+                    const expenseFormatted: TableCellType[][] = (report.expenseEntries ?? []).map(
+                        (entry: ExpenseReportEntry, index: number) => [
                             index + 1,
                             String(entry.description || entry.expenseCategory || ""),
                             String(entry.paymentType ?? ""),
                             String(entry.expenseCategory ?? ""),
                             getLocalDateTime(String(entry.expenseDate ?? null)),
                             `₹${String(entry.amount ?? "")}`,
-                        ]) ?? [];
+                        ],
+                    );
 
                     setEiData({
                         income: incomeFormatted,
@@ -144,28 +143,26 @@ const Reports: React.FC = () => {
                     ...commonPayload,
                     type: "payment",
                 });
-                const { data, success } = result as {
-                    data: Record<string, unknown>[];
-                    success: boolean;
-                    message: string;
-                };
+                const { data, success } = result;
 
-                if (success && data.length > 0) {
+                if (success && data && data.length > 0) {
                     let totalAmount = 0;
 
-                    const formatted = data.map((entry: Record<string, unknown>, index: number) => {
-                        totalAmount += Number(entry.amount ?? 0);
+                    const formatted: TableCellType[][] = data.map(
+                        (entry: PaymentReportEntry, index: number) => {
+                            totalAmount += Number(entry.amount ?? 0);
 
-                        return [
-                            index + 1,
-                            String(entry.payeeType ?? ""),
-                            String(entry.payeeName ?? ""),
-                            `₹${String(entry.amount ?? "")}`,
-                            String(entry.paymentType ?? ""),
-                            String(entry.status ?? ""),
-                            getLocalDateTime(String(entry.paymentDate ?? null)),
-                        ];
-                    });
+                            return [
+                                index + 1,
+                                String(entry.payeeType ?? ""),
+                                String(entry.payeeName ?? ""),
+                                `₹${String(entry.amount ?? "")}`,
+                                String(entry.paymentType ?? ""),
+                                String(entry.status ?? ""),
+                                getLocalDateTime(String(entry.paymentDate ?? null)),
+                            ];
+                        },
+                    );
                     if (paymentStatus === "PENDING") {
                         setEiData({
                             pendingPaymentEntries: formatted,
@@ -193,7 +190,7 @@ const Reports: React.FC = () => {
         }
     };
 
-    const renderTable = (title: string, data: unknown[][], headers: string[]) => (
+    const renderTable = (title: string, data: TableCellType[][], headers: string[]) => (
         <>
             <p style={{ fontSize: 18, marginBottom: 10 }}> {title}</p>
             <div>
@@ -234,7 +231,7 @@ const Reports: React.FC = () => {
                                     pageBreakInside: "avoid",
                                 }}
                             >
-                                {row.map((cell: unknown, j: number) => (
+                                {row.map((cell: TableCellType, j: number) => (
                                     <td
                                         key={j}
                                         style={{

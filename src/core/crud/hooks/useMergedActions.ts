@@ -1,9 +1,9 @@
-/** Hook that merges user-provided actions with default CRUD actions (edit, delete, form), allowing overrides by name. */
 import { useMemo } from "react";
 import { defaultActions, DefaultActionsProps } from "@/core/crud/constant/defaultActions";
 import { ActionItem } from "@/core/types";
+import type { CrudRecord } from "@/api/types";
 
-export const useMergedActions = <T extends Record<string, unknown> = Record<string, unknown>>(
+export const useMergedActions = <T extends CrudRecord = CrudRecord>(
     actions: ActionItem<T>[],
     args: DefaultActionsProps<T>,
 ): ActionItem<T>[] =>

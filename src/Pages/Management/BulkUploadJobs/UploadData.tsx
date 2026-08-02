@@ -61,7 +61,10 @@ const UploadData: React.FC<UploadDataProps> = ({ handleUploadFile, sampleFIlePat
     const [page, setPage] = useState(0);
     const rowsPerPage = 5;
     const startIndex = page * rowsPerPage;
-    const handleChangePage = (_: unknown, newPage: number) => {
+    const handleChangePage = (
+        _: React.ChangeEvent<unknown> | React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+    ) => {
         setPage(newPage);
     };
 

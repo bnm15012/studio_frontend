@@ -1,22 +1,22 @@
-/** Defines default CRUD action items (edit, delete, open-form) with their icons and click handlers. */
 import { Delete, Edit, OpenInNew } from "@mui/icons-material";
 import { ActionItem } from "@/core/types";
+import type { CrudRecord } from "@/api/types";
 
 // Icon elements as module-level constants — created once, not on every defaultActions() call.
 const EditIcon = <Edit />;
 const DeleteIcon = <Delete />;
 const FormIcon = <OpenInNew />;
 
-export interface DefaultActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
+export interface DefaultActionsProps<T extends CrudRecord = CrudRecord> {
     loading: boolean;
-    editMode?: "FORM" | "INLINE" | string;
-    formKey?: unknown;
+    editMode?: "FORM" | "INLINE" | string | undefined;
+    formKey?: string | number | null | undefined;
     handleEdit: (row: T) => void;
     handleDeleteClick: (row: T) => void;
     openFormView: (row: T) => void;
 }
 
-export const defaultActions = <T extends Record<string, unknown> = Record<string, unknown>>({
+export const defaultActions = <T extends CrudRecord = CrudRecord>({
     loading,
     editMode,
     formKey,

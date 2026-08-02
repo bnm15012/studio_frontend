@@ -273,7 +273,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     );
 
     const overRideOnChange = useCallback(
-        (value: unknown, obj: Partial<StudentAssignment>, fieldPath: string) => {
+        (value: FieldValue, obj: Partial<StudentAssignment>, fieldPath: string) => {
             if (!value) return obj;
 
             const newObj = { ...obj };
@@ -428,7 +428,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                 ]
                                     .slice((page - 1) * limit, page * limit)
 
-                                    .map((a: unknown) => ({ key: a, value: a }));
+                                    .map((a: string) => ({ key: a, value: a }));
                             },
                         },
                         validation: { required: true },
@@ -457,7 +457,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                                         (b: BatchEntry) => b.daysPerWeek,
                                     ),
                                 ),
-                            ].map((a: unknown) => ({
+                            ].map((a: number | string) => ({
                                 key: a,
                                 value: a,
                             }));
@@ -497,7 +497,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                             ]
                                 .slice((page - 1) * limit, page * limit)
 
-                                .map((a: unknown) => ({ key: a, value: a }));
+                                .map((a: string) => ({ key: a, value: a }));
                         },
                         validation: { required: true },
                     },

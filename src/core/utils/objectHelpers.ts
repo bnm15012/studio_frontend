@@ -1,26 +1,30 @@
-// utils/objectHelpers.ts
-import { Entity } from "@/core/types";
+import { FieldValue } from "@/core/types";
 
-export const getNestedValue = <T extends Entity, K extends string & keyof T>(
-    obj: T,
-    path: string,
-): T[K] => {
+type Indexable = Record<string, FieldValue | Record<string, FieldValue>>;
+
+export const getNestedValue = <T = unknown>(obj: T, path: string): FieldValue => {
     const keys = path.split(".");
-    let current: Entity = obj;
+    let current: unknown = obj;
     for (const key of keys) {
-        if (current == null || typeof current !== "object") return undefined as T[K];
-        current = current[key] as Entity;
+        if (current == null || typeof current !== "object") return undefined;
+        current = (current as Record<string, unknown>)[key];
     }
-    return current as T[K];
+    return current as FieldValue;
 };
 
-export const setNestedValue = <T extends Entity>(obj: T, path: string, value: T[keyof T]): void => {
+export const setNestedValue = <T = unknown>(obj: T, path: string, value: unknown): void => {
     const keys = path.split(".");
     const lastKey = keys.pop();
     if (!lastKey) return;
-    const deep = keys.reduce<Entity>((acc, key) => {
-        if (!acc[key] || typeof acc[key] !== "object") acc[key] = {} as Entity;
-        return acc[key] as Entity;
-    }, obj);
-    deep[lastKey] = value;
+    const deep = keys.reduce<Indexable>(
+        (acc, key) => {
+            const existing = acc[key];
+            if (existing == null || typeof existing !== "object") {
+                acc[key] = {};
+            }
+            return acc[key] as Indexable;
+        },
+        obj as unknown as Indexable,
+    );
+    deep[lastKey] = value as unknown as FieldValue;
 };

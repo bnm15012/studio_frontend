@@ -1,5 +1,42 @@
 import api from "@/core/utils/api";
 
+export interface IncomeReportEntry {
+    studentName?: string;
+    paymentMode?: string;
+    activityName?: string;
+    membershipType?: string;
+    paymenDate?: string;
+    amount?: number | string;
+}
+
+export interface ExpenseReportEntry {
+    description?: string;
+    expenseCategory?: string;
+    paymentType?: string;
+    expenseDate?: string;
+    amount?: number | string;
+}
+
+export interface PaymentReportEntry {
+    payeeType?: string;
+    payeeName?: string;
+    amount?: number | string;
+    paymentType?: string;
+    status?: string;
+    paymentDate?: string;
+}
+
+export interface IEMonthlyReport {
+    income?: number;
+    expense?: number;
+    incomeEntries?: IncomeReportEntry[];
+    expenseEntries?: ExpenseReportEntry[];
+}
+
+export interface ReportResponseItem extends PaymentReportEntry {
+    ieMonthlyReportEntry?: IEMonthlyReport;
+}
+
 interface ReportsApiParams {
     startDate: number;
     startMonth: number;
@@ -28,9 +65,13 @@ export const reportsAPi = async ({
     type,
     status,
     paymentMethod,
-}: ReportsApiParams) => {
+}: ReportsApiParams): Promise<{
+    success: boolean;
+    data?: ReportResponseItem[];
+    message: string;
+}> => {
     try {
-        let response: { data: { data: Record<string, unknown>[]; message?: string } } | null = null;
+        let response: { data: { data: ReportResponseItem[]; message?: string } } | null = null;
         if (type === "payment") {
             response = await api.get(
                 `/reports/payments/${studioId}/${branchId}/${startDate}/${startMonth}/${startYear}/${endDate}/${endMonth}/${endYear}?status=${status}&paymentType=${paymentMethod}`,
@@ -55,7 +96,7 @@ export const reportsAPi = async ({
             );
         }
         if (!response) {
-            return { success: false, message: "No response from server" };
+            return { success: false, data: [], message: "No response from server" };
         }
         const data = response.data;
         return {
@@ -67,6 +108,6 @@ export const reportsAPi = async ({
         const err = error as { response?: { data?: { status?: { statusMessage?: string } } } };
         console.error("report data fetch error:", err);
         const message = err.response?.data?.status?.statusMessage || "Failed to fetch report data";
-        return { success: false, message };
+        return { success: false, data: [], message };
     }
 };

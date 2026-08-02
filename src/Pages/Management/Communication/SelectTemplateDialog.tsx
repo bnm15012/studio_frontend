@@ -8,10 +8,10 @@ import { useAlert } from "@/core/components/feedback/Alert";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
 import { useAppUI } from "@/context/UIContext";
-import type { GenericTemplate } from "@/api/types";
+import type { GenericTemplate, Student } from "@/api/types";
 
 interface SelectTemplateDialogData {
-    raw?: unknown;
+    raw?: Student | Record<string, unknown>;
     phoneNumber?: string;
     email?: string;
     notificationType?: string;
@@ -20,7 +20,7 @@ interface SelectTemplateDialogData {
 
 interface SelectTemplateDialogProps {
     open: boolean;
-    onClose: (arg?: unknown) => void;
+    onClose: (arg?: { open?: boolean } | void) => void;
     data: SelectTemplateDialogData;
 }
 

@@ -4,26 +4,26 @@ import { TextField } from "@mui/material";
 import { SxProps, Theme } from "@mui/material/styles";
 
 export interface ValidationRules {
-    required?: boolean;
-    regex?: RegExp;
-    message?: string;
-    minLength?: number;
-    maxLength?: number;
+    required?: boolean | undefined;
+    regex?: RegExp | undefined;
+    message?: string | undefined;
+    minLength?: number | undefined;
+    maxLength?: number | undefined;
     [key: string]: unknown;
 }
 
 export interface StyledTextFieldProps {
-    value?: string;
+    value?: string | undefined;
     setValue: (val: string) => void;
-    rows?: number;
-    label?: string;
-    placeholder?: string;
-    type?: string;
-    variant?: "standard" | "outlined" | "filled";
-    validation?: ValidationRules;
-    readOnly?: boolean;
-    sx?: SxProps<Theme>;
-    submitAttempted?: boolean;
+    rows?: number | undefined;
+    label?: string | undefined;
+    placeholder?: string | undefined;
+    type?: string | undefined;
+    variant?: "standard" | "outlined" | "filled" | undefined;
+    validation?: ValidationRules | undefined;
+    readOnly?: boolean | undefined;
+    sx?: SxProps<Theme> | undefined;
+    submitAttempted?: boolean | undefined;
 }
 
 const StyledTextField: React.FC<StyledTextFieldProps> = ({

@@ -1,16 +1,16 @@
 /** Hook managing multi-row selection state: selected IDs, select-all, indeterminate state, and bulk action filtering. */
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { ActionItem, Entity } from "@/core/types";
+import { ActionItem, CrudRecord } from "@/core/types";
 
-interface UseRowSelectionOptions<T extends Record<string, unknown>> {
+interface UseRowSelectionOptions<T extends CrudRecord> {
     data: T[];
     primaryKey: string;
     /** Reset selection when any of these values change (e.g. currentPage). */
-    resetOn?: unknown[];
+    resetOn?: React.DependencyList;
     actions: ActionItem<T>[];
 }
 
-export interface UseRowSelectionReturn<T extends Entity> {
+export interface UseRowSelectionReturn<T extends CrudRecord> {
     selectedRows: number[];
     selectedRowsData: T[];
     multiActions: ActionItem<T>[];
@@ -24,7 +24,7 @@ export interface UseRowSelectionReturn<T extends Entity> {
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function useRowSelection<T extends Entity>({
+export function useRowSelection<T extends CrudRecord>({
     data,
     primaryKey,
     resetOn = [],
@@ -39,12 +39,21 @@ export function useRowSelection<T extends Entity>({
     }, resetOn);
 
     const visibleRowIds = useMemo(
-        () => (data.map((row) => Number(row[primaryKey]) || 0) ?? []) as number[],
+        () =>
+            (data.map(
+                (row) =>
+                    Number((row as unknown as Record<string, number | string>)[primaryKey]) || 0,
+            ) ?? []) as number[],
         [data, primaryKey],
     );
 
     const selectedRowsData = useMemo(
-        () => data.filter((row) => selectedRows.includes(Number(row[primaryKey]) || 0)) ?? [],
+        () =>
+            data.filter((row) =>
+                selectedRows.includes(
+                    Number((row as unknown as Record<string, number | string>)[primaryKey]) || 0,
+                ),
+            ) ?? [],
         [data, selectedRows, primaryKey],
     );
 

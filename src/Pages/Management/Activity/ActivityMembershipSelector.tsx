@@ -9,11 +9,19 @@ interface SelectedActivityData {
     activity?: Activity;
     membershipType?: string;
     batchName?: string;
-    [key: string]: unknown;
+    [key: string]: string | number | boolean | Activity | undefined;
 }
 
 interface ActivityMembershipSelectorProps {
-    onSelect: (...args: unknown[]) => void;
+    onSelect: (
+        event: React.SyntheticEvent | null,
+        activity: Activity | null,
+        membership: string,
+        batchName: string,
+        batchTime: string,
+        daysPerWeek: number | null,
+        amount: number | null,
+    ) => void;
     selectedData?: SelectedActivityData;
     isMemberSHipToo?: boolean;
 }

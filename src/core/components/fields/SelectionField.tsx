@@ -6,14 +6,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { SelectOption } from "@/core/types";
 
 export interface SelectionFieldProps<T> {
-    label?: string;
-    value?: SelectOption<T> | null;
-    readOnly?: boolean;
+    label?: string | undefined;
+    value?: SelectOption<T> | null | undefined;
+    readOnly?: boolean | undefined;
     setValue: (val: string | number | SelectOption<T>) => void;
     getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption<T>[]>;
-    variant?: "standard" | "outlined" | "filled";
-    validation?: { required?: boolean; [key: string]: unknown };
-    saveType?: "string" | "object";
+    variant?: "standard" | "outlined" | "filled" | undefined;
+    validation?: { required?: boolean; [key: string]: unknown } | undefined;
+    saveType?: "string" | "object" | undefined;
 }
 
 export default function SelectionField<T>({

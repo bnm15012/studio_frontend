@@ -2,16 +2,12 @@
 import React from "react";
 import { useAppSelector } from "@/state";
 import { useFeatureFlags } from "@/core/hooks/useFeatureFlags";
-import { FEATURE_KEYS } from "@/context/feature_keys";
-
 import { createUIContext } from "@/core/context/UIContext";
 import { Branch, Studio, User } from "@/api/types";
 import { Setting } from "@/state/authSlice";
 
 export interface AppUIContext {
     DEBUG: boolean;
-
-    FEATURE_KEYS: typeof FEATURE_KEYS;
 
     user: User;
     currentBranch: Branch;
@@ -28,14 +24,7 @@ export const { UIProvider, useUI, UIContext } = createUIContext<Partial<AppUICon
 export const useAppUI = (): AppUIContext => {
     const ui = useUI();
 
-    if (
-        !ui.user ||
-        !ui.currentBranch ||
-        !ui.token ||
-        !ui.studio ||
-        !ui.permissions ||
-        !ui.FEATURE_KEYS
-    ) {
+    if (!ui.user || !ui.currentBranch || !ui.token || !ui.studio || !ui.permissions) {
         throw new Error("useAppUI must be used within AppUIProvider.");
     }
 
@@ -69,9 +58,6 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
         <UIProvider
             value={{
                 DEBUG: import.meta.env.VITE_DEBUG === "true",
-
-                FEATURE_KEYS,
-
                 user: user!,
                 currentBranch: currentBranch!,
                 token: token!,

@@ -4,8 +4,8 @@ import { Switch, Typography } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 
 export interface StyledSwitchProps {
-    label?: string;
-    readOnly?: boolean;
+    label?: string | undefined;
+    readOnly?: boolean | undefined;
     value: boolean;
     setValue: (val: boolean) => void;
 }

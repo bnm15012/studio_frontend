@@ -1,4 +1,19 @@
 import api from "@/core/utils/api";
+import type { ChartData } from "chart.js";
+
+export interface AnalysisDataResponse {
+    expenseData: ChartData<"pie">;
+    paymentData: ChartData<"pie">;
+    expenseVsPaymentBarData: ChartData<"bar">;
+    expenseVsPaymentLineData: ChartData<"line">;
+    activityData: ChartData<"pie">;
+}
+
+export interface AnalysisReportResult {
+    success: boolean;
+    data?: AnalysisDataResponse;
+    message: string;
+}
 
 interface FetchReportDataParams {
     token: string | null | undefined;
@@ -31,7 +46,7 @@ export const fetchReportData = async ({
     token,
     branchId,
     year = new Date().getFullYear(),
-}: FetchReportDataParams) => {
+}: FetchReportDataParams): Promise<AnalysisReportResult> => {
     try {
         const response = await api.get(`/analysis/${year}/${branchId}`, {
             headers: {

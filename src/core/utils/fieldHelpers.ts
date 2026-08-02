@@ -1,5 +1,5 @@
 import { getNestedValue } from "@/core/utils/objectHelpers";
-import { FieldDef, ExtraProp, Entity, KnownKeys } from "@/core/types";
+import { FieldDef, ExtraProp, CrudRecord, KnownKeys } from "@/core/types";
 
 /** Field utility functions: getVisibleFields, resolveFieldValue, bindGetOptions, isFieldEditable for form/view rendering.
 
@@ -8,7 +8,7 @@ import { FieldDef, ExtraProp, Entity, KnownKeys } from "@/core/types";
  * @param fields - field definitions
  * @returns visible fields
  */
-export const getVisibleFields = <T extends Entity>(fields: FieldDef<T>[]): FieldDef<T>[] =>
+export const getVisibleFields = <T extends CrudRecord>(fields: FieldDef<T>[]): FieldDef<T>[] =>
     fields.filter((f) => f.show || f.view);
 
 /**
@@ -20,14 +20,14 @@ export const getVisibleFields = <T extends Entity>(fields: FieldDef<T>[]): Field
  * @returns resolved value
  */
 export const resolveFieldValue = <
-    T extends Entity,
+    T extends CrudRecord,
     K extends KnownKeys<T> & string = KnownKeys<T> & string,
 >(
     field: FieldDef<T>,
     row: T,
     isEdit: boolean,
 ): React.ReactNode | { key: string | number; value: T[K] } | T[K] => {
-    const raw = getNestedValue<T, K>(row, field.name);
+    const raw = getNestedValue(row, field.name) as T[K];
     return field.getValue
         ? (
               field.getValue as (
@@ -47,7 +47,7 @@ export const resolveFieldValue = <
  * @param isEditing - editing state flag
  * @returns boolean indicating if editable
  */
-export const isFieldEditable = <T extends Entity>(
+export const isFieldEditable = <T extends CrudRecord>(
     field: FieldDef<T>,
     row: T,
     isEditing: boolean,
@@ -65,7 +65,7 @@ export const isFieldEditable = <T extends Entity>(
  * @param row              - current data row
  * @returns patched extraProp object
  */
-export const bindGetOptions = <T extends Entity>(
+export const bindGetOptions = <T extends CrudRecord>(
     fieldOrExtraProp: FieldDef<T> | ExtraProp<T> | undefined,
     row: T,
 ): ExtraProp<T> => {
@@ -84,7 +84,7 @@ export const bindGetOptions = <T extends Entity>(
         ...extraProp,
         getOptions: async (search: string, page: number, limit: number) =>
             getOptions(search, page, limit, row),
-    };
+    } as ExtraProp<T>;
 };
 
 /** Shared "empty state" message constant */

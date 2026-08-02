@@ -1,4 +1,6 @@
 /** Utility functions: getHeader (auth header builder), getApiMessage (error extraction), withLoading (loading wrapper), isCacheValid (cache TTL checker). */
+import type { FilterKeys } from "@/core/state/stateTypes";
+
 export const getHeader = (token: string | null | undefined) => ({
     headers: { Authorization: token ?? "" },
 });
@@ -33,7 +35,7 @@ interface CacheState {
     rootId: string | number;
     currentPage: string | number;
     searchTerm: string;
-    filterKeys: Record<string, unknown>;
+    filterKeys: FilterKeys;
 }
 
 interface CacheParams {

@@ -30,11 +30,11 @@ import {
     getStoredVisibility,
     storeVisibility,
 } from "@/core/components/layout/columnVisibilityHelper";
-import { Entity } from "@/core/types";
+import { CrudRecord } from "@/core/types";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-function ColumnVisibilityButton<T extends Entity>({
+function ColumnVisibilityButton<T extends CrudRecord>({
     tableKey,
     fields,
     onVisibilityChange,

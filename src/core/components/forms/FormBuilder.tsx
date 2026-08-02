@@ -7,7 +7,7 @@ import Field from "@/core/components/fields/Field";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SendIcon from "@mui/icons-material/Send";
 import { resolveFieldValue, bindGetOptions } from "@/core/utils/fieldHelpers";
-import { FieldDef } from "@/core/types";
+import { FieldDef, FieldValue } from "@/core/types";
 import type { ValidationRules } from "@/core/components/fields/StyledTextField";
 
 // ==============================
@@ -132,7 +132,7 @@ interface FormBuilderProps {
         name: string;
         fields: FieldDef[];
         onSubmit: (arg: {
-            newData: Record<string, unknown>;
+            newData: Record<string, FieldValue>;
             formSignature: string;
         }) => Promise<{ success: boolean; message: string }>;
     };
@@ -148,7 +148,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     const [loading, setLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const [formState, setFormState] = useState<Record<string, unknown>>({
+    const [formState, setFormState] = useState<Record<string, FieldValue>>({
         _form_sig: FORM_SIG,
     });
 
@@ -173,7 +173,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // ==============================
 
     useEffect(() => {
-        const initialState: Record<string, unknown> = {
+        const initialState: Record<string, FieldValue> = {
             _form_sig: FORM_SIG,
         };
 
@@ -183,7 +183,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
             }
         });
 
-        setFormState((prev: Record<string, unknown>) => ({
+        setFormState((prev: Record<string, FieldValue>) => ({
             ...initialState,
             ...prev,
         }));
@@ -195,7 +195,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
 
     const validateField = (
         label: string,
-        value: unknown,
+        value: FieldValue,
         validation:
             | {
                   required?: boolean;
@@ -221,8 +221,8 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ form, branchId }) => {
     // Change Handler
     // ==============================
 
-    const handleChange = (key: string, value: unknown) => {
-        setFormState((prev: Record<string, unknown>) => ({
+    const handleChange = (key: string, value: FieldValue) => {
+        setFormState((prev: Record<string, FieldValue>) => ({
             ...prev,
             [key]: value,
         }));

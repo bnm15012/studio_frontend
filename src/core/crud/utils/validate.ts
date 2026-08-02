@@ -1,4 +1,6 @@
 /** Simple form validation: checks required fields, regex patterns, min length, and max length, throwing an error message if any fail. */
+import { CrudRecord } from "@/core/types";
+
 const isEmpty = (v: unknown): boolean =>
     v === null ||
     v === undefined ||
@@ -17,10 +19,10 @@ interface ValidationField {
     };
 }
 
-export const validate = (data: Record<string, unknown>, fields: ValidationField[]): void => {
+export const validate = <T extends CrudRecord>(data: T, fields: ValidationField[]): void => {
     fields.forEach(({ name, label, validation }) => {
         if (!validation) return;
-        const value = data[name];
+        const value = (data as unknown as Record<string, unknown>)[name];
         const strValue = value === null || value === undefined ? "" : String(value);
 
         if (validation.required && isEmpty(value)) {

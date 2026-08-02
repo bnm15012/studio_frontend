@@ -61,7 +61,7 @@ const UploadJobHistory = () => {
                     <TableHead>
                         <StyledTableRow>
                             <StyledTableCell sx={{ textWrap: "nowrap" }}>S. No</StyledTableCell>
-                            <StyledTableCell>Entity Type</StyledTableCell>
+                            <StyledTableCell>CrudRecord Type</StyledTableCell>
                             <StyledTableCell>Status</StyledTableCell>
                             <StyledTableCell>Total</StyledTableCell>
                             <StyledTableCell>Processed</StyledTableCell>

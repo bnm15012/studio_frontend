@@ -26,7 +26,7 @@ import { sendMessageApi } from "@/Pages/Management/Communication/communication.a
 import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAppUI } from "@/context/UIContext";
 import type { GenericTemplate } from "@/api/types";
-import type { GenericItem } from "@/core/types";
+import type { CrudRecord } from "@/core/types";
 
 const MAIL_TYPE = ["EMAIL"];
 
@@ -55,8 +55,8 @@ const Communication = () => {
 
     const [open, setOpen] = useState(false);
     const [selectedTemplateId, setSelectedTemplateId] = useState<number | string>(0);
-    const [selectedStudents, setSelectedStudents] = useState<GenericItem[]>([]);
-    const [selectedInstructors, setSelectedInstructors] = useState<GenericItem[]>([]);
+    const [selectedStudents, setSelectedStudents] = useState<CrudRecord[]>([]);
+    const [selectedInstructors, setSelectedInstructors] = useState<CrudRecord[]>([]);
     const [loading, setLoading] = useState(false);
     const [templates, setTemplates] = useState<GenericTemplate[]>([]);
     const [audienceType, setAudienceType] = useState("all");

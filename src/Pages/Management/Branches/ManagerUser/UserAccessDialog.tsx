@@ -91,7 +91,7 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({
                                 isEdit={isEdit}
                                 value={accessState[key] === "FULL"}
                                 type="BOOL"
-                                setValue={(v: unknown) =>
+                                setValue={(v: boolean | FieldValue) =>
                                     handleChange(key, ACCESS_RIGHTS[v ? 1 : 0] as userRights)
                                 }
                             />

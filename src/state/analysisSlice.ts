@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AnalysisReportResult } from "@/Pages/Analysis/analysis.api";
 
 export interface AnalysisState {
-    data: Record<string, unknown>;
+    data: Partial<AnalysisReportResult>;
 }
 
 const initialState: AnalysisState = {
@@ -12,8 +13,8 @@ const analysisSlice = createSlice({
     name: "analysis",
     initialState,
     reducers: {
-        setAnalysisData(state, action: PayloadAction<Record<string, unknown>>) {
-            state.data = action.payload;
+        setAnalysisData(state, action: PayloadAction<Partial<AnalysisReportResult>>) {
+            return { ...state, data: action.payload };
         },
         clearAnalysisState: () => initialState,
     },

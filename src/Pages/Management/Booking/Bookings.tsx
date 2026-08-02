@@ -236,8 +236,10 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     name: "clientEntry",
                     label: "Poc Name",
                     type: "SELECT",
-                    getValue: (obj: Booking) =>
-                        obj && { value: obj.value || obj.pocName, key: obj.key || obj.clientId },
+                    getValue: (value: Booking["clientEntry"] | undefined, row: Booking) => {
+                        const client = value || row.clientEntry;
+                        return { value: client?.pocName || "", key: client?.clientId || 0 };
+                    },
                     extraProp: {
                         addValue: false,
                         saveType: "object",
@@ -276,7 +278,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                         PARTIAL: "#f59e0b",
                         PENDING: "#ef4444",
                     },
-                    getValue: (value: unknown, row: Booking) => {
+                    getValue: (_value: paymentStatus | undefined, row: Booking) => {
                         const dueAmount =
                             ((row.totalAmount as number) || 0) -
                             ((Array.isArray(row.paymentEntries) &&
@@ -308,7 +310,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     section: "Payment Details",
                     type: "NUMBER",
                     extraProp: { readOnly: true },
-                    getValue: (obj: unknown, row: Booking) =>
+                    getValue: (_obj: number | undefined, row: Booking) =>
                         (Array.isArray(row.paymentEntries) &&
                             (row.paymentEntries as Payment[])
                                 .filter((p) => p.status == "COMPLETED")
@@ -323,7 +325,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     section: "Payment Details",
                     type: "NUMBER",
                     extraProp: { readOnly: true },
-                    getValue: (obj: unknown, row: Booking) =>
+                    getValue: (_obj: number | undefined, row: Booking) =>
                         ((row.totalAmount as number) || 0) -
                         ((Array.isArray(row.paymentEntries) &&
                             (row.paymentEntries as Payment[])

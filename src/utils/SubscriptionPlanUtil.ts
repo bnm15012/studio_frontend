@@ -18,7 +18,7 @@ const parsePlanDays = (planName: string, membershipTypes: MembershipPackage[]): 
 
     for (const key in subscriptionPlans) {
         if (name.includes(key.toLowerCase())) {
-            return subscriptionPlans[key];
+            return subscriptionPlans[key] ?? 0;
         }
     }
     const packag = membershipTypes.filter((m) => m.membershipPackage === planName)[0];

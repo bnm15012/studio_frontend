@@ -66,15 +66,20 @@ function buildEndpointKey(config: InternalAxiosRequestConfig): string {
 /** Map of in-flight promise keys → shared Promise. */
 const inflightMap = new Map<string, Promise<AxiosResponse>>();
 
+/** Runtime metadata attached to a request config while a dedupe is in flight. */
+interface DedupeConfigMeta {
+    __dedupeKey__?: string;
+    __dedupePromise__?: Promise<AxiosResponse>;
+}
+
+const DEDUPE_KEY = "__dedupeKey__" as const;
+const DEDUPE_PROMISE = "__dedupePromise__" as const;
+
 /**
  * Installs a request/response interceptor pair that collapses identical
  * concurrent GET requests into a single network call.
  */
 export function installDedupeInterceptor(axiosInstance: AxiosInstance): void {
-    // Attach the shared-promise reference on the request config
-    const DEDUPE_KEY = "__dedupeKey__";
-    const DEDUPE_PROMISE = "__dedupePromise__";
-
     axiosInstance.interceptors.request.use(
         (config) => {
             const method = (config.method ?? "get").toLowerCase();
@@ -84,9 +89,9 @@ export function installDedupeInterceptor(axiosInstance: AxiosInstance): void {
 
             if (inflightMap.has(key)) {
                 // Attach a sentinel so the response interceptor can short-circuit
-                (config as unknown as Record<string, unknown>)[DEDUPE_KEY] = key;
-                (config as unknown as Record<string, unknown>)[DEDUPE_PROMISE] =
-                    inflightMap.get(key);
+                const meta = config as InternalAxiosRequestConfig & DedupeConfigMeta;
+                meta[DEDUPE_KEY] = key;
+                meta[DEDUPE_PROMISE] = inflightMap.get(key)!;
             }
 
             return config;
@@ -223,7 +228,7 @@ const activeThunks = new Set<string>();
  * Returns a thunk key for a given route + params combination.
  * Use this in createCrudThunks to prevent duplicate dispatches.
  */
-export function buildThunkKey(route: string, rootId: unknown, page?: unknown): string {
+export function buildThunkKey(route: string, rootId: string | number, page?: number): string {
     return `${route}::${String(rootId)}::p${String(page ?? 1)}`;
 }
 

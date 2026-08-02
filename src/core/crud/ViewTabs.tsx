@@ -4,7 +4,7 @@ import { Tabs, Tab, Box, Button } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Views, { type ViewsProps } from "@/core/crud/Views";
 import { Add } from "@mui/icons-material";
-import type { GenericItem, ViewMode } from "@/core/types";
+import type { CrudRecord, ViewMode } from "@/core/types";
 
 interface ViewFieldApi {
     current?: {
@@ -15,7 +15,7 @@ interface ViewFieldApi {
 interface ViewFieldItem {
     label?: string;
     api?: ViewFieldApi;
-    viewProps?: Partial<ViewsProps<GenericItem>>;
+    viewProps?: Partial<ViewsProps<CrudRecord>>;
 }
 
 interface ViewTabsProps {
@@ -23,8 +23,8 @@ interface ViewTabsProps {
     /** -1 = not editing, 0 = new row, positive = editing existing */
     editingId: number;
     /** 0 = new record, positive = existing id */
-    formKey?: number;
-    currentView?: ViewMode;
+    formKey?: number | undefined;
+    currentView?: ViewMode | undefined;
 }
 
 const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, currentView }) => {
@@ -35,7 +35,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
     };
 
     const currentViewField = viewFields[tabIndex];
-    const hasAddNewRow = typeof currentViewField.api?.current?.addNewRow === "function";
+    const hasAddNewRow = typeof currentViewField?.api?.current?.addNewRow === "function";
 
     return (
         <Box>
@@ -56,7 +56,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     <Button
                         disabled={editingId > 0}
                         variant="contained"
-                        onClick={() => currentViewField.api?.current?.addNewRow?.()}
+                        onClick={() => currentViewField?.api?.current?.addNewRow?.()}
                         sx={{ ml: 1 }}
                     >
                         <Add sx={{ color: "white" }} />
@@ -70,7 +70,7 @@ const ViewTabs: React.FC<ViewTabsProps> = ({ viewFields, editingId, formKey, cur
                     sx={{ mt: 2, display: tabIndex === index ? "block" : "none" }}
                 >
                     <Views
-                        {...(view.viewProps as ViewsProps<GenericItem>)}
+                        {...(view.viewProps as ViewsProps<CrudRecord>)}
                         rootId={formKey ?? 0}
                         currentView={currentView ?? "LIST"}
                     />

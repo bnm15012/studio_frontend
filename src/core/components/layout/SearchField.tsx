@@ -25,9 +25,9 @@ const StyledSearchField = styled(FlexBetween)(({ theme }) => ({
 
 interface SearchFieldProps {
     handleSearch: (term: string, filterKeys: FilterKeys) => void;
-    filterOptions?: FilterOption[];
-    placeHolder?: string;
-    handleFilterKeys?: (keys: FilterKeys) => void;
+    filterOptions?: FilterOption[] | undefined;
+    placeHolder?: string | undefined;
+    handleFilterKeys?: ((keys: FilterKeys) => void) | undefined;
 }
 
 const SearchField: React.FC<SearchFieldProps> = ({

@@ -11,13 +11,13 @@ import {
 } from "@/core/components/cards/StyledCard";
 import { resolveFieldValue } from "@/core/utils/fieldHelpers";
 import Actions from "@/core/crud/helper/Actions";
-import { BaseViewProps, Entity } from "@/core/types";
+import { BaseViewProps, CrudRecord } from "@/core/types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "@/core/crud/components/shared";
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { SelectAllBar } from "@/core/crud/components/SelectionToolbar";
 
-export interface CardViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
+export interface CardViewProps<T extends CrudRecord = CrudRecord> extends BaseViewProps<T> {
     // ── Card-only props ────────────────────────────────────────────────
     /** Trigger loading the next page of results (infinite scroll or manual). */
     handleLoadMore: () => void | Promise<void>;
@@ -57,7 +57,7 @@ const CardSkeleton = () =>
         </Box>
     ));
 
-function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
+function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
     const {
         fields,
         data,
@@ -102,7 +102,7 @@ function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
 
         const observer = new IntersectionObserver(
             (entries) => {
-                if (entries[0].isIntersecting) {
+                if (entries[0] && entries[0].isIntersecting) {
                     setScrollFetching(true);
                     handleLoadMore();
                 }
@@ -143,7 +143,7 @@ function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
                             <CardSkeleton />
                         ) : (
                             data.map((row, index) => {
-                                const rowId = Number(row[fieldsMeta.primary]) || 0;
+                                const rowId = Number(row[fieldsMeta.primary as keyof T]) || 0;
                                 const isItemSelected = selectedRows.includes(rowId);
 
                                 return (
@@ -233,7 +233,9 @@ function CardView<T extends Entity = Entity>(props: CardViewProps<T>) {
                                                     {CardContentComponent ? (
                                                         <CardContentComponent
                                                             row={row}
-                                                            {...{ handleViewOpen }}
+                                                            {...(handleViewOpen
+                                                                ? { handleViewOpen }
+                                                                : {})}
                                                         />
                                                     ) : (
                                                         <>

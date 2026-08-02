@@ -1,10 +1,28 @@
-import api from "@/core/utils/api";
+export interface ApiErrorResponse {
+    response?: {
+        data?: {
+            status?: {
+                statusMessage?: string;
+            };
+            message?: string;
+        };
+    };
+    message?: string;
+}
 
-const getErrorMessage = (error: unknown, defaultMessage: string) => {
+const getErrorMessage = (
+    error: ApiErrorResponse | Error | unknown,
+    defaultMessage: string,
+): string => {
     if (error && typeof error === "object" && "response" in error) {
-        const axiosErr = error as { response?: { data?: { status?: { statusMessage?: string } } } };
-        return axiosErr.response?.data?.status?.statusMessage || defaultMessage;
+        const axiosErr = error as ApiErrorResponse;
+        return (
+            axiosErr.response?.data?.status?.statusMessage ||
+            axiosErr.response?.data?.message ||
+            defaultMessage
+        );
     }
+    if (error instanceof Error) return error.message;
     return defaultMessage;
 };
 

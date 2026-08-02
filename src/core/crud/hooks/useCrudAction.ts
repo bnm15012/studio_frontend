@@ -1,18 +1,24 @@
-/** Hook managing all CRUD operations (add, update, field change) with validation, before-save hooks, and Redux dispatch. */
 import { useState, useCallback, useEffect, useRef } from "react";
 import { validate } from "@/core/crud/utils/validate";
-import { ShowAlertFn, SetLoadingFn, CrudThunks } from "@/core/types";
+import { ShowAlertFn, SetLoadingFn, CrudThunks, FieldValue } from "@/core/types";
 import type { AppDispatch } from "@/state";
-import type { Entity, FieldDef } from "@/core/types";
+import type { CrudRecord, FieldDef } from "@/core/types";
 
-const defaultBeforeAdd = async <T extends Entity>(row: T): Promise<T> => row;
-const defaultBeforeUpdate = async <T extends Entity>(row: T): Promise<T> => row;
-const defaultOverRideOnChange = <T extends Entity>(value: unknown, obj: T, _field?: string): T =>
-    obj;
+const defaultBeforeAdd = async <T extends CrudRecord>(row: T): Promise<T> => row;
+const defaultBeforeUpdate = async <T extends CrudRecord>(row: T): Promise<T> => row;
+const defaultOverRideOnChange = <T extends CrudRecord>(
+    _value: FieldValue,
+    obj: Partial<T> | T,
+    _field?: string,
+): Partial<T> | T => obj;
 
-interface UseCrudActionProps<T extends Entity> {
+/** Reads a dynamic (string) key off a row — needed for user-supplied primary/root keys. */
+const readKey = <T extends CrudRecord>(row: T, key: string): FieldValue =>
+    (row as unknown as Record<string, FieldValue>)[key];
+
+interface UseCrudActionProps<T extends CrudRecord> {
     /** 0 = new record, positive = existing id, undefined = list mode */
-    formKey?: number;
+    formKey?: number | undefined;
     data: T[];
     setData: React.Dispatch<React.SetStateAction<T[]>>;
     dispatch: AppDispatch;
@@ -29,15 +35,17 @@ interface UseCrudActionProps<T extends Entity> {
     };
     consts: React.MutableRefObject<{
         primaryKey: string;
-        rootKey?: string;
+        rootKey?: string | undefined;
         fields: FieldDef<T>[];
     }>;
-    beforeAdd?: (row: T) => T | Promise<T>;
-    beforeUpdate?: (row: T) => T | Promise<T>;
-    overRideOnChange?: (value: unknown, obj: T, field: string) => T;
+    beforeAdd?: ((row: T) => T | Promise<T>) | undefined;
+    beforeUpdate?: ((row: T) => T | Promise<T>) | undefined;
+    overRideOnChange?:
+        | ((value: FieldValue, obj: Partial<T> | T, field: string) => Partial<T> | T)
+        | undefined;
 }
 
-export const useCrudAction = <T extends Entity>({
+export const useCrudAction = <T extends CrudRecord>({
     formKey,
     data,
     setData,
@@ -63,7 +71,7 @@ export const useCrudAction = <T extends Entity>({
     handleCancel: () => void;
     handleSave: (id: number) => Promise<void>;
     addNewRow: () => void;
-    handleChange: (value: unknown, id: number, fieldPath: string) => void;
+    handleChange: (value: FieldValue, id: number, fieldPath: string) => void;
     submitAttempted: boolean;
 } => {
     /** -1 = nothing editing, 0 = new row, positive = editing existing */
@@ -90,9 +98,9 @@ export const useCrudAction = <T extends Entity>({
                 return;
             }
             const primaryKey = consts.current.primaryKey;
-            const rowId = Number(row?.[primaryKey]) || (formKey !== undefined ? formKey : 0);
+            const rowId = Number(readKey(row, primaryKey)) || (formKey !== undefined ? formKey : 0);
             const original =
-                formKey !== undefined ? record : data.find((d) => d[primaryKey] === rowId);
+                formKey !== undefined ? record : data.find((d) => readKey(d, primaryKey) === rowId);
             setOriginalRow(original ? ({ ...original } as T) : null);
             updateEditId(rowId);
         },
@@ -108,12 +116,16 @@ export const useCrudAction = <T extends Entity>({
         } else {
             if (currentEditingId === 0) {
                 setData((prev) =>
-                    prev.filter((row) => row[consts.current.primaryKey] !== currentEditingId),
+                    prev.filter(
+                        (row) => readKey(row, consts.current.primaryKey) !== currentEditingId,
+                    ),
                 );
             } else if (originalRow) {
                 setData((prev) =>
                     prev.map((row) =>
-                        row[consts.current.primaryKey] === currentEditingId ? originalRow : row,
+                        readKey(row, consts.current.primaryKey) === currentEditingId
+                            ? originalRow
+                            : row,
                     ),
                 );
             }
@@ -129,16 +141,19 @@ export const useCrudAction = <T extends Entity>({
                 const primaryKey = consts.current.primaryKey;
                 const targetId = id || (formKey !== undefined ? formKey : 0);
                 const newRow =
-                    formKey !== undefined ? record : data.find((e) => e[primaryKey] === targetId);
+                    formKey !== undefined
+                        ? record
+                        : data.find((e) => readKey(e, primaryKey) === targetId);
                 if (!newRow) return;
                 validate(newRow, consts.current.fields);
                 if (targetId === 0) {
                     const processedRow = await beforeAdd(newRow);
-                    const { [primaryKey]: _rowId, ...withoutId } = processedRow;
+                    const withoutId = { ...processedRow } as Record<string, unknown>;
+                    delete withoutId[primaryKey];
                     dispatch(
                         tableCruds.add(withoutId as Partial<T>, token, showAlert, setLoading, true),
                     );
-                    setData((prev) => prev.filter((row) => row[primaryKey] !== targetId));
+                    setData((prev) => prev.filter((row) => readKey(row, primaryKey) !== targetId));
                 } else {
                     dispatch(
                         tableCruds.update(
@@ -178,31 +193,39 @@ export const useCrudAction = <T extends Entity>({
     );
 
     const updateField = useCallback(
-        (value: unknown, obj: T, field: string): T => {
-            const updatedItem = overRideOnChange(value, { ...obj }, field);
+        (value: FieldValue, obj: T, field: string): T => {
+            const updatedItem = (
+                overRideOnChange ? overRideOnChange(value, { ...obj }, field) : { ...obj }
+            ) as T;
 
             const parts = field.split(".");
-            let current: Record<string, unknown> = updatedItem;
+            let current: Record<string, unknown> = updatedItem as unknown as Record<
+                string,
+                unknown
+            >;
 
             for (let i = 0; i < parts.length - 1; i++) {
-                const key = parts[i];
-                current[key] = { ...(current[key] as Record<string, unknown>) };
+                const key = parts[i]!;
+                current[key] = { ...((current[key] as Record<string, unknown>) || {}) };
                 current = current[key] as Record<string, unknown>;
             }
-            current[parts[parts.length - 1]] = value;
+            const lastKey = parts[parts.length - 1]!;
+            current[lastKey] = value;
             return updatedItem;
         },
         [overRideOnChange],
-    ) as (value: unknown, obj: T, field: string) => T;
+    ) as (value: FieldValue, obj: T, field: string) => T;
 
     const handleChange = useCallback(
-        (value: unknown, id: number, fieldPath: string) => {
+        (value: FieldValue, id: number, fieldPath: string) => {
             if (formKey !== undefined) {
                 setRecord((prev) => updateField(value, prev, fieldPath));
             } else {
                 setData((prev) =>
                     prev.map((item) =>
-                        item[consts.current.primaryKey] === id
+                        (item as unknown as Record<string, FieldValue>)[
+                            consts.current.primaryKey
+                        ] === id
                             ? updateField(value, item, fieldPath)
                             : item,
                     ),

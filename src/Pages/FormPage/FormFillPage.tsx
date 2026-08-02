@@ -24,10 +24,13 @@ const FormFillPage = () => {
             {
                 id: "student-form",
                 name: "Student Registration Form",
-                onSubmit: addStudentAPI as unknown as (arg: {
-                    newData: Partial<Student> | Partial<Enquiry>;
-                    formSignature: string;
-                }) => Promise<{ success: boolean; message: string }>,
+                onSubmit: async ({ newData }) => {
+                    const res = await addStudentAPI({
+                        newData: newData as Partial<Student>,
+                        token: null,
+                    });
+                    return { success: res.success, message: res.message || "" };
+                },
                 fields: [
                     {
                         name: "name",
@@ -119,10 +122,13 @@ const FormFillPage = () => {
             {
                 id: "enquiry-form",
                 name: "Enquiry Form",
-                onSubmit: addEnquiryAPI as unknown as (arg: {
-                    newData: Partial<Student> | Partial<Enquiry>;
-                    formSignature: string;
-                }) => Promise<{ success: boolean; message: string }>,
+                onSubmit: async ({ newData }) => {
+                    const res = await addEnquiryAPI({
+                        newData: newData as Partial<Enquiry>,
+                        token: "",
+                    });
+                    return { success: res.success, message: res.message || "" };
+                },
                 fields: [
                     {
                         name: "enquiryPurpose",

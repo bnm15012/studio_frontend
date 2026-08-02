@@ -9,7 +9,15 @@ import {
     StyledTableRow,
 } from "@/core/components/tables/StyledTableComponents";
 import { FlexBetween, FlexEvenly } from "@/core/components/layout/FlexBox";
-import { ActionItem, Entity, FieldDef, FieldMeta, BaseViewProps, CrudState } from "@/core/types";
+import {
+    ActionItem,
+    CrudRecord,
+    FieldDef,
+    FieldMeta,
+    BaseViewProps,
+    CrudState,
+    FieldValue,
+} from "@/core/types";
 import { useUI } from "@/context/UIContext";
 import FieldCell from "@/core/crud/components/FieldCell";
 import { getVisibleFields } from "@/core/utils/fieldHelpers";
@@ -51,30 +59,30 @@ function TableSkeletonRows({ colCount }: { colCount: number }) {
     );
 }
 
-interface DesktopTableProps<T extends Entity> {
+interface DesktopTableProps<T extends CrudRecord> {
     fields: FieldDef<T>[];
     data: T[];
     fieldsMeta: FieldMeta;
     /** -1 = nothing editing, 0 = new row, positive = existing row */
-    editingId?: number;
-    multi?: boolean;
+    editingId?: number | undefined;
+    multi?: boolean | undefined;
     tableState: CrudState;
-    loading?: boolean;
-    handleSave?: (rowId: number) => void | Promise<void>;
-    handleCancel?: () => void;
-    handleChange: (value: unknown, rowId: number, fieldName: string) => void;
-    handleViewOpen?: (row: T) => void;
+    loading?: boolean | undefined;
+    handleSave?: ((rowId: number) => void | Promise<void>) | undefined;
+    handleCancel?: (() => void) | undefined;
+    handleChange: (value: FieldValue, rowId: number, fieldName: string) => void;
+    handleViewOpen?: ((row: T) => void) | undefined;
     handleSelectRow: (event: React.ChangeEvent<HTMLInputElement>, id: number) => void;
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
     selectedRows: number[];
     visibleRowIds: number[];
     actions: ActionItem<T>[];
-    onClickRow?: (row: T) => void;
-    submitAttempted?: boolean;
+    onClickRow?: ((row: T) => void) | undefined;
+    submitAttempted?: boolean | undefined;
 }
 
 // ── Desktop table ──────────────────────────────────────────────────────────
-function DesktopTable<T extends Entity = Entity>({
+function DesktopTable<T extends CrudRecord = CrudRecord>({
     fields,
     data,
     fieldsMeta,
@@ -98,7 +106,7 @@ function DesktopTable<T extends Entity = Entity>({
     const isAllSelected = visibleRowIds.length > 0 && selectedRows.length === visibleRowIds.length;
     const isIndeterminate = selectedRows.length > 0 && selectedRows.length < visibleRowIds.length;
 
-    const TableContainerCo = StyledTableContainer as React.ComponentType<Entity>;
+    const TableContainerCo = StyledTableContainer as React.ElementType;
 
     return (
         <TableContainerCo component={Paper}>
@@ -130,7 +138,7 @@ function DesktopTable<T extends Entity = Entity>({
                             />
                         ) : (
                             data.map((row, rowIndex) => {
-                                const rowId = Number(row[fieldsMeta.primary]) || 0;
+                                const rowId = Number(row[fieldsMeta.primary as keyof T]) || 0;
                                 const isItemSelected = selectedRows.includes(rowId);
                                 return (
                                     <StyledTableRow
@@ -217,7 +225,7 @@ function DesktopTable<T extends Entity = Entity>({
     );
 }
 
-export interface ListViewProps<T extends Entity = Entity> extends BaseViewProps<T> {
+export interface ListViewProps<T extends CrudRecord = CrudRecord> extends BaseViewProps<T> {
     // ── List-only: row selection ────────────────────────────────────────
     selectedRows: number[];
     /** IDs of all rows currently visible on this page (used for select-all). */
@@ -227,7 +235,7 @@ export interface ListViewProps<T extends Entity = Entity> extends BaseViewProps<
     handleSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function ListView<T extends Entity = Entity>({
+function ListView<T extends CrudRecord = CrudRecord>({
     fields,
     data,
     editingId,

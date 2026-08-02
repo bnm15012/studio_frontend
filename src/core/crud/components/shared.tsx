@@ -14,7 +14,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { motion } from "framer-motion";
 import Actions from "@/core/crud/helper/Actions";
-import { ActionItem } from "@/core/types";
+import { ActionItem, CrudRecord } from "@/core/types";
 
 // ── FadeIn ─────────────────────────────────────────────────────────────────
 interface FadeInProps {
@@ -37,16 +37,16 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, animKey, y = 6, durati
 );
 
 // ── RowActions ──────────────────────────────────────────────────────────────
-interface RowActionsProps<T extends Record<string, unknown> = Record<string, unknown>> {
+interface RowActionsProps<T extends CrudRecord = CrudRecord> {
     isEditing: boolean;
-    rowId?: number;
-    handleSave?: (rowId: number) => void | Promise<void>;
-    handleCancel?: () => void;
+    rowId?: number | undefined;
+    handleSave?: ((rowId: number) => void | Promise<void>) | undefined;
+    handleCancel?: (() => void) | undefined;
     actions: ActionItem<T>[];
     row: T;
 }
 
-export function RowActions<T extends Record<string, unknown> = Record<string, unknown>>({
+export function RowActions<T extends CrudRecord = CrudRecord>({
     isEditing,
     rowId,
     handleSave,
@@ -81,7 +81,7 @@ interface EmptyStateProps {
 
 export const EmptyState: React.FC<EmptyStateProps> = ({ message = "No data available", sx }) => (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
-        <Typography color="text.secondary" sx={sx}>
+        <Typography component="span" color="text.secondary" sx={sx || {}}>
             {message}
         </Typography>
     </motion.div>

@@ -5,7 +5,7 @@ import axios from "axios";
 import { transformRegisterData } from "@/Pages/Auth/auth.util";
 import { branchCruds } from "@/api/all.api";
 import { closeLastDialog } from "@/state/dialogSlice";
-import type { User, Studio } from "@/api/types";
+import type { User, Studio, Branch } from "@/api/types";
 
 export interface RegisterFormValues {
     studioName: string;
@@ -70,20 +70,12 @@ export const loginApiCall = async ({ values, dispatch }: LoginApiParams) => {
                 rootId: authData.studioEntry.studioId,
             }),
         );
-        dispatch(
-            (
-                branchCruds.actions as unknown as {
-                    setCurrentBranch: (branch: Record<string, unknown>) => {
-                        payload: Record<string, unknown>;
-                        type: string;
-                    };
-                }
-            ).setCurrentBranch(
-                authData.studioEntry.branchList.filter(
-                    (branch: Record<string, unknown>) => branch.isActive,
-                )[0],
-            ),
-        );
+        const activeBranch =
+            authData.studioEntry.branchList.find((branch: Branch) => branch.isActive) ||
+            authData.studioEntry.branchList[0];
+        if (activeBranch) {
+            dispatch(branchCruds.actions.setCurrentBranch(activeBranch));
+        }
         dispatch(
             setSubscriptionPlan({
                 subscriptionPlan: authData.subscriptionEntry,

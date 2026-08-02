@@ -22,7 +22,6 @@ import PaymentDialog from "@/Pages/RazorPay/Payment";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { openDialog } from "@/state/dialogSlice";
 import { alpha } from "@mui/material/styles";
-import { PlanItem } from "@/Pages/RazorPay/Payment";
 
 interface Plan {
     id: string | number;
@@ -355,7 +354,13 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
                 <PaymentDialog
                     open={dialogPlanOpen}
                     onClose={closePlansDialog}
-                    plan={selectedPlan as unknown as PlanItem}
+                    plan={{
+                        id: String(selectedPlan.id),
+                        name: selectedPlan.planType,
+                        planType: selectedPlan.planType,
+                        amount: selectedPlan.amount,
+                        days: 30,
+                    }}
                 />
             )}
         </Box>

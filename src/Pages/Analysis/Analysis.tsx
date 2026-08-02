@@ -26,7 +26,7 @@ import {
     Filler,
 } from "chart.js";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
-import { fetchReportData } from "@/Pages/Analysis/analysis.api";
+import { fetchReportData, AnalysisReportResult } from "@/Pages/Analysis/analysis.api";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAppDispatch } from "@/state";
 import { setAnalysisData } from "@/state/analysisSlice";
@@ -105,7 +105,7 @@ const Analysis: React.FC = () => {
         async (year: number) => {
             try {
                 setLoading(true);
-                let response: Record<string, unknown>;
+                let response: Partial<AnalysisReportResult>;
                 const useCached = "success" in analysisData && year === years[years.length - 1];
                 if (useCached) {
                     response = analysisData;
@@ -119,14 +119,8 @@ const Analysis: React.FC = () => {
                         dispatch(setAnalysisData(response));
                     }
                 }
-                if (response.success) {
-                    const data = response.data as {
-                        expenseData: ChartData<"pie">;
-                        paymentData: ChartData<"pie">;
-                        expenseVsPaymentBarData: ChartData<"bar">;
-                        expenseVsPaymentLineData: ChartData<"line">;
-                        activityData: ChartData<"pie">;
-                    };
+                if (response.success && response.data) {
+                    const data = response.data;
                     setExpenseData(data.expenseData);
                     setPaymentData(data.paymentData);
                     setIncomeLineData(data.expenseVsPaymentLineData);

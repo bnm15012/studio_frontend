@@ -8,6 +8,8 @@ import Field from "@/core/components/fields/Field";
 import { FieldLabel } from "@/core/components/fields/StyledField";
 import { useAppUI } from "@/context/UIContext";
 
+import { FieldValue } from "@/core/types";
+
 const FORM_SECTIONS = [
     {
         title: "Parent Information",
@@ -77,7 +79,7 @@ const EMPTY_DATA: Record<string, string> = {
     medicalInfo: "",
 };
 
-const parseValue = (value: unknown) => {
+const parseValue = (value: FieldValue) => {
     try {
         if (!value) return EMPTY_DATA;
 
@@ -97,8 +99,8 @@ const getFilledCount = (data: Record<string, string>) =>
         .length;
 
 interface OtherInfoProps {
-    value: unknown;
-    setValue: (val: string) => void;
+    value?: FieldValue;
+    setValue?: (val: string) => void;
     isEdit?: boolean;
 }
 
@@ -124,7 +126,7 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
         setOpen(false);
     };
 
-    const handleChange = (fieldName: string, fieldValue: unknown) => {
+    const handleChange = (fieldName: string, fieldValue: FieldValue) => {
         setFormData((prev) => ({
             ...prev,
             [fieldName]: String(fieldValue ?? ""),
@@ -132,7 +134,7 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
     };
 
     const handleSave = () => {
-        setValue(JSON.stringify(formData));
+        setValue?.(JSON.stringify(formData));
         setOpen(false);
     };
 

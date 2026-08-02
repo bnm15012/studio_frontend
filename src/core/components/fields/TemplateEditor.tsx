@@ -9,6 +9,7 @@
  */
 import React, { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import { Box, MenuItem, Popper, Paper, TextField, Typography } from "@mui/material";
+import { TemplateVariables } from "@/core/types";
 
 // ── Caret pixel position via mirror-div technique ────────────────────────────
 
@@ -85,10 +86,10 @@ interface Token {
     label: string; // e.g. "Student Name"   → shown as hint
 }
 
-function flattenVariables(obj: Record<string, unknown>, prefix = ""): Token[] {
+function flattenVariables(obj: TemplateVariables, prefix = ""): Token[] {
     return Object.entries(obj).flatMap(([k, v]) =>
         typeof v === "object" && v !== null
-            ? flattenVariables(v as Record<string, unknown>, `${prefix}${k}_`)
+            ? flattenVariables(v as TemplateVariables, `${prefix}${k}_`)
             : [{ key: `${prefix}${k}`, label: String(v) }],
     );
 }
@@ -127,11 +128,11 @@ export interface EditorInputBoxProps {
     value: string;
     setValue: (val: string) => void;
     /** Nested or flat map whose leaf values are human-readable labels. */
-    variables?: Record<string, unknown>;
-    rows?: number;
-    label?: string;
+    variables?: TemplateVariables | undefined;
+    rows?: number | undefined;
+    label?: string | undefined;
     /** When true, tokens whose key contains "Activity_" are hidden. */
-    disableVars?: boolean;
+    disableVars?: boolean | undefined;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────

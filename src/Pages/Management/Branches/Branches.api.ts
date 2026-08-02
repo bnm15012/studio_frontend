@@ -1,11 +1,25 @@
 import type { Branch } from "@/api/types";
 import api from "@/core/utils/api";
 
-const getErrorMessage = (error: unknown, defaultMessage: string): string =>
-    error instanceof Error && "response" in error
-        ? (error as { response?: { data?: { status?: { statusMessage?: string } } } })?.response
-              ?.data?.status?.statusMessage || defaultMessage
-        : defaultMessage;
+export interface ApiErrorResponse {
+    response?: {
+        data?: {
+            status?: {
+                statusMessage?: string;
+            };
+        };
+    };
+}
+
+const getErrorMessage = (
+    error: ApiErrorResponse | Error | unknown,
+    defaultMessage: string,
+): string =>
+    error && typeof error === "object" && "response" in error
+        ? (error as ApiErrorResponse).response?.data?.status?.statusMessage || defaultMessage
+        : error instanceof Error
+          ? error.message
+          : defaultMessage;
 
 const getHeaders = (token: string) => ({
     headers: { Authorization: `${token}` },

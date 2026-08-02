@@ -21,7 +21,7 @@ import { useUI } from "@/context/UIContext";
 
 const Transition = forwardRef(function Transition(
     props: SlideProps & { children: React.ReactElement },
-    ref: React.Ref<unknown>,
+    ref: React.Ref<HTMLDivElement>,
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
