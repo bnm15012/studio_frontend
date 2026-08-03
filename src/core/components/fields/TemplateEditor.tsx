@@ -116,7 +116,7 @@ function getCompleteTokenUnderCursor(
         const start = m.index;
         const end = start + m[0].length;
         if (start <= cursor && cursor <= end) {
-            return { token: m[1], start, end };
+            return { token: m[1]!, start, end };
         }
     }
     return null;
@@ -173,8 +173,7 @@ const TemplateEditor: React.FC<EditorInputBoxProps> = ({
     // Scroll active item into view inside the Popper list
     useEffect(() => {
         if (!listRef.current) return;
-        const item = listRef.current.children[activeIdx];
-        item.scrollIntoView({ block: "nearest" });
+        listRef.current.children[activeIdx]?.scrollIntoView({ block: "nearest" });
     }, [activeIdx]);
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -276,7 +275,7 @@ const TemplateEditor: React.FC<EditorInputBoxProps> = ({
                 case "Enter":
                 case "Tab":
                     e.preventDefault();
-                    commitToken(filteredTokens[activeIdx].key ?? "");
+                    commitToken(filteredTokens[activeIdx]?.key ?? "");
                     break;
                 case "Escape":
                     e.preventDefault();

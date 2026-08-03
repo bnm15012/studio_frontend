@@ -100,7 +100,7 @@ const getFilledCount = (data: Record<string, string>) =>
 
 interface OtherInfoProps {
     value?: FieldValue;
-    setValue?: (val: string) => void;
+    setValue?: (val: FieldValue) => void;
     isEdit?: boolean;
 }
 

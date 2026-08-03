@@ -30,6 +30,8 @@ import type {
     StudentAssignment,
 } from "@/api/types";
 import type { FieldDef, FieldMeta, FieldValue, ViewsApiRef } from "@/core/types";
+import type { ViewsProps } from "@/core/crud/Views";
+import type { CrudRecord } from "@/api/types";
 
 const LIMIT = 12;
 
@@ -633,7 +635,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 cardLayout: "horizontal",
                 apiRef: api,
                 infiniteScroll: false,
-            },
+            } as Partial<ViewsProps<CrudRecord>>,
         }),
         [permissions, allActivities, beforeAdd, currentBranch.branchId, overRideOnChange],
     );

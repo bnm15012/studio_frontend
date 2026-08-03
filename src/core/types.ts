@@ -214,7 +214,7 @@ interface FieldDefCommon<T, K extends string> {
         maxLength?: number;
     };
     api?: React.RefObject<ViewsApiRef>;
-    viewProps?: Partial<ViewsProps<T>>;
+    viewProps?: Partial<ViewsProps<CrudRecord>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;
@@ -387,7 +387,7 @@ interface LooseFieldCommon<T> {
         maxLength?: number;
     };
     api?: React.RefObject<ViewsApiRef>;
-    viewProps?: Partial<ViewsProps<T>>;
+    viewProps?: Partial<ViewsProps<CrudRecord>>;
     CustomComponent?: React.ComponentType<{
         data: T;
         field: FieldDef<T>;

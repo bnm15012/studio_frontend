@@ -4,10 +4,11 @@ import UserAccessDialog from "@/Pages/Management/Branches/ManagerUser/UserAccess
 
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { userRights } from "@/api/types";
+import { FieldValue } from "@/core/types";
 
 interface UserAccessButtonProps {
-    value?: Record<string, userRights>;
-    setValue?: (access: Record<string, userRights>) => void;
+    value?: FieldValue;
+    setValue?: (access: FieldValue) => void;
     isEdit?: boolean;
 }
 
@@ -15,6 +16,8 @@ const UserAccessButton = (props: UserAccessButtonProps) => {
     const { value, setValue, isEdit = false } = props;
 
     const [accessDialogOpen, setAccessDialogOpen] = useState(false);
+
+    const access = (value ?? {}) as Record<string, userRights>;
     return (
         <>
             <FlexEvenly width={"100%"}>
@@ -31,9 +34,9 @@ const UserAccessButton = (props: UserAccessButtonProps) => {
                 <UserAccessDialog
                     open={true}
                     onClose={() => setAccessDialogOpen(false)}
-                    userAccessEntry={value ?? {}}
+                    userAccessEntry={access}
                     isEdit={isEdit}
-                    onSave={setValue ?? (() => {})}
+                    onSave={(saved) => setValue?.(saved)}
                 />
             )}
         </>

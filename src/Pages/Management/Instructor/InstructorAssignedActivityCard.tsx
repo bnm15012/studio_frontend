@@ -4,16 +4,10 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardChip from "@/core/components/cards/CardChip";
 import ImageDialog from "@/core/crud/ImageDialog";
 import { Box } from "@mui/material";
+import { InstructorAssignment } from "@/api/types";
 
 interface InstructorAssignedActivityCardProps {
-    row: {
-        activityName?: string;
-        assignedDate?: string;
-        startDate?: string;
-        endDate?: string;
-        contractDocument?: string;
-        membershipStatus?: string;
-    };
+    row: InstructorAssignment;
 }
 
 const InstructorAssignedActivityCard: React.FC<InstructorAssignedActivityCardProps> = ({ row }) => {

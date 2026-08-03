@@ -186,11 +186,11 @@ const generatePdfFromPages = async (contentEl: HTMLElement, scale = 3): Promise<
     // NOTE: jsPDF v2 stores pages in a closure — there is no public API to
     //       delete pages, so we reuse page 1 and append the rest.
     basePdf.setPage(1);
-    basePdf.addImage(dataUrls[0], "JPEG", 0, 0, W_MM, H_MM);
+    basePdf.addImage(dataUrls[0]!, "JPEG", 0, 0, W_MM, H_MM);
 
     for (let i = 1; i < dataUrls.length; i++) {
         basePdf.addPage("a4", "portrait");
-        basePdf.addImage(dataUrls[i], "JPEG", 0, 0, W_MM, H_MM);
+        basePdf.addImage(dataUrls[i]!, "JPEG", 0, 0, W_MM, H_MM);
     }
 
     return basePdf;

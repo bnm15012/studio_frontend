@@ -88,7 +88,7 @@ const Analysis: React.FC = () => {
         () => Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i),
         [],
     );
-    const [selectedYear, setSelectedYear] = useState<number>(years[years.length - 1]);
+    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
     const { token, currentBranch } = useAppUI();
 
     const [expenseData, setExpenseData] = useState<ChartData<"pie">>();

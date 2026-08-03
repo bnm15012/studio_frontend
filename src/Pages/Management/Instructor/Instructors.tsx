@@ -4,6 +4,8 @@ import { Box } from "@mui/material";
 import Views from "@/core/crud/Views";
 import type { Activity, activityStatus, Instructor, InstructorAssignment } from "@/api/types";
 import type { FieldDef, FieldMeta, ViewsApiRef } from "@/core/types";
+import type { ViewsProps } from "@/core/crud/Views";
+import type { CrudRecord } from "@/api/types";
 import { instructorsAssignmentsCruds, instructorsCruds } from "@/api/all.api";
 import InstructorCard from "@/Pages/Management/Instructor/InstructorCard";
 import { useAppUI } from "@/context/UIContext";
@@ -136,7 +138,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
     const allActivities = useAppSelector((state) => state.activities.items);
 
     const ASSIGNMENT_FIELD = useMemo(
-        (): FieldDef<InstructorAssignment> => ({
+        (): FieldDef<Instructor> => ({
             show: false,
             name: "assignments",
             label: "Contracts",
@@ -228,7 +230,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                 fieldToDisplayOnDelete: "activityName",
                 CardContentComponent: InstructorAssignedActivityCard,
                 cardLayout: "horizontal",
-            },
+            } as Partial<ViewsProps<CrudRecord>>,
         }),
         [allActivities],
     );

@@ -54,8 +54,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
 
                 if (result.success) {
                     showAlert(result.message, "success");
-                    setValue?.((result.data as { data: string[] }).data[0]);
-                    setPreviewUrl((result.data as { data: string[] }).data[0]);
+                    setValue?.((result.data as { data: string[] }).data[0] ?? "");
+                    setPreviewUrl((result.data as { data: string[] }).data[0] ?? "");
                 } else {
                     showAlert(result.message, "error");
                     setPreviewUrl(value || "/assets/defaultUserPic.png");

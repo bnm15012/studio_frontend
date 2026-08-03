@@ -100,7 +100,7 @@ function processMonthlyStudioData(rawData: ReportRawData) {
 
     rawData.data.forEach((entry: MonthlyEntry) => {
         const monthIndex = entry.month - 1;
-        const monthLabel = monthNames[monthIndex];
+        const monthLabel = monthNames[monthIndex] ?? "";
         monthlyLabels.push(monthLabel);
         monthlyIncome.push(entry.revenue ?? 0);
 
@@ -220,7 +220,7 @@ function getExpenseVsPaymentData(rawData: ReportRawData) {
 
     rawData.data.forEach((entry: MonthlyEntry) => {
         const monthIndex = entry.month - 1;
-        const monthLabel = monthNames[monthIndex];
+        const monthLabel = monthNames[monthIndex] ?? "";
         monthlyLabels.push(monthLabel);
 
         const totalExpenses = entry.expenseEntries.reduce(

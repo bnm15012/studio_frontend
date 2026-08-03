@@ -23,10 +23,11 @@ import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { getInstructorNamesAPI } from "@/Pages/Management/Instructor/Instructor.api";
 import SentSMSHistory from "@/Pages/Management/Communication/SentSMSHistory";
 import { sendMessageApi } from "@/Pages/Management/Communication/communication.api";
-import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAppUI } from "@/context/UIContext";
-import type { GenericTemplate, Student } from "@/api/types";
+import type { Student } from "@/api/types";
 import type { CrudRecord } from "@/core/types";
+import { genericTemplateCruds } from "@/api/all.api";
+import { useAppDispatch, useAppSelector } from "@/state";
 
 const MAIL_TYPE = ["EMAIL"];
 
@@ -48,6 +49,7 @@ const initialTemplate = {
 };
 
 const Communication = () => {
+    const dispatch = useAppDispatch();
     const theme = useTheme();
     const { token, studio, currentBranch, isMobile } = useAppUI();
 
@@ -58,40 +60,23 @@ const Communication = () => {
     const [selectedStudents, setSelectedStudents] = useState<CrudRecord[]>([]);
     const [selectedInstructors, setSelectedInstructors] = useState<CrudRecord[]>([]);
     const [loading, setLoading] = useState(false);
-    const [templates, setTemplates] = useState<GenericTemplate[]>([]);
+    const templates = useAppSelector((state) => state.genericTemplate.items);
     const [audienceType, setAudienceType] = useState("all");
     const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
     const [newHistory, setNewHistory] = useState();
 
     const fetchTemplates = useCallback(async () => {
-        try {
-            const res = await getAllTemplatesAPI({
-                studioId: studio.studioId!,
+        dispatch(
+            genericTemplateCruds.getAll(
+                showAlert,
+                setLoading,
                 token,
-                templateType: "COMMUNICATION",
-            });
-            if (res.success) {
-                setTemplates((prevTemplates) => {
-                    const prevMaxId = Math.max(
-                        ...prevTemplates.map((t) => t.id || 0),
-                        initialTemplate.id || 0,
-                    );
-                    let nextId = prevMaxId + 1;
-                    const processedData = (res.data || []).map((template: GenericTemplate) => {
-                        if (!template.id) {
-                            return { ...template, id: nextId++ };
-                        }
-                        return template;
-                    });
-                    return [initialTemplate, ...processedData];
-                });
-            } else {
-                showAlert(res.message || "Failed to load templates", "error");
-            }
-        } catch {
-            showAlert("Error loading templates", "error");
-        }
-    }, [studio.studioId, token, showAlert]);
+                { searchTerm: "COMMUNICATION" },
+                studio.studioId,
+                false,
+            ),
+        );
+    }, [dispatch, showAlert, token, studio.studioId]);
 
     useEffect(() => {
         fetchTemplates();
@@ -99,7 +84,7 @@ const Communication = () => {
 
     useEffect(() => {
         if (templates.length && !selectedTemplateId) {
-            setSelectedTemplateId(templates[0].id ?? 0);
+            setSelectedTemplateId(templates[0]?.id ?? 0);
         }
     }, [templates, selectedTemplateId]);
 

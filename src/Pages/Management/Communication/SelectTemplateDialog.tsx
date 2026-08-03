@@ -58,7 +58,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
 
     useEffect(() => {
         if (open && allTemplates.length > 0 && !selectedTemplate) {
-            setSelectedTemplate(allTemplates[0]);
+            setSelectedTemplate(allTemplates[0] ?? null);
         }
     }, [open, allTemplates, selectedTemplate]);
 

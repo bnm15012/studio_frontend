@@ -4,14 +4,14 @@ import DialogContent from "@mui/material/DialogContent";
 import { useEffect, useRef, useState } from "react";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
-import { getAllTemplatesAPI } from "@/Pages/Management/TemplatesPage/Template.api";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { replacePlaceholders } from "@/core/utils/globalFuns";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { PrinterIcon } from "lucide-react";
 import HtmlToPdfViewer, { HtmlToPdfViewerRef } from "@/core/components/Html2PDF/HtmlToPdfViewer";
 import { useAppUI } from "@/context/UIContext";
-import type { GenericTemplate, Instructor, InstructorAssignment } from "@/api/types";
+import type { Instructor, InstructorAssignment } from "@/api/types";
+import { genericTemplateCruds } from "@/api/all.api";
 
 const InstructorContract = ({
     open,
@@ -25,9 +25,8 @@ const InstructorContract = ({
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
     const pdfViewerRef = useRef<HtmlToPdfViewerRef>(null);
-    const [templates, setTemplates] = useState<GenericTemplate[]>([]);
     const { token, studio, currentBranch } = useAppUI();
-
+    const templates = useAppSelector((state) => state.genericTemplate.items);
     const [loading, setLoading] = useState(false);
     const [instructorData, setInstructorData] = useState<Partial<Instructor>>({});
 
@@ -36,23 +35,16 @@ const InstructorContract = ({
 
     useEffect(() => {
         const fetchTemplates = async () => {
-            try {
-                setLoading(true);
-                const res = await getAllTemplatesAPI({
-                    studioId: studio.studioId!,
+            dispatch(
+                genericTemplateCruds.getAll(
+                    showAlert,
+                    setLoading,
                     token,
-                    templateType: "INSTRUCTOR_CONTRACT",
-                });
-                if (res.success) {
-                    setTemplates(res.data || []);
-                } else {
-                    showAlert(res.message || "Failed to load templates", "error");
-                }
-            } catch {
-                showAlert("Error loading templates", "error");
-            } finally {
-                setLoading(false);
-            }
+                    { searchTerm: "INSTRUCTOR_CONTRACT" },
+                    studio.studioId,
+                    false,
+                ),
+            );
         };
 
         fetchTemplates();
@@ -71,9 +63,7 @@ const InstructorContract = ({
                     .includes(String(activityData.activityName).toLowerCase()),
             );
 
-            if (matchedTemplate) {
-                setSelectedTemplateId(matchedTemplate.id ?? null);
-            }
+            setSelectedTemplateId(matchedTemplate?.id ?? null);
         }
     }, [templates, selectedTemplateId, activityData.activityName]);
 
