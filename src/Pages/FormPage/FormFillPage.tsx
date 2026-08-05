@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { addEnquiryAPI } from "@/api/enquiry.api";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import type { FieldDef } from "@/core/types";
+import NotFound from "@/core/components/feedback/NotFound";
 
 import type { Student, Enquiry } from "@/api/types";
 interface FormDefinition {
@@ -19,6 +20,7 @@ interface FormDefinition {
 
 const FormFillPage = () => {
     const { formId, branchId } = useParams();
+
     const formData: FormDefinition[] = useMemo(
         () => [
             {
@@ -106,17 +108,6 @@ const FormFillPage = () => {
                                 .slice((page - 1) * limit, page * limit)
                                 .map((a) => ({ key: a, value: a })),
                     },
-                    // ...(permissions.ENROLMENT ?
-                    //     [{ name: "parentName", section: "Parent Info", label: "Parent Name", validation: { required: true } },
-                    //     { name: "parentPhone", section: "Parent Info", label: "Parent Phone", validation: { required: true } },
-                    //     { name: "parentAddress", section: "Parent Info", label: "Parent Address", validation: { required: true } },
-                    //     { name: "parentRelation", section: "Parent Info", label: "Parent Relation", validation: { required: true } },
-                    //     { name: "anyPastExperience", section: "Other Info", label: "Any Past Experience" },
-                    //     { name: "whereYouHereAboutUs", section: "Other Info", label: "How You Heard About Us" },
-                    //     { name: "hobbiesInterests", section: "Other Info", label: "Hobbies Interests" },
-                    //     { name: "medicalInfo", section: "Medical Info", label: "Please give details of any medical condition which you feel school should be aware of." }]
-                    //     : [])
-                    // ,
                 ],
             },
             {
@@ -166,16 +157,29 @@ const FormFillPage = () => {
 
     useEffect(() => {}, [formId]);
 
+    if (!formId || !branchId) {
+        return (
+            <NotFound
+                title="Form Not Found"
+                message="Invalid link or missing parameters. Please check the URL and try again."
+                minHeight="80vh"
+            />
+        );
+    }
+
     const form: FormDefinition | undefined = formData.find((fd) => fd.id === formId);
-    return (
-        <>
-            {form ? (
-                <FormBuilder form={form} branchId={branchId ?? ""} />
-            ) : (
-                <div>Form not found</div>
-            )}
-        </>
-    );
+
+    if (!form) {
+        return (
+            <NotFound
+                title="Form Not Found"
+                message={`The requested form "${formId}" does not exist or is no longer available.`}
+                minHeight="80vh"
+            />
+        );
+    }
+
+    return <FormBuilder form={form} branchId={branchId} />;
 };
 
 export default FormFillPage;
