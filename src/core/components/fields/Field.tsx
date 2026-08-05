@@ -112,7 +112,9 @@ const Field = <FT, T extends CrudRecord = CrudRecord>({
                         image={typeof value === "string" ? value : null}
                         setImage={setValueFn}
                         isEdit={true}
-                        defaultImage={extraProp.defaultImage}
+                        {...(extraProp.defaultImage
+                            ? { defaultImage: extraProp.defaultImage }
+                            : {})}
                     />
                 );
             case "CUSTOM":

@@ -46,7 +46,7 @@ const Enquiry: React.FC = () => {
                     key={"enquiries"}
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
                     CardContentComponent={EnquiryCardComponent}

@@ -18,7 +18,7 @@ const StyledSwitch: React.FC<StyledSwitchProps> = ({ label, readOnly, value, set
             </Typography>
         )}
         <Switch
-            disabled={readOnly}
+            disabled={Boolean(readOnly)}
             checked={value}
             onChange={(e) => {
                 setValue(e.target.checked);

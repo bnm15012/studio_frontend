@@ -93,10 +93,18 @@ const StyledDialog: React.FC<StyledDialogProps> = ({
         <StyledDialogBase
             open={open}
             onClose={onClose}
-            slots={{ transition: isMobile || isFullScreen ? Transition : undefined }}
+            {...((isMobile || isFullScreen) && { slots: { transition: Transition } })}
             fullWidth
             fullScreen={isFullScreen}
-            maxWidth={(size as "xs" | "sm" | "md" | "lg" | "xl" | false) || props.maxWidth}
+            maxWidth={
+                ((size as "xs" | "sm" | "md" | "lg" | "xl" | false) || props.maxWidth || "md") as
+                    | "xs"
+                    | "sm"
+                    | "md"
+                    | "lg"
+                    | "xl"
+                    | false
+            }
             {...props}
         >
             <DialogTitle

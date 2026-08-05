@@ -107,7 +107,7 @@ const Expenses: React.FC = () => {
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     fieldToDisplayOnDelete="name"
                     CardContentComponent={PaymentCard}
                 />

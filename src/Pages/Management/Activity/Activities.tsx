@@ -328,7 +328,7 @@ const Activities = () => {
             <ActivityDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
-                activity={editingActivity}
+                activity={editingActivity ?? null}
                 onSave={handleSaveCard}
             />
         </Box>

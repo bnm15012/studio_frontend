@@ -100,7 +100,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
                     notificationType,
                     title: selectedTemplate?.templateName ?? "CUSTOM",
                     content: editableMessage,
-                    memberIds: ids,
+                    ...(ids !== undefined && { memberIds: ids }),
                 },
             });
         }

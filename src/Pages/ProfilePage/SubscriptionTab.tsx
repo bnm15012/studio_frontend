@@ -148,7 +148,7 @@ const InfoRow: React.FC<InfoRowProps> = ({
             </Box>
             <Box display="flex" alignItems="center">
                 {ValueIcon && <ValueIcon sx={{ mr: 1, color: color }} />}
-                <Typography variant="body1" color={color}>
+                <Typography variant="body1" {...(color ? { color } : {})}>
                     {value}
                 </Typography>
             </Box>

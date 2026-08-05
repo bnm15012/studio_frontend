@@ -168,7 +168,13 @@ const FormFillPage = () => {
 
     const form: FormDefinition | undefined = formData.find((fd) => fd.id === formId);
     return (
-        <>{form ? <FormBuilder form={form} branchId={branchId} /> : <div>Form not found</div>}</>
+        <>
+            {form ? (
+                <FormBuilder form={form} branchId={branchId ?? ""} />
+            ) : (
+                <div>Form not found</div>
+            )}
+        </>
     );
 };
 

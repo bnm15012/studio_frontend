@@ -26,7 +26,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         title={type === "email" ? "Confirm Email Address" : "Confirm Mobile Number"}
         open={open}
         onConfirm={onConfirm}
-        confirmDisabled={disabled}
+        confirmDisabled={disabled === true}
         onClose={onClose}
     >
         <Box textAlign="center">

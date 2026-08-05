@@ -50,7 +50,7 @@ export const fetchReportData = async ({
     try {
         const response = await api.get(`/analysis/${year}/${branchId}`, {
             headers: {
-                Authorization: token,
+                Authorization: token ?? "",
                 "Content-Type": "application/json",
             },
         });

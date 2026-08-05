@@ -101,7 +101,7 @@ const BranchPage = () => {
                     rootId={selectedBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     fieldToDisplayOnDelete="userName"
                     CardContentComponent={UserCard}
                 />

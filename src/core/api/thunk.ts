@@ -199,7 +199,9 @@ export function createCrudThunks<T extends CrudRecord>({ actions, route }: CrudT
                             actions.setInfo({
                                 currentPage: params.page ?? 1,
                                 pageSize: params.size ?? 10,
-                                searchTerm: params.searchTerm,
+                                ...(params.searchTerm !== undefined && {
+                                    searchTerm: params.searchTerm,
+                                }),
                                 filterKeys: params as FilterKeys,
                                 totalCount: statusBlock.totalCount,
                             }),

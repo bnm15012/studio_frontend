@@ -91,9 +91,9 @@ const BookingInvoice = ({
                     studio={studio as { logo: string; studioName: string }}
                     fileName={`booking-invoice-${ce.clientId}`}
                     whatsAppPayload={{
-                        name: ce.pocName,
                         studioName: studio.studioName,
-                        invoiceToken: bd.invoiceToken,
+                        ...(ce.pocName ? { name: ce.pocName } : {}),
+                        ...(bd.invoiceToken ? { invoiceToken: bd.invoiceToken } : {}),
                     }}
                     remainingPayload={{
                         title: "Booking Invoice",

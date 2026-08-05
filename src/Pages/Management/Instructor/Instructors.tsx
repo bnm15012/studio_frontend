@@ -242,7 +242,7 @@ const Instructors: React.FC<InstructorsProps> = ({ ID }) => {
                     filterOptions,
                     tableName: "instructors",
                 }}
-                formKey={ID}
+                {...(ID !== undefined && { formKey: ID })}
                 apiRef={apiInstructor}
                 tableName={"instructors"}
                 tableCruds={instructorsCruds}

@@ -70,16 +70,16 @@ const StyledTextField: React.FC<StyledTextFieldProps> = ({
             fullWidth
             value={value}
             variant={variant}
-            label={label}
+            {...(label ? { label } : {})}
             onChange={(e) => setValue(e.target.value)}
             type={type}
             multiline={rows !== 1}
             rows={rows}
-            placeholder={placeholder}
+            {...(placeholder ? { placeholder } : {})}
             disabled={readOnly}
             error={Boolean(error)}
             helperText={error}
-            sx={sx}
+            {...(sx ? { sx } : {})}
         />
     );
 };

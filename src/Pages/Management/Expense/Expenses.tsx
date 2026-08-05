@@ -92,7 +92,7 @@ const Expenses: React.FC = () => {
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     fieldToDisplayOnDelete="amount"
                     CardContentComponent={ExpenseCardContent}
                 />

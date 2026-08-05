@@ -51,7 +51,7 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
 
     return (
         <Dropzone
-            accept={acceptedFileFormats}
+            {...(acceptedFileFormats ? { accept: acceptedFileFormats } : {})}
             multiple={false}
             maxFiles={1}
             onDrop={handleDrop}

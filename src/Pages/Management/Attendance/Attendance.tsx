@@ -79,13 +79,13 @@ const Attendance = () => {
                 extraProp: { readOnly: true },
             },
             {
-                show: permissions.BATCH,
+                show: permissions.BATCH === true,
                 name: "batchName",
                 label: "Batch Name",
                 extraProp: { readOnly: true },
             },
             {
-                show: permissions.BATCH,
+                show: permissions.BATCH === true,
                 name: "batchTime",
                 label: "Batch Time",
                 extraProp: { readOnly: true },
@@ -226,7 +226,7 @@ const Attendance = () => {
                     fields={FIELDS}
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     CardContentComponent={AttendanceCard}
                 />
             </Box>

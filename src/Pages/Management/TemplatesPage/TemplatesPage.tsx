@@ -126,7 +126,7 @@ const TemplatesPage: React.FC = () => {
                 size={5}
                 tableName={"genericTemplate"}
                 tableCruds={genericTemplateCruds}
-                currentView={VIEWS[!isMobile ? 0 : 1]}
+                currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                 fieldToDisplayOnDelete="templateName"
                 fieldsMeta={FIELD_META}
                 rootId={studio.studioId}

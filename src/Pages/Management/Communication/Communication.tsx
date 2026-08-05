@@ -225,7 +225,7 @@ const Communication = () => {
                                 Mail Type
                             </Typography>
                             <Select
-                                value={selectedTemplate.notificationType}
+                                value={selectedTemplate.notificationType ?? ""}
                                 sx={{
                                     "& .MuiInputBase-root": {
                                         padding: 1,
@@ -463,7 +463,7 @@ const Communication = () => {
                     </Box>
                 </FlexBetweenColumn>
             </FlexBetween>
-            <SentSMSHistory newHistory={newHistory} />
+            <SentSMSHistory {...(newHistory !== undefined && { newHistory })} />
             {open && (
                 <MultiSelectDialog
                     open={open}

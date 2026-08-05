@@ -51,10 +51,10 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 paymentCruds.add(
                     {
                         payeeType: "BOOKING",
-                        amount: paymentFormData.amount,
-                        paymentDate: paymentFormData.paymentDate,
-                        status: "COMPLETED",
-                        paymentType: "CASH",
+                        amount: paymentFormData.amount ?? 0,
+                        paymentDate: paymentFormData.paymentDate ?? "",
+                        status: "COMPLETED" as paymentStatus,
+                        paymentType: "CASH" as paymentType,
                         branchId: data.branchId,
                         payeeId: data.id,
                     },
@@ -106,8 +106,8 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             id: 0,
                             amount: (data.totalAmount as number) - paidAmount,
                             paymentDate: getCurrentDateTimeLocal() ?? "",
-                            status: paymentStatusTypes[0],
-                            paymentType: paymentTypes[0],
+                            status: paymentStatusTypes[0] ?? "COMPLETED",
+                            paymentType: paymentTypes[0] ?? "CASH",
                         });
                     }}
                     disabled={

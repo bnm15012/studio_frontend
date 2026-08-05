@@ -12,7 +12,7 @@ export interface SelectionFieldProps<T> {
     setValue: (val: string | number | SelectOption<T>) => void;
     getOptions: (search: string, offset: number, limit: number) => Promise<SelectOption<T>[]>;
     variant?: "standard" | "outlined" | "filled" | undefined;
-    validation?: { required?: boolean; [key: string]: unknown } | undefined;
+    validation?: { required?: boolean | undefined; [key: string]: unknown } | undefined;
     saveType?: "string" | "object" | undefined;
 }
 
@@ -66,7 +66,7 @@ export default function SelectionField<T>({
         <Autocomplete
             fullWidth
             open={open}
-            disabled={readOnly}
+            disabled={Boolean(readOnly)}
             onOpen={handleOpen}
             onClose={handleClose}
             value={value && value.key ? value : null}
@@ -82,12 +82,12 @@ export default function SelectionField<T>({
                 setInputValue(newInput);
                 setSearchTerm(newInput);
             }}
-            renderInput={(params) => (
+            renderInput={({ size: _size, InputLabelProps: _labelProps, ...params }) => (
                 <TextField
                     {...params}
-                    label={label}
+                    {...(label ? { label } : {})}
                     variant={variant}
-                    required={validation.required}
+                    {...(validation.required ? { required: true } : {})}
                     placeholder="type to search"
                     slotProps={{
                         input: {

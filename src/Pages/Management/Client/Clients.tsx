@@ -52,7 +52,7 @@ const Clients: React.FC = () => {
                     rootId={currentBranch.branchId}
                     fieldsMeta={FIELD_META}
                     apiRef={api}
-                    currentView={VIEWS[!isMobile ? 0 : 1]}
+                    currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                     fieldToDisplayOnDelete="groupName"
                     CardContentComponent={ClientCardComponent}
                 />

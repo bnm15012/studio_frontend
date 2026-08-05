@@ -241,8 +241,8 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             const paymentInit: Partial<Payment> = {
                 actualAmount: Number(modifiedData.activityAmount ?? 0),
                 amount: Number(modifiedData.activityAmount ?? 0),
-                status: PAYMENT_STATUS[0],
-                paymentType: PAYMENT_TYPE[0],
+                status: PAYMENT_STATUS[0] ?? "COMPLETED",
+                paymentType: PAYMENT_TYPE[0] ?? "CASH",
                 paymentDate:
                     modifiedData.paymentEntry.paymentDate ?? getCurrentDateTimeLocal() ?? "",
             };
@@ -278,37 +278,37 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
         (value: FieldValue, obj: Partial<StudentAssignment>, fieldPath: string) => {
             if (!value) return obj;
 
-            const newObj = { ...obj };
+            const newObj: Partial<StudentAssignment> = { ...obj };
 
             if (fieldPath === "activityName") {
                 const entries = getBatchEntries(String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                newObj.membershipType = entry?.planType;
-                newObj.daysPerWeek = entry?.daysPerWeek;
-                newObj.batchName = entry?.name;
-                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
-                newObj.activityAmount = entry?.price;
-                newObj.membershipEndDate =
-                    (entry?.planType &&
-                        getEndDateBySubscriptionPlan(
-                            String(newObj.membershipStartDate ?? ""),
-                            entry?.planType,
-                            cachedMembershipTypes,
-                        )) ||
-                    undefined;
+                if (entry?.planType !== undefined) newObj.membershipType = entry.planType;
+                if (entry?.daysPerWeek !== undefined) newObj.daysPerWeek = entry.daysPerWeek;
+                if (entry?.name !== undefined) newObj.batchName = entry.name;
+                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
+                const endDate = entry?.planType
+                    ? getEndDateBySubscriptionPlan(
+                          String(newObj.membershipStartDate ?? ""),
+                          entry.planType,
+                          cachedMembershipTypes,
+                      )
+                    : undefined;
+                if (endDate) newObj.membershipEndDate = endDate;
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(String(newObj.activityName), String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                newObj.daysPerWeek = entry?.daysPerWeek;
-                newObj.batchName = entry?.name;
-                newObj.membershipEndDate =
-                    getEndDateBySubscriptionPlan(
-                        String(newObj.membershipStartDate ?? ""),
-                        String(value),
-                        cachedMembershipTypes,
-                    ) || undefined;
-                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
-                newObj.activityAmount = entry?.price;
+                if (entry?.daysPerWeek !== undefined) newObj.daysPerWeek = entry.daysPerWeek;
+                if (entry?.name !== undefined) newObj.batchName = entry.name;
+                const endDate = getEndDateBySubscriptionPlan(
+                    String(newObj.membershipStartDate ?? ""),
+                    String(value),
+                    cachedMembershipTypes,
+                );
+                if (endDate) newObj.membershipEndDate = endDate;
+                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
             } else if (fieldPath === "daysPerWeek") {
                 const entries = getBatchEntries(
                     String(newObj.activityName),
@@ -316,9 +316,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     String(value),
                 );
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                newObj.batchName = entry?.name;
-                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
-                newObj.activityAmount = entry?.price;
+                if (entry?.name !== undefined) newObj.batchName = entry.name;
+                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
             } else if (fieldPath === "batchName") {
                 const entry = getBatchEntries(
                     String(newObj.activityName),
@@ -326,14 +326,15 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     String(newObj.daysPerWeek ?? ""),
                     String(value),
                 )?.[0];
-                newObj.batchTime = entry ? `${entry.startTime}-${entry.endTime}` : undefined;
-                newObj.activityAmount = entry?.price;
+                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
             } else if (fieldPath === "membershipStartDate") {
-                newObj.membershipEndDate = getEndDateBySubscriptionPlan(
+                const endDate = getEndDateBySubscriptionPlan(
                     String(value),
                     String(newObj.membershipType),
                     cachedMembershipTypes,
                 );
+                if (endDate) newObj.membershipEndDate = endDate;
             }
             return newObj;
         },
@@ -648,7 +649,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     qrProps: { link: "student-form" },
                     tableName: "students",
                 }}
-                formKey={ID}
+                {...(ID !== undefined ? { formKey: ID } : {})}
                 beforeAdd={(row: Student) => {
                     delete row.otherinfo;
                     delete row.age;
@@ -694,7 +695,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     open={true}
                     isUser={true}
                     onClose={() => setShowInvoice(undefined)}
-                    studentData={tableState.recordById[showInvoice.studentId]}
+                    {...(tableState.recordById[showInvoice.studentId]
+                        ? { studentData: tableState.recordById[showInvoice.studentId] }
+                        : {})}
                     activityData={showInvoice}
                 />
             )}

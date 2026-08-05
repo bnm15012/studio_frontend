@@ -311,7 +311,7 @@ const TemplateEditor: React.FC<EditorInputBoxProps> = ({
                 label={label}
                 placeholder={`Type your ${label} here… use {{variable}} to insert`}
                 multiline={rows > 1}
-                rows={rows > 1 ? rows : undefined}
+                {...(rows > 1 ? { rows } : {})}
                 value={value}
                 onChange={handleChange}
                 onClick={handleClick}

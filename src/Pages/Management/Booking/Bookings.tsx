@@ -59,6 +59,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
     } | null>(null);
     const api = useRef<ViewsApiRef>({});
     const templates = useAppSelector((state) => state.genericTemplate.items);
+    const bookingTemplate = templates.find((t) => t.templateType === "BOOKING");
 
     useEffect(() => {
         dispatch(
@@ -135,7 +136,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
         const clientEntry = modifiedData.clientEntry;
         if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
             const entry = clientEntry as { key?: number; clientId?: number };
-            modifiedData.clientEntry = { clientId: entry.clientId };
+            modifiedData.clientEntry = { clientId: entry.clientId ?? 0 };
         }
         return modifiedData;
     }, []);
@@ -153,15 +154,15 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
             if (typeof clientEntry === "object" && clientEntry !== null && "key" in clientEntry) {
                 const entry = clientEntry as { key?: number };
-                modifiedData.clientEntry = { clientId: entry.key };
+                modifiedData.clientEntry = { clientId: entry.key ?? 0 };
             }
 
             const paymentInit: Partial<Payment> = {
                 type: "BOOKING",
                 actualAmount: row.totalAmount,
                 amount: row.totalAmount,
-                status: paymentStatusTypes[0],
-                paymentType: paymentTypes[0],
+                status: paymentStatusTypes[0] ?? "PENDING",
+                paymentType: paymentTypes[0] ?? "CASH",
                 branchId: currentBranch.branchId,
                 paymentDate: getCurrentDateTimeLocal() ?? "",
             };
@@ -378,7 +379,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                         </IconButton>
                     ),
                 }}
-                formKey={ID}
+                {...(ID !== undefined && { formKey: ID })}
                 apiRef={api}
                 tableName={"booking"}
                 tableCruds={bookingCruds}
@@ -390,7 +391,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 actions={actions}
                 rootId={currentBranch.branchId}
                 fieldsMeta={FIELD_META}
-                currentView={VIEWS[!isMobile ? 0 : 1]}
+                currentView={VIEWS[!isMobile ? 0 : 1] ?? "LIST"}
                 fieldToDisplayOnDelete="purpose"
                 CardContentComponent={BookingCard}
                 editMode={"FORM"}
@@ -415,7 +416,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     open={true}
                     onSave={(data) => pendingPaymentRef.current?.onSave?.(data)}
                     onClose={() => pendingPaymentRef.current?.onClose?.()}
-                    initialData={pendingPaymentRef.current?.paymentInit}
+                    initialData={pendingPaymentRef.current?.paymentInit ?? {}}
                     paymentStatus={paymentStatusTypes}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
                 />
@@ -425,7 +426,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     open={true}
                     isUser={true}
                     studio={studio}
-                    template={templates.find((t) => t.templateType === "BOOKING")}
+                    {...(bookingTemplate ? { template: bookingTemplate } : {})}
                     currentBranch={currentBranch}
                     onClose={() => setShowInvoice(null)}
                     bookingData={showInvoice}

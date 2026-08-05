@@ -144,12 +144,16 @@ const DateTime: React.FC<DateTimeProps> = ({
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {format === "DATE" ? (
-                    <DatePicker {...commonProps} minDate={minDate} maxDate={maxDate} />
+                    <DatePicker
+                        {...commonProps}
+                        {...(minDate !== undefined && { minDate })}
+                        {...(maxDate !== undefined && { maxDate })}
+                    />
                 ) : (
                     <DateTimePicker
                         {...commonProps}
-                        minDateTime={minDate}
-                        maxDateTime={maxDate}
+                        {...(minDate !== undefined && { minDateTime: minDate })}
+                        {...(maxDate !== undefined && { maxDateTime: maxDate })}
                         viewRenderers={{
                             hours: renderTimeViewClock,
                             minutes: renderTimeViewClock,

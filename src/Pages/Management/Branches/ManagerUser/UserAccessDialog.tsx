@@ -69,7 +69,7 @@ const UserAccessDialog: React.FC<UserAccessDialogProps> = ({
             title="User Access Settings"
             cancelText={isEdit ? "Cancel" : "Close"}
             confirmText="Save"
-            onConfirm={isEdit ? handleSave : undefined}
+            {...(isEdit && { onConfirm: handleSave })}
             open={open}
             onClose={onClose}
             maxWidth="sm"

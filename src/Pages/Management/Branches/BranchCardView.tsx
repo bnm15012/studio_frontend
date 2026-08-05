@@ -17,9 +17,9 @@ const BranchCardView = ({ row }: { row: Branch }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                fieldValue={name}
+                fieldValue={name ?? ""}
                 FieldIcon={Business}
-                enabled={isActive}
+                enabled={isActive === true}
                 badge={
                     <Box display="flex" alignItems="center" gap={0.5}>
                         <Circle
@@ -39,7 +39,7 @@ const BranchCardView = ({ row }: { row: Branch }) => {
                     address={address ?? ""}
                     city={city ?? ""}
                     state={state ?? ""}
-                    pincode={pincode}
+                    pincode={pincode ?? ""}
                 />
             </Box>
         </Box>
