@@ -16,7 +16,7 @@ export interface AnalysisReportResult {
 }
 
 interface FetchReportDataParams {
-    token: string | null | undefined;
+    token: string;
     branchId: string | number;
     year?: number;
 }
@@ -50,7 +50,7 @@ export const fetchReportData = async ({
     try {
         const response = await api.get(`/analysis/${year}/${branchId}`, {
             headers: {
-                Authorization: token ?? "",
+                Authorization: token,
                 "Content-Type": "application/json",
             },
         });

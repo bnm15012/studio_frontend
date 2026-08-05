@@ -49,7 +49,7 @@ export interface Studio {
     logo?: string;
     gstNumber?: string;
     passcode?: string;
-    amcEnabled?: boolean;
+    amcEnabled: boolean;
     configuration: {
         configrationEntryList: Setting;
     };

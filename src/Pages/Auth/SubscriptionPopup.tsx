@@ -59,10 +59,7 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
                 <Box sx={{ borderRadius: "5px" }}>
                     <DialogContent>
                         <Box mt={5}>
-                            <PricingPlanCards
-                                buttonText="Subscribe"
-                                AMC={studio.amcEnabled === true}
-                            />
+                            <PricingPlanCards buttonText="Subscribe" AMC={studio.amcEnabled} />
                         </Box>
                     </DialogContent>
                 </Box>

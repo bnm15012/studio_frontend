@@ -111,7 +111,7 @@ const Analysis: React.FC = () => {
                     response = analysisData;
                 } else {
                     response = await fetchReportData({
-                        token,
+                        token: token!,
                         branchId: currentBranch.branchId,
                         year,
                     });
