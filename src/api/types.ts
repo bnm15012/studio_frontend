@@ -223,7 +223,6 @@ export interface Payment {
     paymentType: paymentType;
     amount: number;
     actualAmount?: number;
-    type?: string;
 }
 
 export interface BatchEntry {

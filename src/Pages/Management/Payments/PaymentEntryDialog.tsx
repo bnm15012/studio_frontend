@@ -24,6 +24,10 @@ interface PaymentEntryDialogProps {
     initialData?: Partial<Payment>;
     paymentStatus: paymentStatus[];
     paymentType: PaymentOption[];
+    refund?: boolean;
+    title?: string;
+    actualAmount?: number;
+    type?: string;
 }
 
 const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
@@ -33,6 +37,10 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     initialData,
     paymentStatus,
     paymentType,
+    refund = false,
+    title,
+    actualAmount,
+    type,
 }) => {
     const [formData, setFormData] = useState<Partial<Payment>>(initialData || {});
 
@@ -42,45 +50,75 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
 
     const handleConfirm = () => {
         const data: Partial<Payment> = { ...formData };
-        if (data.type === "BOOKING") {
-            delete data.actualAmount;
-            delete data.type;
+        if (refund && data.amount !== undefined) {
+            data.amount = -Math.abs(Number(data.amount));
         }
         onSave(data);
     };
 
+    const displayActualAmount =
+        actualAmount ?? (initialData as { actualAmount?: number })?.actualAmount;
+    const displayType = type ?? (initialData as { type?: string })?.type;
+
+    const dialogTitle = title || (refund ? "Refund Process" : "Payment Entry");
+    const amountLabel = refund
+        ? "Refund Amount"
+        : displayType === "BOOKING"
+          ? "Advance Amount"
+          : "Final Amount";
+
     return (
         <StyledDialog
             onConfirm={handleConfirm}
-            confirmText="Save"
-            title="Payment Entry"
+            confirmText={refund ? "Process Refund" : "Save"}
+            title={dialogTitle}
+            {...(refund && { titleBgColor: "warning" })}
             open={open}
             onClose={onClose}
             maxWidth="sm"
             fullWidth
         >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3, py: 2 }}>
-                {!!formData.actualAmount && (
+                {refund && (
+                    <Typography
+                        color="warning.main"
+                        fontWeight="600"
+                        variant="subtitle1"
+                        textAlign="center"
+                    >
+                        Refund Process
+                    </Typography>
+                )}
+                {!!displayActualAmount && (
                     <Typography fontWeight="bolder" variant="h6">
-                        {formData.type === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
-                        {String(formData.actualAmount)}
+                        {displayType === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
+                        {String(displayActualAmount)}
                     </Typography>
                 )}
 
                 <TextField
-                    label={formData.type === "BOOKING" ? "Advance Amount" : "Final Amount"}
+                    label={amountLabel}
                     type="number"
-                    value={formData.amount ?? ""}
+                    value={
+                        formData.amount !== undefined
+                            ? refund
+                                ? Math.abs(formData.amount)
+                                : formData.amount
+                            : ""
+                    }
                     fullWidth
-                    onChange={(e) =>
+                    onChange={(e) => {
+                        const val = Number(e.target.value);
                         setFormData((prev) => ({
                             ...prev,
-                            amount: Number(e.target.value),
-                        }))
-                    }
+                            amount: refund ? -Math.abs(val) : val,
+                        }));
+                    }}
                     variant="outlined"
                     InputProps={{
-                        startAdornment: <Typography sx={{ mr: 1 }}>₹</Typography>,
+                        startAdornment: (
+                            <Typography sx={{ mr: 1 }}>{refund ? "- ₹" : "₹"}</Typography>
+                        ),
                     }}
                 />
 

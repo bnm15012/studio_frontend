@@ -79,6 +79,9 @@ const Bookings = ({ ID }: { ID?: number }) => {
         onSave: (data: Partial<Payment> | null) => void;
         onClose: () => void;
         paymentInit: Partial<Payment>;
+        refund?: boolean;
+        type?: string;
+        actualAmount?: number;
     } | null>(null);
     const getClientsByName = useCallback(
         async (params: { clientName?: string; page?: number; size?: number }) => {
@@ -103,7 +106,10 @@ const Bookings = ({ ID }: { ID?: number }) => {
     );
 
     const awaitForDialog = useCallback(
-        (paymentInit: Partial<Payment>) =>
+        (
+            paymentInit: Partial<Payment>,
+            options?: { refund?: boolean; type?: string; actualAmount?: number },
+        ) =>
             new Promise<Partial<Payment> | null>((resolve) => {
                 const handleSave = (data: Partial<Payment> | null) => {
                     setOpenPaymentDialog(false);
@@ -120,6 +126,11 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     onSave: handleSave,
                     onClose: handleClose,
                     paymentInit,
+                    ...(options?.refund !== undefined && { refund: options.refund }),
+                    ...(options?.type !== undefined && { type: options.type }),
+                    ...(options?.actualAmount !== undefined && {
+                        actualAmount: options.actualAmount,
+                    }),
                 };
             }),
         [],
@@ -158,8 +169,6 @@ const Bookings = ({ ID }: { ID?: number }) => {
             }
 
             const paymentInit: Partial<Payment> = {
-                type: "BOOKING",
-                actualAmount: row.totalAmount,
                 amount: row.totalAmount,
                 status: paymentStatusTypes[0] ?? "PENDING",
                 paymentType: paymentTypes[0] ?? "CASH",
@@ -167,7 +176,10 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 paymentDate: getCurrentDateTimeLocal() ?? "",
             };
 
-            const paymentData = await awaitForDialog(paymentInit);
+            const paymentData = await awaitForDialog(paymentInit, {
+                type: "BOOKING",
+                actualAmount: row.totalAmount,
+            });
 
             if (paymentData) {
                 modifiedData.paymentEntries = [
@@ -419,6 +431,15 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     initialData={pendingPaymentRef.current?.paymentInit ?? {}}
                     paymentStatus={paymentStatusTypes}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
+                    {...(pendingPaymentRef.current?.refund !== undefined && {
+                        refund: pendingPaymentRef.current.refund,
+                    })}
+                    {...(pendingPaymentRef.current?.type !== undefined && {
+                        type: pendingPaymentRef.current.type,
+                    })}
+                    {...(pendingPaymentRef.current?.actualAmount !== undefined && {
+                        actualAmount: pendingPaymentRef.current.actualAmount,
+                    })}
                 />
             )}
             {showInvoice && (
@@ -447,7 +468,39 @@ const Bookings = ({ ID }: { ID?: number }) => {
                         const { row, newState } = confirmStateDialog;
                         setConfirmStateDialog(null);
                         try {
-                            const updatedRow = await beforeUpdate({ ...row, state: newState });
+                            let updatedRow = await beforeUpdate({ ...row, state: newState });
+                            if (newState === "CANCELLED") {
+                                const paidAmount = Array.isArray(row.paymentEntries)
+                                    ? row.paymentEntries.reduce(
+                                          (acc, curr) => acc + (curr.amount || 0),
+                                          0,
+                                      )
+                                    : 0;
+                                const refundInit: Partial<Payment> = {
+                                    amount: paidAmount > 0 ? paidAmount : row.totalAmount,
+                                    status: paymentStatusTypes[0] ?? "COMPLETED",
+                                    paymentType: paymentTypes[0] ?? "CASH",
+                                    branchId: currentBranch.branchId,
+                                    paymentDate: getCurrentDateTimeLocal() ?? "",
+                                };
+                                const refundData = await awaitForDialog(refundInit, {
+                                    refund: true,
+                                    type: "BOOKING",
+                                    actualAmount: row.totalAmount,
+                                });
+                                if (refundData) {
+                                    const updatedPaymentEntries = [
+                                        ...(row.paymentEntries ?? []),
+                                        { ...refundData } as Payment,
+                                    ];
+                                    updatedRow = {
+                                        ...updatedRow,
+                                        paymentEntries: updatedPaymentEntries,
+                                    };
+                                } else {
+                                    return;
+                                }
+                            }
                             dispatch(
                                 bookingCruds.update(
                                     Number(row.id),
