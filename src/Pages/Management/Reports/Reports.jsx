@@ -43,7 +43,7 @@ const Reports = () => {
     const [eiData, setEiData] = useState(null);
     const [reportType, setReportType] = useState("incomeExpense");
     const [paymentStatus, setPaymentStatus] = useState("COMPLETED");
-    const [paymentMethod, setPaymentMethod] = useState("All");
+    const [paymentMethod, setPaymentMethod] = useState("ALL");
 
     const getData = async () => {
         if (!startDateValue || !endDateValue) {
@@ -298,7 +298,7 @@ const Reports = () => {
                                     setPaymentMethod(e.target.value);
                                 }}
                             >
-                                <MenuItem value="All">All</MenuItem>
+                                <MenuItem value="ALL">All</MenuItem>
                                 <MenuItem value="CASH">CASH</MenuItem>
                                 <MenuItem value="UPI">UPI</MenuItem>
                             </Select>
