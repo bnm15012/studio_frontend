@@ -283,32 +283,34 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             if (fieldPath === "activityName") {
                 const entries = getBatchEntries(String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                if (entry?.planType !== undefined) newObj.membershipType = entry.planType;
-                if (entry?.daysPerWeek !== undefined) newObj.daysPerWeek = entry.daysPerWeek;
-                if (entry?.name !== undefined) newObj.batchName = entry.name;
-                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
-                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
-                const endDate = entry?.planType
-                    ? getEndDateBySubscriptionPlan(
-                          String(newObj.membershipStartDate ?? ""),
-                          entry.planType,
-                          cachedMembershipTypes,
-                      )
-                    : undefined;
-                if (endDate) newObj.membershipEndDate = endDate;
+                if (entry) {
+                    newObj.membershipType = entry.planType;
+                    newObj.daysPerWeek = entry.daysPerWeek;
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                    const endDate = getEndDateBySubscriptionPlan(
+                        String(newObj.membershipStartDate ?? ""),
+                        entry.planType,
+                        cachedMembershipTypes,
+                    );
+                    if (endDate) newObj.membershipEndDate = endDate;
+                }
             } else if (fieldPath === "membershipType") {
                 const entries = getBatchEntries(String(newObj.activityName), String(value));
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                if (entry?.daysPerWeek !== undefined) newObj.daysPerWeek = entry.daysPerWeek;
-                if (entry?.name !== undefined) newObj.batchName = entry.name;
+                if (entry) {
+                    newObj.daysPerWeek = entry.daysPerWeek;
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
                 const endDate = getEndDateBySubscriptionPlan(
                     String(newObj.membershipStartDate ?? ""),
                     String(value),
                     cachedMembershipTypes,
                 );
                 if (endDate) newObj.membershipEndDate = endDate;
-                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
-                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
             } else if (fieldPath === "daysPerWeek") {
                 const entries = getBatchEntries(
                     String(newObj.activityName),
@@ -316,9 +318,11 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     String(value),
                 );
                 const entry = entries?.length === 1 ? entries[0] : undefined;
-                if (entry?.name !== undefined) newObj.batchName = entry.name;
-                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
-                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
+                if (entry) {
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
             } else if (fieldPath === "batchName") {
                 const entry = getBatchEntries(
                     String(newObj.activityName),
@@ -326,8 +330,10 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                     String(newObj.daysPerWeek ?? ""),
                     String(value),
                 )?.[0];
-                if (entry) newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
-                if (entry?.price !== undefined) newObj.activityAmount = entry.price;
+                if (entry) {
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
             } else if (fieldPath === "membershipStartDate") {
                 const endDate = getEndDateBySubscriptionPlan(
                     String(value),

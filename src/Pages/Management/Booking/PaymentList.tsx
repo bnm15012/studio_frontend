@@ -15,7 +15,7 @@ import { useState } from "react";
 import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
-import DialogForm from "@/core/crud/DialogForm";
+import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog";
 import { useAppUI } from "@/context/UIContext";
 import { Booking, Payment, paymentStatus, paymentType } from "@/api/types";
 import type { FieldDef } from "@/core/types";
@@ -34,13 +34,14 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const dispatch = useAppDispatch();
     const [paymentFormData, setPaymentFormData] = useState<Partial<Payment> | undefined>();
 
-    const handleSave = async () => {
-        if (!paymentFormData) return;
-        if (paymentFormData.id !== 0) {
+    const handleSave = async (savedData?: Partial<Payment>) => {
+        const formDataToSave = savedData || paymentFormData;
+        if (!formDataToSave) return;
+        if (formDataToSave.id && formDataToSave.id !== 0) {
             dispatch(
                 paymentCruds.update(
-                    Number(paymentFormData.id),
-                    paymentFormData,
+                    Number(formDataToSave.id),
+                    formDataToSave,
                     token,
                     showAlert,
                     setLoading,
@@ -51,10 +52,10 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 paymentCruds.add(
                     {
                         payeeType: "BOOKING",
-                        amount: paymentFormData.amount ?? 0,
-                        paymentDate: paymentFormData.paymentDate ?? "",
-                        status: "COMPLETED" as paymentStatus,
-                        paymentType: "CASH" as paymentType,
+                        amount: formDataToSave.amount ?? 0,
+                        paymentDate: formDataToSave.paymentDate ?? "",
+                        status: (formDataToSave.status as paymentStatus) ?? "COMPLETED",
+                        paymentType: (formDataToSave.paymentType as paymentType) ?? "CASH",
                         branchId: data.branchId,
                         payeeId: data.id,
                     },
@@ -140,56 +141,19 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 ))}
             </StyledCardContainer>
             {openPaymentDialog && paymentFormData && (
-                <DialogForm<Payment>
-                    data={paymentFormData as Payment}
-                    fieldsMeta={{ primary: "id", root: "branchId" }}
-                    fields={[
-                        {
-                            name: "amount",
-                            label: "Amount",
-                            type: "NUMBER",
-                        },
-                        {
-                            name: "paymentDate",
-                            label: "Payment Date",
-                            type: "DATE",
-                        },
-                        {
-                            name: "status",
-                            label: "Status",
-                            type: "SELECT",
-                            getValue: (value: paymentStatus) => ({ key: String(value), value }),
-                            getOptions: async (search: string, page: number, limit: number) =>
-                                ["PENDING", "COMPLETED"]
-                                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                                    .slice((page - 1) * limit, page * limit)
-
-                                    .map((a) => ({ key: a, value: a })),
-                        },
-                        {
-                            name: "paymentType",
-                            label: "Payment Category",
-                            type: "SELECT",
-                            getValue: (value: paymentType) => ({ key: String(value), value }),
-                            getOptions: async (search: string, page: number, limit: number) =>
-                                ["CASH", "UPI"]
-                                    .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
-                                    .slice((page - 1) * limit, page * limit)
-
-                                    .map((a) => ({ key: a, value: a })),
-                        },
-                    ]}
-                    handleChange={(value, _, fieldName) => {
-                        setPaymentFormData(
-                            (prev) =>
-                                ({
-                                    ...prev,
-                                    [fieldName]: value,
-                                }) as Payment,
-                        );
+                <PaymentEntryDialog
+                    open={openPaymentDialog}
+                    onClose={() => {
+                        setOpenPaymentDialog(false);
+                        setPaymentFormData(undefined);
                     }}
-                    handleSave={handleSave}
-                    setClose={() => setOpenPaymentDialog(false)}
+                    onSave={handleSave}
+                    initialData={paymentFormData}
+                    paymentStatus={paymentStatusTypes}
+                    paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
+                    actualAmount={data.totalAmount}
+                    type="BOOKING"
+                    refund={data.state === "CANCELLED" || (paymentFormData.amount ?? 0) < 0}
                 />
             )}
         </Box>

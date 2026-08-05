@@ -290,6 +290,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                         PAID: "#22c55e",
                         PARTIAL: "#f59e0b",
                         PENDING: "#ef4444",
+                        REFUNDED: "#ef4444",
                     },
                     getValue: (_value: paymentStatus | undefined, row: Booking) => {
                         const dueAmount =
@@ -302,6 +303,8 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                 0);
                         if (dueAmount === 0) {
                             return "PAID";
+                        } else if (row.state === "CANCELLED") {
+                            return "REFUNDED";
                         } else if (dueAmount > 0 && dueAmount != (row.totalAmount as number)) {
                             return "PARTIAL";
                         }
