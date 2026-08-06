@@ -138,13 +138,13 @@ export function wrapGetWithDedupe(axiosInstance: AxiosInstance): () => void {
 
             const promise = originalRequest<T, R, D>(config).finally(() => {
                 inflightMap.delete(key);
-            });
+            }) as Promise<R>;
 
             inflightMap.set(key, promise as Promise<AxiosResponse>);
             return promise;
         }
 
-        return originalRequest<T, R, D>(config);
+        return originalRequest<T, R, D>(config) as Promise<R>;
     };
 
     return () => {

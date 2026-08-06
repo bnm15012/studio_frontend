@@ -20,8 +20,8 @@ interface PaymentOption {
 interface PaymentEntryDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (data: Partial<Payment>) => void;
-    initialData?: Partial<Payment>;
+    onSave: (data: Payment) => void;
+    initialData: Payment;
     paymentStatus: paymentStatus[];
     paymentType: PaymentOption[];
     refund?: boolean;
@@ -42,14 +42,14 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     actualAmount,
     type,
 }) => {
-    const [formData, setFormData] = useState<Partial<Payment>>(initialData || {});
+    const [formData, setFormData] = useState<Payment>(initialData);
 
     useEffect(() => {
-        if (initialData) setFormData({ ...initialData });
+        setFormData({ ...initialData });
     }, [initialData]);
 
     const handleConfirm = () => {
-        const data: Partial<Payment> = { ...formData };
+        const data: Payment = { ...formData };
         if (refund && data.amount !== undefined) {
             data.amount = -Math.abs(Number(data.amount));
         }

@@ -76,12 +76,12 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const pendingPaymentRef = useRef<{
-        onSave: (data: Partial<Payment> | null) => void;
+        onSave: (data: Payment) => void;
         onClose: () => void;
-        paymentInit: Partial<Payment>;
-        refund?: boolean;
-        type?: string;
-        actualAmount?: number;
+        paymentInit: Payment;
+        refund: boolean;
+        type: string;
+        actualAmount: number;
     } | null>(null);
     const getClientsByName = useCallback(
         async (params: { clientName?: string; page?: number; size?: number }) => {
@@ -107,11 +107,11 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     const awaitForDialog = useCallback(
         (
-            paymentInit: Partial<Payment>,
+            paymentInit: Payment,
             options?: { refund?: boolean; type?: string; actualAmount?: number },
         ) =>
-            new Promise<Partial<Payment> | null>((resolve) => {
-                const handleSave = (data: Partial<Payment> | null) => {
+            new Promise<Payment | null>((resolve) => {
+                const handleSave = (data: Payment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -125,12 +125,10 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 pendingPaymentRef.current = {
                     onSave: handleSave,
                     onClose: handleClose,
-                    paymentInit,
-                    ...(options?.refund !== undefined && { refund: options.refund }),
-                    ...(options?.type !== undefined && { type: options.type }),
-                    ...(options?.actualAmount !== undefined && {
-                        actualAmount: options.actualAmount,
-                    }),
+                    paymentInit: paymentInit as Payment,
+                    refund: options?.refund ?? false,
+                    type: options?.type ?? "",
+                    actualAmount: options?.actualAmount ?? 0,
                 };
             }),
         [],
@@ -168,12 +166,16 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 modifiedData.clientEntry = { clientId: entry.key ?? 0 };
             }
 
-            const paymentInit: Partial<Payment> = {
-                amount: row.totalAmount,
-                status: paymentStatusTypes[0] ?? "PENDING",
-                paymentType: paymentTypes[0] ?? "CASH",
-                branchId: currentBranch.branchId,
+            const paymentInit: Payment = {
+                id: 0,
+                status: "PENDING",
+                paymentType: "CASH",
                 paymentDate: getCurrentDateTimeLocal() ?? "",
+                branchId: currentBranch.branchId,
+                amount: row.totalAmount,
+                payeeType: "BOOKING",
+                payeeName: clientEntry.pocName ?? "",
+                payeeId: clientEntry.clientId ?? 0,
             };
 
             const paymentData = await awaitForDialog(paymentInit, {
@@ -426,23 +428,17 @@ const Bookings = ({ ID }: { ID?: number }) => {
             >
                 <CalendarView />
             </Popover>
-            {openPaymentDialog && (
+            {openPaymentDialog && pendingPaymentRef.current && (
                 <PaymentEntryDialog
                     open={true}
                     onSave={(data) => pendingPaymentRef.current?.onSave?.(data)}
                     onClose={() => pendingPaymentRef.current?.onClose?.()}
-                    initialData={pendingPaymentRef.current?.paymentInit ?? {}}
+                    initialData={pendingPaymentRef.current.paymentInit}
                     paymentStatus={paymentStatusTypes}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
-                    {...(pendingPaymentRef.current?.refund !== undefined && {
-                        refund: pendingPaymentRef.current.refund,
-                    })}
-                    {...(pendingPaymentRef.current?.type !== undefined && {
-                        type: pendingPaymentRef.current.type,
-                    })}
-                    {...(pendingPaymentRef.current?.actualAmount !== undefined && {
-                        actualAmount: pendingPaymentRef.current.actualAmount,
-                    })}
+                    refund={pendingPaymentRef.current.refund}
+                    type={pendingPaymentRef.current.type}
+                    actualAmount={pendingPaymentRef.current.actualAmount}
                 />
             )}
             {showInvoice && (
@@ -479,12 +475,16 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                           0,
                                       )
                                     : 0;
-                                const refundInit: Partial<Payment> = {
+                                const refundInit: Payment = {
+                                    id: 0,
                                     amount: paidAmount > 0 ? paidAmount : row.totalAmount,
                                     status: paymentStatusTypes[0] ?? "COMPLETED",
                                     paymentType: paymentTypes[0] ?? "CASH",
                                     branchId: currentBranch.branchId,
                                     paymentDate: getCurrentDateTimeLocal() ?? "",
+                                    payeeType: "BOOKING",
+                                    payeeName: row.clientEntry?.pocName ?? "",
+                                    payeeId: row.clientEntry?.clientId ?? 0,
                                 };
                                 const refundData = await awaitForDialog(refundInit, {
                                     refund: true,

@@ -32,9 +32,19 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const { token } = useAppUI();
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const [paymentFormData, setPaymentFormData] = useState<Partial<Payment> | undefined>();
+    const [paymentFormData, setPaymentFormData] = useState<Payment>({
+        id: 0,
+        amount: 0,
+        paymentDate: getCurrentDateTimeLocal(),
+        status: paymentStatusTypes[0]!,
+        paymentType: paymentTypes[0]!,
+        payeeType: "BOOKING",
+        branchId: data.branchId,
+        payeeName: "",
+        payeeId: data.id,
+    });
 
-    const handleSave = async (savedData?: Partial<Payment>) => {
+    const handleSave = async (savedData: Payment) => {
         const formDataToSave = savedData || paymentFormData;
         if (!formDataToSave) return;
         if (formDataToSave.id && formDataToSave.id !== 0) {
@@ -48,23 +58,13 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 ),
             );
         } else {
-            dispatch(
-                paymentCruds.add(
-                    {
-                        payeeType: "BOOKING",
-                        amount: formDataToSave.amount ?? 0,
-                        paymentDate: formDataToSave.paymentDate ?? "",
-                        status: (formDataToSave.status as paymentStatus) ?? "COMPLETED",
-                        paymentType: (formDataToSave.paymentType as paymentType) ?? "CASH",
-                        branchId: data.branchId,
-                        payeeId: data.id,
-                    },
-                    token,
-                    showAlert,
-                    setLoading,
-                    true,
-                ),
-            );
+            const paymentToSave: Payment = {
+                ...formDataToSave,
+                payeeType: "BOOKING",
+                branchId: data.branchId,
+                payeeId: data.id,
+            };
+            dispatch(paymentCruds.add(paymentToSave, token, showAlert, setLoading, true));
         }
         if (!loading) {
             setTimeout(() => {
@@ -76,7 +76,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
             }, 1000);
         }
         setOpenPaymentDialog(false);
-        setPaymentFormData(undefined);
     };
 
     if (!value.length) {
@@ -105,15 +104,17 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                         setOpenPaymentDialog(true);
                         setPaymentFormData({
                             id: 0,
-                            amount: (data.totalAmount as number) - paidAmount,
-                            paymentDate: getCurrentDateTimeLocal() ?? "",
-                            status: paymentStatusTypes[0] ?? "COMPLETED",
-                            paymentType: paymentTypes[0] ?? "CASH",
+                            amount: data.totalAmount - paidAmount,
+                            paymentDate: getCurrentDateTimeLocal(),
+                            status: paymentStatusTypes[0]!,
+                            paymentType: paymentTypes[0]!,
+                            payeeType: "BOOKING",
+                            branchId: data.branchId,
+                            payeeName: "",
+                            payeeId: data.id,
                         });
                     }}
-                    disabled={
-                        (data.totalAmount as number) === paidAmount && data.state !== "CANCELLED"
-                    }
+                    disabled={data.totalAmount === paidAmount && data.state !== "CANCELLED"}
                     variant="contained"
                     size="small"
                 >
@@ -145,7 +146,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     open={openPaymentDialog}
                     onClose={() => {
                         setOpenPaymentDialog(false);
-                        setPaymentFormData(undefined);
                     }}
                     onSave={handleSave}
                     initialData={paymentFormData}

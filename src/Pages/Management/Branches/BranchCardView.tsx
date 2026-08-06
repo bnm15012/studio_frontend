@@ -6,18 +6,12 @@ import CardHeader from "@/core/components/cards/CardHeader";
 import CardLocation from "@/core/components/cards/CardLocation";
 
 const BranchCardView = ({ row }: { row: Branch }) => {
-    const name = row.name as string | undefined;
-    const address = row.address as string | undefined;
-    const city = row.city as string | undefined;
-    const state = row.state as string | undefined;
-    const pincode = row.pincode as string | number | undefined;
-    const phone = row.phone as string | undefined;
-    const isActive = row.isActive as boolean | undefined;
+    const isActive = row.isActive;
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
             <CardHeader
-                fieldValue={name ?? ""}
+                fieldValue={row.name}
                 FieldIcon={Business}
                 enabled={isActive === true}
                 badge={
@@ -34,12 +28,12 @@ const BranchCardView = ({ row }: { row: Branch }) => {
                 }
             />
             <Box display="flex" alignItems="center" gap={1.5}>
-                {phone && <ContactSection contact={phone} />}
+                {row.phone && <ContactSection contact={row.phone} />}
                 <CardLocation
-                    address={address ?? ""}
-                    city={city ?? ""}
-                    state={state ?? ""}
-                    pincode={pincode ?? ""}
+                    address={row.address ?? ""}
+                    city={row.city ?? ""}
+                    state={row.state ?? ""}
+                    pincode={row.pincode ?? ""}
                 />
             </Box>
         </Box>

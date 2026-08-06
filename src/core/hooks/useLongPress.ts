@@ -10,10 +10,13 @@ export function useLongPress(
     { delay = 700 }: UseLongPressOptions = {},
 ) {
     const timerRef = useRef<number | null>(null);
+    const fired = useRef(false);
 
     const start = useCallback(
         (e: React.MouseEvent | React.TouchEvent) => {
+            fired.current = false;
             timerRef.current = window.setTimeout(() => {
+                fired.current = true;
                 callback(e);
             }, delay);
         },
@@ -28,10 +31,12 @@ export function useLongPress(
     }, []);
 
     return {
+        fired,
         onMouseDown: start,
         onMouseUp: stop,
         onMouseLeave: stop,
         onTouchStart: start,
         onTouchEnd: stop,
+        onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
     };
 }

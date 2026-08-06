@@ -123,7 +123,7 @@ export interface PaymentEntry {
 export interface StudentAssignment {
     assignmentId: number;
     studentId: number;
-    studentName?: string;
+    studentName: string;
     activityName: string;
     membershipType: string;
     daysPerWeek: number;

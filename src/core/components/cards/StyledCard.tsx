@@ -74,6 +74,13 @@ interface StyledMotionCardProps {
     elevation?: number;
     sx?: SxProps<Theme>;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
+    onDoubleClick?: React.MouseEventHandler<HTMLDivElement>;
+    onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
+    onMouseUp?: React.MouseEventHandler<HTMLDivElement>;
+    onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;
+    onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
+    onTouchEnd?: React.TouchEventHandler<HTMLDivElement>;
+    onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
     role?: string;
     tabIndex?: number;
     onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;

@@ -1,6 +1,23 @@
 import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useState } from "react";
-import { Button, TextField, useTheme, Box, Typography } from "@mui/material";
+import {
+    Button,
+    TextField,
+    useTheme,
+    Box,
+    Typography,
+    InputAdornment,
+    IconButton,
+    Divider,
+    alpha,
+} from "@mui/material";
+import {
+    LockReset as LockResetIcon,
+    Visibility,
+    VisibilityOff,
+    Email as EmailIcon,
+    Shield as ShieldIcon,
+} from "@mui/icons-material";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { updateProfile } from "@/Pages/Auth/auth.api";
@@ -21,6 +38,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
     const [password, setPassword] = useState("");
     const [repass, setRepass] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPass, setShowPass] = useState(false);
+    const [showRepass, setShowRepass] = useState(false);
 
     const handleChangePassword = async () => {
         const { valid, message } = validatePassword(password);
@@ -55,59 +74,151 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ user }) => {
         }
     };
 
+    const mismatch = password !== repass && repass !== "";
+
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, height: "100%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
             <TopProgressBar loading={loading} />
-            <Box sx={{ mb: 1 }}>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                    Current Email
-                </Typography>
-                <Typography variant="body1" fontWeight="500">
-                    {user.email}
-                </Typography>
+
+            {/* Header Banner */}
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    p: 2.5,
+                    mb: 3,
+                    borderRadius: 2,
+                    bgcolor: alpha(theme.palette.primary.main, 0.07),
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+                }}
+            >
+                <Box
+                    sx={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        bgcolor: alpha(theme.palette.primary.main, 0.15),
+                        flexShrink: 0,
+                    }}
+                >
+                    <ShieldIcon sx={{ color: "primary.main", fontSize: 22 }} />
+                </Box>
+                <Box>
+                    <Typography variant="body2" fontWeight={700} color="primary.main">
+                        Security — Change Password
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                        Choose a strong password to keep your account safe.
+                    </Typography>
+                </Box>
             </Box>
 
-            <TextField
-                variant="outlined"
-                label="New Password"
-                required
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                size="small"
-                fullWidth
-            />
+            {/* Current account */}
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    px: 2,
+                    py: 1.5,
+                    mb: 2.5,
+                    borderRadius: 1.5,
+                    bgcolor: theme.palette.action.hover,
+                }}
+            >
+                <EmailIcon sx={{ color: "text.secondary", fontSize: 18 }} />
+                <Box>
+                    <Typography variant="caption" color="text.secondary">
+                        Account
+                    </Typography>
+                    <Typography variant="body2" fontWeight={600}>
+                        {user.email}
+                    </Typography>
+                </Box>
+            </Box>
 
-            <TextField
-                variant="outlined"
-                label="Confirm Password"
-                required
-                type="password"
-                value={repass}
-                onChange={(e) => setRepass(e.target.value)}
-                size="small"
-                fullWidth
-                error={password !== repass && repass !== ""}
-                helperText={password !== repass && repass !== "" ? "Passwords do not match" : ""}
-            />
+            <Divider sx={{ mb: 2.5 }} />
 
-            <Box sx={{ flexGrow: 1 }} />
+            <Box display="flex" flexDirection="column" gap={2}>
+                <TextField
+                    variant="outlined"
+                    label="New Password"
+                    required
+                    type={showPass ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    size="small"
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    size="small"
+                                    onClick={() => setShowPass((p) => !p)}
+                                    edge="end"
+                                >
+                                    {showPass ? (
+                                        <VisibilityOff fontSize="small" />
+                                    ) : (
+                                        <Visibility fontSize="small" />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+
+                <TextField
+                    variant="outlined"
+                    label="Confirm Password"
+                    required
+                    type={showRepass ? "text" : "password"}
+                    value={repass}
+                    onChange={(e) => setRepass(e.target.value)}
+                    size="small"
+                    fullWidth
+                    error={mismatch}
+                    helperText={mismatch ? "Passwords do not match" : ""}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    size="small"
+                                    onClick={() => setShowRepass((p) => !p)}
+                                    edge="end"
+                                >
+                                    {showRepass ? (
+                                        <VisibilityOff fontSize="small" />
+                                    ) : (
+                                        <Visibility fontSize="small" />
+                                    )}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </Box>
 
             <Button
                 onClick={handleChangePassword}
                 fullWidth
                 variant="contained"
+                startIcon={<LockResetIcon />}
+                disabled={loading || !password || !repass || mismatch}
                 sx={{
-                    py: 1,
-                    backgroundColor: theme.palette.primary.main,
-                    color: "white",
-                    "&:hover": {
-                        backgroundColor: theme.palette.primary.dark,
-                    },
+                    mt: 3,
+                    py: 1.25,
+                    fontWeight: 700,
+                    fontSize: "0.9rem",
+                    textTransform: "none",
+                    borderRadius: 2,
                 }}
-                disabled={loading}
             >
-                Change Password
+                {loading ? "Updating…" : "Update Password"}
             </Button>
         </Box>
     );

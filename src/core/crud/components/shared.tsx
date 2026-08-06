@@ -44,6 +44,8 @@ interface RowActionsProps<T extends CrudRecord = CrudRecord> {
     handleCancel?: (() => void) | undefined;
     actions: ActionItem<T>[];
     row: T;
+    isTouchMode?: boolean;
+    isMobile?: boolean;
 }
 
 export function RowActions<T extends CrudRecord = CrudRecord>({
@@ -53,7 +55,10 @@ export function RowActions<T extends CrudRecord = CrudRecord>({
     handleCancel,
     actions,
     row,
+    isTouchMode,
+    isMobile = false,
 }: RowActionsProps<T>) {
+    const hideActions = isTouchMode ?? isMobile;
     if (isEditing) {
         return (
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -70,6 +75,7 @@ export function RowActions<T extends CrudRecord = CrudRecord>({
             </Box>
         );
     }
+    if (hideActions) return null;
     return <Actions actions={actions} row={row} />;
 }
 

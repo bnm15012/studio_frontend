@@ -39,11 +39,6 @@ const floatAnim = keyframes`
   50%      { transform: translateY(-7px); }
 `;
 
-const shimmerBg = keyframes`
-  0%   { background-position: -300% center; }
-  100% { background-position:  300% center; }
-`;
-
 // ── Income pill ────────────────────────────────────────────────────────────────
 const IncomePill: React.FC<{ label: string; amount: number }> = ({ label, amount }) => (
     <Box
@@ -207,7 +202,6 @@ const DashBoard: React.FC = () => {
                         background:
                             "linear-gradient(135deg, #1e3a8a 0%, #312e81 40%, #4c1d95 80%, #6d28d9 100%)",
                         backgroundSize: "300% 300%",
-                        animation: `${shimmerBg} 8s linear infinite, ${fadeInUp} 0.5s ease-out`,
                         color: "white",
                         display: "flex",
                         flexDirection: { xs: "column", sm: "row" },

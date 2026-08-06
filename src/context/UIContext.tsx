@@ -5,6 +5,7 @@ import { useFeatureFlags } from "@/core/hooks/useFeatureFlags";
 import { createUIContext } from "@/core/context/UIContext";
 import { Branch, Studio, User } from "@/api/types";
 import { Setting } from "@/state/authSlice";
+import { useInputMode, InputMode } from "@/core/hooks/useInputMode";
 
 export interface AppUIContext {
     DEBUG: boolean;
@@ -17,6 +18,9 @@ export interface AppUIContext {
     permissions: Setting;
     isAdmin: boolean;
     isMobile: boolean;
+    isTouchMode: boolean;
+    inputMode: InputMode;
+    setInputMode: (mode: InputMode) => void;
 }
 
 export const { UIProvider, useUI, UIContext } = createUIContext<Partial<AppUIContext>>();
@@ -49,6 +53,7 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     const currentBranch = useAppSelector((state) => state.branch.currentBranch);
     const isReady = Boolean(user && currentBranch && token && studio);
     const permissions = useFeatureFlags(settings, user?.userAccessEntry);
+    const { isTouchMode, inputMode, setInputMode } = useInputMode();
 
     if (!isReady) {
         return null;
@@ -65,6 +70,9 @@ export const AppUIProvider: React.FC<React.PropsWithChildren> = ({ children }) =
 
                 permissions,
                 isAdmin: user!.role === "ADMIN",
+                isTouchMode,
+                inputMode,
+                setInputMode,
             }}
         >
             {children}

@@ -23,9 +23,11 @@ interface ActionsProps<T> {
     row: T | T[];
     /** Max number of actions to show inline before collapsing into MoreVert menu. Default: 3 */
     maxVisible?: number;
+    /** Layout direction of inline action buttons. Default: "row" */
+    direction?: "row" | "column";
 }
 
-function Actions<T>({ actions, row, maxVisible = 3 }: ActionsProps<T>) {
+function Actions<T>({ actions, row, maxVisible = 3, direction = "row" }: ActionsProps<T>) {
     const theme = useTheme();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
@@ -112,7 +114,7 @@ function Actions<T>({ actions, row, maxVisible = 3 }: ActionsProps<T>) {
     };
 
     return (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+        <Box sx={{ display: "flex", flexDirection: direction, alignItems: "center", gap: 0.75 }}>
             {inlineActions.map(renderInlineButton)}
 
             {hasOverflow && (

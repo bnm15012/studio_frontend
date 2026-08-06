@@ -6,11 +6,6 @@ const slideUp = keyframes`
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
 `;
 
-const shimmer = keyframes`
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-`;
-
 const iconFloat = keyframes`
   0%,100% { transform: translateY(0px)   scale(1);    }
   50%      { transform: translateY(-5px) scale(1.07); }
@@ -45,7 +40,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
                 overflow: "hidden",
                 cursor: "pointer",
                 borderRadius: 3,
-                background: `linear-gradient(145deg, ${color}ee 0%, ${color}88 100%)`,
+                background: `linear-gradient(145deg, ${color}ee 0%, ${color} 100%)`,
                 boxShadow: `0 4px 24px ${alpha(color, 0.45)}, 0 1px 6px ${alpha(color, 0.25)}`,
                 animation: `${slideUp} 0.55s cubic-bezier(.2,.9,.2,1) ${delay}s both`,
                 transition: "transform 0.22s ease, box-shadow 0.22s ease",
@@ -60,16 +55,6 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
                     inset: 0,
                     background:
                         "radial-gradient(ellipse at 85% 10%, rgba(255,255,255,0.25) 0%, transparent 60%)",
-                    pointerEvents: "none",
-                },
-                "&::after": {
-                    content: '""',
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                        "linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.14) 50%, transparent 62%)",
-                    backgroundSize: "200% 100%",
-                    animation: `${shimmer} 3.5s linear infinite`,
                     pointerEvents: "none",
                 },
             }}

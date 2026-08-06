@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
                         ? "Subscription Details"
                         : tabValue === 3 && DEBUG
                           ? "Settings"
-                          : "Communication Configuration"
+                          : "Configuration"
             }
             open={dialogNames.includes(dialog!)}
             onClose={handleClose}

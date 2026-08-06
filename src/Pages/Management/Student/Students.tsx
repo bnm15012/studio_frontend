@@ -185,9 +185,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState<
         | false
         | {
-              onSave: (data: Partial<Payment>) => void;
+              onSave: (data: Payment) => void;
               onClose: () => void;
-              paymentInit: Partial<Payment>;
+              paymentInit: Payment;
           }
     >(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{
@@ -213,9 +213,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     }
 
     const awaitForDialog = useCallback(
-        (paymentInit: Partial<Payment>) =>
+        (paymentInit: Payment) =>
             new Promise((resolve) => {
-                const handleSave = (data: Partial<Payment>) => {
+                const handleSave = (data: Payment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -238,7 +238,12 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
         async (row: StudentAssignment) => {
             const modifiedData = { ...row };
 
-            const paymentInit: Partial<Payment> = {
+            const paymentInit: Payment = {
+                id: 0,
+                branchId: currentBranch.branchId,
+                payeeType: "STUDENT",
+                payeeName: modifiedData.studentName,
+                payeeId: modifiedData.studentId,
                 actualAmount: Number(modifiedData.activityAmount ?? 0),
                 amount: Number(modifiedData.activityAmount ?? 0),
                 status: PAYMENT_STATUS[0] ?? "COMPLETED",

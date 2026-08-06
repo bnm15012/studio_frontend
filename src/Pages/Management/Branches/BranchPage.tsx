@@ -1,8 +1,7 @@
 import { useRef } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Tooltip, useTheme, alpha } from "@mui/material";
 import { FlexBetween } from "@/core/components/layout/FlexBox";
-import AddIcon from "@mui/icons-material/Add";
 import { useAppSelector } from "@/state";
 import { usersCruds } from "@/api/all.api";
 import type { RootState } from "@/state";
@@ -13,7 +12,7 @@ import UserCard from "@/Pages/Management/Branches/ManagerUser/UserCard";
 import UserAccessButton from "@/Pages/Management/Branches/ManagerUser/UserAccessButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
+import type { FieldDef, FieldMeta, ViewMode, ViewsApiRef } from "@/core/types";
 
 const LIMIT = 12;
 
@@ -44,6 +43,7 @@ const FIELDS: FieldDef<User>[] = [
 
 const BranchPage = () => {
     const { isMobile, studio } = useAppUI();
+    const theme = useTheme();
     const navigate = useNavigate();
     const api = useRef<ViewsApiRef>({});
     const selectedBranch = useAppSelector((state: RootState) => state.branch.selectedBranch);
@@ -67,29 +67,52 @@ const BranchPage = () => {
         };
         return updatedRow;
     };
+
     return (
-        <FlexBetweenColumn>
-            <FlexBetween paddingBottom={2} gap={1}>
-                <IconButton onClick={() => navigate(`/management/branch`)}>
-                    <ArrowBackIcon />
-                </IconButton>
-                <Typography variant="h5" fontWeight={"bold"} my={"auto"}>
-                    Branch: {selectedBranch.name}
-                </Typography>
-                <Box ml={"auto"}></Box>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon sx={{ padding: 0, margin: "auto" }} />}
-                    onClick={() => {
-                        api.current.addNewRow?.();
-                    }}
-                    sx={{ fontWeight: "bold", padding: ".8rem" }}
-                >
-                    Add Manager
-                </Button>
+        <FlexBetweenColumn gap={1}>
+            <FlexBetween
+                sx={{
+                    mt: 2,
+                    width: "100%",
+                    pb: 1.5,
+                    borderBottom: `1px solid ${theme.palette.divider}`,
+                }}
+            >
+                <Box display="flex" alignItems="center" gap={1.5}>
+                    <Tooltip title="Back to Branches">
+                        <IconButton
+                            onClick={() => navigate(`/management/branch`)}
+                            sx={{
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                                bgcolor: alpha(theme.palette.primary.main, 0.05),
+                                "&:hover": {
+                                    bgcolor: alpha(theme.palette.primary.main, 0.12),
+                                },
+                            }}
+                            size="small"
+                            color="primary"
+                        >
+                            <ArrowBackIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+                    <Box>
+                        <Typography variant="h6" fontWeight={700} lineHeight={1.2}>
+                            {selectedBranch.name}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            Branch Manager Management
+                        </Typography>
+                    </Box>
+                </Box>
             </FlexBetween>
-            <Box>
+
+            <Box sx={{ width: "100%" }}>
                 <Views<User>
+                    actionBarProps={{
+                        addBtnText: "Add Manager",
+                        search: false,
+                        refresh: true,
+                    }}
                     beforeAdd={beforeAdd}
                     beforeUpdate={beforeAdd}
                     tableName={"users"}
