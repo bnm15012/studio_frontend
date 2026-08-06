@@ -1,0 +1,90 @@
+/** A container wrapper around FileDropZone that handles authentication, upload API calls, alerts, and image preview display. */
+import React, { useEffect, useState } from "react";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { uploadImageApiCall } from "@/core/api/uploadImg.api";
+import FileDropZone from "@/core/components/fields/FileDropZone";
+import { useAppSelector } from "@/state";
+
+/**
+ * ImageComponent
+ *
+ * A container wrapper around FileDropZone that handles the authentication,
+ * image uploading API call, state/alert management, and default image fallback.
+ */
+export interface ImageComponentProps {
+    value?: string | undefined;
+    setValue?: ((url: string) => void) | undefined;
+    size?: string | undefined;
+    isCircular?: boolean | string | undefined;
+    allowEdit?: boolean | undefined;
+    dirName?: string | undefined;
+}
+
+const ImageComponent: React.FC<ImageComponentProps> = ({
+    value,
+    setValue,
+    size = "200px",
+    isCircular = true,
+    allowEdit = false,
+    dirName = "default",
+}) => {
+    const showAlert = useAlert();
+    const token = useAppSelector((state) => state.auth.token);
+    const [previewUrl, setPreviewUrl] = useState<string>(value || "/assets/defaultUserPic.png");
+    const [uploading, setUploading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setPreviewUrl(value || "/assets/defaultUserPic.png");
+    }, [value]);
+
+    const handleDrop = async (acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            const file = acceptedFiles[0];
+            if (!file || !file.type.startsWith("image/")) {
+                showAlert("Only image files are allowed.", "error");
+                return;
+            }
+
+            const preview = URL.createObjectURL(file);
+            setPreviewUrl(preview);
+            setUploading(true);
+
+            try {
+                const result = await uploadImageApiCall(file, token, dirName);
+
+                if (result.success) {
+                    showAlert(result.message, "success");
+                    setValue?.((result.data as { data: string[] }).data[0] ?? "");
+                    setPreviewUrl((result.data as { data: string[] }).data[0] ?? "");
+                } else {
+                    showAlert(result.message, "error");
+                    setPreviewUrl(value || "/assets/defaultUserPic.png");
+                }
+            } catch (error) {
+                console.error(error);
+                showAlert("An error occurred during image upload.", "error");
+                setPreviewUrl(value || "/assets/defaultUserPic.png");
+            } finally {
+                setUploading(false);
+                URL.revokeObjectURL(preview);
+            }
+        }
+    };
+
+    return (
+        <FileDropZone
+            previewUrl={previewUrl}
+            uploading={uploading}
+            allowEdit={allowEdit}
+            isCircular={isCircular}
+            size={size}
+            acceptedFileFormats={{
+                "image/jpeg": [".jpg", ".jpeg"],
+                "image/png": [".png"],
+            }}
+            onDrop={handleDrop}
+        />
+    );
+};
+
+export default ImageComponent;

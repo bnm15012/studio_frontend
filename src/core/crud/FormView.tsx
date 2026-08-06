@@ -1,0 +1,349 @@
+/** Full-page form view for editing an entity, with a sticky save bar, back navigation, field rendering, view tabs, action bar, and mobile/desktop layouts. */
+import { useTheme } from "@mui/material/styles";
+import { FlexBetween, FlexBetweenColumn, FlexEvenly } from "@/core/components/layout/FlexBox";
+import {
+    IconButton,
+    Typography,
+    Box,
+    CircularProgress,
+    Divider,
+    Skeleton,
+    Tooltip,
+    alpha,
+    Chip,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloudDoneIcon from "@mui/icons-material/CloudDone";
+import { CloudUpload } from "@mui/icons-material";
+import SegmentIcon from "@mui/icons-material/Segment";
+import { useNavigate } from "react-router-dom";
+import Field from "@/core/components/fields/Field";
+import { getNestedValue } from "@/core/utils/objectHelpers";
+import { FieldLabel } from "@/core/components/fields/StyledField";
+import { resolveFieldValue, bindGetOptions, isFieldEditable } from "@/core/utils/fieldHelpers";
+import { useUI } from "@/context/UIContext";
+import { StyledFieldContainer, StyledFieldItem } from "@/core/crud/FormComponents";
+import React, { memo } from "react";
+import ViewTabs from "@/core/crud/ViewTabs";
+import Actions from "@/core/crud/helper/Actions";
+import { ActionItem, CrudRecord, FieldDef, ViewMode, FieldValue } from "@/core/types";
+import { FadeIn } from "@/core/crud/components/shared";
+
+/* ───────── Skeleton (slightly denser) ───────── */
+interface FormSkeletonProps {
+    isMobile?: boolean;
+}
+
+const FormSkeleton: React.FC<FormSkeletonProps> = ({ isMobile }) => (
+    <Box
+        sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            mt: 2,
+            gap: 2,
+        }}
+    >
+        <Box sx={{ width: isMobile ? "100%" : 180 }}>
+            <Skeleton variant="rectangular" height={170} />
+        </Box>
+
+        <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: 1.5 }}>
+            {[1, 2].map((s) => (
+                <Box key={s} sx={{ p: 2, borderRadius: 2, bgcolor: "background.paper" }}>
+                    <Skeleton width={100} height={18} sx={{ mb: 1 }} />
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                            gap: 1.5,
+                        }}
+                    >
+                        {[1, 2, 3, 4].map((f) => (
+                            <Box key={f}>
+                                <Skeleton width={60} height={10} sx={{ mb: 0.5 }} />
+                                <Skeleton height={28} />
+                            </Box>
+                        ))}
+                    </Box>
+                </Box>
+            ))}
+        </Box>
+    </Box>
+);
+
+export interface FormViewProps<T extends CrudRecord> {
+    fields: FieldDef<T>[];
+    /** 0 = new record, positive = existing id */
+    formKey: number;
+    data: T;
+    loading: boolean;
+    tableName: string;
+    /** -1 = not editing, 0 = new, positive = editing existing */
+    editingId: number;
+    handleChange: (value: FieldValue, formKey: number, fieldName: string) => void;
+    handleSave: (formKey: number) => void;
+    handleCancel: () => void;
+    currentView?: ViewMode;
+    actions: ActionItem<T>[];
+    submitAttempted?: boolean;
+}
+
+function FormView<T extends CrudRecord>(props: FormViewProps<T>) {
+    const {
+        fields,
+        formKey,
+        data,
+        loading,
+        tableName,
+        editingId,
+        handleChange,
+        handleSave,
+        handleCancel,
+        currentView,
+        actions,
+        submitAttempted,
+    } = props;
+
+    const navigate = useNavigate();
+    const { isMobile } = useUI();
+    const theme = useTheme();
+
+    const normalFields = fields.filter(
+        (f) => !["IMAGE", "VIEW", "COMPONENT"].includes(f.type || ""),
+    );
+    const imageField = fields.find((f) => f.type === "IMAGE");
+    const viewFields = fields.filter((f) => f.type === "VIEW");
+    const component = fields.find((f) => f.type === "COMPONENT");
+
+    const groupedFields = normalFields.reduce((acc: Record<string, FieldDef<T>[]>, field) => {
+        const section = field.section || "General";
+        if (!acc[section]) acc[section] = [];
+        acc[section].push(field);
+        return acc;
+    }, {});
+
+    return (
+        <>
+            <FlexBetween
+                sx={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 100,
+                    px: 0.75,
+                    borderRadius: 1.5,
+                    backgroundColor: theme.palette.background.paper,
+                    boxShadow: theme.shadows[1],
+                    flexWrap: "wrap",
+                    gap: 1,
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        flex: 1,
+                        minWidth: 0,
+                    }}
+                >
+                    <Tooltip title="Back">
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                if (editingId !== undefined && editingId >= 0) handleCancel();
+                                navigate(`/management/${tableName}`);
+                            }}
+                        >
+                            <ArrowBackIcon fontSize="small" />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                            variant="caption"
+                            sx={{ color: "text.secondary", fontSize: 11 }}
+                        >
+                            Management / {tableName}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                            <Typography
+                                noWrap
+                                sx={{ fontWeight: 700, fontSize: 14, maxWidth: 180 }}
+                            >
+                                {String(tableName).toUpperCase()}
+                            </Typography>
+
+                            <Chip
+                                size="small"
+                                label={
+                                    formKey === 0
+                                        ? "New Record"
+                                        : editingId !== undefined && editingId >= 0
+                                          ? "Editing"
+                                          : "Saved"
+                                }
+                                sx={{
+                                    height: 18,
+                                    fontSize: 10,
+                                    px: 0.5,
+                                    backgroundColor:
+                                        (editingId !== undefined && editingId >= 0) || formKey === 0
+                                            ? alpha(theme.palette.warning.main, 0.15)
+                                            : alpha(theme.palette.success.main, 0.12),
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 0.5 }}>
+                    {(editingId === undefined || editingId < 0) && formKey !== 0 ? (
+                        <>
+                            <Actions actions={actions} row={data} />
+                            <IconButton>
+                                {loading ? (
+                                    <CircularProgress size={18} />
+                                ) : (
+                                    <CloudDoneIcon sx={{ color: theme.palette.success.main }} />
+                                )}
+                            </IconButton>
+                        </>
+                    ) : (
+                        <>
+                            <IconButton onClick={handleCancel}>
+                                <CancelIcon sx={{ color: theme.palette.error.main }} />
+                            </IconButton>
+                            <IconButton onClick={() => handleSave(formKey)}>
+                                <CloudUpload sx={{ color: theme.palette.success.main }} />
+                            </IconButton>
+                        </>
+                    )}
+                </Box>
+            </FlexBetween>
+
+            {/* ───────── BODY ───────── */}
+            <FadeIn animKey={formKey ?? "form"} y={6} duration={0.25}>
+                {!data ? (
+                    <FormSkeleton isMobile={isMobile} />
+                ) : (
+                    <FlexBetween
+                        flexDirection={isMobile ? "column" : "row"}
+                        my={2}
+                        sx={{ alignItems: "flex-start", gap: 1.5 }}
+                    >
+                        {/* IMAGE */}
+                        {imageField && (
+                            <FlexEvenly width={isMobile ? "100%" : 200}>
+                                <Box sx={{ p: 1, borderRadius: 2 }}>
+                                    <Field
+                                        label={imageField.label}
+                                        isEdit={
+                                            (editingId !== undefined && editingId >= 0) ||
+                                            formKey === 0
+                                        }
+                                        value={
+                                            getNestedValue(
+                                                data as unknown as Record<string, unknown>,
+                                                imageField.name,
+                                            ) as FieldValue
+                                        }
+                                        setValue={(v: FieldValue) =>
+                                            handleChange(v, formKey, imageField.name)
+                                        }
+                                        type={imageField.type}
+                                        extraProp={{
+                                            ...(((imageField as { extraProp?: unknown })
+                                                .extraProp as
+                                                | Record<string, unknown>
+                                                | undefined) || {}),
+                                            size: "140px",
+                                        }}
+                                        submitAttempted={Boolean(submitAttempted)}
+                                    />
+                                </Box>
+                            </FlexEvenly>
+                        )}
+
+                        {/* SECTIONS */}
+                        <FlexBetweenColumn flexGrow={1} width="100%" gap={1} ml={isMobile ? 0 : 3}>
+                            {Object.entries(groupedFields).map(([sectionName, fieldsInSection]) => (
+                                <Box
+                                    key={sectionName}
+                                    sx={{
+                                        p: 1.5,
+                                        borderRadius: 1.5,
+                                        bgcolor: "background.paper",
+                                    }}
+                                >
+                                    <Typography sx={{ fontSize: 13, fontWeight: 700, mb: 0.5 }}>
+                                        <SegmentIcon sx={{ fontSize: 12 }} /> {sectionName}
+                                    </Typography>
+
+                                    <Divider sx={{ mb: 1 }} />
+
+                                    <StyledFieldContainer>
+                                        {fieldsInSection.map((field) => {
+                                            const isEditing = editingId !== -1 || formKey === 0;
+                                            const fieldType = field.type || "TEXT";
+                                            return (
+                                                <StyledFieldItem key={field.name}>
+                                                    <FieldLabel>{field.label}</FieldLabel>
+                                                    <Field
+                                                        isEdit={isFieldEditable(
+                                                            field,
+                                                            data,
+                                                            isEditing,
+                                                        )}
+                                                        value={
+                                                            resolveFieldValue(
+                                                                field,
+                                                                data,
+                                                                isEditing,
+                                                            ) as FieldValue
+                                                        }
+                                                        setValue={(v: FieldValue) =>
+                                                            handleChange(v, formKey, field.name)
+                                                        }
+                                                        type={fieldType}
+                                                        extraProp={bindGetOptions(field, data)}
+                                                        validation={
+                                                            field.validation as Record<
+                                                                string,
+                                                                unknown
+                                                            >
+                                                        }
+                                                        submitAttempted={Boolean(submitAttempted)}
+                                                    />
+                                                </StyledFieldItem>
+                                            );
+                                        })}
+                                    </StyledFieldContainer>
+                                </Box>
+                            ))}
+
+                            {component && component.CustomComponent && (
+                                <component.CustomComponent data={data} field={component} />
+                            )}
+                        </FlexBetweenColumn>
+                    </FlexBetween>
+                )}
+            </FadeIn>
+
+            {/* TABS */}
+            {formKey !== 0 && viewFields.length > 0 && (
+                <ViewTabs
+                    currentView={currentView}
+                    editingId={editingId}
+                    formKey={formKey}
+                    viewFields={
+                        viewFields as unknown as Parameters<typeof ViewTabs>[0]["viewFields"]
+                    }
+                />
+            )}
+        </>
+    );
+}
+
+export default memo(FormView) as typeof FormView;
