@@ -93,7 +93,7 @@ const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClo
         if (notificationType === "WHATSAPP") {
             sendWhatsAppMessage({
                 token,
-                phone: phoneNumber as string,
+                phone: "+91" + phoneNumber,
                 message: editableMessage,
                 payload: {
                     branchId: currentBranch.branchId,

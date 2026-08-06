@@ -32,7 +32,7 @@ const Activities = () => {
 
     const [loading, setLoading] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingActivity, setEditingActivity] = useState<Activity | undefined>();
+    const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
     const fetchActivities = useCallback(() => {
         dispatch(
@@ -49,7 +49,7 @@ const Activities = () => {
     }, [allActivities.length, fetchActivities]);
 
     const handleAddActivity = () => {
-        setEditingActivity(undefined);
+        setEditingActivity(null);
         setDialogOpen(true);
     };
 
@@ -328,7 +328,7 @@ const Activities = () => {
             <ActivityDialog
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
-                activity={editingActivity ?? null}
+                activity={editingActivity}
                 onSave={handleSaveCard}
             />
         </Box>
