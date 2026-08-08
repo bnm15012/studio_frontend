@@ -23,7 +23,7 @@ export interface LooseFormRecord {
 
 export interface SelectOption<T = CrudRecord> {
     key: string | number;
-    value: string | number;
+    value: string;
     row?: T;
 }
 

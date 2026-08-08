@@ -17,7 +17,7 @@ import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { useAlert } from "@/core/components/feedback/Alert";
 import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog";
 import { useAppUI } from "@/context/UIContext";
-import { Booking, Payment, paymentStatus, paymentType } from "@/api/types";
+import { Booking, NewPayment, Payment, paymentStatus, paymentType } from "@/api/types";
 import type { FieldDef } from "@/core/types";
 
 const paymentTypes: paymentType[] = ["CASH", "UPI"];
@@ -32,8 +32,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
     const { token } = useAppUI();
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const [paymentFormData, setPaymentFormData] = useState<Payment>({
-        id: 0,
+    const [paymentFormData, setPaymentFormData] = useState<Payment | NewPayment>({
         amount: 0,
         paymentDate: getCurrentDateTimeLocal(),
         status: paymentStatusTypes[0]!,
@@ -44,10 +43,10 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
         payeeId: data.id,
     });
 
-    const handleSave = async (savedData: Payment) => {
+    const handleSave = async (savedData: Payment | NewPayment) => {
         const formDataToSave = savedData || paymentFormData;
         if (!formDataToSave) return;
-        if (formDataToSave.id && formDataToSave.id !== 0) {
+        if ("id" in formDataToSave) {
             dispatch(
                 paymentCruds.update(
                     Number(formDataToSave.id),
@@ -58,7 +57,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 ),
             );
         } else {
-            const paymentToSave: Payment = {
+            const paymentToSave: NewPayment = {
                 ...formDataToSave,
                 payeeType: "BOOKING",
                 branchId: data.branchId,
@@ -78,19 +77,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
         setOpenPaymentDialog(false);
     };
 
-    if (!value.length) {
-        return (
-            <Box sx={{ mt: 1 }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    {title}
-                </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                    No Payments Found
-                </Typography>
-            </Box>
-        );
-    }
-
     return (
         <Box sx={{ mt: 1 }}>
             <TopProgressBar loading={loading} />
@@ -103,7 +89,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     onClick={() => {
                         setOpenPaymentDialog(true);
                         setPaymentFormData({
-                            id: 0,
                             amount: data.totalAmount - paidAmount,
                             paymentDate: getCurrentDateTimeLocal(),
                             status: paymentStatusTypes[0]!,
@@ -114,7 +99,10 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                             payeeId: data.id,
                         });
                     }}
-                    disabled={data.totalAmount === paidAmount && data.state !== "CANCELLED"}
+                    disabled={
+                        (data.totalAmount === paidAmount && data.state !== "CANCELLED") ||
+                        data.id === 0
+                    }
                     variant="contained"
                     size="small"
                 >
@@ -122,25 +110,32 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                 </Button>
             </FlexBetween>
 
-            <StyledCardContainer>
-                {value.map((m: Payment) => (
-                    <StyledMotionCard key={String(m.id)}>
-                        <StyledCardContent>
-                            <PaymentCard row={m} />
-                        </StyledCardContent>
-                        <StyledCardActions>
-                            <IconButton
-                                onClick={() => {
-                                    setOpenPaymentDialog(true);
-                                    setPaymentFormData(m);
-                                }}
-                            >
-                                <Edit />
-                            </IconButton>
-                        </StyledCardActions>
-                    </StyledMotionCard>
-                ))}
-            </StyledCardContainer>
+            {!value.length ? (
+                <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                    No Payments Found
+                </Typography>
+            ) : (
+                <StyledCardContainer>
+                    {value.map((m: Payment) => (
+                        <StyledMotionCard key={String(m.id)}>
+                            <StyledCardContent>
+                                <PaymentCard row={m} />
+                            </StyledCardContent>
+                            <StyledCardActions>
+                                <IconButton
+                                    onClick={() => {
+                                        setOpenPaymentDialog(true);
+                                        setPaymentFormData(m);
+                                    }}
+                                >
+                                    <Edit />
+                                </IconButton>
+                            </StyledCardActions>
+                        </StyledMotionCard>
+                    ))}
+                </StyledCardContainer>
+            )}
+
             {openPaymentDialog && paymentFormData && (
                 <PaymentEntryDialog
                     open={openPaymentDialog}

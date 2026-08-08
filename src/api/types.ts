@@ -225,6 +225,8 @@ export interface Payment {
     actualAmount?: number;
 }
 
+export type NewPayment = Omit<Payment, "id">;
+
 export interface BatchEntry {
     batchId: number;
     name: string;

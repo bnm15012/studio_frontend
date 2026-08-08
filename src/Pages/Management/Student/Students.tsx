@@ -23,6 +23,7 @@ import type {
     activityStatus,
     BatchEntry,
     genderType,
+    NewPayment,
     Payment,
     paymentStatus,
     paymentType,
@@ -185,9 +186,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState<
         | false
         | {
-              onSave: (data: Payment) => void;
+              onSave: (data: Payment | NewPayment) => void;
               onClose: () => void;
-              paymentInit: Payment;
+              paymentInit: Payment | NewPayment;
           }
     >(false);
     const [openTemplateDialog, setOpenTemplateDialog] = useState<{
@@ -213,9 +214,9 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
     }
 
     const awaitForDialog = useCallback(
-        (paymentInit: Payment) =>
+        (paymentInit: Payment | NewPayment) =>
             new Promise((resolve) => {
-                const handleSave = (data: Payment) => {
+                const handleSave = (data: Payment | NewPayment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -238,8 +239,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
         async (row: StudentAssignment) => {
             const modifiedData = { ...row };
 
-            const paymentInit: Payment = {
-                id: 0,
+            const paymentInit: NewPayment = {
                 branchId: currentBranch.branchId,
                 payeeType: "STUDENT",
                 payeeName: modifiedData.studentName,

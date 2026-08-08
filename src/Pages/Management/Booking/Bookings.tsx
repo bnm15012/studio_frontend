@@ -14,10 +14,12 @@ import Views from "@/core/crud/Views.jsx";
 import type {
     Booking,
     Client,
+    NewPayment,
     Payment,
     paymentStatus,
     paymentType,
     bookingStatus,
+    GenericTemplate,
 } from "@/api/types";
 
 import { bookingCruds, genericTemplateCruds } from "@/api/all.api.js";
@@ -59,7 +61,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
     } | null>(null);
     const api = useRef<ViewsApiRef>({});
     const templates = useAppSelector((state) => state.genericTemplate.items);
-    const bookingTemplate = templates.find((t) => t.templateType === "BOOKING");
+    const bookingTemplate = templates.find((t: GenericTemplate) => t.templateType === "BOOKING");
 
     useEffect(() => {
         dispatch(
@@ -76,9 +78,9 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
     const pendingPaymentRef = useRef<{
-        onSave: (data: Payment) => void;
+        onSave: (data: Payment | NewPayment) => void;
         onClose: () => void;
-        paymentInit: Payment;
+        paymentInit: Payment | NewPayment;
         refund: boolean;
         type: string;
         actualAmount: number;
@@ -107,11 +109,11 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
     const awaitForDialog = useCallback(
         (
-            paymentInit: Payment,
+            paymentInit: Payment | NewPayment,
             options?: { refund?: boolean; type?: string; actualAmount?: number },
         ) =>
-            new Promise<Payment | null>((resolve) => {
-                const handleSave = (data: Payment) => {
+            new Promise<Payment | NewPayment | null>((resolve) => {
+                const handleSave = (data: Payment | NewPayment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
                 };
@@ -166,16 +168,15 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 modifiedData.clientEntry = { clientId: entry.key ?? 0 };
             }
 
-            const paymentInit: Payment = {
-                id: 0,
+            const paymentInit: NewPayment = {
                 status: "PENDING",
                 paymentType: "CASH",
                 paymentDate: getCurrentDateTimeLocal() ?? "",
                 branchId: currentBranch.branchId,
                 amount: row.totalAmount,
                 payeeType: "BOOKING",
-                payeeName: clientEntry.pocName ?? "",
-                payeeId: clientEntry.clientId ?? 0,
+                payeeName: clientEntry.pocName!,
+                payeeId: clientEntry.clientId!,
             };
 
             const paymentData = await awaitForDialog(paymentInit, {
@@ -251,9 +252,13 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     name: "clientEntry",
                     label: "Poc Name",
                     type: "SELECT",
-                    getValue: (value: Booking["clientEntry"] | undefined, row: Booking) => {
+                    getValue: (value: Booking["clientEntry"], row: Booking) => {
                         const client = value || row.clientEntry;
-                        return { value: client?.pocName || "", key: client?.clientId || 0 };
+                        if (!client) return { value: "", key: 0 };
+                        if ("value" in client && "key" in client) {
+                            return client as { value: string; key: number };
+                        }
+                        return { value: client.pocName ?? "", key: client.clientId ?? 0 };
                     },
                     extraProp: {
                         addValue: false,
@@ -474,8 +479,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                                           0,
                                       )
                                     : 0;
-                                const refundInit: Payment = {
-                                    id: 0,
+                                const refundInit: NewPayment = {
                                     amount: paidAmount > 0 ? paidAmount : row.totalAmount,
                                     status: paymentStatusTypes[0] ?? "COMPLETED",
                                     paymentType: paymentTypes[0] ?? "CASH",

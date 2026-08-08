@@ -29,7 +29,9 @@ export default function SelectionField<T>({
     const [open, setOpen] = useState<boolean>(false);
     const [options, setOptions] = useState<SelectOption<T>[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [inputValue, setInputValue] = useState<string>("");
+    const [inputValue, setInputValue] = useState<string>(
+        value?.value != null ? String(value.value) : "",
+    );
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const fetchOptions = useCallback(
@@ -52,6 +54,10 @@ export default function SelectionField<T>({
         if (searchTerm) fetchOptions(searchTerm);
     }, [fetchOptions, searchTerm]);
 
+    useEffect(() => {
+        setInputValue(value?.value != null ? String(value.value) : "");
+    }, [value]);
+
     const handleOpen = () => {
         setOpen(true);
         fetchOptions();
@@ -69,13 +75,13 @@ export default function SelectionField<T>({
             disabled={Boolean(readOnly)}
             onOpen={handleOpen}
             onClose={handleClose}
-            value={value && value.key ? value : null}
+            value={value && value.key != null ? value : null}
             isOptionEqualToValue={(option, val) => option.key === val.key}
             getOptionLabel={(option) => String(option.value)}
             options={options}
             loading={loading}
             onChange={(_e, option) => {
-                if (option) setValue(saveType === "string" ? option.value : option);
+                if (option) setValue(saveType === "string" ? option.key : option);
             }}
             inputValue={inputValue}
             onInputChange={(_event, newInput) => {

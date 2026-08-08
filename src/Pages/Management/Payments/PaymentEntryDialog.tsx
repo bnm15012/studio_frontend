@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import DateTime from "@/core/components/fields/DateTime";
-import { Payment, paymentStatus, paymentType } from "@/api/types";
+import { NewPayment, Payment, paymentStatus, paymentType } from "@/api/types";
 
 interface PaymentOption {
     label: string;
@@ -20,8 +20,8 @@ interface PaymentOption {
 interface PaymentEntryDialogProps {
     open: boolean;
     onClose: () => void;
-    onSave: (data: Payment) => void;
-    initialData: Payment;
+    onSave: (data: Payment | NewPayment) => void;
+    initialData: Payment | NewPayment;
     paymentStatus: paymentStatus[];
     paymentType: PaymentOption[];
     refund?: boolean;
@@ -40,14 +40,14 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     title,
     type,
 }) => {
-    const [formData, setFormData] = useState<Payment>(initialData);
+    const [formData, setFormData] = useState<Payment | NewPayment>(initialData);
 
     useEffect(() => {
         setFormData({ ...initialData });
     }, [initialData]);
 
     const handleConfirm = () => {
-        const data: Payment = { ...formData };
+        const data: Payment | NewPayment = { ...formData };
         if (refund && data.amount !== undefined) {
             data.amount = -Math.abs(Number(data.amount));
         }
