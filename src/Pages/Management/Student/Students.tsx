@@ -256,24 +256,23 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             }
+            const { id: paymentId, ...paymentEntryWithoutId } = modifiedData.paymentEntry;
+            modifiedData.paymentEntry = (
+                paymentId ? modifiedData.paymentEntry : paymentEntryWithoutId
+            ) as StudentAssignment["paymentEntry"];
             return modifiedData;
         },
         [awaitForDialog],
     );
 
     const getBatchEntries = useCallback(
-        (
-            activityName: string,
-            membershipType?: string,
-            daysPerWeek?: string | number,
-            batchName?: string,
-        ) =>
+        (activityName: string, membershipType?: string, daysPerWeek?: number, batchName?: string) =>
             allActivities
                 .find((a: Activity) => a.activityType === activityName)
                 ?.batchEntries?.filter(
                     (b: BatchEntry) =>
                         (!membershipType || b.planType === membershipType) &&
-                        (!daysPerWeek || b.daysPerWeek === daysPerWeek) &&
+                        (!daysPerWeek || b.daysPerWeek == daysPerWeek) &&
                         (!batchName || b.name === batchName),
                 ) || null,
         [allActivities],
@@ -320,7 +319,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 const entries = getBatchEntries(
                     String(newObj.activityName),
                     String(newObj.membershipType),
-                    String(value),
+                    Number(value),
                 );
                 const entry = entries?.length === 1 ? entries[0] : undefined;
                 if (entry) {
@@ -332,7 +331,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 const entry = getBatchEntries(
                     String(newObj.activityName),
                     String(newObj.membershipType),
-                    String(newObj.daysPerWeek ?? ""),
+                    Number(newObj.daysPerWeek),
                     String(value),
                 )?.[0];
                 if (entry) {

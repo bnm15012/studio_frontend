@@ -40,7 +40,7 @@ const Branches = () => {
         <FlexBetweenColumn>
             <Box>
                 <Views<Branch>
-                    actionBarProps={{ search: false, addBtnText: "New Branch", refresh: false }}
+                    actionBarProps={{ search: false, addBtnText: "New Branch", refresh: true }}
                     tableName={"branch"}
                     tableCruds={branchCruds}
                     actions={[

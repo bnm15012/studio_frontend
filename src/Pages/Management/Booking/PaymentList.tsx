@@ -151,7 +151,6 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     initialData={paymentFormData}
                     paymentStatus={paymentStatusTypes}
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
-                    actualAmount={data.totalAmount}
                     type="BOOKING"
                     refund={data.state === "CANCELLED" || (paymentFormData.amount ?? 0) < 0}
                 />

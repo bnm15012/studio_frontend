@@ -26,7 +26,6 @@ interface PaymentEntryDialogProps {
     paymentType: PaymentOption[];
     refund?: boolean;
     title?: string;
-    actualAmount?: number;
     type?: string;
 }
 
@@ -39,7 +38,6 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     paymentType,
     refund = false,
     title,
-    actualAmount,
     type,
 }) => {
     const [formData, setFormData] = useState<Payment>(initialData);
@@ -56,14 +54,11 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
         onSave(data);
     };
 
-    const displayActualAmount =
-        actualAmount ?? (initialData as { actualAmount?: number })?.actualAmount;
-    const displayType = type ?? (initialData as { type?: string })?.type;
-
+    const displayActualAmount = initialData?.actualAmount;
     const dialogTitle = title || (refund ? "Refund Process" : "Payment Entry");
     const amountLabel = refund
         ? "Refund Amount"
-        : displayType === "BOOKING"
+        : type === "BOOKING"
           ? "Advance Amount"
           : "Final Amount";
 
@@ -91,7 +86,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                 )}
                 {!!displayActualAmount && (
                     <Typography fontWeight="bolder" variant="h6">
-                        {displayType === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
+                        {type === "BOOKING" ? "Booking Amount" : "Actual Amount"}{" "}
                         {String(displayActualAmount)}
                     </Typography>
                 )}

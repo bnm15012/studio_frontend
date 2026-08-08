@@ -190,7 +190,9 @@ export function createCrudThunks<T extends CrudRecord>({ actions, route }: CrudT
                         const statusBlock = status as ListStatus;
 
                         const action =
-                            infinite && params.searchTerm === state.searchTerm
+                            infinite &&
+                            (params.page ?? 1) > 1 &&
+                            params.searchTerm === state.searchTerm
                                 ? actions.appendItems({ data: data as T[], rootId })
                                 : actions.setItems({ data: data as T[], rootId });
 
