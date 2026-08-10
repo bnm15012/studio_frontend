@@ -15,7 +15,6 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import {
     validActivityTypes,
     validMembershipTypes,
@@ -29,6 +28,7 @@ import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import Field from "@/core/components/fields/Field";
 import { membershipPackageCruds } from "@/api/all.api";
 import type { Activity } from "@/api/types";
+import { IndianRupee } from "lucide-react";
 
 interface BatchFormData {
     batchId: string | number;
@@ -399,9 +399,7 @@ const ActivityDialog: React.FC<ActivityDialogProps> = ({
                                             }
                                             inputProps={{ min: 0, step: 0.01 }}
                                             InputProps={{
-                                                startAdornment: (
-                                                    <AttachMoneyIcon fontSize="small" />
-                                                ),
+                                                startAdornment: <IndianRupee fontSize="small" />,
                                             }}
                                         />
                                     </Grid>

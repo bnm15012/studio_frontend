@@ -1,7 +1,6 @@
 /** Filter dropdown menu component with radio-button groups and date range filters, emitting filter changes. */
 import React, { useState } from "react";
 import {
-    Button,
     Menu,
     FormControlLabel,
     Box,
@@ -11,8 +10,11 @@ import {
     Typography,
     IconButton,
     Badge,
+    Tooltip,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearAllIcon from "@mui/icons-material/ClearAll";
 import DateTime from "@/core/components/fields/DateTime";
 import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 import { FilterKeys } from "@/core/types";
@@ -35,13 +37,11 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-    // All values start as null — no defaults pre-filled
     const emptySelected = Object.fromEntries(filterOptions.map((f) => [f.key, null]));
 
     const [selected, setSelected] = useState<Record<string, string | null>>(emptySelected);
     const [tempSelected, setTempSelected] = useState<Record<string, string | null>>(emptySelected);
 
-    // True when at least one filter has a non-null, non-empty value
     const isActive = Object.values(selected).some((v) => v != null && v !== "");
     const activeCount = Object.values(selected).filter((v) => v != null && v !== "").length;
 
@@ -80,7 +80,6 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
     };
 
     const handleClear = () => {
-        // Reset everything to null — no values, no dates
         const cleared = Object.fromEntries(filterOptions.map((f) => [f.key, null]));
         setSelected(cleared);
         setTempSelected(cleared);
@@ -127,7 +126,8 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <Box px={2} py={1} minWidth={260} maxHeight={520} overflow="auto">
+                {/* Scrollable filter options */}
+                <Box px={2} py={1} minWidth={260} maxHeight={420} overflow="auto">
                     {filterOptions.map(({ name, key, values }) => (
                         <Box key={key} mb={2}>
                             <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
@@ -167,17 +167,40 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
                             )}
                         </Box>
                     ))}
+                </Box>
 
-                    <Divider />
-
-                    <Box display="flex" justifyContent="space-between" pt={1.5} gap={1}>
-                        <Button variant="outlined" color="error" fullWidth onClick={handleClear}>
-                            Clear
-                        </Button>
-
-                        <Button variant="contained" color="primary" fullWidth onClick={handleApply}>
-                            Apply
-                        </Button>
+                {/* Sticky footer — always visible, never scrolls away */}
+                <Box
+                    px={2}
+                    py={1}
+                    sx={{
+                        position: "sticky",
+                        bottom: 0,
+                        bgcolor: "background.paper",
+                        zIndex: 1,
+                    }}
+                >
+                    <Divider sx={{ mb: 1 }} />
+                    <Box display="flex" justifyContent="flex-end" gap={1}>
+                        <Tooltip title="Clear filters">
+                            <IconButton
+                                onClick={handleClear}
+                                sx={{
+                                    ...iconBtnFilledSx,
+                                    bgcolor: "error.main",
+                                    "&:hover": {
+                                        bgcolor: "error.dark",
+                                    },
+                                }}
+                            >
+                                <ClearAllIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Apply filters">
+                            <IconButton onClick={handleApply} sx={iconBtnFilledSx}>
+                                <CheckIcon />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 </Box>
             </Menu>
