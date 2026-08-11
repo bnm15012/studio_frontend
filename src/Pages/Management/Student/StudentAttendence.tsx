@@ -90,7 +90,11 @@ const StudentAttendence: React.FC<StudentAttendenceProps> = ({ open, onClose, ac
         [activityData],
     );
 
-    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState(() => getInitialMonth(activityData));
+
+    useEffect(() => {
+        setCurrentMonth(getInitialMonth(activityData));
+    }, [activityData]);
 
     const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
@@ -362,6 +366,22 @@ const isToday = (date: Date) => {
         today.getMonth() === date.getMonth() &&
         today.getDate() === date.getDate()
     );
+};
+
+const getInitialMonth = (activityData: StudentAssignment): Date => {
+    const today = new Date();
+    const todayMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const start = parseDateTime(activityData.membershipStartDate || "");
+    const end = parseDateTime(activityData.membershipEndDate || "");
+
+    const startMonth = start ? new Date(start.getFullYear(), start.getMonth(), 1) : null;
+    const endMonth = end ? new Date(end.getFullYear(), end.getMonth(), 1) : null;
+
+    if (startMonth && todayMonth.getTime() < startMonth.getTime()) return startMonth;
+    if (endMonth && todayMonth.getTime() > endMonth.getTime()) return endMonth;
+
+    return todayMonth;
 };
 
 export default StudentAttendence;

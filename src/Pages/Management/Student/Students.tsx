@@ -262,7 +262,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             ) as StudentAssignment["paymentEntry"];
             return modifiedData;
         },
-        [awaitForDialog],
+        [awaitForDialog, currentBranch.branchId],
     );
 
     const getBatchEntries = useCallback(
