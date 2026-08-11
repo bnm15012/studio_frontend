@@ -215,7 +215,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
 
     const awaitForDialog = useCallback(
         (paymentInit: Payment | NewPayment) =>
-            new Promise((resolve) => {
+            new Promise<Payment | NewPayment>((resolve, reject) => {
                 const handleSave = (data: Payment | NewPayment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
@@ -223,7 +223,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
 
                 const handleClose = () => {
                     setOpenPaymentDialog(false);
-                    throw new Error("Payment cancelled");
+                    reject(new Error("Payment cancelled"));
                 };
 
                 setOpenPaymentDialog({
@@ -249,13 +249,14 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                 status: PAYMENT_STATUS[0] ?? "COMPLETED",
                 paymentType: PAYMENT_TYPE[0] ?? "CASH",
                 paymentDate:
-                    modifiedData.paymentEntry.paymentDate ?? getCurrentDateTimeLocal() ?? "",
+                    modifiedData.paymentEntry?.paymentDate ?? getCurrentDateTimeLocal() ?? "",
             };
 
             const paymentData = await awaitForDialog(paymentInit);
-            if (paymentData) {
-                modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+            if (!paymentData) {
+                throw new Error("Payment cancelled");
             }
+            modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             return modifiedData;
         },
         [awaitForDialog, currentBranch.branchId],

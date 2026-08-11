@@ -112,7 +112,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
             paymentInit: Payment | NewPayment,
             options?: { refund?: boolean; type?: string; actualAmount?: number },
         ) =>
-            new Promise<Payment | NewPayment | null>((resolve) => {
+            new Promise<Payment | NewPayment>((resolve, reject) => {
                 const handleSave = (data: Payment | NewPayment) => {
                     setOpenPaymentDialog(false);
                     resolve(data);
@@ -120,7 +120,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
 
                 const handleClose = () => {
                     setOpenPaymentDialog(false);
-                    resolve(null);
+                    reject(new Error("Payment cancelled"));
                 };
 
                 setOpenPaymentDialog(true);
@@ -188,10 +188,9 @@ const Bookings = ({ ID }: { ID?: number }) => {
                 modifiedData.paymentEntries = [
                     { ...(row.paymentEntries?.[0] ?? {}), ...(paymentData ?? {}) } as Payment,
                 ];
-            } else {
-                throw new Error("Payment cancelled");
+                return modifiedData;
             }
-            return modifiedData;
+            throw new Error("Payment cancelled");
         },
         [awaitForDialog, currentBranch.branchId],
     );

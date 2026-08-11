@@ -1,4 +1,8 @@
-/** Global error boundary: catches React render errors plus uncaught errors and unhandled promise rejections, then shows a dialog with a "Copy Error" button that copies the full traceback to the clipboard. */
+/**
+ * Global React Error Boundary:
+ * Catches unhandled React render errors that would otherwise crash the UI and cause a blank screen.
+ * Displays an error dialog with the complete component stack trace and a "Copy Error" button.
+ */
 import React from "react";
 import {
     Button,
@@ -7,12 +11,10 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    IconButton,
     Typography,
 } from "@mui/material";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import Check from "@mui/icons-material/Check";
-import Close from "@mui/icons-material/Close";
 
 interface ErrorTrace {
     message: string;
@@ -28,10 +30,13 @@ interface ErrorBoundaryProps {
     children: React.ReactNode;
 }
 
-const buildTrace = (error: Error, extra?: string | null): ErrorTrace => {
+const buildTrace = (error: Error, componentStack?: string | null): ErrorTrace => {
     const message = error?.message || String(error || "Unknown error");
     const stack = error?.stack ? `\n${error.stack}` : "";
-    return { message, stack: `${extra ? `\n${extra}` : ""}${stack}` };
+    return {
+        message,
+        stack: `${componentStack ? `\nComponent Stack:\n${componentStack}` : ""}${stack}`,
+    };
 };
 
 const formatTrace = (trace: ErrorTrace): string =>
@@ -39,12 +44,10 @@ const formatTrace = (trace: ErrorTrace): string =>
 
 interface ErrorDialogProps {
     trace: ErrorTrace;
-    renderError: boolean;
-    onClose: () => void;
     onReload: () => void;
 }
 
-const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, renderError, onClose, onReload }) => {
+const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, onReload }) => {
     const [copied, setCopied] = React.useState(false);
     const text = formatTrace(trace);
 
@@ -67,13 +70,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, renderError, onClose, 
     };
 
     return (
-        <Dialog
-            open
-            fullWidth
-            maxWidth="md"
-            onClose={renderError ? undefined : onClose}
-            PaperProps={{ sx: { borderRadius: 2 } }}
-        >
+        <Dialog open fullWidth maxWidth="md" PaperProps={{ sx: { borderRadius: 2 } }}>
             <DialogTitle
                 sx={{
                     display: "flex",
@@ -84,18 +81,13 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, renderError, onClose, 
                 }}
             >
                 <Typography variant="h6" fontWeight={600}>
-                    Unexpected Error
+                    Application Error
                 </Typography>
-                {!renderError && (
-                    <IconButton aria-label="close" onClick={onClose} sx={{ color: "white" }}>
-                        <Close />
-                    </IconButton>
-                )}
             </DialogTitle>
             <DialogContent>
-                <Typography color="text.secondary" sx={{ mb: 1 }}>
-                    Something went wrong. Copy the error details below and share them to help fix
-                    the issue.
+                <Typography color="text.secondary" sx={{ mb: 1, mt: 1 }}>
+                    Something unexpected caused the application to stop rendering. Copy the error
+                    details below to share:
                 </Typography>
                 <Box
                     component="pre"
@@ -114,7 +106,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, renderError, onClose, 
                     {text}
                 </Box>
             </DialogContent>
-            <DialogActions sx={{ px: 2, pb: 2, justifyContent: "center" }}>
+            <DialogActions sx={{ px: 2, pb: 2, justifyContent: "center", gap: 1.5 }}>
                 <Button
                     variant="contained"
                     color="error"
@@ -123,11 +115,9 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({ trace, renderError, onClose, 
                 >
                     {copied ? "Copied!" : "Copy Error"}
                 </Button>
-                {renderError && (
-                    <Button variant="outlined" color="error" onClick={onReload}>
-                        Reload App
-                    </Button>
-                )}
+                <Button variant="outlined" color="error" onClick={onReload}>
+                    Reload App
+                </Button>
             </DialogActions>
         </Dialog>
     );
@@ -144,68 +134,16 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
         this.setState({ trace: buildTrace(error, info.componentStack) });
     }
 
-    componentDidMount() {
-        window.addEventListener("error", this.handleWindowError);
-        window.addEventListener("unhandledrejection", this.handleUnhandledRejection);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener("error", this.handleWindowError);
-        window.removeEventListener("unhandledrejection", this.handleUnhandledRejection);
-    }
-
-    private handleWindowError = (event: ErrorEvent) => {
-        event.preventDefault();
-        this.showTrace(
-            event.error instanceof Error
-                ? event.error
-                : new Error(event.message || `Uncaught error at ${event.filename}:${event.lineno}`),
-        );
-    };
-
-    private handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-        event.preventDefault();
-        const reason = event.reason;
-        this.showTrace(reason instanceof Error ? reason : new Error(String(reason)));
-    };
-
-    private showTrace = (error: Error) => {
-        this.setState({ trace: buildTrace(error) });
-    };
-
-    private handleClose = () => {
-        this.setState({ trace: null });
-    };
-
     private handleReload = () => {
         window.location.reload();
     };
 
     render() {
         const { renderError, trace } = this.state;
-        if (renderError) {
-            return (
-                <ErrorDialog
-                    trace={trace!}
-                    renderError
-                    onClose={this.handleClose}
-                    onReload={this.handleReload}
-                />
-            );
+        if (renderError && trace) {
+            return <ErrorDialog trace={trace} onReload={this.handleReload} />;
         }
-        return (
-            <>
-                {this.props.children}
-                {trace && (
-                    <ErrorDialog
-                        trace={trace}
-                        renderError={false}
-                        onClose={this.handleClose}
-                        onReload={this.handleReload}
-                    />
-                )}
-            </>
-        );
+        return this.props.children;
     }
 }
 
