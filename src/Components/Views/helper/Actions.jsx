@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
 
 const Actions = ({ actions, row }) => (
@@ -8,17 +8,18 @@ const Actions = ({ actions, row }) => (
             .map(({ name, enabled, onClick, icon, sx }) => {
                 const isEnabled = typeof enabled === "function" ? enabled(row) : enabled;
                 return (
-                    <IconButton
-                        key={name}
-                        disabled={!isEnabled}
-                        sx={sx}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onClick(row);
-                        }}
-                    >
-                        {icon || name}
-                    </IconButton>
+                    <Tooltip key={name} title={name} placement="top" arrow>
+                        <IconButton
+                            disabled={!isEnabled}
+                            sx={sx}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClick(row);
+                            }}
+                        >
+                            {icon || name}
+                        </IconButton>
+                    </Tooltip>
                 );
             })}
     </>

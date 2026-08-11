@@ -1,6 +1,6 @@
 import FlexBetweenColumn from "../../../Components/FlexBetweenColumn";
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Views from "../../../Components/Views/Views";
 import { studentsCruds, studentsAssignmentsCruds } from "../../../api/all.api";
 import StudentCard from "./StudentCard.jsx";
@@ -19,6 +19,9 @@ import StudentAttendence from "./StudentAttendence.jsx";
 import OtherInfo from "./OtherInfo.jsx";
 import { WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "../Communication/SelectTemplateDialog.jsx";
+import { Archive } from "lucide-react";
+import { useAlert } from "../../../utils/Alert.jsx";
+import Loading from "../../../Components/Loading/Loading.jsx";
 
 const size = 7;
 
@@ -129,7 +132,11 @@ const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTI
 
 const Students = ({ ID }) => {
     const { isMobile, isEnabled, FEATURE_KEYS } = useUI();
+    const dispatch = useDispatch();
     const studio = useSelector((state) => state.auth.studio);
+    const [loading, setLoading] = useState(false)
+    const token = useSelector((state) => state.auth.token);
+    const showAlert = useAlert();
     const currentBranch = useSelector((state) => state.branch.currentBranch);
     const allActivities = useSelector((state) => state.activity.activities);
 
@@ -547,6 +554,7 @@ const Students = ({ ID }) => {
 
     return (
         <FlexBetweenColumn>
+            {loading && <Loading />}
             {!ID && (
                 <ActionBar
                     api={apiStudent}
@@ -580,7 +588,28 @@ const Students = ({ ID }) => {
                                 showAlert("No student data available, please try again", "error")
                             }
                         },
-                    }]}
+                    },
+                    {
+                        name: "Archive",
+                        icon: <Archive />,
+                        enabled: (row) => row.membershipStatus === "INACTIVE",
+                        sx: { color: "error.main" },
+                        onClick: (row) => {
+                            dispatch(
+                                studentsCruds.update(
+                                    row.studentId,
+                                    { isActive: false },
+                                    token,
+                                    showAlert,
+                                    setLoading,
+                                ),
+                            );
+                            setTimeout(() => {
+                                dispatch(studentsCruds.refresh(showAlert, setLoading, token, false));
+                            }, 1000);
+                        },
+                    },
+                ]}
                 tableName={"students"}
                 apiRef={apiStudent}
                 tableCruds={studentsCruds}
