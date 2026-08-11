@@ -20,10 +20,17 @@ import { iconBtnFilledSx } from "@/core/components/layout/ActionButtonStyle";
 import { FilterKeys } from "@/core/types";
 import { useTheme, alpha } from "@mui/material/styles";
 
+export interface FilterOptionValue {
+    key: string | number | boolean;
+    value: string;
+}
+
+export type FilterValueItem = string | FilterOptionValue;
+
 export interface FilterOption {
     name: string;
     key: string;
-    values: string[];
+    values: FilterValueItem[];
 }
 
 interface FilterProps {
@@ -155,14 +162,19 @@ const Filter: React.FC<FilterProps> = ({ filterOptions = [], onChange }) => {
                                     value={tempSelected[key] ?? ""}
                                     onChange={handleRadioChange(key)}
                                 >
-                                    {values.map((value) => (
-                                        <FormControlLabel
-                                            key={value}
-                                            value={value}
-                                            control={<Radio size="small" />}
-                                            label={value}
-                                        />
-                                    ))}
+                                    {values.map((item) => {
+                                        const isObj = typeof item === "object" && item !== null;
+                                        const itemKey = isObj ? String(item.key) : String(item);
+                                        const itemLabel = isObj ? item.value : String(item);
+                                        return (
+                                            <FormControlLabel
+                                                key={itemKey}
+                                                value={itemKey}
+                                                control={<Radio size="small" />}
+                                                label={itemLabel}
+                                            />
+                                        );
+                                    })}
                                 </RadioGroup>
                             )}
                         </Box>

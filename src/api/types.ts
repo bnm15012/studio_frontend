@@ -155,6 +155,7 @@ export interface Student {
     additionalData?: string;
     otherinfo?: string;
     assignments?: StudentAssignment[];
+    isActive: boolean;
 }
 
 export interface Client {

@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
 import { Box } from "@mui/material";
@@ -16,7 +16,7 @@ import { getEndDateBySubscriptionPlan } from "@/utils/SubscriptionPlanUtil";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import StudentAttendence from "@/Pages/Management/Student/StudentAttendence";
 import OtherInfo from "@/Pages/Management/Student/OtherInfo";
-import { WhatsApp } from "@mui/icons-material";
+import { Unarchive, WhatsApp } from "@mui/icons-material";
 import SelectTemplateDialog from "@/Pages/Management/Communication/SelectTemplateDialog";
 import type {
     Activity,
@@ -33,6 +33,7 @@ import type {
 import type { FieldDef, FieldMeta, FieldValue, ViewsApiRef } from "@/core/types";
 import type { ViewsProps } from "@/core/crud/Views";
 import type { CrudRecord } from "@/api/types";
+import { Archive } from "lucide-react";
 
 const LIMIT = 12;
 
@@ -166,17 +167,30 @@ const FIELDS: FieldDef<Student>[] = [
 
 const VIEWS = ["LIST", "CARD", "FORM"] as const;
 
-const filterOptions = [{ name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] }];
+import type { FilterOption } from "@/core/components/fields/Filter";
+
+const filterOptions: FilterOption[] = [
+    { name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] },
+    {
+        name: "Archive",
+        key: "isActive",
+        values: [
+            { key: "true", value: "Unarchive" },
+            { key: "false", value: "Archive" },
+        ],
+    },
+];
 
 interface StudentsProps {
     ID?: number;
 }
 
 const Students: React.FC<StudentsProps> = ({ ID }) => {
-    const { studio, currentBranch, isMobile, permissions } = useAppUI();
+    const { studio, currentBranch, isMobile, permissions, token } = useAppUI();
     const allActivities = useAppSelector((state) => state.activities.items);
     const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
     const showAlert = useAlert();
+    const dispatch = useAppDispatch();
 
     const [showInvoice, setShowInvoice] = useState<StudentAssignment>();
     const [showAttendence, setShowAttendence] = useState<StudentAssignment>();
@@ -652,10 +666,11 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
         <FlexBetweenColumn>
             <Views<Student>
                 actionBarProps={{
-                    filterOptions: filterOptions,
+                    filterOptions,
                     qrProps: { link: "student-form" },
                     tableName: "students",
                 }}
+                defaultParams={{ isActive: true }}
                 {...(ID !== undefined ? { formKey: ID } : {})}
                 beforeAdd={(row: Student) => {
                     delete row.otherinfo;
@@ -679,6 +694,45 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                             } else {
                                 showAlert("No student data available, please try again", "error");
                             }
+                        },
+                    },
+                    {
+                        name: "Archive",
+                        icon: <Archive />,
+                        hide: (row: Student) => !row.isActive,
+                        enabled: (row: Student) => row.membershipStatus === "INACTIVE",
+                        sx: { color: "error.main" },
+                        onClick: (row: Student) => {
+                            dispatch(
+                                studentsCruds.update(
+                                    row.studentId,
+                                    { isActive: false },
+                                    token!,
+                                    showAlert,
+                                    () => {},
+                                ),
+                            );
+                            setTimeout(() => {
+                                dispatch(studentsCruds.refresh(showAlert, () => {}, token, false));
+                            }, 1000);
+                        },
+                    },
+                    {
+                        name: "Unarchive",
+                        icon: <Unarchive />,
+                        hide: (row: Student) => row.isActive,
+                        enabled: () => true,
+                        sx: { color: "success.main" },
+                        onClick: (row: Student) => {
+                            dispatch(
+                                studentsCruds.update(
+                                    row.studentId,
+                                    { isActive: true },
+                                    token!,
+                                    showAlert,
+                                    () => {},
+                                ),
+                            );
                         },
                     },
                 ]}
