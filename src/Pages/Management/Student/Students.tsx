@@ -256,10 +256,6 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
             if (paymentData) {
                 modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
             }
-            const { id: paymentId, ...paymentEntryWithoutId } = modifiedData.paymentEntry;
-            modifiedData.paymentEntry = (
-                paymentId ? modifiedData.paymentEntry : paymentEntryWithoutId
-            ) as StudentAssignment["paymentEntry"];
             return modifiedData;
         },
         [awaitForDialog, currentBranch.branchId],

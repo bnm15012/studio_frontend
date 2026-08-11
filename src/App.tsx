@@ -21,13 +21,13 @@ const App: React.FC = () => {
 
     return (
         <AlertProvider>
-            <Router>
-                <ErrorBoundary>
-                    <ThemeContextProvider>
+            <ThemeContextProvider>
+                <Router>
+                    <ErrorBoundary>
                         <AllRoutes />
-                    </ThemeContextProvider>
-                </ErrorBoundary>
-            </Router>
+                    </ErrorBoundary>
+                </Router>
+            </ThemeContextProvider>
         </AlertProvider>
     );
 };

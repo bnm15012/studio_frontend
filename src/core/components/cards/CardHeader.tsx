@@ -54,7 +54,7 @@ interface CardHeaderProps {
     fieldValue?: string | number;
     badge?: React.ReactNode;
     badgeSx?: SxProps<Theme>;
-    subtitle?: string;
+    subtitle?: string | undefined;
 }
 
 const CardHeader: React.FC<CardHeaderProps> = ({

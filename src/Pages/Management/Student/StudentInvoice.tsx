@@ -35,7 +35,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
     }
 
     const discount = (
-        Number(activityData.paymentEntry.amount || 0) - Number(activityData.activityAmount || 0)
+        Number(activityData.paymentEntry?.amount || 0) - Number(activityData.activityAmount || 0)
     ).toFixed(2);
 
     return (
@@ -98,7 +98,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                 <h2>INVOICE</h2>
                                 <div>
                                     <strong>Invoice #</strong>: INV-
-                                    {activityData.paymentEntry.id ?? ""}
+                                    {activityData.paymentEntry?.id ?? ""}
                                 </div>
                                 <div>
                                     <strong>Invoice Date</strong>:{" "}
@@ -332,7 +332,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                                             }}
                                                         >
                                                             {Number(
-                                                                activityData.paymentEntry.amount ||
+                                                                activityData.paymentEntry?.amount ||
                                                                     0,
                                                             ).toFixed(2)}
                                                         </td>
