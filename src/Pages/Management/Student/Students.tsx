@@ -377,7 +377,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         },
                     },
                     {
-                        hide: permissions.ATTENDANCE,
+                        hide: !permissions.ATTENDANCE,
                         name: "Attendance",
                         icon: <HowToRegIcon />,
                         enabled: () => true,

@@ -6,6 +6,7 @@ import { clearCacheIfNewDay } from "@/core/utils/cacheManager";
 import { loadInitialDataAPI } from "@/utils/loadInitialData";
 import { useAppDispatch, useAppSelector } from "@/state";
 import { ThemeContextProvider } from "@/core/utils/theme/ThemeProvider";
+import ErrorBoundary from "@/core/components/feedback/ErrorBoundary";
 
 const App: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -21,9 +22,11 @@ const App: React.FC = () => {
     return (
         <AlertProvider>
             <Router>
-                <ThemeContextProvider>
-                    <AllRoutes />
-                </ThemeContextProvider>
+                <ErrorBoundary>
+                    <ThemeContextProvider>
+                        <AllRoutes />
+                    </ThemeContextProvider>
+                </ErrorBoundary>
             </Router>
         </AlertProvider>
     );
