@@ -3,7 +3,6 @@ import { Box, Button, Chip, Divider, Paper, Stack, Typography } from "@mui/mater
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
-import { FlexBetween } from "@/core/components/layout/FlexBox";
 import Field from "@/core/components/fields/Field";
 import { FieldLabel } from "@/core/components/fields/StyledField";
 import { useAppUI } from "@/context/UIContext";
@@ -105,7 +104,7 @@ interface OtherInfoProps {
 }
 
 const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
-    const { permissions } = useAppUI();
+    const { permissions, isMobile } = useAppUI();
 
     const parsedValue = useMemo(() => parseValue(value), [value]);
 
@@ -196,6 +195,7 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
                     onClose: handleClose,
                     closeIcon: true,
                     maxWidth: "md",
+                    fullScreen: isMobile,
                     title: "Additional Information",
                     titleBgColor: "info",
                     confirmText: isEdit ? "Save" : "Close",
@@ -206,37 +206,53 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
                 }
                 return (
                     <StyledDialog {...dialogProps}>
-                        <Stack spacing={3} mt={1}>
+                        <Stack spacing={isMobile ? 1.5 : 2.5} mt={1}>
                             {FORM_SECTIONS.map((section) => (
                                 <Paper
                                     key={section.title}
                                     elevation={0}
                                     sx={{
-                                        p: 2.5,
-                                        borderRadius: 3,
+                                        p: isMobile ? 1.5 : 2.5,
+                                        borderRadius: 2.5,
                                         border: "1px solid",
                                         borderColor: "divider",
                                     }}
                                 >
-                                    <Typography variant="subtitle1" fontWeight={700} mb={2}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight={700}
+                                        mb={1.5}
+                                        sx={{ fontSize: isMobile ? 14 : 16 }}
+                                    >
                                         {section.title}
                                     </Typography>
 
-                                    <Divider sx={{ mb: 2 }} />
+                                    <Divider sx={{ mb: 1.5 }} />
 
-                                    <Stack spacing={2}>
+                                    <Stack spacing={isMobile ? 1.5 : 2}>
                                         {section.fields.map((field) => (
-                                            <FlexBetween key={field.name} gap={2}>
+                                            <Box
+                                                key={field.name}
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: isMobile ? "column" : "row",
+                                                    gap: isMobile ? 0.5 : 2,
+                                                    alignItems: isMobile ? "flex-start" : "center",
+                                                    width: "100%",
+                                                }}
+                                            >
                                                 <FieldLabel
                                                     sx={{
-                                                        minWidth: 250,
-                                                        m: "auto",
+                                                        flexShrink: 0,
+                                                        minWidth: isMobile ? "auto" : 200,
+                                                        width: isMobile ? "100%" : "auto",
+                                                        fontSize: isMobile ? 13 : 14,
                                                     }}
                                                 >
                                                     {field.label}
                                                 </FieldLabel>
 
-                                                <Box width="100%" m={"auto"}>
+                                                <Box sx={{ flex: 1, minWidth: 0, width: "100%" }}>
                                                     <Field
                                                         type={field.type}
                                                         value={formData[field.name] || ""}
@@ -246,7 +262,7 @@ const OtherInfo: React.FC<OtherInfoProps> = ({ value, setValue, isEdit }) => {
                                                         }
                                                     />
                                                 </Box>
-                                            </FlexBetween>
+                                            </Box>
                                         ))}
                                     </Stack>
                                 </Paper>

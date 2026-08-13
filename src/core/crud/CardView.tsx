@@ -2,15 +2,18 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
     Box,
-    Button,
+    ButtonBase,
     Checkbox,
+    CircularProgress,
     Divider,
     ListItemIcon,
     ListItemText,
     Menu,
     MenuItem,
     Skeleton,
+    Typography,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useTheme, alpha } from "@mui/material/styles";
 import { FieldContainer, FieldLabel } from "@/core/components/fields/StyledField";
 import {
@@ -23,7 +26,6 @@ import Actions from "@/core/crud/helper/Actions";
 import { BaseViewProps, CrudRecord, ActionItem, FieldDef, ViewMode } from "@/core/types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "@/core/crud/components/shared";
-import { FlexEvenly } from "@/core/components/layout/FlexBox";
 import { SelectAllBar } from "@/core/crud/components/SelectionToolbar";
 import { useLongPress } from "@/core/hooks/useLongPress";
 import { useAppUI } from "@/context/UIContext";
@@ -326,7 +328,19 @@ function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
     const visibleFields = fields.filter((f) => f.show);
     const hasClickRow = !!onClickRow;
 
-    const hasMore = data.length < Number(tableState.totalCount ?? 0);
+    const totalCount = Number(tableState.totalCount ?? 0);
+    const pageSize = Number(tableState.pageSize ?? 10) || 10;
+    const totalPages =
+        Number(tableState.totalPages ?? 0) ||
+        (totalCount > 0 ? Math.ceil(totalCount / pageSize) : 0);
+    const currentPage = Number(tableState.currentPage ?? 1) || 1;
+
+    const hasMore =
+        !loading &&
+        data.length > 0 &&
+        totalCount > 0 &&
+        data.length < totalCount &&
+        (totalPages > 0 ? currentPage < totalPages : true);
 
     useEffect(() => {
         if (!infiniteScroll || !hasMore || loading || scrollFetching) return;
@@ -536,14 +550,118 @@ function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
                 (infiniteScroll ? (
                     <Box ref={sentinelRef} sx={{ height: "1px" }} />
                 ) : (
-                    <Box pb={2}>
-                        <FlexEvenly>
-                            <Button variant="outlined" onClick={handleLoadMore}>
-                                Load More
-                            </Button>
-                        </FlexEvenly>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            py: 3,
+                            gap: 1.5,
+                        }}
+                    >
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: "text.secondary",
+                                fontSize: 12,
+                                fontWeight: 500,
+                            }}
+                        >
+                            Showing <strong>{data.length}</strong> of <strong>{totalCount}</strong>{" "}
+                            records
+                        </Typography>
+
+                        <ButtonBase
+                            disabled={Boolean(scrollFetching || loading)}
+                            onClick={() => {
+                                setScrollFetching(true);
+                                handleLoadMore();
+                            }}
+                            sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 1,
+                                px: 3.5,
+                                py: 1.25,
+                                borderRadius: "24px",
+                                fontSize: "0.875rem",
+                                fontWeight: 600,
+                                letterSpacing: "0.2px",
+                                color: "primary.main",
+                                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.25)}`,
+                                backdropFilter: "blur(6px)",
+                                transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+                                cursor: "pointer",
+                                "&:hover": {
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.16),
+                                    borderColor: theme.palette.primary.main,
+                                    transform: "translateY(-2px)",
+                                    boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.25)}`,
+                                    "& .load-more-icon": {
+                                        transform: "translateY(2px)",
+                                    },
+                                },
+                                "&:active": {
+                                    transform: "translateY(0)",
+                                },
+                                "&.Mui-disabled": {
+                                    opacity: 0.6,
+                                    cursor: "not-allowed",
+                                },
+                            }}
+                        >
+                            {scrollFetching ? (
+                                <>
+                                    <CircularProgress size={16} color="inherit" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span>Load More</span>
+                                    <ExpandMoreIcon
+                                        className="load-more-icon"
+                                        sx={{
+                                            fontSize: 20,
+                                            transition: "transform 0.2s ease",
+                                        }}
+                                    />
+                                </>
+                            )}
+                        </ButtonBase>
                     </Box>
                 ))}
+
+            {!hasMore && data.length > 0 && totalCount > 0 && !infiniteScroll && (
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        py: 2.5,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.75,
+                            px: 2,
+                            py: 0.5,
+                            borderRadius: "16px",
+                            backgroundColor: alpha(theme.palette.text.secondary, 0.06),
+                            border: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+                            color: "text.secondary",
+                            fontSize: 12,
+                            fontWeight: 500,
+                        }}
+                    >
+                        <span>Showing all {data.length} records</span>
+                    </Box>
+                </Box>
+            )}
         </Box>
     );
 }
