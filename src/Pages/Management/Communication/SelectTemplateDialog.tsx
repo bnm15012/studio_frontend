@@ -1,0 +1,219 @@
+import { useAppDispatch, useAppSelector } from "@/state";
+import { useEffect, useState } from "react";
+import StyledDialog from "@/core/components/dialogs/StyledDialog";
+import { genericTemplateCruds } from "@/api/all.api";
+import { Box, TextField, Typography, Skeleton } from "@mui/material";
+import { sendWhatsAppMessage } from "@/Pages/Management/Communication/communication.api";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { FlexBetween } from "@/core/components/layout/FlexBox";
+import { replacePlaceholders } from "@/core/utils/globalFuns";
+import { useAppUI } from "@/context/UIContext";
+import type { GenericTemplate, Student } from "@/api/types";
+
+interface SelectTemplateDialogData {
+    raw?: Student | Record<string, unknown>;
+    phoneNumber?: string;
+    email?: string;
+    notificationType?: string;
+    ids?: (string | number)[];
+}
+
+interface SelectTemplateDialogProps {
+    open: boolean;
+    onClose: (arg?: { open?: boolean } | void) => void;
+    data: SelectTemplateDialogData;
+}
+
+const SelectTemplateDialog: React.FC<SelectTemplateDialogProps> = ({ open, onClose, data }) => {
+    const { studio, token, currentBranch } = useAppUI();
+    const dispatch = useAppDispatch();
+    const showAlert = useAlert();
+
+    const { raw, phoneNumber, notificationType, ids } = data || {};
+
+    const [loading, setLoading] = useState(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<GenericTemplate | null>(null);
+    const [editableMessage, setEditableMessage] = useState("");
+
+    const allTemplates = useAppSelector((state) =>
+        (state.genericTemplate.items || []).filter(
+            (template: GenericTemplate) => template.templateType === "COMMUNICATION" && template.id,
+        ),
+    );
+
+    useEffect(() => {
+        if (open && (!allTemplates || allTemplates.length === 0)) {
+            dispatch(
+                genericTemplateCruds.getAll(
+                    showAlert,
+                    setLoading,
+                    token,
+                    { searchTerm: "COMMUNICATION" },
+                    studio.studioId,
+                    false,
+                ),
+            );
+        }
+    }, [allTemplates, dispatch, open, showAlert, studio.studioId, token]);
+
+    useEffect(() => {
+        if (open && allTemplates.length > 0 && !selectedTemplate) {
+            setSelectedTemplate(allTemplates[0] ?? null);
+        }
+    }, [open, allTemplates, selectedTemplate]);
+
+    useEffect(() => {
+        if (!open) {
+            setSelectedTemplate(null);
+            setEditableMessage("");
+        }
+    }, [open]);
+
+    useEffect(() => {
+        if (!selectedTemplate) return;
+
+        const message = replacePlaceholders(
+            `${selectedTemplate.templateSubject ?? ""}\n\n${selectedTemplate.templateContent ?? ""}`,
+            {
+                student: raw,
+                studio,
+                branch: currentBranch,
+            },
+        );
+
+        setEditableMessage(message);
+    }, [selectedTemplate, raw, studio, currentBranch]);
+
+    const onSend = () => {
+        if (!editableMessage) {
+            showAlert("Message is empty", "error");
+            return;
+        }
+
+        if (notificationType === "WHATSAPP") {
+            sendWhatsAppMessage({
+                token,
+                phone: "+91" + phoneNumber,
+                message: editableMessage,
+                payload: {
+                    branchId: currentBranch.branchId,
+                    notificationType,
+                    title: selectedTemplate?.templateName ?? "CUSTOM",
+                    content: editableMessage,
+                    ...(ids !== undefined && { memberIds: ids }),
+                },
+            });
+        }
+
+        onClose({ open: false });
+    };
+
+    return (
+        <StyledDialog
+            open={open}
+            onClose={() => onClose()}
+            confirmText="Send"
+            onConfirm={onSend}
+            title="Select Template"
+            maxWidth="lg"
+        >
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        md: "40% 60%",
+                    },
+                    gap: 2,
+                }}
+            >
+                {/* Template List */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {loading ? (
+                        <>
+                            {[1, 2, 3].map((i) => (
+                                <Box
+                                    key={i}
+                                    sx={{ p: 2, border: "1px solid #ddd", borderRadius: 2 }}
+                                >
+                                    <Skeleton width="60%" height={24} />
+                                    <Skeleton width="80%" height={16} sx={{ mt: 1 }} />
+                                </Box>
+                            ))}
+                        </>
+                    ) : allTemplates.length === 0 ? (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "100%",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Typography textAlign="center" variant="h6">
+                                No templates found
+                            </Typography>
+                            <Typography variant="body1">
+                                create template from Templates tab
+                            </Typography>
+                        </Box>
+                    ) : (
+                        allTemplates.map((template) => (
+                            <Box
+                                key={template.id}
+                                onClick={() => setSelectedTemplate(template)}
+                                sx={{
+                                    p: 2,
+                                    border:
+                                        selectedTemplate?.id === template.id
+                                            ? "2px solid #1976d2"
+                                            : "1px solid #ddd",
+                                    borderRadius: 2,
+                                    cursor: "pointer",
+                                    transition: "0.2s",
+                                    "&:hover": {
+                                        boxShadow: 3,
+                                    },
+                                }}
+                            >
+                                <FlexBetween>
+                                    <Typography variant="h6">{template.templateName}</Typography>
+                                </FlexBetween>
+                                <Typography variant="body2" color="text.secondary" mt={1}>
+                                    {template.templateSubject.substring(0, 20)}...
+                                </Typography>
+                            </Box>
+                        ))
+                    )}
+                </Box>
+
+                {/* Editable Preview */}
+                <Box
+                    sx={{
+                        border: "1px solid #ddd",
+                        borderRadius: 2,
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <Typography variant="h6" mb={2}>
+                        Message Preview
+                    </Typography>
+
+                    <TextField
+                        multiline
+                        minRows={18}
+                        fullWidth
+                        value={editableMessage}
+                        onChange={(e) => setEditableMessage(e.target.value)}
+                        placeholder="Preview will appear here..."
+                    />
+                </Box>
+            </Box>
+        </StyledDialog>
+    );
+};
+
+export default SelectTemplateDialog;

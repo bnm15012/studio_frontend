@@ -1,0 +1,805 @@
+import { useAppDispatch, useAppSelector } from "@/state";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { FlexBetweenColumn } from "@/core/components/layout/FlexBox";
+import { Box } from "@mui/material";
+import Views from "@/core/crud/Views";
+import { studentsCruds, studentsAssignmentsCruds } from "@/api/all.api";
+import StudentCard from "@/Pages/Management/Student/StudentCard";
+import { useAppUI } from "@/context/UIContext";
+import { useAlert } from "@/core/components/feedback/Alert";
+import { getCurrentDateTimeLocal } from "@/core/utils/DateUtil";
+import StudentInvoice from "@/Pages/Management/Student/StudentInvoice";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import PaymentEntryDialog from "@/Pages/Management/Payments/PaymentEntryDialog";
+import StudentAssignActivityCard from "@/Pages/Management/Student/StudentAssignActivityCard";
+import { getEndDateBySubscriptionPlan } from "@/utils/SubscriptionPlanUtil";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import StudentAttendence from "@/Pages/Management/Student/StudentAttendence";
+import OtherInfo from "@/Pages/Management/Student/OtherInfo";
+import { Unarchive, WhatsApp } from "@mui/icons-material";
+import SelectTemplateDialog from "@/Pages/Management/Communication/SelectTemplateDialog";
+import type {
+    Activity,
+    activityStatus,
+    BatchEntry,
+    genderType,
+    NewPayment,
+    Payment,
+    paymentStatus,
+    paymentType,
+    Student,
+    StudentAssignment,
+} from "@/api/types";
+import type { FieldDef, FieldMeta, FieldValue, ViewsApiRef } from "@/core/types";
+import type { ViewsProps } from "@/core/crud/Views";
+import type { CrudRecord } from "@/api/types";
+import { Archive } from "lucide-react";
+
+const LIMIT = 12;
+
+const FIELD_META: FieldMeta = {
+    primary: "studentId",
+    root: "branchId",
+};
+
+const PAYMENT_STATUS: paymentStatus[] = ["COMPLETED", "PENDING"];
+const PAYMENT_TYPE: paymentType[] = ["CASH", "UPI"];
+
+const FIELDS: FieldDef<Student>[] = [
+    {
+        show: true,
+        section: "Personal Details",
+        name: "imageUrl",
+        label: "Image",
+        type: "IMAGE",
+        extraProp: { size: "30px" },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "name",
+        label: "Name",
+        validation: { required: true },
+    },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "email",
+        label: "Email",
+        validation: {
+            required: true,
+            regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Email is not valid",
+        },
+    },
+    {
+        show: true,
+        section: "Contact Details",
+        name: "phone",
+        label: "Phone",
+        validation: {
+            required: true,
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "dob",
+        label: "Date of Birth",
+        type: "DATE",
+        extraProp: { includeCurrentTime: false },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "age",
+        label: "Age",
+        type: "NUMBER",
+        getValue: (_value: number | undefined, row: Student) => {
+            if (!row.dob) return null;
+
+            const dob = new Date(String(row.dob));
+            const today = new Date();
+
+            const hasBirthdayPassed =
+                today.getMonth() > dob.getMonth() ||
+                (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+
+            const age = today.getFullYear() - dob.getFullYear();
+            return hasBirthdayPassed ? age : age - 1;
+        },
+        extraProp: { readOnly: true },
+    },
+    {
+        show: true,
+        section: "Personal Details",
+        name: "membershipStatus",
+        label: "Status",
+        getValue: (value: activityStatus) => (
+            <Box
+                sx={{
+                    color: value === "ACTIVE" ? "green" : "red",
+                    fontWeight: "bolder",
+                }}
+            >
+                {String(value)}
+            </Box>
+        ),
+        defaultValue: "ACTIVE",
+        extraProp: { readOnly: true },
+    },
+    {
+        show: false,
+        section: "Personal Details",
+        name: "gender",
+        label: "Gender",
+        type: "SELECT",
+        validation: { required: true },
+        getValue: (value: genderType) => ({ key: String(value ?? ""), value }),
+        defaultValue: "MALE",
+        getOptions: async (search: string, page: number, limit: number) =>
+            ["MALE", "FEMALE", "NOT_TO_SAY"]
+                .filter((a) => a.toLowerCase().includes(search.toLowerCase()))
+                .slice((page - 1) * limit, page * limit)
+
+                .map((a) => ({ key: a, value: a })),
+    },
+    {
+        show: false,
+        section: "Contact Details",
+        name: "address",
+        label: "Address",
+    },
+    {
+        show: false,
+        section: "Contact Details",
+        name: "emergencyContactNumber",
+        label: "Emergency Contact",
+        validation: {
+            required: true,
+            regex: /^[6-9]\d{9}$/,
+            message: "Must be exactly 10 digit with no spaces and start with 6,7,8,9 only",
+        },
+    },
+];
+
+const VIEWS = ["LIST", "CARD", "FORM"] as const;
+
+import type { FilterOption } from "@/core/components/fields/Filter";
+
+const filterOptions: FilterOption[] = [
+    { name: "Status", key: "membershipStatus", values: ["ACTIVE", "INACTIVE"] },
+    {
+        name: "Archive",
+        key: "isActive",
+        values: [
+            { key: "true", value: "Unarchive" },
+            { key: "false", value: "Archive" },
+        ],
+    },
+];
+
+interface StudentsProps {
+    ID?: number;
+}
+
+const Students: React.FC<StudentsProps> = ({ ID }) => {
+    const { studio, currentBranch, isMobile, permissions, token } = useAppUI();
+    const allActivities = useAppSelector((state) => state.activities.items);
+    const cachedMembershipTypes = useAppSelector((state) => state.membershipPackages.items);
+    const showAlert = useAlert();
+    const dispatch = useAppDispatch();
+
+    const [showInvoice, setShowInvoice] = useState<StudentAssignment>();
+    const [showAttendence, setShowAttendence] = useState<StudentAssignment>();
+    const tableState = useAppSelector((state) => state["students"]) || {
+        recordById: {},
+    };
+    const [openPaymentDialog, setOpenPaymentDialog] = useState<
+        | false
+        | {
+              onSave: (data: Payment | NewPayment) => void;
+              onClose: () => void;
+              paymentInit: Payment | NewPayment;
+          }
+    >(false);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState<{
+        open: boolean;
+        data?: Student;
+    }>({ open: false });
+    const api = useRef<ViewsApiRef>({});
+    const apiStudent = useRef<ViewsApiRef>({});
+    let extraField: FieldDef<Student>[] = [];
+    if (permissions.ENROLMENT) {
+        extraField = [
+            {
+                show: false,
+                section: "Additional Info",
+                name: "additionalData",
+                label: "",
+                type: "CUSTOM",
+                extraProp: {
+                    CustomComponent: OtherInfo,
+                },
+            },
+        ];
+    }
+
+    const awaitForDialog = useCallback(
+        (paymentInit: Payment | NewPayment) =>
+            new Promise<Payment | NewPayment>((resolve, reject) => {
+                const handleSave = (data: Payment | NewPayment) => {
+                    setOpenPaymentDialog(false);
+                    resolve(data);
+                };
+
+                const handleClose = () => {
+                    setOpenPaymentDialog(false);
+                    reject(new Error("Payment cancelled"));
+                };
+
+                setOpenPaymentDialog({
+                    onSave: handleSave,
+                    onClose: handleClose,
+                    paymentInit,
+                });
+            }),
+        [],
+    );
+
+    const beforeAdd = useCallback(
+        async (row: StudentAssignment) => {
+            const modifiedData = { ...row };
+
+            const paymentInit: NewPayment = {
+                branchId: currentBranch.branchId,
+                payeeType: "STUDENT",
+                payeeName: modifiedData.studentName,
+                payeeId: modifiedData.studentId,
+                actualAmount: Number(modifiedData.activityAmount ?? 0),
+                amount: Number(modifiedData.activityAmount ?? 0),
+                status: PAYMENT_STATUS[0] ?? "COMPLETED",
+                paymentType: PAYMENT_TYPE[0] ?? "CASH",
+                paymentDate:
+                    modifiedData.paymentEntry?.paymentDate ?? getCurrentDateTimeLocal() ?? "",
+            };
+
+            const paymentData = await awaitForDialog(paymentInit);
+            if (!paymentData) {
+                throw new Error("Payment cancelled");
+            }
+            modifiedData.paymentEntry = { ...row.paymentEntry, ...paymentData };
+            return modifiedData;
+        },
+        [awaitForDialog, currentBranch.branchId],
+    );
+
+    const getBatchEntries = useCallback(
+        (activityName: string, membershipType?: string, daysPerWeek?: number, batchName?: string) =>
+            allActivities
+                .find((a: Activity) => a.activityType === activityName)
+                ?.batchEntries?.filter(
+                    (b: BatchEntry) =>
+                        (!membershipType || b.planType === membershipType) &&
+                        (!daysPerWeek || b.daysPerWeek == daysPerWeek) &&
+                        (!batchName || b.name === batchName),
+                ) || null,
+        [allActivities],
+    );
+
+    const overRideOnChange = useCallback(
+        (value: FieldValue, obj: Partial<StudentAssignment>, fieldPath: string) => {
+            if (!value) return obj;
+
+            const newObj: Partial<StudentAssignment> = { ...obj };
+
+            if (fieldPath === "activityName") {
+                const entries = getBatchEntries(String(value));
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                if (entry) {
+                    newObj.membershipType = entry.planType;
+                    newObj.daysPerWeek = entry.daysPerWeek;
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                    const endDate = getEndDateBySubscriptionPlan(
+                        String(newObj.membershipStartDate ?? ""),
+                        entry.planType,
+                        cachedMembershipTypes,
+                    );
+                    if (endDate) newObj.membershipEndDate = endDate;
+                }
+            } else if (fieldPath === "membershipType") {
+                const entries = getBatchEntries(String(newObj.activityName), String(value));
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                if (entry) {
+                    newObj.daysPerWeek = entry.daysPerWeek;
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
+                const endDate = getEndDateBySubscriptionPlan(
+                    String(newObj.membershipStartDate ?? ""),
+                    String(value),
+                    cachedMembershipTypes,
+                );
+                if (endDate) newObj.membershipEndDate = endDate;
+            } else if (fieldPath === "daysPerWeek") {
+                const entries = getBatchEntries(
+                    String(newObj.activityName),
+                    String(newObj.membershipType),
+                    Number(value),
+                );
+                const entry = entries?.length === 1 ? entries[0] : undefined;
+                if (entry) {
+                    newObj.batchName = entry.name;
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
+            } else if (fieldPath === "batchName") {
+                const entry = getBatchEntries(
+                    String(newObj.activityName),
+                    String(newObj.membershipType),
+                    Number(newObj.daysPerWeek),
+                    String(value),
+                )?.[0];
+                if (entry) {
+                    newObj.batchTime = `${entry.startTime}-${entry.endTime}`;
+                    newObj.activityAmount = entry.price;
+                }
+            } else if (fieldPath === "membershipStartDate") {
+                const endDate = getEndDateBySubscriptionPlan(
+                    String(value),
+                    String(newObj.membershipType),
+                    cachedMembershipTypes,
+                );
+                if (endDate) newObj.membershipEndDate = endDate;
+            }
+            return newObj;
+        },
+        [getBatchEntries, cachedMembershipTypes],
+    );
+
+    const ASSIGNMENT_FIELD = useMemo(
+        (): FieldDef<Student> => ({
+            show: false,
+            name: "assignments",
+            label: "Assigned Activities",
+            type: "VIEW",
+            api: api,
+            viewProps: {
+                showAddButton: true,
+                tableCruds: studentsAssignmentsCruds,
+                tableName: "studentActivities",
+                beforeAdd: beforeAdd,
+                overRideOnChange,
+                size: 4,
+                actions: [
+                    {
+                        name: "Document",
+                        icon: <ReceiptIcon />,
+                        enabled: (row: StudentAssignment) =>
+                            row?.paymentEntry?.status === "COMPLETED",
+                        sx: { color: "primary.main" },
+                        onClick: (row: StudentAssignment) => {
+                            setShowInvoice(row);
+                        },
+                    },
+                    {
+                        hide: !permissions.ATTENDANCE,
+                        name: "Attendance",
+                        icon: <HowToRegIcon />,
+                        enabled: () => true,
+                        sx: { color: "primary.main" },
+                        onClick: (row: StudentAssignment) => {
+                            setShowAttendence(row);
+                        },
+                    },
+                ],
+                fields: [
+                    {
+                        show: true,
+                        name: "activityName",
+                        label: "Activity",
+                        type: "SELECT",
+                        getValue: (value: string) => ({ value: value || "", key: value || "" }),
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        getOptions: async (search: string, page: number, limit: number) =>
+                            allActivities
+                                .filter((a: Activity) =>
+                                    (a.activityType as string)
+                                        .toLowerCase()
+                                        .includes(search.toLowerCase()),
+                                )
+                                .slice((page - 1) * limit, page * limit)
+                                .map((a: Activity) => ({
+                                    key: a.activityType,
+                                    value: a.activityType,
+                                })),
+
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipType",
+                        label: "Membership Type",
+                        type: "SELECT",
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        getValue: (value: string) => ({ value, key: value }),
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row?: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities.find(
+                                (a: Activity) => a.activityType === row?.["activityName"],
+                            )?.batchEntries;
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)
+                                        ?.filter((b: BatchEntry) =>
+                                            (b.planType as string)
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        )
+                                        .map((b: BatchEntry) => b.planType),
+                                ),
+                            ]
+                                .slice((page - 1) * limit, page * limit)
+
+                                .map((a: string) => ({ key: a, value: a }));
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "daysPerWeek",
+                        label: "Days / week",
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        type: "SELECT",
+                        getValue: (value: string) => ({ value, key: value }),
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row?: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities
+                                .find((a: Activity) => a.activityType === row?.["activityName"])
+                                ?.batchEntries?.filter(
+                                    (b: BatchEntry) => b.planType === row?.["membershipType"],
+                                );
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)?.map(
+                                        (b: BatchEntry) => b.daysPerWeek,
+                                    ),
+                                ),
+                            ].map((a: number | string) => ({
+                                key: a,
+                                value: a,
+                            }));
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: permissions.BATCH,
+                        name: "batchName",
+                        label: "Batch Name",
+                        type: "SELECT",
+                        editable: (row: StudentAssignment) => row.assignmentId === 0,
+                        getValue: (value: string) => ({ value, key: value }),
+                        getOptions: async (
+                            search: string,
+                            page: number,
+                            limit: number,
+                            row: StudentAssignment,
+                        ) => {
+                            const batchEntries = allActivities
+                                .find((a: Activity) => a.activityType === row["activityName"])
+                                ?.batchEntries?.filter(
+                                    (b: BatchEntry) =>
+                                        b.planType === row["membershipType"] &&
+                                        b.daysPerWeek === row["daysPerWeek"],
+                                );
+                            return [
+                                ...new Set(
+                                    (batchEntries as BatchEntry[] | undefined)
+                                        ?.filter((b: BatchEntry) =>
+                                            (b.name as string)
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        )
+                                        .map((b: BatchEntry) => b.name),
+                                ),
+                            ]
+                                .slice((page - 1) * limit, page * limit)
+
+                                .map((a: string) => ({ key: a, value: a }));
+                        },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "activityAmount",
+                        label: "Amount",
+                        getValue: (v: number, row: StudentAssignment, isEdit: boolean) => {
+                            if (!isEdit) {
+                                const paymentEntry = row.paymentEntry;
+                                if (!row || !paymentEntry) return null;
+                                return (
+                                    <>
+                                        Rs. {paymentEntry.amount}{" "}
+                                        {paymentEntry.actualAmount &&
+                                            paymentEntry.actualAmount !== paymentEntry.amount && (
+                                                <span
+                                                    style={{
+                                                        textDecoration: "line-through",
+                                                        color: "#EF4444",
+                                                    }}
+                                                >
+                                                    Rs. {paymentEntry.actualAmount}
+                                                </span>
+                                            )}
+                                    </>
+                                );
+                            } else {
+                                return v;
+                            }
+                        },
+                        extraProp: { readOnly: true },
+                        validation: { required: true },
+                    },
+                    {
+                        show: permissions.BATCH,
+                        name: "batchTime",
+                        label: "Batch Time",
+                        extraProp: { readOnly: true },
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "registrationDate",
+                        label: "Registration Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipStartDate",
+                        label: "Start Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                    },
+                    {
+                        show: true,
+                        name: "membershipEndDate",
+                        label: "End Date",
+                        type: "DATE",
+                        defaultValue: getCurrentDateTimeLocal(),
+                        validation: { required: true },
+                        extraProp: { min: getCurrentDateTimeLocal(), readOnly: true },
+                    },
+                    {
+                        show: permissions.PAYMENT_DATE,
+                        name: "paymentEntry.paymentDate",
+                        label: "Payment Date",
+                        type: "DATE",
+                        editable: (row: StudentAssignment) =>
+                            row?.paymentEntry?.paymentStatus !== "COMPLETED",
+                        defaultValue: getCurrentDateTimeLocal(),
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.payeeType",
+                        label: "Payee",
+                        defaultValue: "STUDENT",
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.status",
+                        label: "Payee",
+                        defaultValue: PAYMENT_STATUS[0],
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.paymentType",
+                        label: "Payee",
+                        defaultValue: PAYMENT_TYPE[0],
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.actualAmount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.amount",
+                        label: "Payee",
+                        defaultValue: 0,
+                    },
+                    {
+                        show: false,
+                        name: "paymentEntry.branchId",
+                        label: "Payee",
+                        defaultValue: currentBranch.branchId,
+                    },
+                    {
+                        show: true,
+                        name: "membershipStatus",
+                        label: "Status",
+                        defaultValue: "INACTIVE",
+                        getValue: (value: string) => (
+                            <Box
+                                sx={{
+                                    color: value === "ACTIVE" ? "green" : "red",
+                                    fontWeight: "bolder",
+                                }}
+                            >
+                                {value}
+                            </Box>
+                        ),
+                        extraProp: { readOnly: true },
+                    },
+                ],
+                fieldsMeta: {
+                    primary: "assignmentId",
+                    root: "studentId",
+                },
+                CardContentComponent: StudentAssignActivityCard,
+                fieldToDisplayOnDelete: "activityName",
+                cardLayout: "horizontal",
+                apiRef: api,
+                infiniteScroll: false,
+            } as Partial<ViewsProps<CrudRecord>>,
+        }),
+        [permissions, allActivities, beforeAdd, currentBranch.branchId, overRideOnChange],
+    );
+
+    return (
+        <FlexBetweenColumn>
+            <Views<Student>
+                actionBarProps={{
+                    filterOptions,
+                    qrProps: { link: "student-form" },
+                    tableName: "students",
+                }}
+                defaultParams={{ isActive: true }}
+                {...(ID !== undefined ? { formKey: ID } : {})}
+                beforeAdd={(row: Student) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                beforeUpdate={async (row: Student) => {
+                    delete row.otherinfo;
+                    delete row.age;
+                    return row;
+                }}
+                actions={[
+                    {
+                        name: "WhatsApp",
+                        icon: <WhatsApp />,
+                        enabled: () => true,
+                        sx: { color: "success.main" },
+                        onClick: (row: Student) => {
+                            if (row.studentId) {
+                                setOpenTemplateDialog({ open: true, data: row });
+                            } else {
+                                showAlert("No student data available, please try again", "error");
+                            }
+                        },
+                    },
+                    {
+                        name: "Archive",
+                        icon: <Archive />,
+                        hide: (row: Student) => !row.isActive,
+                        enabled: (row: Student) => row.membershipStatus === "INACTIVE",
+                        sx: { color: "error.main" },
+                        views: ["FORM"],
+                        onClick: (row: Student) => {
+                            dispatch(
+                                studentsCruds.update(
+                                    row.studentId,
+                                    { isActive: false },
+                                    token!,
+                                    showAlert,
+                                    () => {},
+                                ),
+                            );
+                            setTimeout(() => {
+                                dispatch(studentsCruds.refresh(showAlert, () => {}, token, false));
+                            }, 1000);
+                        },
+                    },
+                    {
+                        name: "Unarchive",
+                        icon: <Unarchive />,
+                        hide: (row: Student) => row.isActive,
+                        enabled: () => true,
+                        sx: { color: "success.main" },
+                        views: ["FORM"],
+                        onClick: (row: Student) => {
+                            dispatch(
+                                studentsCruds.update(
+                                    row.studentId,
+                                    { isActive: true },
+                                    token!,
+                                    showAlert,
+                                    () => {},
+                                ),
+                            );
+                        },
+                    },
+                ]}
+                tableName={"students"}
+                apiRef={apiStudent}
+                tableCruds={studentsCruds}
+                size={LIMIT}
+                key={"students"}
+                fields={[...FIELDS, ...extraField, ASSIGNMENT_FIELD]}
+                rootId={currentBranch.branchId}
+                fieldsMeta={FIELD_META}
+                currentView={VIEWS[!isMobile ? 0 : 1]}
+                fieldToDisplayOnDelete="name"
+                CardContentComponent={StudentCard}
+                editMode={"FORM"}
+            />
+            {showInvoice && (
+                <StudentInvoice
+                    studio={studio}
+                    currentBranch={currentBranch}
+                    open={true}
+                    isUser={true}
+                    onClose={() => setShowInvoice(undefined)}
+                    {...(tableState.recordById[showInvoice.studentId]
+                        ? { studentData: tableState.recordById[showInvoice.studentId] }
+                        : {})}
+                    activityData={showInvoice}
+                />
+            )}
+            {openPaymentDialog && (
+                <PaymentEntryDialog
+                    open={true}
+                    onSave={(data) => {
+                        if (openPaymentDialog) openPaymentDialog.onSave(data);
+                    }}
+                    onClose={() => {
+                        if (openPaymentDialog) openPaymentDialog.onClose();
+                    }}
+                    initialData={openPaymentDialog?.paymentInit}
+                    paymentStatus={PAYMENT_STATUS}
+                    paymentType={PAYMENT_TYPE.map((pt) => ({ label: pt, value: pt }))}
+                />
+            )}
+            {showAttendence && (
+                <StudentAttendence
+                    open={true}
+                    onClose={() => setShowAttendence(undefined)}
+                    activityData={showAttendence}
+                />
+            )}
+            {openTemplateDialog.open && (
+                <SelectTemplateDialog
+                    open={openTemplateDialog.open}
+                    onClose={() => setOpenTemplateDialog({ open: false })}
+                    data={{
+                        ids: [openTemplateDialog.data!.studentId],
+                        raw: openTemplateDialog.data!,
+                        phoneNumber: openTemplateDialog.data!.phone,
+                        email: openTemplateDialog.data!.email,
+                        notificationType: "WHATSAPP",
+                    }}
+                />
+            )}
+        </FlexBetweenColumn>
+    );
+};
+
+export default Students;
