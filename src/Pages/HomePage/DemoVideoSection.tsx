@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 const VIDEO_ID = "0dF1dLBjiCI";
 
@@ -15,9 +15,15 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
 const DemoVideoSection = () => {
     const [playing, setPlaying] = useState(false);
 
-    const handlePlay = () => {
+    // Stop the event dead in its tracks so nothing bubbles up
+    // to a parent link/form/handler on iOS Safari.
+    const handlePlay = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         setPlaying(true);
-    };
+    }, []);
 
     return (
         <>
@@ -84,6 +90,7 @@ const DemoVideoSection = () => {
                         background:
                             "radial-gradient(circle, rgba(99,102,241,.30), transparent 70%)",
                         filter: "blur(90px)",
+                        pointerEvents: "none",
                     }}
                 />
 
@@ -99,6 +106,7 @@ const DemoVideoSection = () => {
                         background:
                             "radial-gradient(circle, rgba(236,72,153,.25), transparent 70%)",
                         filter: "blur(90px)",
+                        pointerEvents: "none",
                     }}
                 />
 
@@ -115,6 +123,7 @@ const DemoVideoSection = () => {
                         background:
                             "radial-gradient(circle, rgba(59,130,246,.16), transparent 70%)",
                         filter: "blur(70px)",
+                        pointerEvents: "none",
                     }}
                 />
 
@@ -133,6 +142,7 @@ const DemoVideoSection = () => {
                             top: particle.top,
                             animation: `float ${particle.duration} ease-in-out infinite`,
                             animationDelay: particle.delay,
+                            pointerEvents: "none",
                         }}
                     />
                 ))}
@@ -167,6 +177,7 @@ const DemoVideoSection = () => {
                                 "radial-gradient(circle, rgba(99,102,241,.22), transparent 70%)",
                             filter: "blur(60px)",
                             zIndex: -1,
+                            pointerEvents: "none",
                         },
                     }}
                 >
@@ -187,45 +198,50 @@ const DemoVideoSection = () => {
                         >
                             {!playing ? (
                                 /*
-                                 * Thumbnail state
-                                 *
-                                 * No iframe exists yet.
-                                 * This means Safari cannot accidentally
-                                 * navigate through the YouTube player.
+                                 * Thumbnail state — real <button> so iOS Safari
+                                 * treats it as a native interactive element
+                                 * instead of guessing at click/touch intent.
+                                 * No iframe exists yet, so there's nothing
+                                 * for Safari to accidentally navigate through.
                                  */
                                 <Box
+                                    component="button"
+                                    type="button"
                                     onClick={handlePlay}
-                                    role="button"
-                                    tabIndex={0}
-                                    aria-label="Play QRVerse demo"
-                                    onKeyDown={(event) => {
-                                        if (event.key === "Enter" || event.key === " ") {
-                                            event.preventDefault();
-                                            handlePlay();
-                                        }
+                                    onTouchEnd={(e) => {
+                                        // Some iOS Safari versions fire touchend
+                                        // before click; make sure it's caught too.
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handlePlay(e);
                                     }}
+                                    aria-label="Play QRVerse demo"
                                     sx={{
                                         position: "absolute",
                                         inset: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        m: 0,
+                                        p: 0,
+                                        border: 0,
+                                        borderRadius: 0,
+                                        background: "none",
+                                        appearance: "none",
+                                        WebkitAppearance: "none",
                                         cursor: "pointer",
-                                        backgroundImage: `url(https://i.ytimg.com/vi/${VIDEO_ID}/maxresdefault.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "center",
-
-                                        "&::after": {
-                                            content: '""',
-                                            position: "absolute",
-                                            inset: 0,
-                                            background:
-                                                "linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,.25))",
-                                        },
+                                        WebkitTapHighlightColor: "transparent",
+                                        touchAction: "manipulation",
 
                                         "&:hover .play-btn": {
                                             transform: "scale(1.12)",
                                             background: "rgba(99,102,241,0.95)",
+                                        },
+
+                                        "&:focus-visible": {
+                                            outline: "none",
                                         },
 
                                         "&:focus-visible .play-btn": {
@@ -235,6 +251,33 @@ const DemoVideoSection = () => {
                                         },
                                     }}
                                 >
+                                    {/* Thumbnail image */}
+                                    <Box
+                                        component="img"
+                                        src={`https://i.ytimg.com/vi/${VIDEO_ID}/maxresdefault.jpg`}
+                                        alt=""
+                                        draggable={false}
+                                        sx={{
+                                            position: "absolute",
+                                            inset: 0,
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                            pointerEvents: "none",
+                                        }}
+                                    />
+
+                                    {/* Darken overlay */}
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            inset: 0,
+                                            background:
+                                                "linear-gradient(to bottom, rgba(0,0,0,.05), rgba(0,0,0,.25))",
+                                            pointerEvents: "none",
+                                        }}
+                                    />
+
                                     {/* Play button */}
                                     <Box
                                         className="play-btn"
@@ -251,6 +294,7 @@ const DemoVideoSection = () => {
                                             justifyContent: "center",
                                             transition: "transform .2s ease, background .2s ease",
                                             boxShadow: "0 8px 32px rgba(99,102,241,.5)",
+                                            pointerEvents: "none",
                                         }}
                                     >
                                         <Box
@@ -274,6 +318,7 @@ const DemoVideoSection = () => {
                                     title="QRVerse Demo"
                                     allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                                     allowFullScreen
+                                    loading="lazy"
                                     referrerPolicy="strict-origin-when-cross-origin"
                                     sx={{
                                         position: "absolute",
