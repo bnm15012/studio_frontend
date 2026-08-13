@@ -1,5 +1,5 @@
 import { getNestedValue } from "@/core/utils/objectHelpers";
-import { FieldDef, ExtraProp, CrudRecord, KnownKeys } from "@/core/types";
+import { FieldDef, ExtraProp, CrudRecord, KnownKeys, ActionItem, ViewMode } from "@/core/types";
 
 /** Field utility functions: getVisibleFields, resolveFieldValue, bindGetOptions, isFieldEditable for form/view rendering.
 
@@ -89,3 +89,15 @@ export const bindGetOptions = <T extends CrudRecord>(
 
 /** Shared "empty state" message constant */
 export const EMPTY_DATA_MSG = "No data available";
+
+export const isActionVisibleInView = <T>(
+    action: ActionItem<T>,
+    currentView?: ViewMode | string,
+): boolean => {
+    if (!currentView) return true;
+    const targetViews =
+        action.views ??
+        (Array.isArray(action.view) ? action.view : action.view ? [action.view] : undefined);
+    if (!targetViews || targetViews.length === 0) return true;
+    return targetViews.includes(currentView as ViewMode);
+};

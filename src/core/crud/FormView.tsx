@@ -201,7 +201,7 @@ function FormView<T extends CrudRecord>(props: FormViewProps<T>) {
                 <Box sx={{ display: "flex", gap: 0.5 }}>
                     {(editingId === undefined || editingId < 0) && formKey !== 0 ? (
                         <>
-                            <Actions actions={actions} row={data} />
+                            <Actions actions={actions} row={data} currentView="FORM" />
                             <IconButton>
                                 {loading ? (
                                     <CircularProgress size={18} />

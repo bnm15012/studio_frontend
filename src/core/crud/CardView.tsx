@@ -18,9 +18,9 @@ import {
     StyledCardContainer,
     StyledCardContent,
 } from "@/core/components/cards/StyledCard";
-import { resolveFieldValue } from "@/core/utils/fieldHelpers";
+import { resolveFieldValue, isActionVisibleInView } from "@/core/utils/fieldHelpers";
 import Actions from "@/core/crud/helper/Actions";
-import { BaseViewProps, CrudRecord, ActionItem, FieldDef } from "@/core/types";
+import { BaseViewProps, CrudRecord, ActionItem, FieldDef, ViewMode } from "@/core/types";
 import { AnimatePresence } from "framer-motion";
 import { FadeIn, EmptyState } from "@/core/crud/components/shared";
 import { FlexEvenly } from "@/core/components/layout/FlexBox";
@@ -86,6 +86,7 @@ interface CardRowProps<T extends CrudRecord> {
     handleViewOpen?: ((row: T) => void) | undefined;
     actions: ActionItem<T>[];
     onOpenContextMenu: (anchor: HTMLElement, row: T) => void;
+    currentView?: ViewMode | undefined;
 }
 
 function CardRow<T extends CrudRecord>({
@@ -103,6 +104,7 @@ function CardRow<T extends CrudRecord>({
     handleViewOpen,
     actions,
     onOpenContextMenu,
+    currentView = "CARD",
 }: CardRowProps<T>) {
     const theme = useTheme();
     const cardRef = useRef<HTMLDivElement>(null);
@@ -137,7 +139,9 @@ function CardRow<T extends CrudRecord>({
         if (isTouchMode && onClickRow) onClickRow(row);
     }, [isTouchMode, onClickRow, row]);
 
-    const filteredActions = actions.filter((a) => a.name !== "form");
+    const filteredActions = actions.filter(
+        (a) => a.name !== "form" && isActionVisibleInView(a, currentView),
+    );
 
     return (
         <StyledMotionCard
@@ -273,6 +277,7 @@ function CardRow<T extends CrudRecord>({
                             row={row}
                             maxVisible={2}
                             direction="column"
+                            currentView={currentView}
                         />
                     </Box>
                 )}
@@ -301,6 +306,7 @@ function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
         handleSelectRow,
         handleSelectAll,
         onClickRow,
+        currentView = "CARD",
     } = props;
 
     const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -362,6 +368,7 @@ function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
 
     const contextMenuActions = contextMenu
         ? actions.filter((a) => {
+              if (!isActionVisibleInView(a, currentView ?? "CARD")) return false;
               if (a.name === "form") return false;
               if (typeof a.hide === "function")
                   return !(a.hide as (r: T) => boolean)(contextMenu.row);
@@ -407,6 +414,7 @@ function CardView<T extends CrudRecord = CrudRecord>(props: CardViewProps<T>) {
                                         handleViewOpen={handleViewOpen}
                                         actions={actions}
                                         onOpenContextMenu={handleOpenContextMenu}
+                                        currentView={currentView ?? "CARD"}
                                     />
                                 );
                             })

@@ -30,10 +30,11 @@ import {
     BaseViewProps,
     CrudState,
     FieldValue,
+    ViewMode,
 } from "@/core/types";
 import { useAppUI } from "@/context/UIContext";
 import FieldCell from "@/core/crud/components/FieldCell";
-import { getVisibleFields } from "@/core/utils/fieldHelpers";
+import { getVisibleFields, isActionVisibleInView } from "@/core/utils/fieldHelpers";
 import { AnimatePresence } from "framer-motion";
 import { RowActions, EmptyState } from "@/core/crud/components/shared";
 import { getRowNumber } from "@/core/crud/components/getRowNumber";
@@ -94,6 +95,7 @@ interface DesktopTableProps<T extends CrudRecord> {
     onClickRow?: ((row: T) => void) | undefined;
     submitAttempted?: boolean | undefined;
     isTouchMode: boolean;
+    currentView?: ViewMode | undefined;
 }
 
 // ── DesktopRow — extracted so useLongPress can be called per row ────────────
@@ -117,6 +119,7 @@ interface DesktopRowProps<T extends CrudRecord> {
     actions: ActionItem<T>[];
     onClickRow?: ((row: T) => void) | undefined;
     onOpenContextMenu: (anchor: HTMLElement, row: T) => void;
+    currentView?: ViewMode | undefined;
 }
 
 function DesktopRow<T extends CrudRecord>({
@@ -138,6 +141,7 @@ function DesktopRow<T extends CrudRecord>({
     actions,
     onClickRow,
     onOpenContextMenu,
+    currentView,
 }: DesktopRowProps<T>) {
     const rowRef = React.useRef<HTMLTableRowElement>(null);
 
@@ -230,6 +234,7 @@ function DesktopRow<T extends CrudRecord>({
                             actions={actions}
                             row={row}
                             isTouchMode={false}
+                            currentView={currentView ?? "LIST"}
                         />
                     </FlexEvenly>
                 </StyledTableCell>
@@ -245,6 +250,7 @@ function DesktopRow<T extends CrudRecord>({
                         actions={actions}
                         row={row}
                         isTouchMode={true}
+                        currentView={currentView ?? "LIST"}
                     />
                 </StyledTableCell>
             )}
@@ -273,6 +279,7 @@ function DesktopTable<T extends CrudRecord = CrudRecord>({
     onClickRow,
     submitAttempted,
     isTouchMode,
+    currentView = "LIST",
 }: DesktopTableProps<T>) {
     const theme = useTheme();
     const visibleFields = getVisibleFields(fields);
@@ -291,6 +298,7 @@ function DesktopTable<T extends CrudRecord = CrudRecord>({
 
     const contextMenuActions = contextMenu
         ? actions.filter((a) => {
+              if (!isActionVisibleInView(a, currentView)) return false;
               if (a.name === "form") return false;
               if (typeof a.hide === "function")
                   return !(a.hide as (r: T) => boolean)(contextMenu.row);
@@ -359,6 +367,7 @@ function DesktopTable<T extends CrudRecord = CrudRecord>({
                                             actions={actions}
                                             onClickRow={onClickRow}
                                             onOpenContextMenu={handleOpenContextMenu}
+                                            currentView={currentView}
                                         />
                                     );
                                 })
@@ -493,6 +502,7 @@ function ListView<T extends CrudRecord = CrudRecord>({
     handleSelectAll,
     submitAttempted,
     onClickRow,
+    currentView = "LIST",
 }: ListViewProps<T>) {
     const { isTouchMode, isMobile } = useAppUI();
 
@@ -510,6 +520,7 @@ function ListView<T extends CrudRecord = CrudRecord>({
         selectedRows,
         actions,
         submitAttempted,
+        currentView,
     };
 
     const totalCount = Number(tableState.totalCount ?? 0);

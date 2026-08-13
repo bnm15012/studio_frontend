@@ -38,6 +38,7 @@ import {
     ColumnVisibilityMap,
     getStoredVisibility,
 } from "@/core/components/layout/columnVisibilityHelper";
+import { isActionVisibleInView } from "@/core/utils/fieldHelpers";
 
 export interface ViewsProps<T extends CrudRecord> {
     /** 0 = new record, positive integer = existing record id, undefined = list mode */
@@ -245,6 +246,12 @@ function Views<T extends CrudRecord>(props: ViewsProps<T>) {
         ),
     );
 
+    const activeView = formKey !== undefined ? "FORM" : currentView;
+    const viewActions = useMemo(
+        () => mergedActions.filter((a) => isActionVisibleInView(a, activeView)),
+        [mergedActions, activeView],
+    );
+
     const {
         selectedRows,
         selectedRowsData,
@@ -259,7 +266,7 @@ function Views<T extends CrudRecord>(props: ViewsProps<T>) {
         data,
         primaryKey: fieldsMeta.primary,
         resetOn: [tableState.currentPage, data],
-        actions: mergedActions,
+        actions: viewActions,
     });
 
     /** Shared "open form view for this row" handler — used by both ListView and CardView

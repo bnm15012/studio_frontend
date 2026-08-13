@@ -14,7 +14,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { motion } from "framer-motion";
 import Actions from "@/core/crud/helper/Actions";
-import { ActionItem, CrudRecord } from "@/core/types";
+import { ActionItem, CrudRecord, ViewMode } from "@/core/types";
 
 // ── FadeIn ─────────────────────────────────────────────────────────────────
 interface FadeInProps {
@@ -44,8 +44,9 @@ interface RowActionsProps<T extends CrudRecord = CrudRecord> {
     handleCancel?: (() => void) | undefined;
     actions: ActionItem<T>[];
     row: T;
-    isTouchMode?: boolean;
-    isMobile?: boolean;
+    isTouchMode?: boolean | undefined;
+    isMobile?: boolean | undefined;
+    currentView?: ViewMode | string | undefined;
 }
 
 export function RowActions<T extends CrudRecord = CrudRecord>({
@@ -57,6 +58,7 @@ export function RowActions<T extends CrudRecord = CrudRecord>({
     row,
     isTouchMode,
     isMobile = false,
+    currentView,
 }: RowActionsProps<T>) {
     const hideActions = isTouchMode ?? isMobile;
     if (isEditing) {
@@ -76,7 +78,7 @@ export function RowActions<T extends CrudRecord = CrudRecord>({
         );
     }
     if (hideActions) return null;
-    return <Actions actions={actions} row={row} />;
+    return <Actions actions={actions} row={row} currentView={currentView} />;
 }
 
 // ── EmptyState ──────────────────────────────────────────────────────────────

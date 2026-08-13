@@ -16,22 +16,33 @@ import {
 import { alpha } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import React, { useState } from "react";
-import { ActionItem } from "@/core/types";
+import { ActionItem, ViewMode } from "@/core/types";
+import { isActionVisibleInView } from "@/core/utils/fieldHelpers";
 
 interface ActionsProps<T> {
     actions: ActionItem<T>[];
     row: T | T[];
     /** Max number of actions to show inline before collapsing into MoreVert menu. Default: 3 */
-    maxVisible?: number;
+    maxVisible?: number | undefined;
     /** Layout direction of inline action buttons. Default: "row" */
-    direction?: "row" | "column";
+    direction?: "row" | "column" | undefined;
+    currentView?: ViewMode | string | undefined;
 }
 
-function Actions<T>({ actions, row, maxVisible = 3, direction = "row" }: ActionsProps<T>) {
+function Actions<T>({
+    actions,
+    row,
+    maxVisible = 3,
+    direction = "row",
+    currentView,
+}: ActionsProps<T>) {
     const theme = useTheme();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
     const visibleActions = actions.filter((a) => {
+        if (!isActionVisibleInView(a, currentView)) {
+            return false;
+        }
         if (typeof a.hide === "function") {
             return !(a.hide as (r: T | T[]) => boolean)(row);
         }

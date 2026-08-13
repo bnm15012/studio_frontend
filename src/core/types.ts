@@ -525,6 +525,8 @@ export interface ActionItem<T = CrudRecord> {
     enabled?: boolean | ((row: T) => boolean);
     multi?: boolean;
     help?: string;
+    views?: (ViewMode | string)[] | undefined;
+    view?: ViewMode | string | (ViewMode | string)[] | undefined;
 }
 
 export interface CrudState<T = CrudRecord> {

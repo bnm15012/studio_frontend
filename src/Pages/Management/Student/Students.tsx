@@ -702,6 +702,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         hide: (row: Student) => !row.isActive,
                         enabled: (row: Student) => row.membershipStatus === "INACTIVE",
                         sx: { color: "error.main" },
+                        views: ["FORM"],
                         onClick: (row: Student) => {
                             dispatch(
                                 studentsCruds.update(
@@ -723,6 +724,7 @@ const Students: React.FC<StudentsProps> = ({ ID }) => {
                         hide: (row: Student) => row.isActive,
                         enabled: () => true,
                         sx: { color: "success.main" },
+                        views: ["FORM"],
                         onClick: (row: Student) => {
                             dispatch(
                                 studentsCruds.update(
