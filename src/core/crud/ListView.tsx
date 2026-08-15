@@ -145,7 +145,7 @@ function DesktopRow<T extends CrudRecord>({
 }: DesktopRowProps<T>) {
     const rowRef = React.useRef<HTMLTableRowElement>(null);
 
-    const { fired, ...longPressHandlers } = useLongPress(
+    const longPressHandlers = useLongPress(
         useCallback(
             (_e: React.MouseEvent | React.TouchEvent) => {
                 if (rowRef.current) onOpenContextMenu(rowRef.current, row);
@@ -156,25 +156,15 @@ function DesktopRow<T extends CrudRecord>({
     );
 
     const handleClick = useCallback(() => {
-        if (isTouchMode) {
-            if (fired.current) {
-                fired.current = false;
-                return;
-            }
-            if (multi) {
-                const fakeEvent = {
-                    target: { checked: !isItemSelected },
-                } as React.ChangeEvent<HTMLInputElement>;
-                handleSelectRow(fakeEvent, rowId);
-            }
+        if (multi) {
+            const fakeEvent = {
+                target: { checked: !isItemSelected },
+            } as React.ChangeEvent<HTMLInputElement>;
+            handleSelectRow(fakeEvent, rowId);
         } else {
             if (onClickRow) onClickRow(row);
         }
-    }, [isTouchMode, fired, multi, rowId, isItemSelected, handleSelectRow, onClickRow, row]);
-
-    const handleDoubleClick = useCallback(() => {
-        if (isTouchMode && onClickRow) onClickRow(row);
-    }, [isTouchMode, onClickRow, row]);
+    }, [multi, rowId, isItemSelected, handleSelectRow, onClickRow, row]);
 
     return (
         <StyledTableRow
@@ -187,7 +177,6 @@ function DesktopRow<T extends CrudRecord>({
             exit="exit"
             sx={{ cursor: onClickRow ? "pointer" : "auto" }}
             onClick={handleClick}
-            onDoubleClick={handleDoubleClick}
             {...(isTouchMode ? longPressHandlers : {})}
             selected={isItemSelected}
         >

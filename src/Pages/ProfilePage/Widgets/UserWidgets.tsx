@@ -7,7 +7,6 @@ import {
     Phone as PhoneIcon,
     Edit as EditIcon,
     Save as SaveIcon,
-    Store as StoreIcon,
 } from "@mui/icons-material";
 import { Percent } from "lucide-react";
 import { updateProfile, updateStudio } from "@/Pages/Auth/auth.api";
@@ -331,10 +330,6 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             minWidth: 180,
                         }}
                     >
-                        <StoreIcon sx={{ color: "text.disabled", fontSize: 18 }} />
-                        <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                            Studio Logo
-                        </Typography>
                         <ImageComponent
                             dirName="studio"
                             size="130px"

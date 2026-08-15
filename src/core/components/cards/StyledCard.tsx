@@ -74,7 +74,6 @@ interface StyledMotionCardProps {
     elevation?: number;
     sx?: SxProps<Theme>;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
-    onDoubleClick?: React.MouseEventHandler<HTMLDivElement>;
     onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
     onMouseUp?: React.MouseEventHandler<HTMLDivElement>;
     onMouseLeave?: React.MouseEventHandler<HTMLDivElement>;

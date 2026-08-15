@@ -111,7 +111,7 @@ function CardRow<T extends CrudRecord>({
     const theme = useTheme();
     const cardRef = useRef<HTMLDivElement>(null);
 
-    const { fired, ...longPressHandlers } = useLongPress(
+    const longPressHandlers = useLongPress(
         useCallback(
             (_e: React.MouseEvent | React.TouchEvent) => {
                 if (cardRef.current) onOpenContextMenu(cardRef.current, row);
@@ -122,24 +122,12 @@ function CardRow<T extends CrudRecord>({
     );
 
     const handleClick = useCallback(() => {
-        if (isTouchMode) {
-            if (fired.current) {
-                fired.current = false;
-                return;
-            }
-            if (multi) handleSelectRow(rowId, !isItemSelected);
+        if (multi) {
+            handleSelectRow(rowId, !isItemSelected);
         } else {
-            if (multi) {
-                handleSelectRow(rowId, !isItemSelected);
-            } else {
-                if (onClickRow) onClickRow(row);
-            }
+            if (onClickRow) onClickRow(row);
         }
-    }, [isTouchMode, fired, multi, rowId, isItemSelected, handleSelectRow, onClickRow, row]);
-
-    const handleDoubleClick = useCallback(() => {
-        if (isTouchMode && onClickRow) onClickRow(row);
-    }, [isTouchMode, onClickRow, row]);
+    }, [multi, rowId, isItemSelected, handleSelectRow, onClickRow, row]);
 
     const filteredActions = actions.filter(
         (a) => a.name !== "form" && isActionVisibleInView(a, currentView),
@@ -149,7 +137,6 @@ function CardRow<T extends CrudRecord>({
         <StyledMotionCard
             key={String(rowId) || String(index)}
             onClick={handleClick}
-            onDoubleClick={handleDoubleClick}
             {...(isTouchMode ? longPressHandlers : {})}
             role="button"
             tabIndex={0}

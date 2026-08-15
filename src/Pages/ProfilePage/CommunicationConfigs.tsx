@@ -4,16 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import EmailIcon from "@mui/icons-material/Email";
 import KeyIcon from "@mui/icons-material/Key";
-import {
-    Divider,
-    IconButton,
-    Typography,
-    Tooltip,
-    Box,
-    useTheme,
-    alpha,
-    Chip,
-} from "@mui/material";
+import { Divider, IconButton, Typography, Tooltip, Box, useTheme, alpha } from "@mui/material";
 import Field from "@/core/components/fields/Field";
 import { updateStudio } from "@/Pages/Auth/auth.api";
 import { useAlert } from "@/core/components/feedback/Alert";
@@ -127,7 +118,6 @@ const CommunicationConfigs: React.FC<CommunicationConfigsProps> = ({ studio }) =
                                 </Typography>
                             </Box>
                         </Box>
-                        <Chip label="Read-only" size="small" sx={{ fontSize: "0.65rem" }} />
                     </Box>
 
                     {/* Passcode */}

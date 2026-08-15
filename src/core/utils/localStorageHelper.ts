@@ -24,6 +24,7 @@ export const KEYS = {
     THEME_MODE: "ui.themeMode", // "light" | "dark"
     CURRENT_VIEW: "ui.currentView", // "LIST" | "CARD"
     TABLE_PAGE_SIZE: "ui.tablePageSize", // number
+    INPUT_MODE: "ui.inputMode", // "auto" | "touch" | "mouse"
 
     /** Per-table column visibility map — value is Record<fieldName, boolean> */
     COLUMN_VISIBILITY: "ui.columnVisibility", // Record<tableName, Record<fieldName, boolean>>
