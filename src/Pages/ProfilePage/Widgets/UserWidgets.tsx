@@ -352,9 +352,6 @@ const UserWidgets: React.FC<UserWidgetsProps> = ({ admin, studio }) => {
                             pb: 3,
                         }}
                     >
-                        <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                            Studio Logo
-                        </Typography>
                         <ImageComponent
                             dirName="studio"
                             size="120px"
