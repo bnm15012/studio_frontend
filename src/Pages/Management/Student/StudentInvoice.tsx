@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import DialogContent from "@mui/material/DialogContent";
 import { getLocalDateTime } from "@/core/utils/DateUtil";
-import { useAppUI } from "@/context/UIContext";
+import { useUI } from "@/context/UIContext";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
 import { MailIcon, PrinterIcon } from "lucide-react";
 import { Download, WhatsApp } from "@mui/icons-material";
@@ -28,7 +28,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
     isUser = false,
 }) => {
     const pdfViewerRef = useRef<HtmlToPdfViewerRef | null>(null);
-    const { permissions } = useAppUI();
+    const { permissions } = useUI();
 
     if (!studentData) {
         return null;
@@ -160,7 +160,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                         <th style={tableHeaderStyle}>Plan</th>
                                         <th style={tableHeaderStyle}>Start Date</th>
                                         <th style={tableHeaderStyle}>End Date</th>
-                                        {!permissions.BATCH && (
+                                        {!permissions?.BATCH && (
                                             <th style={tableHeaderStyle}>Days Per Week</th>
                                         )}
                                         <th style={tableHeaderStyle}>Amount</th>
@@ -184,7 +184,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                                 String(activityData.membershipEndDate ?? null),
                                             )}
                                         </td>
-                                        {!permissions.BATCH && (
+                                        {!permissions?.BATCH && (
                                             <td style={tableCellStyle}>
                                                 {String(activityData.daysPerWeek ?? "") || "-"}
                                             </td>
@@ -196,7 +196,7 @@ const StudentInvoice: React.FC<StudentInvoiceProps> = ({
                                     </tr>
                                 </tbody>
                             </table>
-                            {permissions.BATCH && (
+                            {permissions?.BATCH && (
                                 <>
                                     Batch details:
                                     <table

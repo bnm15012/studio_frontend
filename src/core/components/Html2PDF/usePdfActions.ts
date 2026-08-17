@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { sendMessageApi } from "@/Pages/Management/Communication/communication.api";
-import { useAppUI } from "@/context/UIContext";
+import { useUI } from "@/context/UIContext";
 
 // ---------------------------------------------------------------------------
 // Window augmentation for html2pdf.js (CDN bundle) globals
@@ -206,7 +206,7 @@ export const usePdfActions = ({
     fileName,
     remainingPayload = {},
 }: UsePdfActionsProps) => {
-    const { studio, currentBranch, token } = useAppUI();
+    const { studio, currentBranch, token } = useUI();
     const showAlert = useAlert();
     const [loading, setLoading] = useState(false);
 
@@ -288,8 +288,8 @@ export const usePdfActions = ({
         try {
             const pdfBlob = type === "WHATSAPP" ? null : await createPdfBlob();
             const payload = {
-                branchId: currentBranch.branchId,
-                studioId: studio.studioId,
+                branchId: currentBranch?.branchId,
+                studioId: studio?.studioId,
                 content: contentLabel,
                 notificationType: type,
                 ...remainingPayload,
@@ -303,7 +303,7 @@ export const usePdfActions = ({
                     file: File | null;
                 }) => Promise<{ success: boolean; message: string }>
             )({
-                token,
+                token: token ?? null,
                 payload,
                 file: pdfBlob
                     ? new File([pdfBlob], `${fileName}.pdf`, { type: "application/pdf" })
