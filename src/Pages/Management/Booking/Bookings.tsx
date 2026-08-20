@@ -442,6 +442,7 @@ const Bookings = ({ ID }: { ID?: number }) => {
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
                     refund={pendingPaymentRef.current.refund}
                     type={pendingPaymentRef.current.type}
+                    maxAmount={pendingPaymentRef.current.actualAmount}
                 />
             )}
             {showInvoice && (

@@ -27,6 +27,7 @@ interface PaymentEntryDialogProps {
     refund?: boolean;
     title?: string;
     type?: string;
+    maxAmount?: number;
 }
 
 const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
@@ -39,6 +40,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     refund = false,
     title,
     type,
+    maxAmount,
 }) => {
     const [formData, setFormData] = useState<Payment | NewPayment>(initialData);
 
@@ -46,7 +48,13 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
         setFormData({ ...initialData });
     }, [initialData]);
 
+    const isExceedingMax =
+        !refund && maxAmount !== undefined && Number(formData.amount || 0) > maxAmount;
+    const isNegative = !refund && Number(formData.amount || 0) < 0;
+    const hasError = isExceedingMax || isNegative;
+
     const handleConfirm = () => {
+        if (hasError) return;
         const data: Payment | NewPayment = { ...formData };
         if (refund && data.amount !== undefined) {
             data.amount = -Math.abs(Number(data.amount));
@@ -54,7 +62,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
         onSave(data);
     };
 
-    const displayActualAmount = initialData?.actualAmount;
+    const displayActualAmount = maxAmount ?? initialData?.actualAmount;
     const dialogTitle = title || (refund ? "Refund Process" : "Payment Entry");
     const amountLabel = refund
         ? "Refund Amount"
@@ -65,6 +73,7 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
     return (
         <StyledDialog
             onConfirm={handleConfirm}
+            confirmDisabled={hasError}
             confirmText={refund ? "Process Refund" : "Save"}
             title={dialogTitle}
             {...(refund && { titleBgColor: "warning" })}
@@ -102,6 +111,14 @@ const PaymentEntryDialog: React.FC<PaymentEntryDialogProps> = ({
                             : ""
                     }
                     fullWidth
+                    error={hasError}
+                    helperText={
+                        isExceedingMax
+                            ? `${type === "BOOKING" ? "Advance amount" : "Amount"} cannot be more than total amount (₹${maxAmount})`
+                            : isNegative
+                              ? "Amount cannot be negative"
+                              : undefined
+                    }
                     onChange={(e) => {
                         const val = Number(e.target.value);
                         setFormData((prev) => ({

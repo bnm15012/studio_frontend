@@ -148,6 +148,7 @@ const PaymentList = ({ data, field }: { data: Booking; field: FieldDef<Booking> 
                     paymentType={paymentTypes.map((pt) => ({ label: pt, value: pt }))}
                     type="BOOKING"
                     refund={data.state === "CANCELLED" || (paymentFormData.amount ?? 0) < 0}
+                    maxAmount={data.totalAmount}
                 />
             )}
         </Box>
