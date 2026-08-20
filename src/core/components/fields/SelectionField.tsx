@@ -32,7 +32,7 @@ export default function SelectionField<T>({
     const [inputValue, setInputValue] = useState<string>(
         value?.value != null ? String(value.value) : "",
     );
-    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [debouncedSearch, setDebouncedSearch] = useState<string>("");
 
     const fetchOptions = useCallback(
         async (search = "", limit = 5) => {
@@ -51,8 +51,18 @@ export default function SelectionField<T>({
     );
 
     useEffect(() => {
-        if (searchTerm) fetchOptions(searchTerm);
-    }, [fetchOptions, searchTerm]);
+        const timer = setTimeout(() => {
+            setDebouncedSearch(inputValue);
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [inputValue]);
+
+    useEffect(() => {
+        if (open) {
+            fetchOptions(debouncedSearch);
+        }
+    }, [debouncedSearch, open, fetchOptions]);
 
     useEffect(() => {
         setInputValue(value?.value != null ? String(value.value) : "");
@@ -84,9 +94,10 @@ export default function SelectionField<T>({
                 if (option) setValue(saveType === "string" ? option.key : option);
             }}
             inputValue={inputValue}
-            onInputChange={(_event, newInput) => {
-                setInputValue(newInput);
-                setSearchTerm(newInput);
+            onInputChange={(_event, newInput, reason) => {
+                if (reason === "input") {
+                    setInputValue(newInput);
+                }
             }}
             renderInput={({ size: _size, InputLabelProps: _labelProps, ...params }) => (
                 <TextField

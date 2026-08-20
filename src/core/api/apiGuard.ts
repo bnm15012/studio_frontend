@@ -28,7 +28,7 @@ import type {
 // ── Config ─────────────────────────────────────────────────────────────────────
 
 /** Max calls to a single endpoint key allowed inside the sliding window. */
-const MAX_CALLS_PER_WINDOW = 3;
+const MAX_CALLS_PER_WINDOW = 100;
 
 /** Sliding-window duration in milliseconds. */
 const WINDOW_MS = 10_000; // 10 seconds
