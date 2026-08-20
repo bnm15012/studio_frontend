@@ -29,19 +29,15 @@ export default function SelectionField<T>({
     const [open, setOpen] = useState<boolean>(false);
     const [options, setOptions] = useState<SelectOption<T>[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [inputValue, setInputValue] = useState<string>(
-        value?.value != null ? String(value.value) : "",
-    );
-    const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
 
     const fetchOptions = useCallback(
-        async (search = "", limit = 5) => {
+        async (searchValue: string) => {
             try {
-                setLoading(true);
-                const result = await getOptions(search, 1, limit);
+                const result = await getOptions(searchValue, 1, 5);
                 setOptions(result);
             } catch (err) {
-                console.error("Error fetching options", err);
+                console.error("Error fetching selection options", err);
                 setOptions([]);
             } finally {
                 setLoading(false);
@@ -51,69 +47,83 @@ export default function SelectionField<T>({
     );
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearch(inputValue);
-        }, 400);
-
-        return () => clearTimeout(timer);
-    }, [inputValue]);
-
-    useEffect(() => {
-        if (open) {
-            fetchOptions(debouncedSearch);
+        if (!open) {
+            return;
         }
-    }, [debouncedSearch, open, fetchOptions]);
-
-    useEffect(() => {
-        setInputValue(value?.value != null ? String(value.value) : "");
-    }, [value]);
+        setLoading(true);
+        const timer = window.setTimeout(
+            async () => {
+                await fetchOptions(search);
+                setLoading(false);
+            },
+            search ? 400 : 0,
+        );
+        return () => {
+            window.clearTimeout(timer);
+        };
+    }, [open, search, fetchOptions]);
 
     const handleOpen = () => {
+        // Opening should always show the default options,
+        // not search using the currently selected value.
+        setSearch("");
         setOpen(true);
-        fetchOptions();
     };
 
     const handleClose = () => {
         setOpen(false);
+        setSearch("");
         setOptions([]);
+    };
+
+    const handleChange = (_event: unknown, option: SelectOption<T> | null) => {
+        if (!option) {
+            return;
+        }
+
+        setValue(saveType === "string" ? option.key : option);
+    };
+
+    const handleInputChange = (_event: unknown, newInput: string, reason: string) => {
+        // Only update the API search when the user actually types.
+        // MUI also fires this event with "reset" when displaying
+        // the selected option, which we intentionally ignore.
+        if (reason === "input") {
+            setSearch(newInput);
+        }
     };
 
     return (
         <Autocomplete
             fullWidth
+            clearIcon={null}
             open={open}
             disabled={Boolean(readOnly)}
             onOpen={handleOpen}
             onClose={handleClose}
-            value={value && value.key != null ? value : null}
-            isOptionEqualToValue={(option, val) => option.key === val.key}
+            value={value?.key != null ? value : null}
+            isOptionEqualToValue={(option, selectedValue) => option.key === selectedValue.key}
             getOptionLabel={(option) => String(option.value)}
             options={options}
+            filterOptions={(x) => x}
             loading={loading}
-            onChange={(_e, option) => {
-                if (option) setValue(saveType === "string" ? option.key : option);
-            }}
-            inputValue={inputValue}
-            onInputChange={(_event, newInput, reason) => {
-                if (reason === "input") {
-                    setInputValue(newInput);
-                }
-            }}
+            loadingText="Searching..."
+            noOptionsText="Not listed? Type to search."
+            onChange={handleChange}
+            onInputChange={handleInputChange}
             renderInput={({ size: _size, InputLabelProps: _labelProps, ...params }) => (
                 <TextField
                     {...params}
                     {...(label ? { label } : {})}
                     variant={variant}
                     {...(validation.required ? { required: true } : {})}
-                    placeholder="type to search"
+                    placeholder="Type to search"
                     slotProps={{
                         input: {
                             ...params.InputProps,
                             endAdornment: (
                                 <Fragment>
-                                    {loading ? (
-                                        <CircularProgress color="inherit" size={20} />
-                                    ) : null}
+                                    {loading && <CircularProgress color="inherit" size={20} />}
                                     {params.InputProps.endAdornment}
                                 </Fragment>
                             ),
