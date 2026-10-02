@@ -23,6 +23,7 @@ const ProfilePage: React.FC = () => {
     const dispatch = useAppDispatch();
     const theme = useTheme();
     const { DEBUG, isMobile, studio, user: admin } = useAppUI();
+    const isSuperAdmin = admin.role === "SUPER_ADMIN";
     const [tabValue, setTabValue] = useState(0);
     const dialog = useAppSelector(dialogOnTop());
 
@@ -31,7 +32,7 @@ const ProfilePage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (admin.role === "ADMIN") {
+        if (admin.role === "ADMIN" || isSuperAdmin) {
             if ("profileDialog" === dialog) setTabValue(0);
             else if ("subscriptionDialog" === dialog) setTabValue(2);
             else if ("settingsDialog" === dialog && DEBUG) setTabValue(3);
@@ -41,7 +42,7 @@ const ProfilePage: React.FC = () => {
             if ("configurationDialog" === dialog) setTabValue(4);
             else setTabValue(1);
         }
-    }, [admin, dialog, DEBUG]);
+    }, [admin, dialog, DEBUG, isSuperAdmin]);
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -86,15 +87,19 @@ const ProfilePage: React.FC = () => {
                         "& .MuiTabs-indicator": { height: 3 },
                     }}
                 >
-                    <Tab label="Profile" disabled={admin.role !== "ADMIN"} />
+                    <Tab label="Profile" disabled={admin.role !== "ADMIN" && !isSuperAdmin} />
                     <Tab label="Security" />
-                    <Tab label="Subscription" disabled={admin.role !== "ADMIN"} />
+                    <Tab
+                        label="Subscription"
+                        disabled={admin.role !== "ADMIN"}
+                        sx={{ display: isSuperAdmin ? "none" : "unset" }}
+                    />
                     <Tab
                         label="Settings"
                         disabled={admin.role !== "ADMIN"}
-                        sx={{ display: DEBUG ? "unset" : "none" }}
+                        sx={{ display: DEBUG && !isSuperAdmin ? "unset" : "none" }}
                     />
-                    <Tab label="Configurations" />
+                    <Tab label="Configurations" sx={{ display: isSuperAdmin ? "none" : "unset" }} />
                 </Tabs>
             </Box>
 

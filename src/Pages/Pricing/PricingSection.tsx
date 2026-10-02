@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -8,6 +8,16 @@ import {
     AccordionSummary,
     AccordionDetails,
     Paper,
+    Button,
+    Card,
+    CardContent,
+    CardHeader,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Avatar,
+    CircularProgress,
 } from "@mui/material";
 import {
     Star as StarIcon,
@@ -15,8 +25,10 @@ import {
     Check as CheckIcon,
     Close as CloseIcon,
     Remove as RemoveIcon,
+    WhatsApp as WhatsAppIcon,
 } from "@mui/icons-material";
-import PricingPlanCards from "@/Pages/Pricing/PricingPlanCards";
+import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
+import { getAllPlans } from "@/Pages/Pricing/plans.api";
 
 interface ComparisonRow {
     feature: string;
@@ -72,7 +84,44 @@ const comparisonRows: ComparisonRow[] = [
     },
 ];
 
+interface Plan {
+    id: string | number;
+    planType: string;
+    description: string;
+    amount: number;
+    period: string;
+    popular?: boolean;
+    enabledFeatures: string[];
+    disabledFeatures: string[];
+}
+
+const getFeatureIcon = (featureName: string) => {
+    const lowerName = featureName.toLowerCase();
+    if (lowerName.includes("student")) return Users;
+    if (lowerName.includes("payment")) return CreditCard;
+    if (lowerName.includes("booking") || lowerName.includes("calendar")) return Calendar;
+    if (lowerName.includes("statistics") || lowerName.includes("analysis")) return BarChart3;
+    if (lowerName.includes("sales") || lowerName.includes("report")) return TrendingUp;
+    return null;
+};
+
 const PricingSection: React.FC = () => {
+    const [plans, setPlans] = useState<Plan[] | null>(null);
+    const [plansLoading, setPlansLoading] = useState(true);
+
+    const fetchPlans = useCallback(async () => {
+        setPlansLoading(true);
+        const { data, success } = await getAllPlans({ AMC: false });
+        if (success) {
+            setPlans(data);
+        }
+        setPlansLoading(false);
+    }, []);
+
+    useEffect(() => {
+        fetchPlans();
+    }, [fetchPlans]);
+
     const faqs = [
         {
             question: "Is there a free trial?",
@@ -205,7 +254,253 @@ const PricingSection: React.FC = () => {
                         Start with a 7-day free trial. No credit card required. Cancel anytime.
                     </Typography>
                 </Box>
-                <PricingPlanCards />
+
+                {/* Plan Cards with Contact Team CTA */}
+                {plansLoading ? (
+                    <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+                        <CircularProgress sx={{ color: "white" }} />
+                    </Box>
+                ) : (
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: {
+                                xs: "repeat(auto-fit, minmax(15rem, 1fr))",
+                                lg: "repeat(auto-fit, minmax(15rem, 1fr))",
+                            },
+                            gap: 4,
+                            mb: 8,
+                        }}
+                    >
+                        {plans &&
+                            plans.map((plan: Plan, index: number) => {
+                                const whatsappMessage = encodeURIComponent(
+                                    `Hi, I'm interested in the ${plan.planType.replace("_", " ")} plan for my studio. I'd like to schedule a demo and discuss pricing.`,
+                                );
+                                const whatsappUrl = `https://wa.me/917326027500?text=${whatsappMessage}`;
+
+                                return (
+                                    <Card
+                                        key={index}
+                                        sx={{
+                                            position: "relative",
+                                            height: "100%",
+                                            p: 4,
+                                            border: "2px solid",
+                                            borderColor: plan.popular
+                                                ? "primary.main"
+                                                : "rgba(255, 255, 255, 0.12)",
+                                            transition: "all 0.3s ease",
+                                            background: plan.popular
+                                                ? "linear-gradient(to left, rgba(139,92,246,0.3), rgba(139,92,246,0.2))"
+                                                : "linear-gradient(to left, rgba(139,92,246,0.05), rgba(139,92,246,0.1))",
+                                            backdropFilter: "blur(10px)",
+                                            transform: plan.popular ? "scale(1.05)" : "scale(1)",
+                                            "&:hover": {
+                                                transform: plan.popular
+                                                    ? "scale(1.05) translateY(-8px)"
+                                                    : "translateY(-8px)",
+                                                boxShadow: "0 20px 40px rgba(139, 92, 246, 0.15)",
+                                                borderColor: "primary.main",
+                                            },
+                                        }}
+                                    >
+                                        {plan.popular && (
+                                            <Chip
+                                                icon={<Crown color="white" size={16} />}
+                                                label=" Most Popular"
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: 5,
+                                                    left: "50%",
+                                                    transform: "translateX(-50%)",
+                                                    background:
+                                                        "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+                                                    color: "white",
+                                                    fontWeight: 600,
+                                                    px: 3,
+                                                }}
+                                            />
+                                        )}
+
+                                        <CardHeader
+                                            sx={{ textAlign: "center", pb: 4 }}
+                                            title={
+                                                <Box>
+                                                    <Typography
+                                                        variant="h5"
+                                                        sx={{
+                                                            fontWeight: "bold",
+                                                            mb: 1,
+                                                            color: "white",
+                                                        }}
+                                                    >
+                                                        {plan.planType.replace("_", " ")}
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: "white", mb: 2 }}
+                                                    >
+                                                        {plan.description}
+                                                    </Typography>
+                                                </Box>
+                                            }
+                                        />
+
+                                        <CardContent sx={{ pt: 0 }}>
+                                            <Button
+                                                variant={plan.popular ? "contained" : "outlined"}
+                                                size="large"
+                                                fullWidth
+                                                startIcon={<WhatsAppIcon />}
+                                                href={whatsappUrl}
+                                                target="_blank"
+                                                sx={{
+                                                    mb: 4,
+                                                    py: 1.5,
+                                                    fontSize: "1rem",
+                                                    fontWeight: 600,
+                                                    color: "white",
+                                                    borderColor: "rgba(255, 255, 255, 0.5)",
+                                                    transition: "transform 0.3s ease",
+                                                    "&:hover": {
+                                                        transform: "scale(1.05)",
+                                                        borderColor: "white",
+                                                    },
+                                                }}
+                                            >
+                                                Contact Team
+                                            </Button>
+
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ fontWeight: 600, mb: 3, color: "white" }}
+                                            >
+                                                What&apos;s included:
+                                            </Typography>
+                                            <List sx={{ p: 0 }}>
+                                                {plan.enabledFeatures.map(
+                                                    (feature: string, featureIndex: number) => {
+                                                        const FeatureIcon = getFeatureIcon(feature);
+                                                        return (
+                                                            <ListItem
+                                                                key={featureIndex}
+                                                                sx={{
+                                                                    px: 0,
+                                                                    py: 1.5,
+                                                                    borderRadius: 2,
+                                                                    transition: "all 0.2s ease",
+                                                                    "&:hover": {
+                                                                        backgroundColor:
+                                                                            "rgba(16, 185, 129, 0.08)",
+                                                                    },
+                                                                }}
+                                                            >
+                                                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                                                    <Avatar
+                                                                        sx={{
+                                                                            width: 36,
+                                                                            height: 36,
+                                                                            background:
+                                                                                "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                                                                            boxShadow:
+                                                                                "0 4px 12px rgba(16, 185, 129, 0.3)",
+                                                                        }}
+                                                                    >
+                                                                        {FeatureIcon ? (
+                                                                            <FeatureIcon
+                                                                                size={18}
+                                                                                color="white"
+                                                                            />
+                                                                        ) : (
+                                                                            <CheckIcon
+                                                                                sx={{
+                                                                                    fontSize:
+                                                                                        "1.25rem",
+                                                                                    color: "white",
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    </Avatar>
+                                                                </ListItemIcon>
+                                                                <ListItemText
+                                                                    primary={feature}
+                                                                    slotProps={{
+                                                                        primary: {
+                                                                            variant: "body1",
+                                                                            sx: {
+                                                                                fontWeight: 500,
+                                                                                color: "white",
+                                                                            },
+                                                                        },
+                                                                    }}
+                                                                />
+                                                            </ListItem>
+                                                        );
+                                                    },
+                                                )}
+                                                {plan.disabledFeatures.map(
+                                                    (feature: string, featureIndex: number) => {
+                                                        const FeatureIcon = getFeatureIcon(feature);
+                                                        return (
+                                                            <ListItem
+                                                                key={featureIndex}
+                                                                sx={{
+                                                                    px: 0,
+                                                                    py: 1.5,
+                                                                    borderRadius: 2,
+                                                                    opacity: 0.85,
+                                                                }}
+                                                            >
+                                                                <ListItemIcon sx={{ minWidth: 40 }}>
+                                                                    <Avatar
+                                                                        sx={{
+                                                                            width: 36,
+                                                                            height: 36,
+                                                                            background:
+                                                                                "rgba(239, 68, 68, 0.2)",
+                                                                            border: "1px solid rgba(239, 68, 68, 0.4)",
+                                                                        }}
+                                                                    >
+                                                                        {FeatureIcon ? (
+                                                                            <FeatureIcon
+                                                                                size={18}
+                                                                                color="#EF4444"
+                                                                            />
+                                                                        ) : (
+                                                                            <CloseIcon
+                                                                                sx={{
+                                                                                    fontSize:
+                                                                                        "1.25rem",
+                                                                                    color: "#EF4444",
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    </Avatar>
+                                                                </ListItemIcon>
+                                                                <ListItemText
+                                                                    primary={feature}
+                                                                    slotProps={{
+                                                                        primary: {
+                                                                            variant: "body1",
+                                                                            sx: {
+                                                                                fontWeight: 500,
+                                                                                color: "white",
+                                                                            },
+                                                                        },
+                                                                    }}
+                                                                />
+                                                            </ListItem>
+                                                        );
+                                                    },
+                                                )}
+                                            </List>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                    </Box>
+                )}
 
                 {/* Comparison Section */}
                 <Box sx={{ maxWidth: 1400, mx: "auto", mb: 12 }}>
