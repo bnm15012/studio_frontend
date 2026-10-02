@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Crown, Users, CreditCard, Calendar, BarChart3, TrendingUp } from "lucide-react";
 import { Check as CheckIcon, Close } from "@mui/icons-material";
-import { getAllPlans } from "@/Pages/Pricing/plans.api";
+import { getStudioPlans } from "@/Pages/Pricing/plans.api";
 import PaymentDialog from "@/Pages/RazorPay/Payment";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import { openDialog } from "@/state/dialogSlice";
@@ -50,6 +50,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [allPlans, setAllPlans] = useState<Plan[] | null>(null);
     const user = useAppSelector((state) => state.auth.user);
+    const studio = useAppSelector((state) => state.auth.studio);
     const textColor = buttonText === "Get Started" ? "white" : "black";
 
     const getFeatureIcon = (featureName: string) => {
@@ -89,13 +90,14 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
     };
 
     const fetchPlans = useCallback(async () => {
+        if (!studio?.studioId) return;
         setIsLoading(true);
-        const { data, success } = await getAllPlans({ AMC });
+        const { data, success } = await getStudioPlans({ studioId: studio.studioId, AMC });
         if (success) {
             setAllPlans(data);
         }
         setIsLoading(false);
-    }, [AMC]);
+    }, [AMC, studio?.studioId]);
 
     useEffect(() => {
         if (!allPlans) {

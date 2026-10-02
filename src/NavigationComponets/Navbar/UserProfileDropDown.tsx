@@ -17,6 +17,7 @@ export interface UserProfileDropdownProps {
 const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
     const dispatch = useAppDispatch();
     const { isAdmin, DEBUG, isMobile } = useAppUI();
+    const isSuperAdmin = user.role === "SUPER_ADMIN";
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [openplansPopUp, setOpenplansPopUp] = useState(false);
     const openMenu = Boolean(anchorEl);
@@ -44,7 +45,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
                 </FlexBetween>
             </Button>
             <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose}>
-                {isAdmin && (
+                {(isAdmin || isSuperAdmin) && (
                     <MenuItem
                         onClick={() => {
                             dispatch(openDialog("profileDialog"));
@@ -62,7 +63,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
                 >
                     Change Password
                 </MenuItem>
-                {isAdmin && (
+                {isAdmin && !isSuperAdmin && (
                     <>
                         <MenuItem
                             onClick={() => {
@@ -87,14 +88,16 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
                         )}
                     </>
                 )}
-                <MenuItem
-                    onClick={() => {
-                        dispatch(openDialog("configurationDialog"));
-                        handleClose();
-                    }}
-                >
-                    Configurations
-                </MenuItem>
+                {!isSuperAdmin && (
+                    <MenuItem
+                        onClick={() => {
+                            dispatch(openDialog("configurationDialog"));
+                            handleClose();
+                        }}
+                    >
+                        Configurations
+                    </MenuItem>
+                )}
                 {/* Logout option */}
                 <MenuItem
                     onClick={() => {

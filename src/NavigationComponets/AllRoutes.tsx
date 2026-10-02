@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AppUIProvider, NonAuthUIProvider } from "@/context/UIContext";
 import { Box, CircularProgress } from "@mui/material";
 import { useAppSelector } from "@/state";
@@ -11,6 +11,10 @@ const DashBoard = lazy(() => import("@/Pages/DashBoard/DashBoard"));
 const Management = lazy(() => import("@/Pages/Management/Management"));
 const Analysis = lazy(() => import("@/Pages/Analysis/Analysis"));
 const ProfilePage = lazy(() => import("@/Pages/ProfilePage/ProfilePage"));
+const SuperAdmin = lazy(() => import("@/Pages/SuperAdmin/SuperAdmin"));
+const SuperAdminDashboard = lazy(() => import("@/Pages/SuperAdmin/SuperAdminDashboard"));
+const PlansManagement = lazy(() => import("@/Pages/SuperAdmin/PlansManagement"));
+const Revenue = lazy(() => import("@/Pages/SuperAdmin/Revenue"));
 
 const AboutUsPage = lazy(() => import("@/Pages/AboutUs/AboutUsPage"));
 const ContactUsPage = lazy(() => import("@/Pages/ContactUs/ContactUs"));
@@ -33,6 +37,8 @@ import AuthTransitionOverlay from "@/core/components/loading/AuthTransitionOverl
 export const AllRoutes = () => {
     const token = useAppSelector((state) => state.auth.token);
     const loading = useAppSelector((state) => state.auth.loading);
+    const user = useAppSelector((state) => state.auth.user);
+    const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
     return (
         <Suspense
@@ -55,16 +61,38 @@ export const AllRoutes = () => {
             ) : token ? (
                 <AppUIProvider>
                     <Routes>
-                        <Route path="/" element={<DashBoard />} />
-                        <Route path="/dashboard" element={<DashBoard />} />
+                        <Route
+                            path="/"
+                            element={
+                                isSuperAdmin ? (
+                                    <Navigate to="/super-admin" replace />
+                                ) : (
+                                    <DashBoard />
+                                )
+                            }
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                isSuperAdmin ? (
+                                    <Navigate to="/super-admin" replace />
+                                ) : (
+                                    <DashBoard />
+                                )
+                            }
+                        />
                         <Route path="/analysis" element={<Analysis />} />
                         <Route path="/management/:page" element={<Management />} />
                         <Route path="/management/:page/:ID" element={<Management />} />
+                        <Route path="/super-admin" element={<SuperAdminDashboard />} />
+                        <Route path="/super-admin/studios" element={<SuperAdmin />} />
+                        <Route path="/super-admin/revenue" element={<Revenue />} />
+                        <Route path="/super-admin/plans" element={<PlansManagement />} />
                         <Route path="*" element={<PageNotFound />} />
                     </Routes>
 
                     <ProfilePage />
-                    <SubscriptionPopup />
+                    {!isSuperAdmin && <SubscriptionPopup />}
                     <ServerErrorDialog />
                 </AppUIProvider>
             ) : (

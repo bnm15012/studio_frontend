@@ -16,12 +16,15 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
 
     const studio = useAppSelector((state) => state.auth.studio) as Studio;
     const subscriptionPlan = useAppSelector((state) => state.auth.subscriptionPlan);
+    const user = useAppSelector((state) => state.auth.user);
+    const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
     useEffect(() => {
         setOpen(popupOn);
     }, [popupOn]);
 
     useEffect(() => {
+        if (isSuperAdmin) return;
         const checkSubscription = () => {
             const currentDate = new Date();
             const endDate = subscriptionPlan?.endDate ? new Date(subscriptionPlan.endDate) : null;
@@ -34,7 +37,7 @@ const SubscriptionPopup: React.FC<SubscriptionPopupProps> = ({ popupOn = false, 
         checkSubscription();
         const timer = setInterval(checkSubscription, 5 * 60 * 1000); // 5 minutes
         return () => clearInterval(timer);
-    }, [subscriptionPlan]);
+    }, [subscriptionPlan, isSuperAdmin]);
 
     const handleClose = () => {
         setOpen(false);

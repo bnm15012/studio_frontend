@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Fab, IconButton, Tooltip, useTheme } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import { Box, Button, Fab, IconButton, Tooltip, useTheme } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -23,8 +23,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SidebarItem, { SidebarRoute } from "@/NavigationComponets/Sidebar/SidebarItem";
 import { useAppUI } from "@/context/UIContext";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Close, GridView } from "@mui/icons-material";
+import { ArrowBack, Close, GridView } from "@mui/icons-material";
 import { usePref, KEYS } from "@/core/utils/localStorageHelper";
+import { useAppDispatch } from "@/state";
+import { setLogin, setSubscriptionPlan, setAuthLoading } from "@/state/authSlice";
+import { branchCruds } from "@/api/all.api";
 
 const SIDEBAR_FULL = "12rem";
 const SIDEBAR_ICON = "4rem";
@@ -37,13 +40,55 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
-    const { isMobile, permissions, isAdmin } = useAppUI();
+    const dispatch = useAppDispatch();
+    const { isMobile, permissions, isAdmin, user } = useAppUI();
+    const isSuperAdmin = user.role === "SUPER_ADMIN";
+    const isImpersonating = !!sessionStorage.getItem("superAdminAuth");
     const isDark = theme.palette.mode === "dark";
 
     const [open, setOpen] = useState<boolean>(sidebarOpen && !isMobile);
     const [iconOnly, setIconOnly] = usePref(KEYS.SIDEBAR_COLLAPSED, false);
 
-    const routes: SidebarRoute[] = [
+    const handleBackToSuperAdmin = useCallback(() => {
+        const savedAuth = sessionStorage.getItem("superAdminAuth");
+        const savedBranch = sessionStorage.getItem("superAdminBranch");
+        if (!savedAuth) return;
+
+        dispatch(setAuthLoading({ loading: true }));
+        const authState = JSON.parse(savedAuth);
+        const branchState = savedBranch ? JSON.parse(savedBranch) : null;
+
+        dispatch(
+            setLogin({
+                user: authState.user,
+                token: authState.token?.replace("Bearer ", "") || null,
+                studio: authState.studio,
+                settings: authState.settings,
+            }),
+        );
+        dispatch(setSubscriptionPlan({ subscriptionPlan: authState.subscriptionPlan }));
+
+        if (branchState) {
+            dispatch(
+                branchCruds.actions.setItems({
+                    data: branchState.items || [],
+                    rootId: branchState.rootId,
+                }),
+            );
+            if (branchState.currentBranch) {
+                dispatch(branchCruds.actions.setCurrentBranch(branchState.currentBranch));
+            }
+        }
+
+        sessionStorage.removeItem("superAdminAuth");
+        sessionStorage.removeItem("superAdminBranch");
+        setTimeout(() => {
+            dispatch(setAuthLoading({ loading: false }));
+            navigate("/super-admin/studios");
+        }, 300);
+    }, [dispatch, navigate]);
+
+    const studioRoutes: SidebarRoute[] = [
         {
             path: "/dashboard",
             label: "Dashboard",
@@ -165,6 +210,39 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
         },
     ];
 
+    const superAdminRoutes: SidebarRoute[] = [
+        {
+            path: "/super-admin",
+            label: "Dashboard",
+            show: true,
+            showOnBottomBar: true,
+            icon: <DashboardIcon />,
+        },
+        {
+            path: "/super-admin/studios",
+            label: "All Studios",
+            show: true,
+            showOnBottomBar: true,
+            icon: <StorefrontIcon />,
+        },
+        {
+            path: "/super-admin/revenue",
+            label: "Revenue",
+            show: true,
+            showOnBottomBar: true,
+            icon: <CreditCardIcon />,
+        },
+        {
+            path: "/super-admin/plans",
+            label: "Plans",
+            show: true,
+            showOnBottomBar: true,
+            icon: <CardGiftcardIcon />,
+        },
+    ];
+
+    const routes: SidebarRoute[] = isSuperAdmin ? superAdminRoutes : studioRoutes;
+
     const itemVariants: Variants = {
         hidden: { opacity: 0, y: 40, scale: 0 },
         visible: (i: number) => ({
@@ -231,6 +309,35 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                                     />
                                 </motion.div>
                             ))}
+                            {isImpersonating && (
+                                <motion.div
+                                    custom={visibleRoutes.length}
+                                    variants={itemVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                >
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<ArrowBack />}
+                                        onClick={() => {
+                                            setOpen(false);
+                                            handleBackToSuperAdmin();
+                                        }}
+                                        fullWidth
+                                        sx={{
+                                            bgcolor: "#4c1d95",
+                                            color: "#fff",
+                                            fontWeight: 700,
+                                            borderRadius: "0.75rem",
+                                            textTransform: "none",
+                                            py: 1.5,
+                                            "&:hover": { bgcolor: "#6d28d9" },
+                                        }}
+                                    >
+                                        Back to Super Admin
+                                    </Button>
+                                </motion.div>
+                            )}
                         </Box>
                     )}
                 </AnimatePresence>
@@ -286,7 +393,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                     <SidebarItem
                         key={route.path}
                         route={route}
-                        isSelected={location.pathname.includes(route.path)}
+                        isSelected={
+                            isSuperAdmin
+                                ? location.pathname === route.path
+                                : location.pathname.includes(route.path)
+                        }
                         onClick={() => navigate(route.path)}
                         isNonMobileScreens={true}
                         iconOnly={iconOnly}
@@ -294,6 +405,40 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                 ))}
             </Box>
 
+            {isImpersonating && (
+                <Box
+                    sx={{
+                        flexShrink: 0,
+                        px: "0.4rem",
+                        pb: 0.5,
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={!iconOnly ? <ArrowBack /> : undefined}
+                        onClick={handleBackToSuperAdmin}
+                        fullWidth
+                        sx={{
+                            bgcolor: "#4c1d95",
+                            color: "#fff",
+                            fontWeight: 700,
+                            fontSize: iconOnly ? "0.6rem" : "0.7rem",
+                            borderRadius: "0.75rem",
+                            textTransform: "none",
+                            minWidth: 0,
+                            py: iconOnly ? 1 : 0.75,
+                            "&:hover": { bgcolor: "#6d28d9" },
+                        }}
+                    >
+                        {iconOnly ? (
+                            <ArrowBack sx={{ fontSize: "1.1rem" }} />
+                        ) : (
+                            "Back to Super Admin"
+                        )}
+                    </Button>
+                </Box>
+            )}
             {/* ── Collapse toggle pinned at bottom ── */}
             <Box
                 sx={{
