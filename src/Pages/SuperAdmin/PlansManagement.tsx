@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
+    Button,
     Typography,
     TableBody,
     TableHead,
@@ -13,6 +14,7 @@ import {
     keyframes,
 } from "@mui/material";
 import {
+    Add as AddIcon,
     Refresh as RefreshIcon,
     CardGiftcard as PlansIcon,
     Star as StarIcon,
@@ -20,7 +22,7 @@ import {
 } from "@mui/icons-material";
 import { useAlert } from "@/core/components/feedback/Alert";
 import { getAllPlans } from "@/Pages/Pricing/plans.api";
-import { updatePlan, type PlanItem } from "@/Pages/SuperAdmin/superadmin.api";
+import { createPlan, updatePlan, type PlanItem } from "@/Pages/SuperAdmin/superadmin.api";
 import WidgetsOnPage from "@/core/components/layout/WidgetsOnPage";
 import TopProgressBar from "@/core/components/loading/TopProgressBar";
 import StyledDialog from "@/core/components/dialogs/StyledDialog";
@@ -38,12 +40,25 @@ const fadeInUp = keyframes`
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
 `;
 
+const initialPlan: Partial<PlanItem> = {
+    planType: "",
+    amount: 0,
+    description: "",
+    popular: false,
+    smsQuota: 100,
+    remindBeforeDays: 7,
+    countryCode: "IN",
+    enabledFeatures: [],
+    disabledFeatures: [],
+};
+
 const PlansManagement: React.FC = () => {
     const showAlert = useAlert();
     const [loading, setLoading] = useState(true);
     const [plans, setPlans] = useState<PlanItem[]>([]);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [editPlan, setEditPlan] = useState<PlanItem | null>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [isAddMode, setIsAddMode] = useState(false);
+    const [currentPlan, setCurrentPlan] = useState<Partial<PlanItem>>(initialPlan);
     const [saving, setSaving] = useState(false);
 
     const loadPlans = useCallback(async () => {
@@ -61,21 +76,40 @@ const PlansManagement: React.FC = () => {
         loadPlans();
     }, [loadPlans]);
 
+    const handleAdd = () => {
+        setIsAddMode(true);
+        setCurrentPlan({ ...initialPlan });
+        setDialogOpen(true);
+    };
+
     const handleEdit = (plan: PlanItem) => {
-        setEditPlan({ ...plan });
-        setEditDialogOpen(true);
+        setIsAddMode(false);
+        setCurrentPlan({ ...plan });
+        setDialogOpen(true);
     };
 
     const handleSave = async () => {
-        if (!editPlan) return;
+        if (!currentPlan) return;
+        if (isAddMode && !currentPlan.planType?.trim()) {
+            showAlert("Please enter a plan type", "warning");
+            return;
+        }
         setSaving(true);
-        const result = await updatePlan(editPlan.id, editPlan);
+        const result = isAddMode
+            ? await createPlan(currentPlan)
+            : currentPlan.id
+              ? await updatePlan(currentPlan.id, currentPlan)
+              : { success: false };
+
         if (result.success) {
-            showAlert("Plan updated successfully", "success");
-            setEditDialogOpen(false);
+            showAlert(
+                isAddMode ? "Plan created successfully" : "Plan updated successfully",
+                "success",
+            );
+            setDialogOpen(false);
             loadPlans();
         } else {
-            showAlert("Failed to update plan", "error");
+            showAlert(isAddMode ? "Failed to create plan" : "Failed to update plan", "error");
         }
         setSaving(false);
     };
@@ -148,6 +182,25 @@ const PlansManagement: React.FC = () => {
 
                 <FlexBetween gap={1} sx={{ height: "3rem", alignItems: "center" }}>
                     <Box sx={{ flexGrow: 1 }} />
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleAdd}
+                        sx={{
+                            borderRadius: "10px",
+                            textTransform: "none",
+                            fontWeight: 600,
+                            px: 2,
+                            py: 0.75,
+                            background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)",
+                            boxShadow: "0 4px 12px rgba(109, 40, 217, 0.3)",
+                            "&:hover": {
+                                background: "linear-gradient(135deg, #3b1477 0%, #5b21b6 100%)",
+                            },
+                        }}
+                    >
+                        Add Plan
+                    </Button>
                     <Tooltip title="Refresh">
                         <IconButton onClick={loadPlans} sx={iconBtnFilledSx}>
                             <RefreshIcon sx={{ fontSize: "1.25rem" }} />
@@ -254,31 +307,51 @@ const PlansManagement: React.FC = () => {
             </Box>
 
             <StyledDialog
-                open={editDialogOpen}
-                onClose={() => setEditDialogOpen(false)}
-                title={`Edit Plan - ${editPlan?.planType?.replace(/_/g, " ") || ""}`}
-                confirmText={saving ? "Saving..." : "Save"}
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                title={
+                    isAddMode
+                        ? "Add New Plan"
+                        : `Edit Plan - ${currentPlan?.planType?.replace(/_/g, " ") || ""}`
+                }
+                confirmText={saving ? "Saving..." : isAddMode ? "Create Plan" : "Save"}
                 onConfirm={handleSave}
                 confirmDisabled={saving}
                 size="sm"
             >
-                {editPlan && (
+                {currentPlan && (
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
+                        <TextField
+                            label="Plan Type"
+                            value={currentPlan.planType ?? ""}
+                            onChange={(e) =>
+                                setCurrentPlan({
+                                    ...currentPlan,
+                                    planType: e.target.value.toUpperCase().replace(/\s+/g, "_"),
+                                })
+                            }
+                            placeholder="e.g. STUDIO_MONTHLY"
+                            disabled={!isAddMode}
+                            helperText={isAddMode ? "Unique identifier for the plan" : ""}
+                            required
+                            fullWidth
+                            size="small"
+                        />
                         <TextField
                             label="Amount"
                             type="number"
-                            value={editPlan.amount ?? ""}
+                            value={currentPlan.amount ?? ""}
                             onChange={(e) =>
-                                setEditPlan({ ...editPlan, amount: Number(e.target.value) })
+                                setCurrentPlan({ ...currentPlan, amount: Number(e.target.value) })
                             }
                             fullWidth
                             size="small"
                         />
                         <TextField
                             label="Description"
-                            value={editPlan.description ?? ""}
+                            value={currentPlan.description ?? ""}
                             onChange={(e) =>
-                                setEditPlan({ ...editPlan, description: e.target.value })
+                                setCurrentPlan({ ...currentPlan, description: e.target.value })
                             }
                             fullWidth
                             size="small"
@@ -288,9 +361,9 @@ const PlansManagement: React.FC = () => {
                         <TextField
                             label="SMS Quota"
                             type="number"
-                            value={editPlan.smsQuota ?? ""}
+                            value={currentPlan.smsQuota ?? ""}
                             onChange={(e) =>
-                                setEditPlan({ ...editPlan, smsQuota: Number(e.target.value) })
+                                setCurrentPlan({ ...currentPlan, smsQuota: Number(e.target.value) })
                             }
                             fullWidth
                             size="small"
@@ -298,12 +371,21 @@ const PlansManagement: React.FC = () => {
                         <TextField
                             label="Remind Before (days)"
                             type="number"
-                            value={editPlan.remindBeforeDays ?? ""}
+                            value={currentPlan.remindBeforeDays ?? ""}
                             onChange={(e) =>
-                                setEditPlan({
-                                    ...editPlan,
+                                setCurrentPlan({
+                                    ...currentPlan,
                                     remindBeforeDays: Number(e.target.value),
                                 })
+                            }
+                            fullWidth
+                            size="small"
+                        />
+                        <TextField
+                            label="Country Code"
+                            value={currentPlan.countryCode ?? "IN"}
+                            onChange={(e) =>
+                                setCurrentPlan({ ...currentPlan, countryCode: e.target.value })
                             }
                             fullWidth
                             size="small"
@@ -311,9 +393,12 @@ const PlansManagement: React.FC = () => {
                         <FormControlLabel
                             control={
                                 <Switch
-                                    checked={editPlan.popular ?? false}
+                                    checked={currentPlan.popular ?? false}
                                     onChange={(e) =>
-                                        setEditPlan({ ...editPlan, popular: e.target.checked })
+                                        setCurrentPlan({
+                                            ...currentPlan,
+                                            popular: e.target.checked,
+                                        })
                                     }
                                 />
                             }
@@ -321,10 +406,10 @@ const PlansManagement: React.FC = () => {
                         />
                         <TextField
                             label="Enabled Features (comma separated)"
-                            value={editPlan.enabledFeatures?.join(", ") ?? ""}
+                            value={currentPlan.enabledFeatures?.join(", ") ?? ""}
                             onChange={(e) =>
-                                setEditPlan({
-                                    ...editPlan,
+                                setCurrentPlan({
+                                    ...currentPlan,
                                     enabledFeatures: e.target.value
                                         .split(",")
                                         .map((s) => s.trim())
@@ -338,10 +423,10 @@ const PlansManagement: React.FC = () => {
                         />
                         <TextField
                             label="Disabled Features (comma separated)"
-                            value={editPlan.disabledFeatures?.join(", ") ?? ""}
+                            value={currentPlan.disabledFeatures?.join(", ") ?? ""}
                             onChange={(e) =>
-                                setEditPlan({
-                                    ...editPlan,
+                                setCurrentPlan({
+                                    ...currentPlan,
                                     disabledFeatures: e.target.value
                                         .split(",")
                                         .map((s) => s.trim())

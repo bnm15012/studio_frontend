@@ -152,6 +152,16 @@ export interface PlanItem {
     disabledFeatures: string[];
 }
 
+export const createPlan = async (entry: Partial<PlanItem>) => {
+    try {
+        const response = await api.post("/plans/add", entry, authHeader());
+        return { data: response.data?.data?.[0] as PlanItem, success: true };
+    } catch (error) {
+        console.error(error);
+        return { data: null, success: false };
+    }
+};
+
 export const updatePlan = async (id: number, entry: Partial<PlanItem>) => {
     try {
         const response = await api.put(`/super-admin/plans/update/${id}`, entry, authHeader());
