@@ -7,12 +7,13 @@ import { useAppUI } from "@/context/UIContext";
 
 const AuthenticatedNavbarSection: React.FC = () => {
     const { user, permissions, currentBranch, token } = useAppUI();
+    const isSuperAdmin = user.role === "SUPER_ADMIN";
 
     return (
         <FlexBetween>
             {/* <ThemeToggleButton /> */}
-            <Notification branch={currentBranch} token={token} />
-            {permissions.BRANCH && <BranchesDropdown />}
+            {!isSuperAdmin && <Notification branch={currentBranch} token={token} />}
+            {!isSuperAdmin && permissions.BRANCH && <BranchesDropdown />}
             <UserProfileDropdown user={user} />
         </FlexBetween>
     );
