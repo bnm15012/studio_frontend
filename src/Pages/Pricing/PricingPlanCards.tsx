@@ -50,6 +50,7 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [allPlans, setAllPlans] = useState<Plan[] | null>(null);
     const user = useAppSelector((state) => state.auth.user);
+    const token = useAppSelector((state) => state.auth.token);
     const studio = useAppSelector((state) => state.auth.studio);
     const textColor = buttonText === "Get Started" ? "white" : "black";
 
@@ -92,12 +93,16 @@ const PricingPlanCards: React.FC<PricingPlanCardsProps> = ({
     const fetchPlans = useCallback(async () => {
         if (!studio?.studioId) return;
         setIsLoading(true);
-        const { data, success } = await getStudioPlans({ studioId: studio.studioId, AMC });
+        const { data, success } = await getStudioPlans({
+            AMC,
+            token: token!,
+            studioId: studio.studioId,
+        });
         if (success) {
             setAllPlans(data);
         }
         setIsLoading(false);
-    }, [AMC, studio?.studioId]);
+    }, [AMC, token, studio?.studioId]);
 
     useEffect(() => {
         if (!allPlans) {

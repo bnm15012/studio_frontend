@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AppUIProvider, NonAuthUIProvider } from "@/context/UIContext";
 import { Box, CircularProgress } from "@mui/material";
 import { useAppSelector } from "@/state";
@@ -60,36 +60,25 @@ export const AllRoutes = () => {
                 <AuthTransitionOverlay />
             ) : token ? (
                 <AppUIProvider>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                isSuperAdmin ? (
-                                    <Navigate to="/super-admin" replace />
-                                ) : (
-                                    <DashBoard />
-                                )
-                            }
-                        />
-                        <Route
-                            path="/dashboard"
-                            element={
-                                isSuperAdmin ? (
-                                    <Navigate to="/super-admin" replace />
-                                ) : (
-                                    <DashBoard />
-                                )
-                            }
-                        />
-                        <Route path="/analysis" element={<Analysis />} />
-                        <Route path="/management/:page" element={<Management />} />
-                        <Route path="/management/:page/:ID" element={<Management />} />
-                        <Route path="/super-admin" element={<SuperAdminDashboard />} />
-                        <Route path="/super-admin/studios" element={<SuperAdmin />} />
-                        <Route path="/super-admin/revenue" element={<Revenue />} />
-                        <Route path="/super-admin/plans" element={<PlansManagement />} />
-                        <Route path="*" element={<PageNotFound />} />
-                    </Routes>
+                    {isSuperAdmin ? (
+                        <Routes>
+                            <Route path="/" element={<SuperAdminDashboard />} />
+                            <Route path="/super-admin" element={<SuperAdminDashboard />} />
+                            <Route path="/super-admin/studios" element={<SuperAdmin />} />
+                            <Route path="/super-admin/revenue" element={<Revenue />} />
+                            <Route path="/super-admin/plans" element={<PlansManagement />} />
+                            <Route path="*" element={<PageNotFound />} />
+                        </Routes>
+                    ) : (
+                        <Routes>
+                            <Route path="/" element={<DashBoard />} />
+                            <Route path="/dashboard" element={<DashBoard />} />
+                            <Route path="/analysis" element={<Analysis />} />
+                            <Route path="/management/:page" element={<Management />} />
+                            <Route path="/management/:page/:ID" element={<Management />} />
+                            <Route path="*" element={<PageNotFound />} />
+                        </Routes>
+                    )}
 
                     <ProfilePage />
                     {!isSuperAdmin && <SubscriptionPopup />}

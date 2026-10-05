@@ -18,15 +18,16 @@ export const getAllPlans = async ({ AMC }: GetAllPlansParams) => {
 };
 
 interface GetStudioPlansParams {
-    studioId: string | number;
     AMC?: string | boolean;
+    token: string;
+    studioId: number;
 }
 
-export const getStudioPlans = async ({ studioId, AMC }: GetStudioPlansParams) => {
+export const getStudioPlans = async ({ AMC, token, studioId }: GetStudioPlansParams) => {
     try {
         const response = await api.get("/plans/getByStudio", {
-            headers: { "Content-Type": "application/json" },
-            params: { studioId, AMC },
+            headers: { "Content-Type": "application/json", Authorization: token },
+            params: { AMC, studioId },
         });
         return {
             data: response.data.data,

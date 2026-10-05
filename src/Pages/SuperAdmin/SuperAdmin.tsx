@@ -13,20 +13,19 @@ import {
     keyframes,
 } from "@mui/material";
 import {
-    Login as LoginIcon,
+    // Login as LoginIcon,
     Edit as EditIcon,
     CurrencyRupee as RupeeIcon,
     Refresh as RefreshIcon,
     Business as BusinessIcon,
 } from "@mui/icons-material";
 import { useAlert } from "@/core/components/feedback/Alert";
-import { useAppDispatch, store, RootState } from "@/state";
-import { setLogin, setSubscriptionPlan, setAuthLoading } from "@/state/authSlice";
-import { branchCruds } from "@/api/all.api";
-import type { Branch } from "@/api/types";
+// import { setLogin, setSubscriptionPlan, setAuthLoading } from "@/state/authSlice";
+// import { branchCruds } from "@/api/all.api";
+// import type { Branch } from "@/api/types";
 import {
     fetchAllStudios,
-    loginAsStudio,
+    // loginAsStudio,
     fetchStudioPlans,
     upsertStudioPlan,
     type StudioListItem,
@@ -58,7 +57,7 @@ const fadeInUp = keyframes`
 `;
 
 const SuperAdmin: React.FC = () => {
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const showAlert = useAlert();
 
     const [studios, setStudios] = useState<StudioListItem[]>([]);
@@ -87,42 +86,42 @@ const SuperAdmin: React.FC = () => {
         loadStudios();
     }, [loadStudios]);
 
-    const handleLoginAsStudio = async (studio: StudioListItem) => {
-        dispatch(setAuthLoading({ loading: true }));
-        const result = await loginAsStudio(studio.studioId);
-        if (result.success && result.data) {
-            const authData = result.data;
-            const currentState = store.getState() as RootState;
-            sessionStorage.setItem("superAdminAuth", JSON.stringify(currentState.auth));
-            sessionStorage.setItem("superAdminBranch", JSON.stringify(currentState.branch));
-            dispatch(
-                setLogin({
-                    user: authData,
-                    token: authData.token,
-                    studio: authData.studioEntry,
-                    settings: authData.studioEntry.configuration.configrationEntryList,
-                }),
-            );
-            dispatch(
-                branchCruds.actions.setItems({
-                    data: authData.studioEntry.branchList,
-                    rootId: authData.studioEntry.studioId,
-                }),
-            );
-            const activeBranch =
-                authData.studioEntry.branchList.find((b: Branch) => b.isActive) ||
-                authData.studioEntry.branchList[0];
-            if (activeBranch) {
-                dispatch(branchCruds.actions.setCurrentBranch(activeBranch));
-            }
-            dispatch(setSubscriptionPlan({ subscriptionPlan: authData.subscriptionEntry }));
-            showAlert(`Logged in as ${studio.studioName}`, "success");
-            window.location.hash = "#/dashboard";
-        } else {
-            showAlert("Failed to login as studio", "error");
-        }
-        setTimeout(() => dispatch(setAuthLoading({ loading: false })), 600);
-    };
+    // const handleLoginAsStudio = async (studio: StudioListItem) => {
+    //     dispatch(setAuthLoading({ loading: true }));
+    //     const result = await loginAsStudio(studio.studioId);
+    //     if (result.success && result.data) {
+    //         const authData = result.data;
+    //         const currentState = store.getState() as RootState;
+    //         sessionStorage.setItem("superAdminAuth", JSON.stringify(currentState.auth));
+    //         sessionStorage.setItem("superAdminBranch", JSON.stringify(currentState.branch));
+    //         dispatch(
+    //             setLogin({
+    //                 user: authData,
+    //                 token: authData.token,
+    //                 studio: authData.studioEntry,
+    //                 settings: authData.studioEntry.configuration.configrationEntryList,
+    //             }),
+    //         );
+    //         dispatch(
+    //             branchCruds.actions.setItems({
+    //                 data: authData.studioEntry.branchList,
+    //                 rootId: authData.studioEntry.studioId,
+    //             }),
+    //         );
+    //         const activeBranch =
+    //             authData.studioEntry.branchList.find((b: Branch) => b.isActive) ||
+    //             authData.studioEntry.branchList[0];
+    //         if (activeBranch) {
+    //             dispatch(branchCruds.actions.setCurrentBranch(activeBranch));
+    //         }
+    //         dispatch(setSubscriptionPlan({ subscriptionPlan: authData.subscriptionEntry }));
+    //         showAlert(`Logged in as ${studio.studioName}`, "success");
+    //         window.location.hash = "#/dashboard";
+    //     } else {
+    //         showAlert("Failed to login as studio", "error");
+    //     }
+    //     setTimeout(() => dispatch(setAuthLoading({ loading: false })), 600);
+    // };
 
     const handleOpenPricing = async (studio: StudioListItem) => {
         setSelectedStudio(studio);
@@ -310,7 +309,7 @@ const SuperAdmin: React.FC = () => {
                                 <StyledTableCell>Status</StyledTableCell>
                                 <StyledTableCell>End Date</StyledTableCell>
                                 <StyledTableCell align="center">Pricing</StyledTableCell>
-                                <StyledTableCell align="center">Login As</StyledTableCell>
+                                {/* <StyledTableCell align="center">Login As</StyledTableCell> */}
                             </StyledTableRow>
                         </TableHead>
                         <TableBody>
@@ -354,7 +353,7 @@ const SuperAdmin: React.FC = () => {
                                             </IconButton>
                                         </Tooltip>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">
+                                    {/* <StyledTableCell align="center">
                                         <Button
                                             variant="outlined"
                                             size="small"
@@ -363,7 +362,7 @@ const SuperAdmin: React.FC = () => {
                                         >
                                             Login
                                         </Button>
-                                    </StyledTableCell>
+                                    </StyledTableCell> */}
                                 </StyledTableRow>
                             ))}
                             {filteredStudios.length === 0 && (
